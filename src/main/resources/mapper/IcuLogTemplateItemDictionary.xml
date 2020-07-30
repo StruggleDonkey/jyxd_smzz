@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyxd.web.dao.dictionaryDao.IcuLogTemplateItemDictionaryDao">
+
+    <resultMap id="icuLogTemplateItemDictionaryMap" type="com.jyxd.web.data.dictionary.IcuLogTemplateItemDictionary">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="icu_log_template_id" property="icuLogTemplateId" jdbcType="VARCHAR"/>
+        <result column="icu_log_template_item_name" property="icuLogTemplateItemName" jdbcType="VARCHAR"/>
+        <result column="icu_log_template_item_type" property="icuLogTemplateItemType" jdbcType="VARCHAR"/>
+        <result column="log_form" property="logForm" jdbcType="INTEGER"/>
+        <result column="allow_unplanned" property="allowUnplanned" jdbcType="INTEGER"/>
+        <result column="syn_nursing" property="synNursing" jdbcType="INTEGER"/>
+        <result column="nursing_begin_content" property="nursingBeginContent" jdbcType="VARCHAR"/>
+        <result column="nursing_end_content" property="nursingEndContent" jdbcType="VARCHAR"/>
+        <result column="nursing_unplanned_end_content" property="nursingUnplannedEndContent" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="sort_num" property="sortNum" jdbcType="INTEGER"/>
+        <result column="operator_code" property="operatorCode" jdbcType="VARCHAR"/>
+        <result column="syn_table" property="synTable" jdbcType="VARCHAR"/>
+        <result column="syn_code" property="synCode" jdbcType="VARCHAR"/>
+        <result column="syn_value_select" property="synValueSelect" jdbcType="VARCHAR"/>
+        <result column="syn_value" property="synValue" jdbcType="VARCHAR"/>
+        <result column="syn_method" property="synMethod" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="DATE"/>
+    </resultMap>
+    
+    <sql id="icuLogTemplateItemDictionary_colums">id,icu_log_template_id,icu_log_template_item_name,icu_log_template_item_type,log_form,
+		allow_unplanned,syn_nursing,nursing_begin_content,nursing_end_content,nursing_unplanned_end_content,status,
+		sort_num,operator_code,syn_table,syn_code,syn_value_select,syn_value,syn_method,create_time</sql>
+    <sql id="icuLogTemplateItemDictionary_propertys">#{id},#{icuLogTemplateId},#{icuLogTemplateItemName},#{icuLogTemplateItemType},#{logForm},
+		#{allowUnplanned},#{synNursing},#{nursingBeginContent},#{nursingEndContent},#{nursingUnplannedEndContent},#{status},#{sortNum},
+		#{operatorCode},#{synTable},#{synCode},#{synValueSelect},#{synValue},#{synMethod},#{createTime}</sql>
+    <sql id="icuLogTemplateItemDictionary_update">icu_log_template_id=#{icuLogTemplateId},icu_log_template_item_name=#{icuLogTemplateItemName},
+        icu_log_template_item_type#{icuLogTemplateItemType},log_form=#{logForm},allow_unplanned=#{allowUnplanned},
+		syn_nursing=#{synNursing},nursing_begin_content=#{nursingBeginContent},nursing_end_content=#{nursingEndContent},
+		nursing_unplanned_end_content=#{nursingUnplannedEndContent},status=#{status},
+		sort_num=#{sortNum},operator_code=#{operatorCode},syn_table=#{synTable},syn_code=#{synCode},
+		syn_value_select=#{synValueSelect},syn_value=#{synValue},syn_method=#{synMethod},create_time=#{createTime}</sql>
+
+    <insert id="insert">
+        insert into
+        dic_icu_log_template_item(<include refid="icuLogTemplateItemDictionary_colums"></include>)
+        values (<include refid="icuLogTemplateItemDictionary_propertys"></include>)
+    </insert>
+
+    <update id="update" parameterType="com.jyxd.web.data.dictionary.IcuLogTemplateItemDictionary" >
+        update dic_icu_log_template_item
+        set <include refid="icuLogTemplateItemDictionary_update"></include>
+        where
+          id=#{id}
+    </update>
+
+    <select id="queryData" resultMap="icuLogTemplateItemDictionaryMap" parameterType="java.lang.String">
+        select
+          <include refid="icuLogTemplateItemDictionary_colums"></include>
+        from
+        dic_icu_log_template_item
+        where
+          id=#{id}
+    </select>
+
+    <select id="queryList" resultType="java.util.Map">
+        select
+          <include refid="icuLogTemplateItemDictionary_colums"></include>
+        from
+        dic_icu_log_template_item
+        where
+          1=1
+        and  status != -1
+        <if test="icuLogTemplateItemName != null and icuLogTemplateItemName != ''">
+            and  icu_log_template_item_name like '%${icuLogTemplateItemName}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="start != null and start != ''">limit #{start},</if>
+        <if test="size != null and size != ''">#{size}</if>
+    </select>
+
+</mapper>

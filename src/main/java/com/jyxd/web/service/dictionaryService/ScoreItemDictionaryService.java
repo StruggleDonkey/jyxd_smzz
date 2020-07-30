@@ -1,0 +1,32 @@
+package com.jyxd.web.service.dictionaryService;
+
+import com.jyxd.web.dao.dictionaryDao.ScoreItemDictionaryDao;
+import com.jyxd.web.data.dictionary.ScoreItemDictionary;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+
+@Service
+public class ScoreItemDictionaryService {
+
+    @Autowired
+    private ScoreItemDictionaryDao scoreItemDictionaryDao;
+
+    public boolean insert(ScoreItemDictionary scoreItemDictionary){
+        return scoreItemDictionaryDao.insert(scoreItemDictionary);
+    }
+
+    public boolean update(ScoreItemDictionary scoreItemDictionary){
+        return scoreItemDictionaryDao.update(scoreItemDictionary);
+    }
+
+    public ScoreItemDictionary queryData(String id){
+        return scoreItemDictionaryDao.queryData(id);
+    }
+
+    public List<ScoreItemDictionary> queryList(Map<String,Object> map){
+        return scoreItemDictionaryDao.queryList(map);
+    }
+}
