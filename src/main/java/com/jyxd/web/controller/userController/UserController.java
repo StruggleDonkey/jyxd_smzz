@@ -2,6 +2,7 @@ package com.jyxd.web.controller.userController;
 
 import com.jyxd.web.data.user.User;
 import com.jyxd.web.service.userService.UserService;
+import com.jyxd.web.util.MD5Util;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -99,7 +100,7 @@ public class UserController {
     public String delete(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
         json.put("code",400);
-        if(map.containsKey("id")){
+        if(map!=null && map.containsKey("id")){
             User user=userService.queryData(map.get("id").toString());
             if(user!=null){
                 user.setStatus(-1);
@@ -163,9 +164,14 @@ public class UserController {
         JSONObject json=new JSONObject();
         json.put("code",2);
         json.put("data",new ArrayList<>());
-        User user=userService.queryUserByNameAndPassword(map);
-        if(user!=null){
-            json.put("code",200);
+        json.put("msg","账号密码有误，请重新输入！");
+        if(map!=null && map.containsKey("password")){
+            map.put("password", MD5Util.getMD5String(map.get("password").toString()));
+            User user=userService.queryUserByNameAndPassword(map);
+            if(user!=null){
+                json.put("code",200);
+                json.put("msg","登录成功");
+            }
         }
         return json.toString();
     }
