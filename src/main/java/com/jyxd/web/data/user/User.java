@@ -1,4 +1,4 @@
-package com.jyxd.web.data;
+package com.jyxd.web.data.user;
 
 
 
@@ -8,9 +8,11 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Date;
 
+/**
+ * 平台用户表
+ */
 @Entity
 @Table(name = "t_user")
 @Data
@@ -19,7 +21,7 @@ public class User implements Serializable {
     /**
      * 序列
      */
-    private static final long serialVersionUID = 1L;
+    private static final long    serialVersionUID = 1L;
 
     /**
      * 主键ID
@@ -33,7 +35,7 @@ public class User implements Serializable {
     /**
      * 员工工号
      */
-    @Column(name = "workNumber")
+    @Column(name = "work_number")
     private String workNumber;
 
     /**
@@ -67,10 +69,10 @@ public class User implements Serializable {
     private String userTypeCode;
 
     /**
-     * 角色key
+     * 角色id
      */
-    @Column(name = "role_key")
-    private String roleKey;
+    @Column(name = "role_id")
+    private String roleId;
 
     /**
      * 状态(0：禁用 1：启用 -1：删除)
