@@ -18,12 +18,12 @@
 
     <insert id="insert">
         insert into
-        dic_diagnose_coefficient(<include refid="diagnoseCoefficientDictionary_colums"></include>)
+        dict_diagnose_coefficient(<include refid="diagnoseCoefficientDictionary_colums"></include>)
         values (<include refid="diagnoseCoefficientDictionary_propertys"></include>)
     </insert>
 
     <update id="update" parameterType="com.jyxd.web.data.dictionary.DiagnoseCoefficientDictionary" >
-        update dic_diagnose_coefficient
+        update dict_diagnose_coefficient
         set <include refid="diagnoseCoefficientDictionary_update"></include>
         where
           id=#{id}
@@ -33,7 +33,7 @@
         select
           <include refid="diagnoseCoefficientDictionary_colums"></include>
         from
-        dic_diagnose_coefficient
+        dict_diagnose_coefficient
         where
           id=#{id}
     </select>
@@ -42,7 +42,7 @@
         select
           <include refid="diagnoseCoefficientDictionary_colums"></include>
         from
-        dic_diagnose_coefficient
+        dict_diagnose_coefficient
         where
           1=1
         and  status != -1

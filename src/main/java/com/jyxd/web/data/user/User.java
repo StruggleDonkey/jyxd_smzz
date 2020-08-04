@@ -14,7 +14,7 @@ import java.util.Date;
  * 平台用户表
  */
 @Entity
-@Table(name = "t_user")
+@Table(name = "table_user")
 @Data
 public class User implements Serializable {
 

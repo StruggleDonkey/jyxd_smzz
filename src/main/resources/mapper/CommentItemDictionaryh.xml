@@ -17,12 +17,12 @@
 
     <insert id="insert">
         insert into
-        dic_common_item(<include refid="commentItemDictionary_colums"></include>)
+        dict_common_item(<include refid="commentItemDictionary_colums"></include>)
         values (<include refid="commentItemDictionary_propertys"></include>)
     </insert>
 
     <update id="update" parameterType="com.jyxd.web.data.dictionary.CommenItemDictionary" >
-        update dic_common_item
+        update dict_common_item
         set <include refid="commentItemDictionary_update"></include>
         where
           id=#{id}
@@ -32,7 +32,7 @@
         select
           <include refid="commentItemDictionary_colums"></include>
         from
-        dic_common_item
+        dict_common_item
         where
           id=#{id}
     </select>
@@ -41,7 +41,7 @@
         select
           <include refid="commentItemDictionary_colums"></include>
         from
-        dic_common_item
+        dict_common_item
         where
           1=1
         and  status != -1

@@ -18,12 +18,12 @@
 
     <insert id="insert">
         insert into
-        dic_monitor(<include refid="monitorDictionary_colums"></include>)
+        dict_monitor(<include refid="monitorDictionary_colums"></include>)
         values (<include refid="monitorDictionary_propertys"></include>)
     </insert>
 
     <update id="update" parameterType="com.jyxd.web.data.dictionary.MonitorDictionary" >
-        update dic_monitor
+        update dict_monitor
         set <include refid="monitorDictionary_update"></include>
         where
           id=#{id}
@@ -33,7 +33,7 @@
         select
           <include refid="monitorDictionary_colums"></include>
         from
-        dic_monitor
+        dict_monitor
         where
           id=#{id}
     </select>
@@ -42,7 +42,7 @@
         select
           <include refid="monitorDictionary_colums"></include>
         from
-        dic_monitor
+        dict_monitor
         where
           1=1
         and  status != -1

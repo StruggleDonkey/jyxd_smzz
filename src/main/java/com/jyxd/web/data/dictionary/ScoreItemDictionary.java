@@ -11,7 +11,7 @@ import java.util.Date;
  * 评分项字典表
  */
 @Entity
-@Table(name = "dic_score_item")
+@Table(name = "dict_score_item")
 @Data
 public class ScoreItemDictionary implements Serializable {
 

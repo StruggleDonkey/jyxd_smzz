@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyxd.web.dao.userDao.AccessDao">
+
+    <resultMap id="accessMap" type="com.jyxd.web.data.user.Access">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="role_id" property="roleId" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="INTEGER"/>
+        <result column="menu_code" property="menuCode" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="operate_code" property="operateCode" jdbcType="VARCHAR"/>
+    </resultMap>
+    
+    <sql id="access_colums">id,role_id,type,menu_code,status,operate_code</sql>
+    <sql id="access_propertys">#{id},#{roleId},#{type},#{menuCode},#{status},#{operateCode}</sql>
+    <sql id="access_update">role_id=#{roleId},type=#{type},menu_code=#{menuCode},status=#{status},operate_code=#{operateCode}</sql>
+
+    <insert id="insert">
+        insert into
+        table_access(<include refid="access_colums"></include>)
+        values (<include refid="access_propertys"></include>)
+    </insert>
+
+    <update id="update" parameterType="com.jyxd.web.data.user.Access" >
+        update table_access
+        set <include refid="access_update"></include>
+        where
+          id=#{id}
+    </update>
+
+    <select id="queryData" resultMap="accessMap" parameterType="java.lang.String">
+        select
+          <include refid="access_colums"></include>
+        from
+        table_access
+        where
+          id=#{id}
+    </select>
+
+    <select id="queryList" resultType="java.util.Map">
+        select
+          <include refid="access_colums"></include>
+        from
+        table_access
+        where
+          1=1
+        and  status != -1
+        <if test="menuCode != null and menuCode != ''">
+            and  menu_code like '%${menuCode}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="start != null and start != ''">limit #{start},</if>
+        <if test="size != null and size != ''">#{size}</if>
+    </select>
+
+</mapper>

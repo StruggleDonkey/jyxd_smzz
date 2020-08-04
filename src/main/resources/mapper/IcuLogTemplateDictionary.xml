@@ -17,12 +17,12 @@
 
     <insert id="insert">
         insert into
-        dic_icu_log_template(<include refid="icuLogTemplateDictionary_colums"></include>)
+        dict_icu_log_template(<include refid="icuLogTemplateDictionary_colums"></include>)
         values (<include refid="icuLogTemplateDictionary_propertys"></include>)
     </insert>
 
     <update id="update" parameterType="com.jyxd.web.data.dictionary.IcuLogTemplateDictionary" >
-        update dic_icu_log_template
+        update dict_icu_log_template
         set <include refid="icuLogTemplateDictionary_update"></include>
         where
           id=#{id}
@@ -32,7 +32,7 @@
         select
           <include refid="icuLogTemplateDictionary_colums"></include>
         from
-        dic_icu_log_template
+        dict_icu_log_template
         where
           id=#{id}
     </select>
@@ -41,7 +41,7 @@
         select
           <include refid="icuLogTemplateDictionary_colums"></include>
         from
-        dic_icu_log_template
+        dict_icu_log_template
         where
           1=1
         and  status != -1

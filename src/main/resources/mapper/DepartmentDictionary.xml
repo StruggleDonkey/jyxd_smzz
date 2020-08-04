@@ -15,12 +15,12 @@
 
     <insert id="insert">
         insert into
-        dic_department(<include refid="departmentDictionary_colums"></include>)
+        dict_department(<include refid="departmentDictionary_colums"></include>)
         values (<include refid="departmentDictionary_propertys"></include>)
     </insert>
 
     <update id="update" parameterType="com.jyxd.web.data.dictionary.DepartmentDictionary" >
-        update dic_department
+        update dict_department
         set <include refid="departmentDictionary_update"></include>
         where
           id=#{id}
@@ -30,7 +30,7 @@
         select
           <include refid="departmentDictionary_colums"></include>
         from
-        dic_department
+        dict_department
         where
           id=#{id}
     </select>
@@ -39,7 +39,7 @@
         select
           <include refid="departmentDictionary_colums"></include>
         from
-        dic_department
+        dict_department
         where
           1=1
         and  status != -1

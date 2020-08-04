@@ -10,7 +10,7 @@ import java.io.Serializable;
  * 科室字典表
  */
 @Entity
-@Table(name = "dic_department")
+@Table(name = "dict_department")
 @Data
 public class DepartmentDictionary implements Serializable {
     /**

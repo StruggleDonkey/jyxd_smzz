@@ -43,12 +43,12 @@
 
     <insert id="insert">
         insert into
-          dic_bed(<include refid="scoreItemDictionary_colums"></include>)
+          dict_bed(<include refid="scoreItemDictionary_colums"></include>)
         values (<include refid="scoreItemDictionary_propertys"></include>)
     </insert>
 
     <update id="update" parameterType="com.jyxd.web.data.dictionary.ScoreItemDictionary" >
-        update dic_bed
+        update dict_bed
         set <include refid="scoreItemDictionary_update"></include>
         where
           id=#{id}
@@ -58,7 +58,7 @@
         select
           <include refid="scoreItemDictionary_colums"></include>
         from
-          dic_bed
+          dict_bed
         where
           id=#{id}
     </select>
@@ -67,7 +67,7 @@
         select
           <include refid="scoreItemDictionary_colums"></include>
         from
-          dic_bed
+          dict_bed
         where
           1=1
         and  status != -1

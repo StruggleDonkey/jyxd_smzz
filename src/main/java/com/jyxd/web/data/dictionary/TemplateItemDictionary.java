@@ -11,7 +11,7 @@ import java.util.Date;
  * 护理模板表
  */
 @Entity
-@Table(name = "dic_template_item")
+@Table(name = "dict_template_item")
 @Data
 public class TemplateItemDictionary implements Serializable {
 

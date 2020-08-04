@@ -29,12 +29,12 @@
 
     <insert id="insert">
         insert into
-        t_user(<include refid="user_colums"></include>)
+        table_user(<include refid="user_colums"></include>)
         values (<include refid="user_propertys"></include>)
     </insert>
 
     <update id="update" parameterType="com.jyxd.web.data.user.User" >
-        update t_user
+        update table_user
         set <include refid="user_update"></include>
         where
           id=#{id}
@@ -44,7 +44,7 @@
         select
           <include refid="user_colums"></include>
         from
-        t_user
+        table_user
         where
           id=#{id}
     </select>
@@ -53,7 +53,7 @@
         select
           <include refid="user_colums"></include>
         from
-        t_user
+        table_user
         where
           1=1
         and  status != -1
@@ -71,7 +71,7 @@
     <select id="queryUserByNameAndPassword" resultType="com.jyxd.web.data.user.User" >
         select
           <include refid="user_colums"></include>
-        from t_user
+        from table_user
         where
           status in (0,1)
         <if test="loginName !=null and loginName != ''">

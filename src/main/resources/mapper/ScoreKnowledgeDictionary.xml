@@ -20,12 +20,12 @@
 
     <insert id="insert">
         insert into
-        dic_score_knowledge(<include refid="scoreKnowledgeDictionary_colums"></include>)
+        dict_score_knowledge(<include refid="scoreKnowledgeDictionary_colums"></include>)
         values (<include refid="scoreKnowledgeDictionary_propertys"></include>)
     </insert>
 
     <update id="update" parameterType="com.jyxd.web.data.dictionary.ScoreKnowledgeDictionary" >
-        update dic_score_knowledge
+        update dict_score_knowledge
         set <include refid="scoreKnowledgeDictionary_update"></include>
         where
           id=#{id}
@@ -35,7 +35,7 @@
         select
           <include refid="scoreKnowledgeDictionary_colums"></include>
         from
-        dic_score_knowledge
+        dict_score_knowledge
         where
           id=#{id}
     </select>
@@ -44,7 +44,7 @@
         select
           <include refid="scoreKnowledgeDictionary_colums"></include>
         from
-        dic_score_knowledge
+        dict_score_knowledge
         where
           1=1
         and  status != -1

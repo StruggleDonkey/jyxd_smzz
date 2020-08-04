@@ -10,7 +10,7 @@ import java.io.Serializable;
  * 床位字典表
  */
 @Entity
-@Table(name = "dic_bed")
+@Table(name = "dict_bed")
 @Data
 public class BedDictionary implements Serializable {
 

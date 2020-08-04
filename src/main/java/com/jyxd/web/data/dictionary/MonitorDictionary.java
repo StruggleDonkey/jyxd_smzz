@@ -10,7 +10,7 @@ import java.io.Serializable;
  * 监护仪字典表
  */
 @Entity
-@Table(name = "dic_monitor")
+@Table(name = "dict_monitor")
 @Data
 public class MonitorDictionary implements Serializable {
 

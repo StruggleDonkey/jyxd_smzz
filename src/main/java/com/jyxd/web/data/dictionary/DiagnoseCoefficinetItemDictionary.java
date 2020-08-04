@@ -11,7 +11,7 @@ import java.util.Date;
  * ICU主要疾病诊断分类系数表
  */
 @Entity
-@Table(name = "dic_diagnose_coefficient_item")
+@Table(name = "dict_diagnose_coefficient_item")
 @Data
 public class DiagnoseCoefficinetItemDictionary implements Serializable {
 

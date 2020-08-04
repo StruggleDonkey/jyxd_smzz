@@ -17,12 +17,12 @@
 
     <insert id="insert">
         insert into
-        dic_template(<include refid="templateDictionary_colums"></include>)
+        dict_template(<include refid="templateDictionary_colums"></include>)
         values (<include refid="templateDictionary_propertys"></include>)
     </insert>
 
     <update id="update" parameterType="com.jyxd.web.data.dictionary.TemplateDictionary" >
-        update dic_template
+        update dict_template
         set <include refid="templateDictionary_update"></include>
         where
           id=#{id}
@@ -32,7 +32,7 @@
         select
           <include refid="templateDictionary_colums"></include>
         from
-        dic_template
+        dict_template
         where
           id=#{id}
     </select>
@@ -41,7 +41,7 @@
         select
           <include refid="templateDictionary_colums"></include>
         from
-        dic_template
+        dict_template
         where
           1=1
         and  status != -1

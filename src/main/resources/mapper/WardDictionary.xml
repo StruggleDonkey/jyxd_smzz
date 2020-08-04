@@ -15,12 +15,12 @@
 
     <insert id="insert">
         insert into
-        dic_ward(<include refid="wardDictionary_colums"></include>)
+        dict_ward(<include refid="wardDictionary_colums"></include>)
         values (<include refid="wardDictionary_propertys"></include>)
     </insert>
 
     <update id="update" parameterType="com.jyxd.web.data.dictionary.WardDictionary" >
-        update dic_ward
+        update dict_ward
         set <include refid="wardDictionary_update"></include>
         where
           id=#{id}
@@ -30,7 +30,7 @@
         select
           <include refid="wardDictionary_colums"></include>
         from
-        dic_ward
+        dict_ward
         where
           id=#{id}
     </select>
@@ -39,7 +39,7 @@
         select
           <include refid="wardDictionary_colums"></include>
         from
-        dic_ward
+        dict_ward
         where
           1=1
         and  status != -1

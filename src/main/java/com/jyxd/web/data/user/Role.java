@@ -1,4 +1,5 @@
-package com.jyxd.web.data.dictionary;
+package com.jyxd.web.data.user;
+
 
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
@@ -8,17 +9,17 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 护理模板类型表
+ * 角色表
  */
 @Entity
-@Table(name = "dict_template")
+@Table(name = "table_role")
 @Data
-public class TemplateDictionary implements Serializable {
+public class Role implements Serializable {
 
     /**
      * 序列
      */
-    private static final long serialVersionUID = 1L;
+    private static final long    serialVersionUID = 1L;
 
     /**
      * 主键ID
@@ -30,28 +31,28 @@ public class TemplateDictionary implements Serializable {
     private String id;
 
     /**
-     * 模板类型名称
+     * 类型编码
      */
-    @Column(name = "dic_template_name")
-    private String dicTemplateName;
+    @Column(name = "user_type_code")
+    private String userTypeCode;
 
     /**
-     * 状态（0：禁用 1：正常 -1：删除）
+     *  角色名称
+     */
+    @Column(name = "role_name")
+    private String roleName;
+
+    /**
+     * 是否受数据有效期控制（0：否 1：是）
+     */
+    @Column(name = "data_valid")
+    private int dataValid;
+
+    /**
+     * 状态(0：禁用 1：启用 -1：删除)
      */
     @Column(name = "status")
     private int status;
-
-    /**
-     * 排序
-     */
-    @Column(name = "sort_num")
-    private int sortNum;
-
-    /**
-     * 操作人code
-     */
-    @Column(name = "operator_code")
-    private String operatorCode;
 
     /**
      * 创建时间

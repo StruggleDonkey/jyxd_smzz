@@ -10,7 +10,7 @@ import java.io.Serializable;
  * 通用字典类型表
  */
 @Entity
-@Table(name = "dic_common")
+@Table(name = "dict_common")
 @Data
 public class CommonDictionary implements Serializable {
 

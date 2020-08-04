@@ -11,7 +11,7 @@ import java.util.Date;
  * ICU日志模板类型表
  */
 @Entity
-@Table(name = "dic_icu_log_template")
+@Table(name = "dict_icu_log_template")
 @Data
 public class IcuLogTemplateDictionary implements Serializable {
 
