@@ -36,4 +36,11 @@ public interface UserTypeDao {
      * @return list
      */
     List<UserType> queryList(Map<String, Object> map);
+
+    /**
+     * 根据用户类型code和用户类型名称查询对象
+     * @param map
+     * @return
+     */
+    UserType queryDataByCode(Map<String, Object> map);
 }

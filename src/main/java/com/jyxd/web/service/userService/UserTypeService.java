@@ -30,5 +30,7 @@ public class UserTypeService {
         return userTypeDao.queryList(map);
     }
 
-
+    public UserType queryDataByCode(Map<String,Object> map){
+        return userTypeDao.queryDataByCode(map);
+    }
 }

@@ -45,13 +45,26 @@
           1=1
         and  status != -1
         <if test="userTypeName != null and userTypeName != ''">
-            and  login_name like '%${userTypeName}%'
+            and  user_type_name like '%${userTypeName}%'
         </if>
         <if test="status != null ">
             and  status= #{status}
         </if>
         <if test="start != null and start != ''">limit #{start},</if>
         <if test="size != null and size != ''">#{size}</if>
+    </select>
+
+    <select id="queryDataByCode" resultMap="userTypeMap" parameterType="java.util.Map">
+        select
+        <include refid="userType_colums"></include>
+        from
+        table_user_type
+        where
+          status !=-1
+        and
+        (user_type_name = #{userTypeName}
+        or
+          user_type_code = #{userTypeCode})
     </select>
 
 </mapper>

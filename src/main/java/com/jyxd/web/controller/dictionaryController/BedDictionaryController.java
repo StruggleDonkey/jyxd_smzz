@@ -37,10 +37,12 @@ public class BedDictionaryController {
         JSONObject json=new JSONObject();
         json.put("code",400);
         json.put("data",new ArrayList<>());
+        json.put("msg","系统开小差了，请稍后再试。");
         System.out.println(bedDictionary.toString());
         bedDictionary.setId(UUIDUtil.getUUID());
         bedDictionaryService.insert(bedDictionary);
         json.put("code",200);
+        json.put("msg","添加成功");
         return json.toString();
     }
 
@@ -54,12 +56,15 @@ public class BedDictionaryController {
     public String update(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
         json.put("code",400);
+        json.put("msg","系统开小差了，请稍后再试。");
         if(map!=null && map.containsKey("id") && map.containsKey("status") ){
             BedDictionary bedDictionary=bedDictionaryService.queryData(map.get("id").toString());
             if(bedDictionary!=null){
                 bedDictionary.setStatus((int)map.get("status"));
                 bedDictionaryService.update(bedDictionary);
+                json.put("msg","更新成功");
             }else{
+                json.put("msg","更新失败，没有这个对象。");
                 return json.toString();
             }
         }
@@ -77,17 +82,21 @@ public class BedDictionaryController {
     public String edit(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
         json.put("code",400);
+        json.put("msg","系统开小差了，请稍后再试。");
         if(map!=null && map.containsKey("id") && map.containsKey("status") && map.containsKey("bedName")){
             BedDictionary bedDictionary=bedDictionaryService.queryData(map.get("id").toString());
             if(bedDictionary!=null){
                 bedDictionary.setStatus((int)map.get("status"));
                 bedDictionary.setBedName(map.get("bedName").toString());
                 bedDictionaryService.update(bedDictionary);
+                json.put("msg","编辑成功");
             }else{
+                json.put("msg","编辑失败，没有这个对象。");
                 return json.toString();
             }
         }
         json.put("code",200);
+
         return json.toString();
     }
 
@@ -101,12 +110,15 @@ public class BedDictionaryController {
     public String delete(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
         json.put("code",400);
+        json.put("msg","系统开小差了，请稍后再试。");
         if(map.containsKey("id")){
             BedDictionary bedDictionary=bedDictionaryService.queryData(map.get("id").toString());
             if(bedDictionary!=null){
                 bedDictionary.setStatus(-1);
                 bedDictionaryService.update(bedDictionary);
+                json.put("msg","删除成功");
             }else{
+                json.put("msg","删除失败，没有这个对象。");
                 return json.toString();
             }
         }
@@ -125,9 +137,11 @@ public class BedDictionaryController {
         JSONObject json=new JSONObject();
         json.put("code",400);
         json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
         if(map !=null && map.containsKey("id")){
             BedDictionary bedDictionary=bedDictionaryService.queryData(map.get("id").toString());
             if(bedDictionary!=null){
+                json.put("msg","查询成功");
                 json.put("data",JSONObject.fromObject(bedDictionary));
             }
         }
@@ -146,8 +160,10 @@ public class BedDictionaryController {
         JSONObject json=new JSONObject();
         json.put("code",400);
         json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
         List<BedDictionary> list =bedDictionaryService.queryList(map);
         if(list!=null && list.size()>0){
+            json.put("msg","查询成功");
             json.put("data",JSONArray.fromObject(list));
         }
         json.put("code",200);
