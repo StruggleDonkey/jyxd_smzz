@@ -53,6 +53,7 @@ public class UserTypeController {
             json.put("code",200);
             json.put("msg","添加成功");
         }
+        System.out.println(userType.toString());
         return json.toString();
     }
 
@@ -99,11 +100,11 @@ public class UserTypeController {
                 userType.setUserTypeName(map.get("userTypeName").toString());
                 userTypeService.update(userType);
                 json.put("msg","编辑成功");
+                json.put("code",200);
             }else{
                 return json.toString();
             }
         }
-        json.put("code",200);
         return json.toString();
     }
 

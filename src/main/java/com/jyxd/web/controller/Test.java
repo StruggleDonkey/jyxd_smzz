@@ -1,5 +1,6 @@
 package com.jyxd.web.controller;
 
+import net.sf.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,4 +25,12 @@ public class Test {
         return new ModelAndView("login");
     }
 
+    @RequestMapping(value = "/session")
+    @ResponseBody
+    public String session(){
+        JSONObject json=new JSONObject();
+        json.put("code","4");
+        json.put("msg","身份信息已失效，请重新登录");
+        return json.toString();
+    }
 }

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyxd.web.dao.logDao.IcuLogDao">
+
+    <resultMap id="icuLogMap" type="com.jyxd.web.data.log.IcuLog">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="visit_id" property="visitId" jdbcType="VARCHAR"/>
+        <result column="visit_code" property="visitCode" jdbcType="VARCHAR"/>
+        <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
+        <result column="log_type" property="logType" jdbcType="VARCHAR"/>
+        <result column="item_id" property="itemId" jdbcType="VARCHAR"/>
+        <result column="happen_time" property="happenTime" jdbcType="DATE"/>
+        <result column="happen_content" property="happenContent" jdbcType="VARCHAR"/>
+        <result column="happen_operator_code" property="happenOperatorCode" jdbcType="VARCHAR"/>
+        <result column="finish_type" property="finishType" jdbcType="INTEGER"/>
+        <result column="finish_time" property="finishTime" jdbcType="DATE"/>
+        <result column="finish_content" property="finishContent" jdbcType="VARCHAR"/>
+        <result column="finish_operator_code" property="finishOperatorCode" jdbcType="VARCHAR"/>
+        <result column="syn_value" property="synValue" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="DATE"/>
+    </resultMap>
+    
+    <sql id="icuLog_colums">id,visit_id,visit_code,patient_id,log_type,item_id,happen_time,happen_content,happen_operator_code,
+                            finish_type,finish_time,finish_content,finish_operator_code,syn_value,status,create_time</sql>
+    <sql id="icuLog_propertys">#{id},#{visitId},#{visitCode},#{patientId},#{logType},#{itemId},#{happenTime},#{happenContent},#{happenOperatorCode},
+                              #{finishType},#{finishTime},#{finishContent},#{finishOperatorCode},#{synValue},#{status},#{createTime</sql>
+    <sql id="icuLog_update">visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},log_type=#{logType},item_id=#{itemId},
+                            happen_time=#{happenTime},happen_content=#{happenContent},happen_operator_code=#{happenOperatorCode},finish_type=#{finishType},
+                            finish_time=#{finishTime},finish_content=#{finishContent},finish_operator_code=#{finishOperatorCode},syn_value=#{synValue},
+                            status=#{status},create_time=#{createTime}</sql>
+
+    <insert id="insert">
+        insert into
+        l_icu_log(<include refid="icuLog_colums"></include>)
+        values (<include refid="icuLog_propertys"></include>)
+    </insert>
+
+    <update id="update" parameterType="com.jyxd.web.data.log.IcuLog" >
+        update
+        l_icu_log
+        set <include refid="icuLog_update"></include>
+        where
+          id=#{id}
+    </update>
+
+    <select id="queryData" resultMap="icuLogMap" parameterType="java.lang.String">
+        select
+          <include refid="icuLog_colums"></include>
+        from
+        l_icu_log
+        where
+          id=#{id}
+    </select>
+
+    <select id="queryList" resultType="java.util.Map">
+        select
+          <include refid="icuLog_colums"></include>
+        from
+        l_icu_log
+        where
+          1=1
+        <if test="start != null and start != ''">limit #{start},</if>
+        <if test="size != null and size != ''">#{size}</if>
+    </select>
+
+</mapper>

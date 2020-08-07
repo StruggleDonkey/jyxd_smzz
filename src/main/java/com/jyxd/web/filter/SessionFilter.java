@@ -1,5 +1,7 @@
 package com.jyxd.web.filter;
 
+import net.sf.json.JSONObject;
+
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +33,7 @@ public class SessionFilter implements Filter {
         //response.setHeader("Access-Control-Max-Age", "3600");
         response.setHeader("Access-Control-Allow-Headers", ":x-requested-with,content-type");
         //((HttpServletResponse)servletResponse).setHeader("Access-Control-Allow-Origin", "*");
+        response.setContentType("text/html;charset=utf-8");
 
         System.out.println("filter url:"+uri);
         //是否需要过滤
@@ -41,8 +44,8 @@ public class SessionFilter implements Filter {
             filterChain.doFilter(servletRequest, servletResponse);
         } else { //需要过滤器
             // session中包含user对象,则是登录状态
-            if(session!=null&&session.getAttribute("user") != null){
-                // System.out.println("user:"+session.getAttribute("user"));
+            if(session!=null && session.getAttribute("user") != null){
+                //System.out.println("user:"+session.getAttribute("user"));
                 filterChain.doFilter(request, response);
             }else{
                 String requestType = request.getHeader("X-Requested-With");
@@ -52,7 +55,11 @@ public class SessionFilter implements Filter {
                     response.getWriter().write(this.NO_LOGIN);
                 }else{
                     //重定向到登录页(需要在static文件夹下建立此html文件)
-                    response.sendRedirect(request.getContextPath()+"/login");
+                    //response.sendRedirect(request.getContextPath()+"/session");
+                    JSONObject json=new JSONObject();
+                    json.put("code","4");
+                    json.put("msg","身份信息已失效，请重新登录");
+                    response.getWriter().write(json.toString());
                 }
                 return;
             }
@@ -66,7 +73,7 @@ public class SessionFilter implements Filter {
      * @param uri
      */
     public boolean isNeedFilter(String uri) {
-        /*for (String includeUrl : includeUrls) {
+        for (String includeUrl : includeUrls) {
             if(includeUrl.equals(uri)) {
                 return false;
             }
@@ -76,8 +83,8 @@ public class SessionFilter implements Filter {
         if(str.length>1 && ("js".equals(str[1]) || "css".equals(str[1]) || "img".equals(str[1]))){
             return false;
         }
-        return true;*/
-        return false;
+        return true;
+        //return false;
     }
 
     @Override

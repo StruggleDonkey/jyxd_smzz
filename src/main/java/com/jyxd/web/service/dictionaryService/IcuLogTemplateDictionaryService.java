@@ -4,11 +4,13 @@ import com.jyxd.web.dao.dictionaryDao.IcuLogTemplateDictionaryDao;
 import com.jyxd.web.data.dictionary.IcuLogTemplateDictionary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
 
 @Service
+@Transactional
 public class IcuLogTemplateDictionaryService {
 
     @Autowired

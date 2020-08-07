@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -160,7 +161,7 @@ public class UserController {
      */
     @RequestMapping(value = "/login",method= RequestMethod.POST)
     @ResponseBody
-    public String login(@RequestBody Map<String,Object> map){
+    public String login(@RequestBody Map<String,Object> map, HttpSession session){
         JSONObject json=new JSONObject();
         json.put("code",2);
         json.put("data",new ArrayList<>());
@@ -169,6 +170,7 @@ public class UserController {
             map.put("password", MD5Util.getMD5String(map.get("password").toString()));
             User user=userService.queryUserByNameAndPassword(map);
             if(user!=null){
+                session.setAttribute("user",user);
                 json.put("code",200);
                 json.put("msg","登录成功");
             }

@@ -4,11 +4,13 @@ import com.jyxd.web.dao.userDao.UserDao;
 import com.jyxd.web.data.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
 
 @Service
+@Transactional
 public class UserService {
 
     @Autowired

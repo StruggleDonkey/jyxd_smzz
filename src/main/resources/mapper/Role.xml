@@ -55,4 +55,16 @@
         <if test="size != null and size != ''">#{size}</if>
     </select>
 
+    <select id="queryDataByName" resultMap="roleMap" parameterType="java.util.Map">
+        select
+        <include refid="role_colums"></include>
+        from
+        table_role
+        where
+        status != -1
+        <if test="roleName != null and roleName != ''">
+            and  role_name = #{roleName}
+        </if>
+    </select>
+
 </mapper>

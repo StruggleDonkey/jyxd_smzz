@@ -48,6 +48,9 @@
         <if test="menuCode != null and menuCode != ''">
             and  menu_code like '%${menuCode}%'
         </if>
+        <if test="roleId != null and roleId != ''">
+            and  role_id = #{roleId}
+        </if>
         <if test="status != null ">
             and  status= #{status}
         </if>

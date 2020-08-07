@@ -36,4 +36,11 @@ public interface RoleDao {
      * @return list
      */
     List<Role> queryList(Map<String, Object> map);
+
+    /**
+     * 根据角色名称查询对象
+     * @param map
+     * @return
+     */
+    Role queryDataByName(Map<String, Object> map);
 }

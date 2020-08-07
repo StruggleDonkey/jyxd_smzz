@@ -68,7 +68,7 @@
     </select>
 
 
-    <select id="queryUserByNameAndPassword" resultType="com.jyxd.web.data.user.User" >
+    <select id="queryUserByNameAndPassword" resultMap="userMap" >
         select
           <include refid="user_colums"></include>
         from table_user

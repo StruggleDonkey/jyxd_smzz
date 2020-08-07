@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyxd.web.dao.logDao.LogDao">
+
+    <resultMap id="logMap" type="com.jyxd.web.data.log.Log">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="operate_type" property="operateType" jdbcType="VARCHAR"/>
+        <result column="operate_time" property="operateTime" jdbcType="DATE"/>
+        <result column="operator_code" property="operatorCode" jdbcType="VARCHAR"/>
+        <result column="menu_code" property="menuCode" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="visit_id" property="visitId" jdbcType="VARCHAR"/>
+        <result column="visit_code" property="visitCode" jdbcType="VARCHAR"/>
+        <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
+    </resultMap>
+    
+    <sql id="log_colums">id,operate_type,operate_time,operator_code,menu_code,type,content,visit_id,visit_code,patient_id</sql>
+    <sql id="log_propertys">#{id},#{operateType},#{operateTime},#{operatorCode},#{menuCode},#{type},#{content},#{visit_id},#{visit_code},#{patient_id}</sql>
+    <sql id="log_update">operate_type=#{operateType},operate_time=#{operateTime},operator_code=#{operatorCode},menu_code=#{menuCode},type=#{type},
+                            content=#{content},visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId}</sql>
+
+    <insert id="insert">
+        insert into
+        l_log(<include refid="log_colums"></include>)
+        values (<include refid="log_propertys"></include>)
+    </insert>
+
+    <update id="update" parameterType="com.jyxd.web.data.log.Log" >
+        update
+        l_log
+        set <include refid="log_update"></include>
+        where
+          id=#{id}
+    </update>
+
+    <select id="queryData" resultMap="logMap" parameterType="java.lang.String">
+        select
+          <include refid="log_colums"></include>
+        from
+        l_log
+        where
+          id=#{id}
+    </select>
+
+    <select id="queryList" resultType="java.util.Map">
+        select
+          <include refid="log_colums"></include>
+        from
+        l_log
+        where
+          1=1
+        <if test="operateType != null and operateType != ''">
+            and  operate_type =#{operateType}
+        </if>
+        <if test="menuCode != null and menuCode != ''">
+            and  menu_code =#{menuCode}
+        </if>
+        <if test="operatorCode != null and operatorCode != ''">
+            and  operator_code =#{operatorCode}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            and operate_time between date_format(#{startTime},'%Y%m%d')
+            and date_format(#{endTime},'%Y%m%d')
+        </if>
+        ORDER BY operate_time DESC
+        <if test="start != null and start != ''">limit #{start},</if>
+        <if test="size != null and size != ''">#{size}</if>
+    </select>
+
+</mapper>
