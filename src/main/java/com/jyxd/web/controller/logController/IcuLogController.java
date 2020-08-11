@@ -2,6 +2,7 @@ package com.jyxd.web.controller.logController;
 
 import com.jyxd.web.data.log.IcuLog;
 import com.jyxd.web.service.logService.IcuLogService;
+import com.jyxd.web.util.HttpCode;
 import com.jyxd.web.util.JsonArrayValueProcessor;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
@@ -41,12 +42,12 @@ public class IcuLogController {
     @ResponseBody
     public String insert(@RequestBody IcuLog icuLog, HttpSession session){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         json.put("msg","添加失败");
         icuLog.setId(UUIDUtil.getUUID());
         icuLog.setCreateTime(new Date());
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         json.put("msg","添加成功");
         return json.toString();
     }
@@ -60,7 +61,7 @@ public class IcuLogController {
     @ResponseBody
     public String queryData(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code", HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         if(map !=null && map.containsKey("id")){
             IcuLog icuLog=icuLogService.queryData(map.get("id").toString());
@@ -68,7 +69,7 @@ public class IcuLogController {
                 json.put("data",JSONObject.fromObject(icuLog));
             }
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -81,7 +82,7 @@ public class IcuLogController {
     @ResponseBody
     public String queryList(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         List<IcuLog> list =icuLogService.queryList(map);
         if(list!=null && list.size()>0){
@@ -89,7 +90,7 @@ public class IcuLogController {
             jsonConfig.registerJsonValueProcessor(Timestamp.class,new JsonArrayValueProcessor());
             json.put("data",JSONArray.fromObject(list,jsonConfig));
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         System.out.println(json);
         return json.toString();
     }

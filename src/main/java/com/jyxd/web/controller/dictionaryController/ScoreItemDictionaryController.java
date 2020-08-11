@@ -2,6 +2,7 @@ package com.jyxd.web.controller.dictionaryController;
 
 import com.jyxd.web.data.dictionary.ScoreItemDictionary;
 import com.jyxd.web.service.dictionaryService.ScoreItemDictionaryService;
+import com.jyxd.web.util.HttpCode;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -35,11 +36,11 @@ public class ScoreItemDictionaryController {
     @ResponseBody
     public String insert(@RequestBody ScoreItemDictionary scoreItemDictionary){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code", HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         scoreItemDictionary.setId(UUIDUtil.getUUID());
         scoreItemDictionaryService.insert(scoreItemDictionary);
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -52,13 +53,13 @@ public class ScoreItemDictionaryController {
     @ResponseBody
     public String update(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         if(map.containsKey("id") && map.containsKey("status")){
             ScoreItemDictionary scoreItemDictionary=scoreItemDictionaryService.queryData(map.get("id").toString());
             scoreItemDictionary.setStatus((int)map.get("status"));
             scoreItemDictionaryService.update(scoreItemDictionary);
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -71,7 +72,7 @@ public class ScoreItemDictionaryController {
     @ResponseBody
     public String queryData(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         if(map !=null && map.containsKey("id")){
             ScoreItemDictionary scoreItemDictionary=scoreItemDictionaryService.queryData(map.get("id").toString());
@@ -79,7 +80,7 @@ public class ScoreItemDictionaryController {
                 json.put("data",JSONObject.fromObject(scoreItemDictionary));
             }
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -92,13 +93,13 @@ public class ScoreItemDictionaryController {
     @ResponseBody
     public String queryList(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         List<ScoreItemDictionary> list =scoreItemDictionaryService.queryList(map);
         if(list!=null && list.size()>0){
             json.put("data",JSONArray.fromObject(list));
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 

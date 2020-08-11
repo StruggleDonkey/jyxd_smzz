@@ -2,6 +2,7 @@ package com.jyxd.web.controller.dictionaryController;
 
 import com.jyxd.web.data.dictionary.CommenItemDictionary;
 import com.jyxd.web.service.dictionaryService.CommentItemService;
+import com.jyxd.web.util.HttpCode;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -27,71 +28,161 @@ public class CommentItemController {
     @Autowired
     private CommentItemService commentItemService;
 
+    /**
+     * 新增一条通用字典表数据
+     * @param commenItemDictionary
+     * @return
+     */
     @RequestMapping(value = "/insert")
     @ResponseBody
-    public String insert(){
+    public String insert(@RequestBody(required=false) CommenItemDictionary commenItemDictionary){
         JSONObject json=new JSONObject();
-        json.put("status",false);
         json.put("data",new ArrayList<>());
-        CommenItemDictionary commenItemDictionary=new CommenItemDictionary();
-        commenItemDictionary.setCommonItemCode("AAAAAAAA");
-        commenItemDictionary.setCommonItemName("CCCCCCCCCC");
-        commenItemDictionary.setDescription("无");
+        json.put("code", HttpCode.FAILURE_CODE.getCode());
+        json.put("msg","添加失败");
         commenItemDictionary.setId(UUIDUtil.getUUID());
-        commenItemDictionary.setStatus(0);
-        commenItemDictionary.setType("1");
         commentItemService.insert(commenItemDictionary);
-        json.put("status",true);
+        json.put("code",HttpCode.OK_CODE.getCode());
+        json.put("msg","添加成功");
         return json.toString();
     }
 
+    /**
+     * 更新一条通用字典表数据状态
+     * @param map
+     * @return
+     */
     @RequestMapping(value = "/update")
     @ResponseBody
     public String update(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("status",false);
-        json.put("code",400);
+        json.put("msg","更新失败");
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         if(map.containsKey("id") && map.containsKey("status")){
             CommenItemDictionary commenItemDictionary=commentItemService.queryData(map.get("id").toString());
-            commenItemDictionary.setStatus((int)map.get("status"));
-            commentItemService.update(commenItemDictionary);
+            if(commenItemDictionary!=null){
+                commenItemDictionary.setStatus((int)map.get("status"));
+                commentItemService.update(commenItemDictionary);
+                json.put("msg","更新成功");
+                json.put("code",HttpCode.OK_CODE.getCode());
+            }
         }
-        json.put("status",true);
-        json.put("code",200);
         return json.toString();
     }
 
+    /**
+     * 编辑一条通用字典表数据
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/edit")
+    @ResponseBody
+    public String edit(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("msg","编辑失败");
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        if(map.containsKey("id") && map.containsKey("status") && map.containsKey("commonItemCode") && map.containsKey("commonItemName")
+                && map.containsKey("type") && map.containsKey("description")){
+            CommenItemDictionary commenItemDictionary=commentItemService.queryData(map.get("id").toString());
+            if(commenItemDictionary!=null){
+                commenItemDictionary.setStatus((int)map.get("status"));
+                commenItemDictionary.setType(map.get("type").toString());
+                commenItemDictionary.setCommonItemName(map.get("commonItemName").toString());
+                commenItemDictionary.setCommonItemCode(map.get("commonItemCode").toString());
+                commenItemDictionary.setDescription(map.get("description").toString());
+                commentItemService.update(commenItemDictionary);
+                json.put("msg","编辑成功");
+                json.put("code",HttpCode.OK_CODE.getCode());
+            }
+        }
+        return json.toString();
+    }
+
+    /**
+     * 删除一条通用字典表数据
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/delete")
+    @ResponseBody
+    public String delete(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("msg","删除失败");
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        if(map.containsKey("id")){
+            CommenItemDictionary commenItemDictionary=commentItemService.queryData(map.get("id").toString());
+            if(commenItemDictionary!=null){
+                commenItemDictionary.setStatus(-1);
+                commentItemService.update(commenItemDictionary);
+                json.put("msg","删除成功");
+                json.put("code",HttpCode.OK_CODE.getCode());
+            }
+        }
+        return json.toString();
+    }
+
+    /**
+     * 根据主键id查询通用字典表对象
+     * @param map
+     * @return
+     */
     @RequestMapping(value = "/queryData",method= RequestMethod.POST)
     @ResponseBody
     public String queryData(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("status",false);
-        json.put("code",400);
+        json.put("msg","暂无数据");
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         if(map.containsKey("id")){
             CommenItemDictionary commenItemDictionary=commentItemService.queryData(map.get("id").toString());
             if(commenItemDictionary!=null){
                 json.put("data",JSONObject.fromObject(commenItemDictionary));
+                json.put("msg","查询成功");
             }
         }
-        json.put("status",true);
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
+    /**
+     * 根据条件分页查询通用字典表列表（可以不分页）
+     * @param map
+     * @return
+     */
     @RequestMapping(value = "/queryList",method= RequestMethod.POST)
     @ResponseBody
     public String queryList(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("status",false);
-        json.put("code",400);
+        json.put("msg","暂无数据");
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         List<CommenItemDictionary> list =commentItemService.queryList(map);
         if(list!=null && list.size()>0){
             json.put("data",JSONArray.fromObject(list));
+            json.put("msg","查询成功");
         }
-        json.put("status",true);
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
+    /**
+     * 根据条件分页查询通用字典表列表（可以不分页）--多表查询
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/getList",method= RequestMethod.POST)
+    @ResponseBody
+    public String getList(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("msg","暂无数据");
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        List<Map<String,Object>> list =commentItemService.getList(map);
+        if(list!=null && list.size()>0){
+            json.put("data",JSONArray.fromObject(list));
+            json.put("msg","查询成功");
+        }
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 

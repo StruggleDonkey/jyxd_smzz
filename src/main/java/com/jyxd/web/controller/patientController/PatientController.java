@@ -1,7 +1,7 @@
-package com.jyxd.web.controller.dictionaryController;
+package com.jyxd.web.controller.patientController;
 
-import com.jyxd.web.data.dictionary.TemplateItemDictionary;
-import com.jyxd.web.service.dictionaryService.TemplateItemDictionaryService;
+import com.jyxd.web.data.patient.Patient;
+import com.jyxd.web.service.patientService.PatientService;
 import com.jyxd.web.util.HttpCode;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
@@ -16,38 +16,38 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping(value = "/templateItemDictionary")
-public class TemplateItemDictionaryController {
+@RequestMapping(value = "/patient")
+public class PatientController {
 
-    private static Logger logger= LoggerFactory.getLogger(TemplateItemDictionaryController.class);
+    private static Logger logger= LoggerFactory.getLogger(PatientController.class);
 
     @Autowired
-    private TemplateItemDictionaryService templateItemDictionaryService;
+    private PatientService patientService;
 
     /**
-     * 增加一条护理模板表记录
+     * 增加一条病人表记录
      * @return
      */
     @RequestMapping(value = "/insert")
     @ResponseBody
-    public String insert(@RequestBody TemplateItemDictionary templateItemDictionary){
+    public String insert(@RequestBody Patient patient){
         JSONObject json=new JSONObject();
         json.put("code", HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
-        templateItemDictionary.setId(UUIDUtil.getUUID());
-        templateItemDictionary.setCreateTime(new Date());
-        templateItemDictionaryService.insert(templateItemDictionary);
+        json.put("msg","系统开小差了，请稍后再试。");
+        patient.setId(UUIDUtil.getUUID());
+        patientService.insert(patient);
         json.put("code",HttpCode.OK_CODE.getCode());
+        json.put("msg","添加成功");
         return json.toString();
     }
 
     /**
-     * 更新护理模板表记录状态
+     * 更新病人表记录状态
      * @param map
      * @return
      */
@@ -56,12 +56,15 @@ public class TemplateItemDictionaryController {
     public String update(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
         json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("msg","系统开小差了，请稍后再试。");
         if(map!=null && map.containsKey("id") && map.containsKey("status") ){
-            TemplateItemDictionary templateItemDictionary=templateItemDictionaryService.queryData(map.get("id").toString());
-            if(templateItemDictionary!=null){
-                templateItemDictionary.setStatus((int)map.get("status"));
-                templateItemDictionaryService.update(templateItemDictionary);
+            Patient patient=patientService.queryData(map.get("id").toString());
+            if(patient!=null){
+                patient.setStatus((int)map.get("status"));
+                patientService.update(patient);
+                json.put("msg","更新成功");
             }else{
+                json.put("msg","更新失败，没有这个对象。");
                 return json.toString();
             }
         }
@@ -70,7 +73,7 @@ public class TemplateItemDictionaryController {
     }
 
     /**
-     * 编辑护理模板表记录
+     * 编辑病人表
      * @param map
      * @return
      */
@@ -79,22 +82,25 @@ public class TemplateItemDictionaryController {
     public String edit(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
         json.put("code",HttpCode.FAILURE_CODE.getCode());
-        if(map!=null && map.containsKey("id") && map.containsKey("status") && map.containsKey("templateItemName")){
-            TemplateItemDictionary templateItemDictionary=templateItemDictionaryService.queryData(map.get("id").toString());
-            if(templateItemDictionary!=null){
-                templateItemDictionary.setStatus((int)map.get("status"));
-                templateItemDictionary.setTemplateItemName(map.get("templateItemName").toString());
-                templateItemDictionaryService.update(templateItemDictionary);
+        json.put("msg","系统开小差了，请稍后再试。");
+        if(map!=null && map.containsKey("id") && map.containsKey("status") && map.containsKey("bedName")){
+            Patient patient=patientService.queryData(map.get("id").toString());
+            if(patient!=null){
+                patient.setStatus((int)map.get("status"));
+                patientService.update(patient);
+                json.put("msg","编辑成功");
             }else{
+                json.put("msg","编辑失败，没有这个对象。");
                 return json.toString();
             }
         }
         json.put("code",HttpCode.OK_CODE.getCode());
+
         return json.toString();
     }
 
     /**
-     * 删除护理模板表记录
+     * 删除病人表记录
      * @param map
      * @return
      */
@@ -103,12 +109,15 @@ public class TemplateItemDictionaryController {
     public String delete(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
         json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("msg","系统开小差了，请稍后再试。");
         if(map.containsKey("id")){
-            TemplateItemDictionary templateItemDictionary=templateItemDictionaryService.queryData(map.get("id").toString());
-            if(templateItemDictionary!=null){
-                templateItemDictionary.setStatus(-1);
-                templateItemDictionaryService.update(templateItemDictionary);
+            Patient patient=patientService.queryData(map.get("id").toString());
+            if(patient!=null){
+                patient.setStatus(-1);
+                patientService.update(patient);
+                json.put("msg","删除成功");
             }else{
+                json.put("msg","删除失败，没有这个对象。");
                 return json.toString();
             }
         }
@@ -117,7 +126,7 @@ public class TemplateItemDictionaryController {
     }
 
     /**
-     * 根据主键id查询护理模板表记录
+     * 根据主键id查询病人表记录
      * @param map
      * @return
      */
@@ -127,10 +136,12 @@ public class TemplateItemDictionaryController {
         JSONObject json=new JSONObject();
         json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
         if(map !=null && map.containsKey("id")){
-            TemplateItemDictionary templateItemDictionary=templateItemDictionaryService.queryData(map.get("id").toString());
-            if(templateItemDictionary!=null){
-                json.put("data",JSONObject.fromObject(templateItemDictionary));
+            Patient patient=patientService.queryData(map.get("id").toString());
+            if(patient!=null){
+                json.put("msg","查询成功");
+                json.put("data",JSONObject.fromObject(patient));
             }
         }
         json.put("code",HttpCode.OK_CODE.getCode());
@@ -138,7 +149,7 @@ public class TemplateItemDictionaryController {
     }
 
     /**
-     * 根据条件分页查询护理模板表记录列表（也可以不分页）
+     * 根据条件分页查询病人表记录列表（也可以不分页）
      * @param map
      * @return
      */
@@ -148,8 +159,10 @@ public class TemplateItemDictionaryController {
         JSONObject json=new JSONObject();
         json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
-        List<TemplateItemDictionary> list =templateItemDictionaryService.queryList(map);
+        json.put("msg","暂无数据");
+        List<Patient> list =patientService.queryList(map);
         if(list!=null && list.size()>0){
+            json.put("msg","查询成功");
             json.put("data",JSONArray.fromObject(list));
         }
         json.put("code",HttpCode.OK_CODE.getCode());

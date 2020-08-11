@@ -31,4 +31,8 @@ public class CommonDictionaryService {
     public List<CommonDictionary> queryList(Map<String,Object> map){
         return commonDictionaryDao.queryList(map);
     }
+
+    public CommonDictionary queryDataByName(Map<String,Object> map){
+        return commonDictionaryDao.queryDataByName(map);
+    }
 }

@@ -1,5 +1,6 @@
 package com.jyxd.web.filter;
 
+import com.jyxd.web.util.HttpCode;
 import net.sf.json.JSONObject;
 
 import javax.servlet.*;
@@ -49,7 +50,7 @@ public class SessionFilter implements Filter {
                 filterChain.doFilter(request, response);
             }else{
                 String requestType = request.getHeader("X-Requested-With");
-                System.out.println("requestType:"+requestType);
+                //System.out.println("requestType:"+requestType);
                 //判断是否是ajax请求
                 if(requestType!=null && "XMLHttpRequest".equals(requestType)){
                     response.getWriter().write(this.NO_LOGIN);
@@ -57,7 +58,7 @@ public class SessionFilter implements Filter {
                     //重定向到登录页(需要在static文件夹下建立此html文件)
                     //response.sendRedirect(request.getContextPath()+"/session");
                     JSONObject json=new JSONObject();
-                    json.put("code","4");
+                    json.put("code", HttpCode.LOGIN_TIMEOUT_CODE.getCode());
                     json.put("msg","身份信息已失效，请重新登录");
                     response.getWriter().write(json.toString());
                 }

@@ -2,6 +2,7 @@ package com.jyxd.web.controller.dictionaryController;
 
 import com.jyxd.web.data.dictionary.BedDictionary;
 import com.jyxd.web.service.dictionaryService.BedDictionaryService;
+import com.jyxd.web.util.HttpCode;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -35,13 +36,13 @@ public class BedDictionaryController {
     @ResponseBody
     public String insert(@RequestBody BedDictionary bedDictionary){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code", HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         json.put("msg","系统开小差了，请稍后再试。");
         System.out.println(bedDictionary.toString());
         bedDictionary.setId(UUIDUtil.getUUID());
         bedDictionaryService.insert(bedDictionary);
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         json.put("msg","添加成功");
         return json.toString();
     }
@@ -55,7 +56,7 @@ public class BedDictionaryController {
     @ResponseBody
     public String update(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("msg","系统开小差了，请稍后再试。");
         if(map!=null && map.containsKey("id") && map.containsKey("status") ){
             BedDictionary bedDictionary=bedDictionaryService.queryData(map.get("id").toString());
@@ -68,7 +69,7 @@ public class BedDictionaryController {
                 return json.toString();
             }
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -81,7 +82,7 @@ public class BedDictionaryController {
     @ResponseBody
     public String edit(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("msg","系统开小差了，请稍后再试。");
         if(map!=null && map.containsKey("id") && map.containsKey("status") && map.containsKey("bedName")){
             BedDictionary bedDictionary=bedDictionaryService.queryData(map.get("id").toString());
@@ -95,7 +96,7 @@ public class BedDictionaryController {
                 return json.toString();
             }
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
 
         return json.toString();
     }
@@ -109,7 +110,7 @@ public class BedDictionaryController {
     @ResponseBody
     public String delete(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("msg","系统开小差了，请稍后再试。");
         if(map.containsKey("id")){
             BedDictionary bedDictionary=bedDictionaryService.queryData(map.get("id").toString());
@@ -122,7 +123,7 @@ public class BedDictionaryController {
                 return json.toString();
             }
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -135,7 +136,7 @@ public class BedDictionaryController {
     @ResponseBody
     public String queryData(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         json.put("msg","暂无数据");
         if(map !=null && map.containsKey("id")){
@@ -145,7 +146,7 @@ public class BedDictionaryController {
                 json.put("data",JSONObject.fromObject(bedDictionary));
             }
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -158,7 +159,7 @@ public class BedDictionaryController {
     @ResponseBody
     public String queryList(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         json.put("msg","暂无数据");
         List<BedDictionary> list =bedDictionaryService.queryList(map);
@@ -166,7 +167,7 @@ public class BedDictionaryController {
             json.put("msg","查询成功");
             json.put("data",JSONArray.fromObject(list));
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 

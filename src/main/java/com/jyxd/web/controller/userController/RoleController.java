@@ -5,6 +5,7 @@ import com.jyxd.web.data.user.Role;
 import com.jyxd.web.data.user.User;
 import com.jyxd.web.service.userService.AccessService;
 import com.jyxd.web.service.userService.RoleService;
+import com.jyxd.web.util.HttpCode;
 import com.jyxd.web.util.JsonArrayValueProcessor;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
@@ -43,7 +44,7 @@ public class RoleController {
     @ResponseBody
     public String insert(@RequestBody Map<String,Object> map, HttpSession session){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code", HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         json.put("msg","添加失败");
         Role data=roleService.queryDataByName(map);
@@ -74,7 +75,7 @@ public class RoleController {
                     }
                     accessService.insert(access);
                 }
-                json.put("code",200);
+                json.put("code",HttpCode.OK_CODE.getCode());
                 json.put("msg","添加成功");
             }
         }
@@ -90,7 +91,7 @@ public class RoleController {
     @ResponseBody
     public String update(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("msg","更新失败");
         if(map!=null && map.containsKey("id") && map.containsKey("status") ){
             Role role=roleService.queryData(map.get("id").toString());
@@ -98,7 +99,7 @@ public class RoleController {
                 role.setStatus((int)map.get("status"));
                 roleService.update(role);
                 json.put("msg","更新成功");
-                json.put("code",200);
+                json.put("code",HttpCode.OK_CODE.getCode());
             }else{
                 json.put("msg","查无此条数据");
                 return json.toString();
@@ -116,7 +117,7 @@ public class RoleController {
     @ResponseBody
     public String edit(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("msg","编辑失败");
         if(map!=null && map.containsKey("id") && map.containsKey("status") && map.containsKey("roleName") && map.containsKey("userTypeCode") && map.containsKey("menuCodes")){
             Role role=roleService.queryData(map.get("id").toString());
@@ -124,7 +125,7 @@ public class RoleController {
                 role.setStatus((int)map.get("status"));
                 roleService.update(role);
                 json.put("msg","编辑成功");
-                json.put("code",200);
+                json.put("code",HttpCode.OK_CODE.getCode());
             }else{
                 json.put("msg","查无此条数据，编辑失败");
                 return json.toString();
@@ -142,7 +143,7 @@ public class RoleController {
     @ResponseBody
     public String delete(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("msg","删除失败");
         if(map!=null && map.containsKey("id")){
             Role role=roleService.queryData(map.get("id").toString());
@@ -150,7 +151,7 @@ public class RoleController {
                 role.setStatus(-1);
                 roleService.update(role);
                 json.put("msg","删除成功");
-                json.put("code",200);
+                json.put("code",HttpCode.OK_CODE.getCode());
             }else{
                 json.put("msg","查无此条数据，删除失败");
                 return json.toString();
@@ -168,7 +169,7 @@ public class RoleController {
     @ResponseBody
     public String queryData(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         json.put("msg","暂无数据");
         if(map !=null && map.containsKey("id")){
@@ -178,7 +179,7 @@ public class RoleController {
                 json.put("data",JSONObject.fromObject(role));
             }
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -191,7 +192,7 @@ public class RoleController {
     @ResponseBody
     public String queryList(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         json.put("msg","暂无数据");
         List<Role> list =roleService.queryList(map);
@@ -212,7 +213,7 @@ public class RoleController {
             json.put("data",array);
             json.put("msg","查询成功");
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         System.out.println(json);
         return json.toString();
     }

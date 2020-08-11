@@ -2,6 +2,7 @@ package com.jyxd.web.controller.dictionaryController;
 
 import com.jyxd.web.data.dictionary.TemplateDictionary;
 import com.jyxd.web.service.dictionaryService.TemplateDictionaryService;
+import com.jyxd.web.util.HttpCode;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -36,12 +37,12 @@ public class TemplateDictionaryController {
     @ResponseBody
     public String insert(@RequestBody TemplateDictionary templateDictionary){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code", HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         templateDictionary.setId(UUIDUtil.getUUID());
         templateDictionary.setCreateTime(new Date());
         templateDictionaryService.insert(templateDictionary);
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -54,7 +55,7 @@ public class TemplateDictionaryController {
     @ResponseBody
     public String update(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         if(map!=null && map.containsKey("id") && map.containsKey("status") ){
             TemplateDictionary templateDictionary=templateDictionaryService.queryData(map.get("id").toString());
             if(templateDictionary!=null){
@@ -64,7 +65,7 @@ public class TemplateDictionaryController {
                 return json.toString();
             }
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -77,7 +78,7 @@ public class TemplateDictionaryController {
     @ResponseBody
     public String edit(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         if(map!=null && map.containsKey("id") && map.containsKey("status") && map.containsKey("dicTemplateName")){
             TemplateDictionary templateDictionary=templateDictionaryService.queryData(map.get("id").toString());
             if(templateDictionary!=null){
@@ -88,7 +89,7 @@ public class TemplateDictionaryController {
                 return json.toString();
             }
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -101,7 +102,7 @@ public class TemplateDictionaryController {
     @ResponseBody
     public String delete(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         if(map.containsKey("id")){
             TemplateDictionary templateDictionary=templateDictionaryService.queryData(map.get("id").toString());
             if(templateDictionary!=null){
@@ -111,7 +112,7 @@ public class TemplateDictionaryController {
                 return json.toString();
             }
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -124,7 +125,7 @@ public class TemplateDictionaryController {
     @ResponseBody
     public String queryData(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         if(map !=null && map.containsKey("id")){
             TemplateDictionary templateDictionary=templateDictionaryService.queryData(map.get("id").toString());
@@ -132,7 +133,7 @@ public class TemplateDictionaryController {
                 json.put("data",JSONObject.fromObject(templateDictionary));
             }
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -145,13 +146,13 @@ public class TemplateDictionaryController {
     @ResponseBody
     public String queryList(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         List<TemplateDictionary> list =templateDictionaryService.queryList(map);
         if(list!=null && list.size()>0){
             json.put("data",JSONArray.fromObject(list));
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 

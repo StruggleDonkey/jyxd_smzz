@@ -2,6 +2,7 @@ package com.jyxd.web.controller.dictionaryController;
 
 import com.jyxd.web.data.dictionary.IcuLogTemplateDictionary;
 import com.jyxd.web.service.dictionaryService.IcuLogTemplateDictionaryService;
+import com.jyxd.web.util.HttpCode;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -35,11 +36,11 @@ public class IcuLogTemplateDictionaryController {
     @ResponseBody
     public String insert(@RequestBody IcuLogTemplateDictionary icuLogTemplateDictionary){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code", HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         icuLogTemplateDictionary.setId(UUIDUtil.getUUID());
         icuLogTemplateDictionaryService.insert(icuLogTemplateDictionary);
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -52,13 +53,13 @@ public class IcuLogTemplateDictionaryController {
     @ResponseBody
     public String update(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         if(map.containsKey("id") && map.containsKey("status")){
             IcuLogTemplateDictionary icuLogTemplateDictionary=icuLogTemplateDictionaryService.queryData(map.get("id").toString());
             icuLogTemplateDictionary.setStatus((int)map.get("status"));
             icuLogTemplateDictionaryService.update(icuLogTemplateDictionary);
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -71,7 +72,7 @@ public class IcuLogTemplateDictionaryController {
     @ResponseBody
     public String queryData(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         if(map !=null && map.containsKey("id")){
             IcuLogTemplateDictionary icuLogTemplateDictionary=icuLogTemplateDictionaryService.queryData(map.get("id").toString());
@@ -79,7 +80,7 @@ public class IcuLogTemplateDictionaryController {
                 json.put("data",JSONObject.fromObject(icuLogTemplateDictionary));
             }
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -92,13 +93,13 @@ public class IcuLogTemplateDictionaryController {
     @ResponseBody
     public String queryList(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         List<IcuLogTemplateDictionary> list =icuLogTemplateDictionaryService.queryList(map);
         if(list!=null && list.size()>0){
             json.put("data",JSONArray.fromObject(list));
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 

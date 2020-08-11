@@ -31,4 +31,12 @@ public class DiagnoseCoefficinetItemDictionaryService {
     public List<DiagnoseCoefficinetItemDictionary> queryList(Map<String,Object> map){
         return diagnoseCoefficinetItemDictionaryDao.queryList(map);
     }
+
+    public DiagnoseCoefficinetItemDictionary queryDataByName(Map<String,Object> map){
+        return diagnoseCoefficinetItemDictionaryDao.queryDataByName(map);
+    }
+
+    public List<Map<String,Object>> getList(Map<String,Object> map){
+        return diagnoseCoefficinetItemDictionaryDao.getList(map);
+    }
 }

@@ -36,4 +36,11 @@ public interface CommentItemDao {
      * @return list
      */
     List<CommenItemDictionary> queryList(Map<String, Object> map);
+
+    /**
+     * 根据条件分页查询通用字典表记录列表 -- 多表查询
+     * @param map
+     * @return
+     */
+    List<Map<String, Object>> getList(Map<String, Object> map);
 }

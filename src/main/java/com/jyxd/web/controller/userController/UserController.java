@@ -2,6 +2,7 @@ package com.jyxd.web.controller.userController;
 
 import com.jyxd.web.data.user.User;
 import com.jyxd.web.service.userService.UserService;
+import com.jyxd.web.util.HttpCode;
 import com.jyxd.web.util.MD5Util;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
@@ -37,11 +38,11 @@ public class UserController {
     @ResponseBody
     public String insert(@RequestBody User user){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code", HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         user.setId(UUIDUtil.getUUID());
         userService.insert(user);
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -54,7 +55,7 @@ public class UserController {
     @ResponseBody
     public String update(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         if(map!=null && map.containsKey("id") && map.containsKey("status") ){
             User user=userService.queryData(map.get("id").toString());
             if(user!=null){
@@ -64,7 +65,7 @@ public class UserController {
                 return json.toString();
             }
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -77,7 +78,7 @@ public class UserController {
     @ResponseBody
     public String edit(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         if(map!=null && map.containsKey("id") && map.containsKey("status") && map.containsKey("bedName")){
             User user=userService.queryData(map.get("id").toString());
             if(user!=null){
@@ -87,7 +88,7 @@ public class UserController {
                 return json.toString();
             }
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -100,7 +101,7 @@ public class UserController {
     @ResponseBody
     public String delete(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         if(map!=null && map.containsKey("id")){
             User user=userService.queryData(map.get("id").toString());
             if(user!=null){
@@ -110,7 +111,7 @@ public class UserController {
                 return json.toString();
             }
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -123,7 +124,7 @@ public class UserController {
     @ResponseBody
     public String queryData(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         if(map !=null && map.containsKey("id")){
             User user=userService.queryData(map.get("id").toString());
@@ -131,7 +132,7 @@ public class UserController {
                 json.put("data",JSONObject.fromObject(user));
             }
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -144,13 +145,13 @@ public class UserController {
     @ResponseBody
     public String queryList(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         List<User> list =userService.queryList(map);
         if(list!=null && list.size()>0){
             json.put("data",JSONArray.fromObject(list));
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -163,7 +164,7 @@ public class UserController {
     @ResponseBody
     public String login(@RequestBody Map<String,Object> map, HttpSession session){
         JSONObject json=new JSONObject();
-        json.put("code",2);
+        json.put("code",HttpCode.LOGIN_FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         json.put("msg","账号密码有误，请重新输入！");
         if(map!=null && map.containsKey("password")){
@@ -171,11 +172,28 @@ public class UserController {
             User user=userService.queryUserByNameAndPassword(map);
             if(user!=null){
                 session.setAttribute("user",user);
-                json.put("code",200);
+                json.put("code",HttpCode.OK_CODE.getCode());
                 json.put("msg","登录成功");
             }
         }
         return json.toString();
     }
 
+    /**
+     * 用户退出登录接口
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/logout",method= RequestMethod.POST)
+    @ResponseBody
+    public String logout(HttpSession session){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","退出登录失败！");
+        session.invalidate();
+        json.put("code",HttpCode.OK_CODE.getCode());
+        json.put("msg","退出登录成功");
+        return json.toString();
+    }
 }

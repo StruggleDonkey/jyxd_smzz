@@ -46,11 +46,28 @@
         <if test="commonName != null and commonName != ''">
             and  common_name like '%${commonName}%'
         </if>
+        <if test="type != null and type != ''">
+            and  type =#{type}
+        </if>
         <if test="status != null ">
             and  status= #{status}
         </if>
         <if test="start != null and start != ''">limit #{start},</if>
         <if test="size != null and size != ''">#{size}</if>
+    </select>
+
+    <select id="queryDataByName" resultMap="commonDictionaryMap" parameterType="java.util.Map">
+        select
+          <include refid="commonDictionary_colums"></include>
+        from
+         dict_common
+        where
+          status !=-1
+        and(
+          common_name = #{commonName}
+        or
+          type = #{type}
+        )
     </select>
 
 </mapper>

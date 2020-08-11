@@ -5,7 +5,7 @@
     <resultMap id="diagnoseCoefficientDictionaryMap" type="com.jyxd.web.data.dictionary.DiagnoseCoefficientDictionary">
         <result column="id" property="id" jdbcType="VARCHAR"/>
         <result column="diagnose_type_name" property="diagnoseTypeName" jdbcType="VARCHAR"/>
-        <result column="operation" property="operation" jdbcType="VARCHAR"/>
+        <result column="operation" property="operation" jdbcType="INTEGER"/>
         <result column="status" property="status" jdbcType="INTEGER"/>
         <result column="sort_num" property="sortNum" jdbcType="INTEGER"/>
         <result column="operator_code" property="operatorCode" jdbcType="VARCHAR"/>
@@ -52,8 +52,25 @@
         <if test="status != null ">
             and  status= #{status}
         </if>
+        <if test="operation != null ">
+            and  operation= #{operation}
+        </if>
+        ORDER BY sort_num,create_time DESC
         <if test="start != null and start != ''">limit #{start},</if>
         <if test="size != null and size != ''">#{size}</if>
+    </select>
+
+    <select id="queryDataByName" resultMap="diagnoseCoefficientDictionaryMap" parameterType="java.util.Map">
+        select
+        <include refid="diagnoseCoefficientDictionary_colums"></include>
+        from
+        dict_diagnose_coefficient
+        where
+        status !=-1
+        and
+        diagnose_type_name = #{diagnoseTypeName}
+        and
+        operation = #{operation}
     </select>
 
 </mapper>

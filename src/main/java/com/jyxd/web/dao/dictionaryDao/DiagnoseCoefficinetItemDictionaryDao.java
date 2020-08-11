@@ -36,4 +36,18 @@ public interface DiagnoseCoefficinetItemDictionaryDao {
      * @return list
      */
     List<DiagnoseCoefficinetItemDictionary> queryList(Map<String, Object> map);
+
+    /**
+     * 根据条件查询对象
+     * @param map
+     * @return
+     */
+    DiagnoseCoefficinetItemDictionary queryDataByName(Map<String, Object> map);
+
+    /**
+     * 根据条件分页查询ICU主要疾病诊断分类系数表列表--多表查询
+     * @param map
+     * @return list
+     */
+    List<Map<String, Object>> getList(Map<String, Object> map);
 }

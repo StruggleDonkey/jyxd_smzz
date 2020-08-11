@@ -2,6 +2,7 @@ package com.jyxd.web.controller.dictionaryController;
 
 import com.jyxd.web.data.dictionary.ScoreKnowledgeDictionary;
 import com.jyxd.web.service.dictionaryService.ScoreKnowledgeDictionaryService;
+import com.jyxd.web.util.HttpCode;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -35,11 +36,11 @@ public class ScoreKnowledgeDictionaryController {
     @ResponseBody
     public String insert(@RequestBody ScoreKnowledgeDictionary scoreKnowledgeDictionary){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code", HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         scoreKnowledgeDictionary.setId(UUIDUtil.getUUID());
         scoreKnowledgeDictionaryService.insert(scoreKnowledgeDictionary);
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -52,7 +53,7 @@ public class ScoreKnowledgeDictionaryController {
     @ResponseBody
     public String update(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         if(map!=null && map.containsKey("id") && map.containsKey("status") ){
             ScoreKnowledgeDictionary scoreKnowledgeDictionary=scoreKnowledgeDictionaryService.queryData(map.get("id").toString());
             if(scoreKnowledgeDictionary!=null){
@@ -62,7 +63,7 @@ public class ScoreKnowledgeDictionaryController {
                 return json.toString();
             }
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -75,7 +76,7 @@ public class ScoreKnowledgeDictionaryController {
     @ResponseBody
     public String edit(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         if(map!=null && map.containsKey("id") && map.containsKey("status") && map.containsKey("bedName")){
             ScoreKnowledgeDictionary scoreKnowledgeDictionary=scoreKnowledgeDictionaryService.queryData(map.get("id").toString());
             if(scoreKnowledgeDictionary!=null){
@@ -86,7 +87,7 @@ public class ScoreKnowledgeDictionaryController {
                 return json.toString();
             }
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -99,7 +100,7 @@ public class ScoreKnowledgeDictionaryController {
     @ResponseBody
     public String delete(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         if(map.containsKey("id")){
             ScoreKnowledgeDictionary scoreKnowledgeDictionary=scoreKnowledgeDictionaryService.queryData(map.get("id").toString());
             if(scoreKnowledgeDictionary!=null){
@@ -109,7 +110,7 @@ public class ScoreKnowledgeDictionaryController {
                 return json.toString();
             }
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -122,7 +123,7 @@ public class ScoreKnowledgeDictionaryController {
     @ResponseBody
     public String queryData(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         if(map !=null && map.containsKey("id")){
             ScoreKnowledgeDictionary scoreKnowledgeDictionary=scoreKnowledgeDictionaryService.queryData(map.get("id").toString());
@@ -130,7 +131,7 @@ public class ScoreKnowledgeDictionaryController {
                 json.put("data",JSONObject.fromObject(scoreKnowledgeDictionary));
             }
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -143,13 +144,13 @@ public class ScoreKnowledgeDictionaryController {
     @ResponseBody
     public String queryList(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         List<ScoreKnowledgeDictionary> list =scoreKnowledgeDictionaryService.queryList(map);
         if(list!=null && list.size()>0){
             json.put("data",JSONArray.fromObject(list));
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 

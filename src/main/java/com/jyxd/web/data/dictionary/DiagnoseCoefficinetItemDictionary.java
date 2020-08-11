@@ -30,6 +30,12 @@ public class DiagnoseCoefficinetItemDictionary implements Serializable {
     private String id;
 
     /**
+     * 模板名称
+     */
+    @Column(name = "diagnose_coefficient_name")
+    private String diagnoseCoefficientName;
+
+    /**
      * 模板类型ID
      */
     @Column(name = "diagnose_coefficient_id")
@@ -60,7 +66,7 @@ public class DiagnoseCoefficinetItemDictionary implements Serializable {
     private String operatorCode;
 
     /**
-     * 系数
+     * 创建时间
      */
     @Column(name = "create_time")
     private Date createTime;

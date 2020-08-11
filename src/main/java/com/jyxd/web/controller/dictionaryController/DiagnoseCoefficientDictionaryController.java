@@ -1,7 +1,11 @@
 package com.jyxd.web.controller.dictionaryController;
 
 import com.jyxd.web.data.dictionary.DiagnoseCoefficientDictionary;
+import com.jyxd.web.data.dictionary.DiagnoseCoefficinetItemDictionary;
+import com.jyxd.web.data.user.User;
 import com.jyxd.web.service.dictionaryService.DiagnoseCoefficientDictionaryService;
+import com.jyxd.web.service.dictionaryService.DiagnoseCoefficinetItemDictionaryService;
+import com.jyxd.web.util.HttpCode;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -14,9 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import javax.servlet.http.HttpSession;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "/diagnoseCoefficientDictionary")
@@ -27,31 +30,42 @@ public class DiagnoseCoefficientDictionaryController {
     @Autowired
     private DiagnoseCoefficientDictionaryService diagnoseCoefficientDictionaryService;
 
+    @Autowired
+    private DiagnoseCoefficinetItemDictionaryService diagnoseCoefficinetItemDictionaryService;
+
     /**
      * 增加一条ICU主要疾病诊断类型表记录
      * @return
      */
     @RequestMapping(value = "/insert")
     @ResponseBody
-    public String insert(@RequestBody DiagnoseCoefficientDictionary diagnoseCoefficientDictionary){
+    public String insert(@RequestBody DiagnoseCoefficientDictionary diagnoseCoefficientDictionary, HttpSession session){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code", HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
-        System.out.println(diagnoseCoefficientDictionary.toString());
-        diagnoseCoefficientDictionary.setId(UUIDUtil.getUUID());
-        /*BedDictionary bedDictionary=new BedDictionary();
-        bedDictionary.setId(UUIDUtil.getUUID());
-        bedDictionary.setBedCode("002");
-        bedDictionary.setBedKey("AAAAAA");
-        bedDictionary.setBedName("二床");
-        bedDictionary.setStatus(0);*/
-        diagnoseCoefficientDictionaryService.insert(diagnoseCoefficientDictionary);
-        json.put("code",200);
+        json.put("msg","新增失败");
+        Map<String,Object> map=new HashMap<>();
+        map.put("diagnoseTypeName",diagnoseCoefficientDictionary.getDiagnoseTypeName());
+        map.put("operation",diagnoseCoefficientDictionary.getOperation());
+        DiagnoseCoefficientDictionary data=diagnoseCoefficientDictionaryService.queryDataByName(map);
+        if(data!=null){
+            json.put("msg","类型名称已存在，请勿重复添加");
+        }else{
+            User user=(User)session.getAttribute("user");
+            if(user!=null){
+                diagnoseCoefficientDictionary.setOperatorCode(user.getLoginName());
+            }
+            diagnoseCoefficientDictionary.setId(UUIDUtil.getUUID());
+            diagnoseCoefficientDictionary.setCreateTime(new Date());
+            diagnoseCoefficientDictionaryService.insert(diagnoseCoefficientDictionary);
+            json.put("code",HttpCode.OK_CODE.getCode());
+            json.put("msg","新增成功");
+        }
         return json.toString();
     }
 
     /**
-     * 更新或者删除ICU主要疾病诊断类型表记录
+     * 更新ICU主要疾病诊断类型表记录状态
      * @param map
      * @return
      */
@@ -59,13 +73,77 @@ public class DiagnoseCoefficientDictionaryController {
     @ResponseBody
     public String update(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("msg","更新失败");
         if(map.containsKey("id") && map.containsKey("status")){
-            DiagnoseCoefficientDictionary diagnoseCoefficientDictionary=diagnoseCoefficientDictionaryService.queryData(map.get("id").toString());
-            diagnoseCoefficientDictionary.setStatus((int)map.get("status"));
-            diagnoseCoefficientDictionaryService.update(diagnoseCoefficientDictionary);
+            DiagnoseCoefficientDictionary data=diagnoseCoefficientDictionaryService.queryData(map.get("id").toString());
+            if(data!=null){
+                DiagnoseCoefficientDictionary diagnoseCoefficientDictionary=diagnoseCoefficientDictionaryService.queryData(map.get("id").toString());
+                diagnoseCoefficientDictionary.setStatus((int)map.get("status"));
+                diagnoseCoefficientDictionaryService.update(diagnoseCoefficientDictionary);
+                json.put("msg","更新成功");
+                json.put("code",HttpCode.OK_CODE.getCode());
+            }
         }
-        json.put("code",200);
+        return json.toString();
+    }
+
+    /**
+     * 编辑ICU主要疾病诊断类型表记录
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/edit")
+    @ResponseBody
+    public String edit(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("msg","编辑失败");
+        if(map.containsKey("id") && map.containsKey("status") && map.containsKey("operation") && map.containsKey("diagnoseTypeName") && map.containsKey("sortNum")){
+            DiagnoseCoefficientDictionary data=diagnoseCoefficientDictionaryService.queryData(map.get("id").toString());
+            if(data!=null){
+                DiagnoseCoefficientDictionary diagnoseCoefficientDictionary=diagnoseCoefficientDictionaryService.queryData(map.get("id").toString());
+                diagnoseCoefficientDictionary.setStatus((int)map.get("status"));
+                diagnoseCoefficientDictionary.setDiagnoseTypeName(map.get("diagnoseTypeName").toString());
+                diagnoseCoefficientDictionary.setOperation((int)map.get("operation"));
+                diagnoseCoefficientDictionary.setSortNum((int)map.get("sortNum"));
+                diagnoseCoefficientDictionaryService.update(diagnoseCoefficientDictionary);
+                json.put("msg","编辑成功");
+                json.put("code",HttpCode.OK_CODE.getCode());
+            }
+        }
+        return json.toString();
+    }
+
+    /**
+     * 删除ICU主要疾病诊断类型表记录
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/delete")
+    @ResponseBody
+    public String delete(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("msg","删除失败");
+        if(map.containsKey("id")){
+            DiagnoseCoefficientDictionary diagnoseCoefficientDictionary=diagnoseCoefficientDictionaryService.queryData(map.get("id").toString());
+            if(diagnoseCoefficientDictionary!=null){
+                diagnoseCoefficientDictionary.setStatus(-1);
+                diagnoseCoefficientDictionaryService.update(diagnoseCoefficientDictionary);
+                //删除ICU主要疾病诊断类型表记录 需要删除关联表  ICU主要疾病诊断分类系数表
+                map.put("diagnoseCoefficientId",diagnoseCoefficientDictionary.getId());
+                List<DiagnoseCoefficinetItemDictionary> list=diagnoseCoefficinetItemDictionaryService.queryList(map);
+                if(list != null && list.size()>0){
+                    for(DiagnoseCoefficinetItemDictionary diagnoseCoefficinetItemDictionary:list){
+                        diagnoseCoefficientDictionary.setStatus(-1);
+                        diagnoseCoefficinetItemDictionaryService.update(diagnoseCoefficinetItemDictionary);
+                    }
+                }
+                json.put("msg","删除成功");
+                json.put("code",HttpCode.OK_CODE.getCode());
+            }
+        }
         return json.toString();
     }
 
@@ -78,15 +156,17 @@ public class DiagnoseCoefficientDictionaryController {
     @ResponseBody
     public String queryData(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
         if(map !=null && map.containsKey("id")){
             DiagnoseCoefficientDictionary diagnoseCoefficientDictionary=diagnoseCoefficientDictionaryService.queryData(map.get("id").toString());
             if(diagnoseCoefficientDictionary!=null){
                 json.put("data",JSONObject.fromObject(diagnoseCoefficientDictionary));
+                json.put("msg","查询成功");
             }
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -99,13 +179,15 @@ public class DiagnoseCoefficientDictionaryController {
     @ResponseBody
     public String queryList(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
         List<DiagnoseCoefficientDictionary> list =diagnoseCoefficientDictionaryService.queryList(map);
         if(list!=null && list.size()>0){
             json.put("data",JSONArray.fromObject(list));
+            json.put("msg","查询成功");
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 

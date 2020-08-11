@@ -31,4 +31,8 @@ public class CommentItemService {
     public List<CommenItemDictionary> queryList(Map<String,Object> map){
         return commentItemDao.queryList(map);
     }
+
+    public List<Map<String,Object>> getList(Map<String,Object> map){
+        return commentItemDao.getList(map);
+    }
 }

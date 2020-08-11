@@ -49,6 +49,9 @@
         <if test="monitorName != null and monitorName != ''">
             and  monitor_name like '%${monitorName}%'
         </if>
+        <if test="monitorIp != null and monitorIp != ''">
+            and  monitor_ip like '%${monitorIp}%'
+        </if>
         <if test="status != null ">
             and  status= #{status}
         </if>

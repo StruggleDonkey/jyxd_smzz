@@ -2,6 +2,7 @@ package com.jyxd.web.controller.userController;
 
 import com.jyxd.web.data.user.UserType;
 import com.jyxd.web.service.userService.UserTypeService;
+import com.jyxd.web.util.HttpCode;
 import com.jyxd.web.util.JsonArrayValueProcessor;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
@@ -36,7 +37,7 @@ public class UserTypeController {
     @ResponseBody
     public String insert(@RequestBody UserType userType){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         json.put("msg","添加失败");
         Map<String,Object> map=new HashMap<>();
@@ -50,7 +51,7 @@ public class UserTypeController {
             userType.setId(UUIDUtil.getUUID());
             userType.setCreateTime(new Date());
             userTypeService.insert(userType);
-            json.put("code",200);
+            json.put("code",HttpCode.OK_CODE.getCode());
             json.put("msg","添加成功");
         }
         System.out.println(userType.toString());
@@ -66,7 +67,7 @@ public class UserTypeController {
     @ResponseBody
     public String update(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("msg","更新失败");
         if(map!=null && map.containsKey("id") && map.containsKey("status") ){
             UserType userType=userTypeService.queryData(map.get("id").toString());
@@ -78,7 +79,7 @@ public class UserTypeController {
                 return json.toString();
             }
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -91,7 +92,7 @@ public class UserTypeController {
     @ResponseBody
     public String edit(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("msg","编辑失败");
         if(map!=null && map.containsKey("id") && map.containsKey("status") && map.containsKey("userTypeName")){
             UserType userType=userTypeService.queryData(map.get("id").toString());
@@ -100,7 +101,7 @@ public class UserTypeController {
                 userType.setUserTypeName(map.get("userTypeName").toString());
                 userTypeService.update(userType);
                 json.put("msg","编辑成功");
-                json.put("code",200);
+                json.put("code",HttpCode.OK_CODE.getCode());
             }else{
                 return json.toString();
             }
@@ -117,7 +118,7 @@ public class UserTypeController {
     @ResponseBody
     public String delete(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("msg","删除失败");
         if(map!=null && map.containsKey("id")){
             UserType userType=userTypeService.queryData(map.get("id").toString());
@@ -129,7 +130,7 @@ public class UserTypeController {
                 return json.toString();
             }
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -142,7 +143,7 @@ public class UserTypeController {
     @ResponseBody
     public String queryData(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         json.put("msg","暂无数据");
         if(map !=null && map.containsKey("id")){
@@ -152,7 +153,7 @@ public class UserTypeController {
                 json.put("msg","查询成功");
             }
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -165,7 +166,7 @@ public class UserTypeController {
     @ResponseBody
     public String queryList(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code", HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         json.put("msg","暂无数据");
         List<UserType> list =userTypeService.queryList(map);
@@ -175,7 +176,7 @@ public class UserTypeController {
             json.put("data",JSONArray.fromObject(list,jsonConfig));
             json.put("msg","查询成功");
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         System.out.println(json);
         return json.toString();
     }

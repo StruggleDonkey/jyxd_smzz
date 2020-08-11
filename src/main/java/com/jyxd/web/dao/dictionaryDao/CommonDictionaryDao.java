@@ -36,4 +36,11 @@ public interface CommonDictionaryDao {
      * @return list
      */
     List<CommonDictionary> queryList(Map<String, Object> map);
+
+    /**
+     * 根据名称或字典项类型查询对象
+     * @param map
+     * @return
+     */
+    CommonDictionary queryDataByName(Map<String, Object> map);
 }

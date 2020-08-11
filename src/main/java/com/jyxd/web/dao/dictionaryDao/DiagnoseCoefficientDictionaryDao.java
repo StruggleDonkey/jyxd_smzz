@@ -36,4 +36,11 @@ public interface DiagnoseCoefficientDictionaryDao {
      * @return list
      */
     List<DiagnoseCoefficientDictionary> queryList(Map<String, Object> map);
+
+    /**
+     * 根据条件查询对象
+     * @param map
+     * @return
+     */
+    DiagnoseCoefficientDictionary queryDataByName(Map<String, Object> map);
 }

@@ -3,6 +3,7 @@ package com.jyxd.web.controller.logController;
 import com.jyxd.web.data.log.Log;
 import com.jyxd.web.data.user.User;
 import com.jyxd.web.service.logService.LogService;
+import com.jyxd.web.util.HttpCode;
 import com.jyxd.web.util.JsonArrayValueProcessor;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
@@ -42,7 +43,7 @@ public class LogController {
     @ResponseBody
     public String insert(@RequestBody Log log, HttpSession session){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code", HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         json.put("msg","添加失败");
         log.setId(UUIDUtil.getUUID());
@@ -50,7 +51,7 @@ public class LogController {
         User user=(User)session.getAttribute("user");
         log.setOperatorCode(user.getLoginName());
         logService.insert(log);
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         json.put("msg","添加成功");
         return json.toString();
     }
@@ -64,7 +65,7 @@ public class LogController {
     @ResponseBody
     public String queryData(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         if(map !=null && map.containsKey("id")){
             Log log=logService.queryData(map.get("id").toString());
@@ -72,7 +73,7 @@ public class LogController {
                 json.put("data",JSONObject.fromObject(log));
             }
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -85,7 +86,7 @@ public class LogController {
     @ResponseBody
     public String queryList(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         List<Log> list =logService.queryList(map);
         if(list!=null && list.size()>0){
@@ -93,7 +94,7 @@ public class LogController {
             jsonConfig.registerJsonValueProcessor(Timestamp.class,new JsonArrayValueProcessor());
             json.put("data",JSONArray.fromObject(list,jsonConfig));
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         System.out.println(json);
         return json.toString();
     }

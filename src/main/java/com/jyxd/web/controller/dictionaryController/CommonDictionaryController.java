@@ -1,7 +1,10 @@
 package com.jyxd.web.controller.dictionaryController;
 
+import com.jyxd.web.data.dictionary.CommenItemDictionary;
 import com.jyxd.web.data.dictionary.CommonDictionary;
+import com.jyxd.web.service.dictionaryService.CommentItemService;
 import com.jyxd.web.service.dictionaryService.CommonDictionaryService;
+import com.jyxd.web.util.HttpCode;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,26 +31,37 @@ public class CommonDictionaryController {
     @Autowired
     private CommonDictionaryService commonDictionaryService;
 
+    @Autowired
+    private CommentItemService commentItemService;
+
     /**
      * 增加一条通用字典类型表记录
      * @return
      */
     @RequestMapping(value = "/insert")
     @ResponseBody
-    public String insert(){
+    public String insert(@RequestBody(required=false) CommonDictionary commonDictionary){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code", HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
-        CommonDictionary commonDictionary=new CommonDictionary();
-        commonDictionary.setId(UUIDUtil.getUUID());
-        commonDictionary.setStatus(0);
-        commonDictionaryService.insert(commonDictionary);
-        json.put("code",200);
+        json.put("msg","添加失败");
+        Map<String,Object> map=new HashMap<>();
+        map.put("type",commonDictionary.getType());
+        map.put("commonName",commonDictionary.getCommonName());
+        CommonDictionary data=commonDictionaryService.queryDataByName(map);
+        if(data != null){
+            json.put("msg","添加失败,字典项名称或字典项类型已存在，请勿重复添加。");
+        }else{
+            commonDictionary.setId(UUIDUtil.getUUID());
+            commonDictionaryService.insert(commonDictionary);
+            json.put("code",HttpCode.OK_CODE.getCode());
+            json.put("msg","添加成功");
+        }
         return json.toString();
     }
 
     /**
-     * 更新或者删除通用字典类型表记录
+     * 更新通用字典类型表记录状态
      * @param map
      * @return
      */
@@ -54,13 +69,74 @@ public class CommonDictionaryController {
     @ResponseBody
     public String update(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("msg","更新失败");
         if(map.containsKey("id") && map.containsKey("status")){
             CommonDictionary commonDictionary=commonDictionaryService.queryData(map.get("id").toString());
-            commonDictionary.setStatus((int)map.get("status"));
-            commonDictionaryService.update(commonDictionary);
+            if(commonDictionary!=null){
+                commonDictionary.setStatus((int)map.get("status"));
+                commonDictionaryService.update(commonDictionary);
+                json.put("msg","更新成功");
+                json.put("code",HttpCode.OK_CODE.getCode());
+            }
         }
-        json.put("code",200);
+        return json.toString();
+    }
+
+    /**
+     * 编辑通用字典类型表记录状态
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/edit")
+    @ResponseBody
+    public String edit(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("msg","编辑失败");
+        if(map.containsKey("id") && map.containsKey("status") && map.containsKey("type") && map.containsKey("commonName")){
+            CommonDictionary commonDictionary=commonDictionaryService.queryData(map.get("id").toString());
+            if(commonDictionary!=null){
+                commonDictionary.setStatus((int)map.get("status"));
+                commonDictionary.setType(map.get("type").toString());
+                commonDictionary.setCommonName(map.get("commonName").toString());
+                commonDictionaryService.update(commonDictionary);
+                json.put("msg","编辑成功");
+                json.put("code",HttpCode.OK_CODE.getCode());
+            }
+        }
+        return json.toString();
+    }
+
+    /**
+     * 删除通用字典类型表记录
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/delete")
+    @ResponseBody
+    public String delete(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("msg","删除失败");
+        if(map.containsKey("id")){
+            CommonDictionary commonDictionary=commonDictionaryService.queryData(map.get("id").toString());
+            if(commonDictionary!=null){
+                commonDictionary.setStatus(-1);
+                commonDictionaryService.update(commonDictionary);
+                //删除通用字典类型表 需要删除关联表 通用字典表
+                map.put("type",commonDictionary.getType());
+                List<CommenItemDictionary> list=commentItemService.queryList(map);
+                if(list!=null && list.size()>0){
+                    for(CommenItemDictionary commenItemDictionary:list){
+                        commenItemDictionary.setStatus(-1);
+                        commentItemService.update(commenItemDictionary);
+                    }
+                }
+                json.put("msg","删除成功");
+                json.put("code",HttpCode.OK_CODE.getCode());
+            }
+        }
         return json.toString();
     }
 
@@ -73,15 +149,17 @@ public class CommonDictionaryController {
     @ResponseBody
     public String queryData(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
         if(map !=null && map.containsKey("id")){
             CommonDictionary commonDictionary=commonDictionaryService.queryData(map.get("id").toString());
             if(commonDictionary!=null){
                 json.put("data",JSONObject.fromObject(commonDictionary));
+                json.put("msg","查询成功");
             }
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -94,13 +172,15 @@ public class CommonDictionaryController {
     @ResponseBody
     public String queryList(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code",400);
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
         List<CommonDictionary> list =commonDictionaryService.queryList(map);
         if(list!=null && list.size()>0){
             json.put("data",JSONArray.fromObject(list));
+            json.put("msg","查询成功");
         }
-        json.put("code",200);
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
