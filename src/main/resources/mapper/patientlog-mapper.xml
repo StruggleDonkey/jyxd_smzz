@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyxd.web.dao.patient.PatientLogDao">
+
+    <resultMap id="patientLogMap" type="com.jyxd.web.data.patient.PatientLog">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
+        <result column="visit_id" property="visitId" jdbcType="VARCHAR"/>
+        <result column="visit_code" property="visitCode" jdbcType="VARCHAR"/>
+        <result column="visit_num" property="visitNum" jdbcType="INTEGER"/>
+        <result column="visit_time" property="visitTime" jdbcType="DATE"/>
+        <result column="enter_time" property="enterTime" jdbcType="DATE"/>
+        <result column="exit_time" property="exitTime" jdbcType="DATE"/>
+        <result column="death_time" property="deathTime" jdbcType="DATE"/>
+        <result column="flag" property="flag" jdbcType="INTEGER"/>
+        <result column="exit_type" property="exitType" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="id_card" property="idCard" jdbcType="VARCHAR"/>
+        <result column="sex" property="sex" jdbcType="INTEGER"/>
+        <result column="birthday" property="birthday" jdbcType="VARCHAR"/>
+        <result column="age" property="age" jdbcType="VARCHAR"/>
+        <result column="weight" property="weight" jdbcType="VARCHAR"/>
+        <result column="height" property="height" jdbcType="VARCHAR"/>
+        <result column="race" property="race" jdbcType="VARCHAR"/>
+        <result column="marital_state" property="maritalState" jdbcType="VARCHAR"/>
+        <result column="blood_type" property="bloodType" jdbcType="VARCHAR"/>
+        <result column="operation_id" property="operationId" jdbcType="VARCHAR"/>
+        <result column="diagnosis_code" property="diagnosisCode" jdbcType="VARCHAR"/>
+        <result column="diagnosis_name" property="diagnosisName" jdbcType="VARCHAR"/>
+        <result column="operation_code" property="operationCode" jdbcType="VARCHAR"/>
+        <result column="operation_name" property="operationName" jdbcType="VARCHAR"/>
+        <result column="operation_time" property="operationTime" jdbcType="DATE"/>
+        <result column="doctor_code" property="doctorCode" jdbcType="VARCHAR"/>
+        <result column="nurse_code" property="nurseCode" jdbcType="VARCHAR"/>
+        <result column="allergies" property="allergies" jdbcType="VARCHAR"/>
+        <result column="nursing_level" property="nursingLevel" jdbcType="VARCHAR"/>
+        <result column="illness_state" property="illnessState" jdbcType="VARCHAR"/>
+        <result column="positive" property="positive" jdbcType="VARCHAR"/>
+        <result column="department_code" property="departmentCode" jdbcType="VARCHAR"/>
+        <result column="to_department_code" property="toDepartmentCode" jdbcType="VARCHAR"/>
+        <result column="ward_code" property="wardCode" jdbcType="VARCHAR"/>
+        <result column="bed_code" property="bedCode" jdbcType="VARCHAR"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="unplanned" property="unplanned" jdbcType="INTEGER"/>
+        <result column="is_collect" property="isCollect" jdbcType="INTEGER"/>
+        <result column="modify_collect_time" property="modifyCollectTime" jdbcType="DATE"/>
+        <result column="frequency" property="frequency" jdbcType="VARCHAR"/>
+        <result column="modify_frequency_time" property="modifyFrequencyTime" jdbcType="DATE"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="DATE"/>
+        <result column="contact_man" property="contactMan" jdbcType="VARCHAR"/>
+        <result column="contact_phone" property="contactPhone" jdbcType="VARCHAR"/>
+        <result column="is_confirmed" property="isConfirmed" jdbcType="INTEGER"/>
+        <result column="is_emergency_operate" property="isEmergencyOperate" jdbcType="INTEGER"/>
+        <result column="is_brain_death" property="isBrainDeath" jdbcType="INTEGER"/>
+        <result column="is_organ_donation" property="isOrganDonation" jdbcType="INTEGER"/>
+        <result column="disease_classification" property="diseaseClassification" jdbcType="VARCHAR"/>
+        <result column="is_septic_shock" property="isSepticShock" jdbcType="INTEGER"/>
+    </resultMap>
+    
+    <sql id="patientLog_colums">id,patient_id,visit_id,visit_code,visit_num,visit_time,enter_time,exit_time,death_time,flag,exit_type,name,id_card,sex,birthday,
+                              age,weight,height,race,marital_state,blood_type,operation_id,diagnosis_code,diagnosis_name,operation_code,operation_name,
+                              operation_time,doctor_code,nurse_code,allergies,nursing_level,illness_state,positive,department_code,
+                              to_department_code,ward_code,bed_code,remark,unplanned,is_collect,modify_collect_time,
+                              frequency,modify_frequency_time,status,create_time,contact_man,contact_phone,is_confirmed,is_emergency_operate,
+                              is_brain_death,is_organ_donation,disease_classification,is_septic_shock</sql>
+    <sql id="patientLog_propertys">#{id},#{patientId},#{visitId},#{visitCode},#{visitNum},#{visitTime},#{enterTime},#{exitTime},#{deathTime},#{flag},#{exitType},#{name},
+                                  #{idCard},#{sex},#{birthday},#{age},#{weight},#{height},#{race},#{maritalState},#{bloodType},#{operationId},
+                                  #{diagnosisCode},#{diagnosisName},#{operationCode},#{operationName},#{operationTime},#{doctorCode},#{nurseCode},
+                                  #{allergies},#{nursingLevel},#{illnessState},#{positive},#{departmentCode},#{toDepartmentCode},#{wardCode},#{bedCode},
+                                  #{remark},#{unplanned},#{isCollect},#{modifyCollectTime},#{frequency},#{modifyFrequencyTime},#{status},#{createTime},
+                                  #{contactMan},#{contactPhone},#{isConfirmed},#{isEmergencyOperate},#{isBrainDeath},#{isOrganDonation},
+                                  #{diseaseClassification},#{isSepticShock}</sql>
+    <sql id="patientLog_update">patient_id=#{patientId},visit_id=#{visitId},visit_code=#{visitCode},visit_num=#{visitNum},visit_time=#{visitTime},enter_time=#{enterTime},
+                              exit_time=#{exitTime},death_time=#{deathTime},flag=#{flag},exit_type=#{exitType},name=#{name},id_card=#{idCard},
+		                      sex=#{sex},birthday=#{birthday},age=#{age},weight=#{weight},height=#{height},race=#{race},marital_state=#{maritalState},
+		                      blood_type=#{bloodType},operation_id=#{operationId},diagnosis_code=#{diagnosisCode},diagnosis_name=#{diagnosisName},
+		                      operation_code=#{operationCode},operation_name=#{operationName},operation_time=#{operationTime},doctor_code=#{doctorCode},
+		                      nurse_code=#{nurseCode},allergies=#{allergies},nursing_level=#{nursingLevel},illness_state=#{illnessState},
+		                      positive=#{positive},department_code=#{departmentCode},to_department_code=#{toDepartmentCode},ward_code=#{wardCode},
+		                      bed_code=#{bedCode},remark=#{remark},unplanned=#{unplanned},is_collect=#{isCollect},modify_collect_time=#{modifyCollectTime},
+		                      frequency=#{frequency},modify_frequency_time=#{modifyFrequencyTime},status=#{status},create_time=#{createTime},
+		                      contact_man=#{contactMan},contact_phone=#{contactPhone},is_confirmed=#{isConfirmed},is_emergency_operate=#{isEmergencyOperate},
+		                      is_brain_death=#{isBrainDeath},is_organ_donation=#{isOrganDonation},disease_classification=#{diseaseClassification},
+		                      is_septic_shock=#{isSepticShock}</sql>
+
+    <insert id="insert">
+        insert into
+        p_patient_log(<include refid="patientLog_colums"></include>)
+        values (<include refid="patientLog_propertys"></include>)
+    </insert>
+
+    <update id="update" parameterType="com.jyxd.web.data.patient.PatientLog" >
+        update p_patient_log
+        set <include refid="patientLog_update"></include>
+        where
+          id=#{id}
+    </update>
+
+    <select id="queryData" resultMap="patientLogMap" parameterType="java.lang.String">
+        select
+          <include refid="patientLog_colums"></include>
+        from
+        p_patient_log
+        where
+          id=#{id}
+    </select>
+
+    <select id="queryList" resultType="java.util.Map">
+        select
+          <include refid="patientLog_colums"></include>
+        from
+        p_patient_log
+        where
+          1=1
+        and  status != -1
+        <if test="name != null and name != ''">
+            and  name like '%${name}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+          count(id)
+        from
+        p_patient_log
+        where
+        1=1
+        and  status != -1
+        <if test="name != null and name != ''">
+            and  name like '%${name}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
+
+</mapper>

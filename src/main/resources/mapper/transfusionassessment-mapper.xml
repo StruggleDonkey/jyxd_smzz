@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyxd.web.dao.assessment.TransfusionAssessmentDao">
+
+    <resultMap id="transfusionAssessmentMap" type="com.jyxd.web.data.assessment.TransfusionAssessment">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="assessment_id" property="assessmentId" jdbcType="VARCHAR"/>
+        <result column="visit_id" property="visitId" jdbcType="VARCHAR"/>
+        <result column="visit_code" property="visitCode" jdbcType="VARCHAR"/>
+        <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
+        <result column="data_time" property="dataTime" jdbcType="DATE"/>
+        <result column="shift" property="shift" jdbcType="INTEGER"/>
+        <result column="code" property="code" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="DATE"/>
+        <result column="operator_code" property="operatorCode" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+    </resultMap>
+    
+    <sql id="transfusionAssessment_colums">id,assessment_id,visit_id,visit_code,patient_id,data_time,shift,code,content,create_time,operator_code,status</sql>
+
+    <sql id="transfusionAssessment_propertys">#{id},#{assessmentId},#{visitId},#{visitCode},,#{patientId},#{dataTime},#{shift},#{code},
+                                  #{content},#{createTime},#{createTime},#{operatorCode},#{status}</sql>
+
+    <sql id="transfusionAssessment_update">assessment_id=#{assessmentId},visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},
+                              data_time=#{dataTime},shift=#{shift},code=#{code},content=#{content},create_time=#{createTime},
+                              operator_code=#{operatorCode},status=#{status}</sql>
+
+    <insert id="insert">
+        insert into
+        table_transfusion_assessment(<include refid="transfusionAssessment_colums"></include>)
+        values (<include refid="transfusionAssessment_propertys"></include>)
+    </insert>
+
+    <update id="update" parameterType="com.jyxd.web.data.assessment.TransfusionAssessment" >
+        update table_transfusion_assessment
+        set <include refid="transfusionAssessment_update"></include>
+        where
+          id=#{id}
+    </update>
+
+    <select id="queryData" resultMap="transfusionAssessmentMap" parameterType="java.lang.String">
+        select
+          <include refid="transfusionAssessment_colums"></include>
+        from
+        table_transfusion_assessment
+        where
+          id=#{id}
+    </select>
+
+    <select id="queryList" resultType="java.util.Map">
+        select
+          <include refid="transfusionAssessment_colums"></include>
+        from
+        table_transfusion_assessment
+        where
+          1=1
+        and  status != -1
+        <if test="name != null and name != ''">
+            and  name like '%${name}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+          count(id)
+        from
+        table_transfusion_assessment
+        where
+        1=1
+        and  status != -1
+        <if test="name != null and name != ''">
+            and  name like '%${name}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
+
+</mapper>

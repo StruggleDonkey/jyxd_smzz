@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyxd.web.dao.user.RoleDao">
+
+    <resultMap id="roleMap" type="com.jyxd.web.data.user.Role">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="user_type_code" property="userTypeCode" jdbcType="VARCHAR"/>
+        <result column="role_name" property="roleName" jdbcType="VARCHAR"/>
+        <result column="data_valid" property="dataValid" jdbcType="INTEGER"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="DATE"/>
+    </resultMap>
+    
+    <sql id="role_colums">id,user_type_code,role_name,data_valid,status,create_time</sql>
+    <sql id="role_propertys">#{id},#{userTypeCode},#{roleName},#{dataValid},#{status},#{createTime}</sql>
+    <sql id="role_update">user_type_code=#{userTypeCode},role_name=#{roleName},data_valid=#{dataValid},status=#{status},create_time=#{createTime}</sql>
+
+    <insert id="insert">
+        insert into
+        table_role(<include refid="role_colums"></include>)
+        values (<include refid="role_propertys"></include>)
+    </insert>
+
+    <update id="update" parameterType="com.jyxd.web.data.user.Role" >
+        update table_role
+        set <include refid="role_update"></include>
+        where
+          id=#{id}
+    </update>
+
+    <select id="queryData" resultMap="roleMap" parameterType="java.lang.String">
+        select
+          <include refid="role_colums"></include>
+        from
+        table_role
+        where
+          id=#{id}
+    </select>
+
+    <select id="queryList" resultType="java.util.Map">
+        select
+          <include refid="role_colums"></include>
+        from
+        table_role
+        where
+          1=1
+        and  status != -1
+        <if test="roleName != null and roleName != ''">
+            and  role_name like '%${roleName}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="queryDataByName" resultMap="roleMap" parameterType="java.util.Map">
+        select
+        <include refid="role_colums"></include>
+        from
+        table_role
+        where
+        status != -1
+        <if test="roleName != null and roleName != ''">
+            and  role_name = #{roleName}
+        </if>
+    </select>
+
+    <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+          count(id)
+        from
+        table_role
+        where
+        1=1
+        and  status != -1
+        <if test="roleName != null and roleName != ''">
+            and  role_name like '%${roleName}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
+
+</mapper>

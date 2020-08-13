@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyxd.web.dao.patient.PatientScoreItemDao">
+
+    <resultMap id="patientScoreItemMap" type="com.jyxd.web.data.patient.PatientScoreItem">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="patient_score_id" property="patientScoreId" jdbcType="VARCHAR"/>
+        <result column="visit_id" property="visitId" jdbcType="VARCHAR"/>
+        <result column="visit_code" property="visitCode" jdbcType="VARCHAR"/>
+        <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="VARCHAR"/>
+        <result column="score_time" property="scoreTime" jdbcType="DATE"/>
+        <result column="parent_id" property="parentId" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="DATE"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="extra_content" property="extraContent" jdbcType="VARCHAR"/>
+    </resultMap>
+    
+    <sql id="patientScoreItem_colums">id,patient_score_id,visit_id,visit_code,patient_id,type,score_time,parent_id,create_time,content,extra_content</sql>
+
+    <sql id="patientScoreItem_propertys">#{id},#{patientScoreId},#{visitId},#{visitCode},#{patientId},#{type},#{scoreTime},#{parentId},#{createTime},#{content},#{extraContent}</sql>
+
+    <sql id="patientScoreItem_update">patient_score_id=#{patientScoreId},visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},type=#{type},
+                            score_time=#{scoreTime},parent_id=#{parentId},create_time=#{createTime},content=#{content},extra_content=#{extraContent}</sql>
+
+    <insert id="insert">
+        insert into
+        p_patient_score_item(<include refid="patientScoreItem_colums"></include>)
+        values (<include refid="patientScoreItem_propertys"></include>)
+    </insert>
+
+    <update id="update" parameterType="com.jyxd.web.data.patient.PatientScoreItem" >
+        update p_patient_score_item
+        set <include refid="patientScoreItem_update"></include>
+        where
+          id=#{id}
+    </update>
+
+    <select id="queryData" resultMap="patientScoreItemMap" parameterType="java.lang.String">
+        select
+          <include refid="patientScoreItem_colums"></include>
+        from
+        p_patient_score_item
+        where
+          id=#{id}
+    </select>
+
+    <select id="queryList" resultType="java.util.Map">
+        select
+          <include refid="patientScoreItem_colums"></include>
+        from
+        p_patient_score_item
+        where
+          1=1
+        and  status != -1
+        <if test="name != null and name != ''">
+            and  name like '%${name}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+          count(id)
+        from
+        p_patient_score_item
+        where
+        1=1
+        and  status != -1
+        <if test="name != null and name != ''">
+            and  name like '%${name}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
+
+</mapper>

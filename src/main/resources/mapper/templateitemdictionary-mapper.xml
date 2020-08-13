@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyxd.web.dao.dictionary.TemplateItemDictionaryDao">
+
+    <resultMap id="templateItemDictionaryMap" type="com.jyxd.web.data.dictionary.TemplateItemDictionary">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="template_id" property="templateId" jdbcType="VARCHAR"/>
+        <result column="template_item_name" property="templateItemName" jdbcType="VARCHAR"/>
+        <result column="spell" property="spell" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="sort_num" property="sortNum" jdbcType="INTEGER"/>
+        <result column="operator_code" property="operatorCode" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="DATE"/>
+    </resultMap>
+    
+    <sql id="templateItemDictionary_colums">id,template_id,template_item_name,spell,content,status,sort_num,operator_code,create_time</sql>
+    <sql id="templateItemDictionary_propertys">#{id},#{templateId},#{templateItemName},#{spell}},#{content}},#{status}},#{sortNum}},#{operatorCode}},#{createTime}}</sql>
+    <sql id="templateItemDictionary_update">template_id=#{templateId},template_item_name=#{templateItemName},spell=#{spell}},content=#{content}},status=#{status}},sort_num=#{sortNum}},operator_code=#{operatorCode}},create_time=#{createTime}</sql>
+
+    <insert id="insert">
+        insert into
+        dict_template_item(<include refid="templateItemDictionary_colums"></include>)
+        values (<include refid="templateItemDictionary_propertys"></include>)
+    </insert>
+
+    <update id="update" parameterType="com.jyxd.web.data.dictionary.TemplateItemDictionary" >
+        update dict_template_item
+        set <include refid="templateItemDictionary_update"></include>
+        where
+          id=#{id}
+    </update>
+
+    <select id="queryData" resultMap="templateItemDictionaryMap" parameterType="java.lang.String">
+        select
+          <include refid="templateItemDictionary_colums"></include>
+        from
+        dict_template_item
+        where
+          id=#{id}
+    </select>
+
+    <select id="queryList" resultType="java.util.Map">
+        select
+          <include refid="templateItemDictionary_colums"></include>
+        from
+        dict_template_item
+        where
+          1=1
+        and  status != -1
+        <if test="bedName != null and bedName != ''">
+            and  bed_name like '%${bedName}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+          count(id)
+        from
+        dict_template_item
+        where
+        1=1
+        and  status != -1
+        <if test="bedName != null and bedName != ''">
+            and  bed_name like '%${bedName}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
+
+</mapper>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyxd.web.dao.dictionary.DiagnoseCoefficinetItemDictionaryDao">
+
+    <resultMap id="diagnoseCoefficinetItemDictionaryMap" type="com.jyxd.web.data.dictionary.DiagnoseCoefficinetItemDictionary">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="diagnose_coefficient_name" property="diagnoseCoefficientName" jdbcType="VARCHAR"/>
+        <result column="diagnose_coefficient_id" property="diagnoseCoefficientId" jdbcType="VARCHAR"/>
+        <result column="coefficient_num" property="coefficientNum" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="sort_num" property="sortNum" jdbcType="INTEGER"/>
+        <result column="operator_code" property="operatorCode" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="DATE"/>
+    </resultMap>
+    
+    <sql id="diagnoseCoefficinetItemDictionary_colums">id,diagnose_coefficient_name,diagnose_coefficient_id,coefficient_num,status,sort_num,operator_code,create_time</sql>
+    <sql id="diagnoseCoefficinetItemDictionary_propertys">#{id},#{diagnoseCoefficientName},#{diagnoseCoefficientId},#{coefficientNum},#{status},#{sortNum},#{operatorCode},#{createTime}</sql>
+    <sql id="diagnoseCoefficinetItemDictionary_update">diagnose_coefficient_name=#{diagnoseCoefficientName},diagnose_coefficient_id=#{diagnoseCoefficientId},coefficient_num=#{coefficientNum},status=#{status},sort_num=#{sortNum},operator_code=#{operatorCode},create_time=#{createTime}</sql>
+
+    <insert id="insert">
+        insert into
+        dict_diagnose_coefficient_item(<include refid="diagnoseCoefficinetItemDictionary_colums"></include>)
+        values (<include refid="diagnoseCoefficinetItemDictionary_propertys"></include>)
+    </insert>
+
+    <update id="update" parameterType="com.jyxd.web.data.dictionary.DiagnoseCoefficinetItemDictionary" >
+        update dict_diagnose_coefficient_item
+        set <include refid="diagnoseCoefficinetItemDictionary_update"></include>
+        where
+          id=#{id}
+    </update>
+
+    <select id="queryData" resultMap="diagnoseCoefficinetItemDictionaryMap" parameterType="java.lang.String">
+        select
+          <include refid="diagnoseCoefficinetItemDictionary_colums"></include>
+        from
+        dict_diagnose_coefficient_item
+        where
+          id=#{id}
+    </select>
+
+    <select id="queryList" resultMap="diagnoseCoefficinetItemDictionaryMap">
+        select
+          <include refid="diagnoseCoefficinetItemDictionary_colums"></include>
+        from
+        dict_diagnose_coefficient_item
+        where
+          1=1
+        and  status != -1
+        <if test="diagnoseCoefficientName != null and diagnoseCoefficientName != ''">
+            and  diagnose_coefficient_name like '%${diagnoseCoefficientName}%'
+        </if>
+        <if test="diagnoseCoefficientId != null and diagnoseCoefficientId != ''">
+            and  diagnose_coefficient_id = #{diagnoseCoefficientId}
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        order by sort_num
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="queryDataByName" resultMap="diagnoseCoefficinetItemDictionaryMap" parameterType="java.util.Map">
+        select
+        <include refid="diagnoseCoefficinetItemDictionary_colums"></include>
+        from
+        dict_diagnose_coefficient_item
+        where
+        status !=-1
+        and
+        diagnose_coefficient_name = #{diagnoseCoefficientName}
+    </select>
+
+    <select id="getList" resultType="java.util.Map">
+        select
+            ddci.id,
+            ddci.diagnose_coefficient_name,
+            ddci.diagnose_coefficient_id,
+            ddci.coefficient_num,
+            ddci.status,
+            ddci.sort_num,
+            ddci.operator_code,
+            ddci.create_time,
+            ddc.diagnose_type_name
+        from
+          dict_diagnose_coefficient_item ddci
+        left join dict_diagnose_coefficient ddc on ddci.diagnose_coefficient_id=ddc.id
+        where
+        1=1
+        and  ddci.status != -1
+        and  ddc.status != -1
+        <if test="diagnoseCoefficientName != null and diagnoseCoefficientName != ''">
+            and  ddci.diagnose_coefficient_name like '%${diagnoseCoefficientName}%'
+        </if>
+        <if test="diagnoseCoefficientId != null and diagnoseCoefficientId != ''">
+            and  ddci.diagnose_coefficient_id = #{diagnoseCoefficientId}
+        </if>
+        <if test="status != null ">
+            and  ddci.status= #{status}
+        </if>
+        <if test="commonStatus != null ">
+            and  ddc.status= #{commonStatus}
+        </if>
+        order by ddci.sort_num
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+          count(ddci.id)
+        from
+        dict_diagnose_coefficient_item ddci
+        left join dict_diagnose_coefficient ddc on ddci.diagnose_coefficient_id=ddc.id
+        where
+        1=1
+        and  ddci.status != -1
+        and  ddc.status != -1
+        <if test="diagnoseCoefficientName != null and diagnoseCoefficientName != ''">
+            and  ddci.diagnose_coefficient_name like '%${diagnoseCoefficientName}%'
+        </if>
+        <if test="diagnoseCoefficientId != null and diagnoseCoefficientId != ''">
+            and  ddci.diagnose_coefficient_id = #{diagnoseCoefficientId}
+        </if>
+        <if test="status != null ">
+            and  ddci.status= #{status}
+        </if>
+        <if test="commonStatus != null ">
+            and  ddc.status= #{commonStatus}
+        </if>
+    </select>
+</mapper>

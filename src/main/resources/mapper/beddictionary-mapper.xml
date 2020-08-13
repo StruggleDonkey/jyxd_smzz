@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyxd.web.dao.dictionary.BedDictionaryDao">
+
+    <resultMap id="bedDictionaryMap" type="com.jyxd.web.data.dictionary.BedDictionary">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="bed_code" property="bedCode" jdbcType="VARCHAR"/>
+        <result column="bed_name" property="bedName" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+    </resultMap>
+    
+    <sql id="bedDictionary_colums">id,bed_code,bed_name,status</sql>
+    <sql id="bedDictionary_propertys">#{id},#{bedCode},#{bedName},#{status}</sql>
+    <sql id="bedDictionary_update">bed_code=#{bedCode},bed_name=#{bedName},status=#{status}</sql>
+
+    <insert id="insert">
+        insert into
+          dict_bed(<include refid="bedDictionary_colums"></include>)
+        values (<include refid="bedDictionary_propertys"></include>)
+    </insert>
+
+    <update id="update" parameterType="com.jyxd.web.data.dictionary.BedDictionary" >
+        update dict_bed
+        set <include refid="bedDictionary_update"></include>
+        where
+          id=#{id}
+    </update>
+
+    <select id="queryData" resultMap="bedDictionaryMap" parameterType="java.lang.String">
+        select
+          <include refid="bedDictionary_colums"></include>
+        from
+          dict_bed
+        where
+          id=#{id}
+    </select>
+
+    <select id="queryList" resultType="java.util.Map">
+        select
+          <include refid="bedDictionary_colums"></include>
+        from
+          dict_bed
+        where
+          1=1
+        and  status != -1
+        <if test="bedName != null and bedName != ''">
+            and  bed_name like '%${bedName}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+            count(id)
+        from
+        dict_bed
+        where
+        1=1
+        and  status != -1
+        <if test="bedName != null and bedName != ''">
+            and  bed_name like '%${bedName}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
+
+</mapper>
