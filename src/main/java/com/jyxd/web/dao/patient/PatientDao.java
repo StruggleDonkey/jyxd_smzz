@@ -3,6 +3,7 @@ package com.jyxd.web.dao.patient;
 import com.jyxd.web.data.patient.Patient;
 import org.springframework.stereotype.Repository;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,4 +44,31 @@ public interface PatientDao {
      * @return
      */
     int queryNum(Map<String, Object> map);
+
+    /**
+     * 根据条件分页查询病人表记录列表--多表查询
+     * @param map
+     * @return list
+     */
+    List<Map<String, Object>> getList(Map<String, Object> map);
+
+    /**
+     * 根据条件查询列表总记录数--多表查询
+     * @param map
+     * @return
+     */
+    int getNum(Map<String, Object> map);
+
+    /**
+     * 查询所有病人数量
+     * @return
+     */
+    int getAllNum();
+
+    /**
+     * 根据条件查询需要下载的病人信息列表
+     * @param map
+     * @return list
+     */
+    List<LinkedHashMap<String, Object>> getDownloadList(Map<String, Object> map);
 }

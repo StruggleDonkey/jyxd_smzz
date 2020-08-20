@@ -90,6 +90,17 @@
                 之后依赖boot项目的项目如果想要使用devtools, 需要重新引入 -->
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>5.4.0</version>
+        </dependency>
+        <!--Hutool工具ExcelUtil依赖这个 https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml-->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>4.1.2</version>
+        </dependency>
     </dependencies>
 
     <build>

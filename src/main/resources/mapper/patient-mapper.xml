@@ -139,4 +139,245 @@
         </if>
     </select>
 
+    <select id="getList" resultType="java.util.Map" parameterType="java.util.Map">
+        select
+            IFNULL(p.id,"") as id,
+            IFNULL(p.visit_id,"") as visit_id,
+            IFNULL(p.visit_code,"") as visit_code,
+            IFNULL(p.visit_num,"") as visit_num,
+            IFNULL(p.visit_time,"") as visit_time,
+            IFNULL(p.enter_time,"") as enter_time,
+            IFNULL(p.exit_time,"") as exit_time,
+            IFNULL(p.death_time,"") as death_time,
+            IFNULL(p.flag,"") as flag,
+            IFNULL(p.exit_type,"") as exit_type,
+            IFNULL(p.name,"") as name,
+            IFNULL(p.id_card,"") as id_card,
+            IFNULL(p.sex,"") as sex,
+            IFNULL(p.birthday,"") as birthday,
+            IFNULL(p.age,"") as age,
+            IFNULL(p.weight,"") as weight,
+            IFNULL(p.height,"") as height,
+            IFNULL(p.race,"") as race,
+            IFNULL(p.marital_state,"") as marital_state,
+            IFNULL(p.blood_type,"") as blood_type,
+            IFNULL(p.operation_id,"") as operation_id,
+            IFNULL(p.diagnosis_code,"") as diagnosis_code,
+            IFNULL(p.diagnosis_name,"") as diagnosis_name,
+            IFNULL(p.operation_code,"") as operation_code,
+            IFNULL(p.operation_name,"") as operation_name,
+            IFNULL(p.operation_time,"") as operation_time,
+            IFNULL(p.doctor_code,"") as doctor_code,
+            IFNULL(p.nurse_code,"") as nurse_code,
+            IFNULL(p.allergies,"") as allergies,
+            IFNULL(p.nursing_level,"") as nursing_level,
+            IFNULL(p.illness_state,"") as illness_state,
+            IFNULL(p.positive,"") as positive,
+            IFNULL(p.department_code,"") as department_code,
+            IFNULL(p.to_department_code,"") as to_department_code,
+            IFNULL(p.ward_code,"") as ward_code,
+            IFNULL(p.bed_code,"") as bed_code,
+            IFNULL(p.remark,"") as remark,
+            IFNULL(p.unplanned,"") as unplanned,
+            IFNULL(p.is_collect,"") as is_collect,
+            IFNULL(p.modify_collect_time,"") as modify_collect_time,
+            IFNULL(p.frequency,"") as frequency,
+            IFNULL(p.modify_frequency_time,"") as modify_frequency_time,
+            IFNULL(p.status,"") as status,
+            IFNULL(p.create_time,"") as create_time,
+            IFNULL(p.contact_man,"") as contact_man,
+            IFNULL(p.contact_phone,"") as contact_phone,
+            IFNULL(p.is_confirmed,"") as is_confirmed,
+            IFNULL(p.is_emergency_operate,"") as is_emergency_operate,
+            IFNULL(p.is_brain_death,"") as is_brain_death,
+            IFNULL(p.is_organ_donation,"") as is_organ_donation,
+            IFNULL(p.disease_classification,"") as disease_classification,
+            IFNULL(p.is_septic_shock,"") as is_septic_shock,
+            IFNULL(d.department_name,"") as inName,
+            IFNULL(c.department_name,"") as outName,
+            IFNULL(u.login_name,"") as docterName,
+            IFNULL(tu.login_name,"") as nurseName
+        FROM
+          p_patient p
+        LEFT JOIN dict_department d ON p.department_code = d.department_code
+        LEFT JOIN dict_department c ON p.to_department_code = c.department_code
+        LEFT JOIN table_user u ON p.doctor_code = u.work_number
+        LEFT JOIN table_user tu ON p.nurse_code = tu.work_number
+        where
+          1=1
+        and  p.status != -1
+        <if test="visitId != null and visitId != ''">
+            and  p.visit_id like '%${visitId}%'
+        </if>
+        <if test="name != null and name != ''">
+            and  p.name like '%${name}%'
+        </if>
+        <if test="sex != null ">
+            and  p.sex =#{sex}
+        </if>
+        <if test="enterStartTime != null and enterStartTime != ''">
+            and p.enter_time between date_format(#{enterStartTime},'%Y%m%d')
+            and date_format(#{enterEndTime},'%Y%m%d')
+        </if>
+        <if test="exitStartTime != null and exitStartTime != ''">
+            and p.exit_time between date_format(#{exitStartTime},'%Y%m%d')
+            and date_format(#{exitEndTime},'%Y%m%d')
+        </if>
+        <if test="flag != null ">
+            and  p.flag= #{flag}
+        </if>
+        <if test="exitType != null and exitType != ''">
+            and  p.exit_type = #{exitType}
+        </if>
+        <if test="departmentCode != null and departmentCode != ''">
+            and  p.department_code = #{departmentCode}
+        </if>
+        <if test="toDepartmentCode != null and toDepartmentCode != ''">
+            and  p.to_department_code = #{toDepartmentCode}
+        </if>
+        <if test="status != null ">
+            and  p.status= #{status}
+        </if>
+        order by p.enter_time desc
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="getNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+          count(p.id)
+        FROM
+        p_patient p
+        LEFT JOIN dict_department d ON p.department_code = d.department_code
+        LEFT JOIN dict_department c ON p.to_department_code = c.department_code
+        where
+        1=1
+        and  p.status != -1
+        <if test="visitId != null and visitId != ''">
+            and  p.visit_id like '%${visitId}%'
+        </if>
+        <if test="name != null and name != ''">
+            and  p.name like '%${name}%'
+        </if>
+        <if test="sex != null ">
+            and  p.sex =#{sex}
+        </if>
+        <if test="enterStartTime != null and enterStartTime != ''">
+            and p.enter_time between date_format(#{enterStartTime},'%Y%m%d')
+            and date_format(#{enterEndTime},'%Y%m%d')
+        </if>
+        <if test="exitStartTime != null and exitStartTime != ''">
+            and p.exit_time between date_format(#{exitStartTime},'%Y%m%d')
+            and date_format(#{exitEndTime},'%Y%m%d')
+        </if>
+        <if test="flag != null ">
+            and  p.flag= #{flag}
+        </if>
+        <if test="exitType != null and exitType != ''">
+            and  p.exit_type = #{exitType}
+        </if>
+        <if test="departmentCode != null and departmentCode != ''">
+            and  p.department_code = #{departmentCode}
+        </if>
+        <if test="toDepartmentCode != null and toDepartmentCode != ''">
+            and  p.to_department_code = #{toDepartmentCode}
+        </if>
+        <if test="status != null ">
+            and  p.status= #{status}
+        </if>
+    </select>
+
+    <select id="getAllNum" resultType="java.lang.Integer" >
+        select
+          count(id)
+        from
+          p_patient
+        where
+        1=1
+        and  status != -1
+    </select>
+
+    <select id="getDownloadList" resultType="java.util.LinkedHashMap" parameterType="java.util.Map">
+        select
+            IFNULL(p.visit_id,"") as 住院号,
+            IFNULL(p.name,"") as 姓名,
+            CASE
+            WHEN(p.sex=0)
+            THEN "女"
+            WHEN(p.sex=1)
+            THEN "男"
+            ELSE ""
+            END as 性别,
+            IFNULL(p.enter_time,"") as 入科时间,
+            IFNULL(p.exit_time,"") as 出科时间,
+            CASE
+            WHEN(p.flag=0)
+            THEN "出科"
+            WHEN(p.flag=1)
+            THEN "在科"
+            ELSE ""
+            END as 当前状态,
+            IFNULL(p.exit_type,"") as 出科方式,
+            IFNULL(d.department_name,"") as 来源科室,
+            IFNULL(c.department_name,"") as 去向科室,
+            IFNULL(p.bed_code,"") as 入科床号,
+            IFNULL(p.visit_time,"") as 住院时间,
+            CASE
+            WHEN(p.unplanned=0)
+            THEN "否"
+            WHEN(p.unplanned=1)
+            THEN "是"
+            ELSE ""
+            END as 是否非计划,
+            IFNULL(p.illness_state,"") as 病情,
+            IFNULL(u.login_name,"") as 责任医生,
+            IFNULL(tu.login_name,"") as 责任护士,
+            IFNULL(p.operation_time,"") as 最新手术时间,
+            IFNULL(p.operation_name,"") as 最新手术名称,
+            IFNULL(p.diagnosis_name,"") as 诊断,
+            IFNULL(p.allergies,"") as 过敏史,
+            IFNULL(p.positive,"") as 阳性
+        FROM
+        p_patient p
+        LEFT JOIN dict_department d ON p.department_code = d.department_code
+        LEFT JOIN dict_department c ON p.to_department_code = c.department_code
+        LEFT JOIN table_user u ON p.doctor_code = u.work_number
+        LEFT JOIN table_user tu ON p.nurse_code = tu.work_number
+        where
+        1=1
+        and  p.status != -1
+        <if test="visitId != null and visitId != ''">
+            and  p.visit_id like '%${visitId}%'
+        </if>
+        <if test="name != null and name != ''">
+            and  p.name like '%${name}%'
+        </if>
+        <if test="sex != null ">
+            and  p.sex =#{sex}
+        </if>
+        <if test="enterStartTime != null and enterStartTime != ''">
+            and p.enter_time between date_format(#{enterStartTime},'%Y%m%d')
+            and date_format(#{enterEndTime},'%Y%m%d')
+        </if>
+        <if test="exitStartTime != null and exitStartTime != ''">
+            and p.exit_time between date_format(#{exitStartTime},'%Y%m%d')
+            and date_format(#{exitEndTime},'%Y%m%d')
+        </if>
+        <if test="flag != null ">
+            and  p.flag= #{flag}
+        </if>
+        <if test="exitType != null and exitType != ''">
+            and  p.exit_type = #{exitType}
+        </if>
+        <if test="departmentCode != null and departmentCode != ''">
+            and  p.department_code = #{departmentCode}
+        </if>
+        <if test="toDepartmentCode != null and toDepartmentCode != ''">
+            and  p.to_department_code = #{toDepartmentCode}
+        </if>
+        <if test="status != null ">
+            and  p.status= #{status}
+        </if>
+        order by p.enter_time desc
+    </select>
 </mapper>
