@@ -380,4 +380,90 @@
         </if>
         order by p.enter_time desc
     </select>
+
+    <!-- 首页查询患者现有数量(existing) 今日转入数量(todayEnter) 今日转出数量(todayExit) 本月转入数量(monthEnter) 本月转出数量(monthExit) -->
+    <select id="getNowPatientNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+          count(id)
+        from
+          p_patient
+        where
+        1=1
+        and  status != -1
+        <if test="existing != null and existing != ''">
+            and flag=1
+        </if>
+        <if test="todayEnter != null and todayEnter != ''">
+            and flag=1
+            and to_days(enter_time) = to_days(now())
+        </if>
+        <if test="todayExit != null and todayExit != ''">
+            and flag=0
+            and to_days(exit_time) = to_days(now())
+        </if>
+        <if test="monthEnter != null and todayEnter != ''">
+            and flag=1
+            and DATE_FORMAT( enter_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
+        </if>
+        <if test="monthExit != null and monthExit != ''">
+            and flag=0
+            and DATE_FORMAT( exit_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
+        </if>
+    </select>
+
+    <select id="getBedPatientList" resultType="java.util.Map" parameterType="java.util.Map">
+        select
+        IFNULL(p.visit_id,"") as 住院号,
+        IFNULL(p.name,"") as 姓名,
+        IFNULL(p.age,"") as 年龄,
+        CASE
+        WHEN(p.sex=0)
+        THEN "女"
+        WHEN(p.sex=1)
+        THEN "男"
+        ELSE ""
+        END as 性别,
+        IFNULL(p.enter_time,"") as 入科时间,
+        IFNULL(p.exit_time,"") as 出科时间,
+        CASE
+        WHEN(p.flag=0)
+        THEN "出科"
+        WHEN(p.flag=1)
+        THEN "在科"
+        ELSE ""
+        END as 当前状态,
+        IFNULL(p.exit_type,"") as 出科方式,
+        IFNULL(d.department_name,"") as 来源科室,
+        IFNULL(c.department_name,"") as 去向科室,
+        IFNULL(p.bed_code,"") as 入科床号,
+        IFNULL(p.visit_time,"") as 住院时间,
+        CASE
+        WHEN(p.unplanned=0)
+        THEN "否"
+        WHEN(p.unplanned=1)
+        THEN "是"
+        ELSE ""
+        END as 是否非计划,
+        IFNULL(p.illness_state,"") as 病情,
+        IFNULL(u.login_name,"") as 责任医生,
+        IFNULL(tu.login_name,"") as 责任护士,
+        IFNULL(p.operation_time,"") as 最新手术时间,
+        IFNULL(p.operation_name,"") as 最新手术名称,
+        IFNULL(p.diagnosis_name,"") as 诊断,
+        IFNULL(p.allergies,"") as 过敏史,
+        IFNULL(p.positive,"") as 阳性,
+        IFNULL(to_days(now()) - to_days(p.enter_time),"") as 入科天数,
+        IFNULL(to_days(now()) - to_days(p.operation_time),"") as 手术天数
+        FROM
+        p_patient p
+        LEFT JOIN dict_department d ON p.department_code = d.department_code
+        LEFT JOIN dict_department c ON p.to_department_code = c.department_code
+        LEFT JOIN table_user u ON p.doctor_code = u.work_number
+        LEFT JOIN table_user tu ON p.nurse_code = tu.work_number
+        where
+        1=1
+        and  p.status != -1
+        and  p.flag=1
+        order by p.enter_time desc
+    </select>
 </mapper>

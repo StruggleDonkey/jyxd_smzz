@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyxd.web.dao.assessment.PressureSoresForecastAssessmentDao">
+
+    <resultMap id="pressureSoresForecastAssessmentMap" type="com.jyxd.web.data.assessment.PressureSoresForecastAssessment">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="assessment_id" property="assessmentId" jdbcType="VARCHAR"/>
+        <result column="visit_id" property="visitId" jdbcType="VARCHAR"/>
+        <result column="visit_code" property="visitCode" jdbcType="VARCHAR"/>
+        <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
+        <result column="data_time" property="dataTime" jdbcType="DATE"/>
+        <result column="shift" property="shift" jdbcType="INTEGER"/>
+        <result column="code" property="code" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="DATE"/>
+        <result column="operator_code" property="operatorCode" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+    </resultMap>
+    
+    <sql id="pressureSoresForecastAssessment_colums">id,assessment_id,visit_id,visit_code,patient_id,data_time,shift,code,content,create_time,operator_code,status</sql>
+
+    <sql id="pressureSoresForecastAssessment_propertys">#{id},#{assessmentId},#{visitId},#{visitCode},,#{patientId},#{dataTime},#{shift},#{code},
+                                  #{content},#{createTime},#{createTime},#{operatorCode},#{status}</sql>
+
+    <sql id="pressureSoresForecastAssessment_update">assessment_id=#{assessmentId},visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},
+                              data_time=#{dataTime},shift=#{shift},code=#{code},content=#{content},create_time=#{createTime},
+                              operator_code=#{operatorCode},status=#{status}</sql>
+
+    <insert id="insert">
+        insert into
+          table_pressuresores_forecast_assessment(<include refid="pressureSoresForecastAssessment_colums"></include>)
+        values (<include refid="pressureSoresForecastAssessment_propertys"></include>)
+    </insert>
+
+    <update id="update" parameterType="com.jyxd.web.data.assessment.PressureSoresForecastAssessment" >
+        update
+          table_pressuresores_forecast_assessment
+        set <include refid="pressureSoresForecastAssessment_update"></include>
+        where
+          id=#{id}
+    </update>
+
+    <select id="queryData" resultMap="pressureSoresForecastAssessmentMap" parameterType="java.lang.String">
+        select
+          <include refid="pressureSoresForecastAssessment_colums"></include>
+        from
+        table_pressuresores_forecast_assessment
+        where
+          id=#{id}
+    </select>
+
+    <select id="queryList" resultType="java.util.Map">
+        select
+          <include refid="pressureSoresForecastAssessment_colums"></include>
+        from
+        table_pressuresores_forecast_assessment
+        where
+          1=1
+        and  status != -1
+        <if test="content != null and content != ''">
+            and  content like '%${content}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+          count(id)
+        from
+        table_pressuresores_forecast_assessment
+        where
+        1=1
+        and  status != -1
+        <if test="content != null and content != ''">
+            and  content like '%${content}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
+
+</mapper>

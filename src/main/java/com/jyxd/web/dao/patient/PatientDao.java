@@ -71,4 +71,17 @@ public interface PatientDao {
      * @return list
      */
     List<LinkedHashMap<String, Object>> getDownloadList(Map<String, Object> map);
+
+    /**
+     * 首页查询患者现有数量 今日转入数量 今日转出数量
+     * @param map
+     * @return
+     */
+    int getNowPatientNum(Map<String, Object> map);
+
+    /**
+     *首页查询床位列表
+     * @return
+     */
+    List<Map<String, Object>> getBedPatientList();
 }

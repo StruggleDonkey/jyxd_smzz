@@ -53,6 +53,24 @@
         <if test="size != null ">#{size}</if>
     </select>
 
+    <select id="queryDataList" resultMap="departmentDictionaryMap">
+        select
+        <include refid="departmentDictionary_colums"></include>
+        from
+        dict_department
+        where
+        1=1
+        and  status != -1
+        <if test="departmentName != null and departmentName != ''">
+            and  department_name like '%${departmentName}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
     <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
         select
             count(id)

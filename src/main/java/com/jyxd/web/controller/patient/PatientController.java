@@ -1,12 +1,8 @@
 package com.jyxd.web.controller.patient;
 
-import cn.hutool.poi.excel.ExcelUtil;
-import cn.hutool.poi.excel.ExcelWriter;
 import com.jyxd.web.data.patient.Patient;
 import com.jyxd.web.service.patient.PatientService;
-import com.jyxd.web.util.HttpCode;
-import com.jyxd.web.util.JsonArrayValueProcessor;
-import com.jyxd.web.util.UUIDUtil;
+import com.jyxd.web.util.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
@@ -19,11 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "/patient")
@@ -232,26 +227,193 @@ public class PatientController {
      */
     @RequestMapping(value = "/downloadPatient",method= RequestMethod.POST)
     @ResponseBody
-    public String downloadPatient(@RequestBody(required=false) Map<String,Object> map){
+    public void downloadPatient(@RequestBody(required=false) Map<String,Object> map, HttpServletResponse response)throws Exception {
+        List<LinkedHashMap<String,Object>> list =patientService.getDownloadList(map);
+        if(list!=null && list.size()>0){
+            ExportExcelUtil.exportExcel(response,"病人信息统计"+System.currentTimeMillis()+".xlsx",setExcelData(list));
+        }
+    }
+
+    /**
+     *
+     *〈设置订单汇总表格数据〉<br>
+     *
+     * @author czy <br>
+     *         2019年12月31日
+     * @update
+     * @param
+     * @return  ExcelData
+     * @exception/throws [异常类型] [异常说明]
+     * @see   [类、类#方法、类#成员]
+     * @since [起始版本]
+     */
+    public static ExcelData setExcelData(List<LinkedHashMap<String, Object>> list) {
+        ExcelData data = new ExcelData();
+        data.setName("病人信息统计表");
+        List<String> titles = new ArrayList();
+        titles.add("住院号");
+        titles.add("姓名");
+        titles.add("性别");
+        titles.add("入科时间");
+        titles.add("出科时间");
+        titles.add("当前状态");
+        titles.add("出科方式");
+        titles.add("来源科室");
+        titles.add("去向科室");
+        titles.add("入科床号");
+        titles.add("住院时间");
+        titles.add("是否非计划");
+        titles.add("病情");
+        titles.add("责任医生");
+        titles.add("责任护士");
+        titles.add("最新手术时间");
+        titles.add("最新手术名称");
+        titles.add("诊断");
+        titles.add("过敏史");
+        titles.add("阳性");
+        data.setTitles(titles);
+        if(list != null && list.size() > 0) {
+            List<List<Object>> rows = new ArrayList();
+            for (int i = 0; i < list.size(); i++) {
+                List<Object> row1 = new ArrayList();
+                row1.add(list.get(i).get("住院号"));
+                row1.add(list.get(i).get("姓名"));
+                row1.add(list.get(i).get("性别"));
+                row1.add(list.get(i).get("入科时间"));
+                row1.add(list.get(i).get("出科时间"));
+                row1.add(list.get(i).get("当前状态"));
+                row1.add(list.get(i).get("出科方式"));
+                row1.add(list.get(i).get("来源科室"));
+                row1.add(list.get(i).get("去向科室"));
+                row1.add(list.get(i).get("入科床号"));
+                row1.add(list.get(i).get("住院时间"));
+                row1.add(list.get(i).get("是否非计划"));
+                row1.add(list.get(i).get("病情"));
+                row1.add(list.get(i).get("责任医生"));
+                row1.add(list.get(i).get("责任护士"));
+                row1.add(list.get(i).get("最新手术时间"));
+                row1.add(list.get(i).get("最新手术名称"));
+                row1.add(list.get(i).get("诊断"));
+                row1.add(list.get(i).get("过敏史"));
+                row1.add(list.get(i).get("阳性"));
+
+                rows.add(row1);
+            }
+            data.setRows(rows);
+        }
+        return data;
+    }
+
+    /**
+     * 导出病人信息excel（暂时不用这个接口）
+     * @return
+     */
+    @RequestMapping(value = "/exportPatient",method= RequestMethod.GET)
+    @ResponseBody
+    public void exportPatient(HttpServletRequest request, HttpServletResponse response)throws Exception {
+        //String keyword = request.getParameter("keyword");
+        patientService.getExcel(request,response);
+        System.out.println("导出成功");
+    }
+
+    /**
+     * 首页查询患者现有数量 今日转入数量 今日转出数量
+     * @return
+     */
+    @RequestMapping(value = "/getNowPatientNum",method= RequestMethod.POST)
+    @ResponseBody
+    public String getNowPatientNum(){
         JSONObject json=new JSONObject();
         json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
-        json.put("msg","导出失败");
-        List<LinkedHashMap<String,Object>> list =patientService.getDownloadList(map);
-        //Map result = map.entrySet().stream() .sorted(Map.Entry.comparingByKey()) .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
-        if(list!=null && list.size()>0){
-            // 通过工具类创建writer
-            ExcelWriter writer = ExcelUtil.getWriter("d:/病人信息.xlsx");
-            // 合并单元格后的标题行，使用默认标题样式
-            writer.merge(19, "病人信息");
-            // 一次性写出内容，使用默认样式，强制输出标题
-            writer.write(list, true);
-            // 关闭writer，释放内存
-            writer.close();
-
-            json.put("msg","导出成功");
-            json.put("code",HttpCode.OK_CODE.getCode());
-        }
+        json.put("msg","暂无数据");
+        Map<String,Object> map=new HashMap();
+        map.put("existing","existing");//患者现有数量sql查询条件
+        int existingNum=patientService.getNowPatientNum(map);
+        map.clear();
+        map.put("todayEnter","todayEnter");//患者今日转入数量sql查询条件
+        int todayEnterNum=patientService.getNowPatientNum(map);
+        map.clear();
+        map.put("todayExit","todayExit");//患者今日转出数量sql查询条件
+        int todayExitNum=patientService.getNowPatientNum(map);
+        json.put("existingNum",existingNum);
+        json.put("todayEnterNum",todayEnterNum);
+        json.put("todayExitNum",todayExitNum);
+        json.put("msg","查询成功");
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
+
+    /**
+     * 首页查询在科病人来源
+     * @return
+     */
+    @RequestMapping(value = "/getPatientSource",method= RequestMethod.POST)
+    @ResponseBody
+    public String getPatientSource(){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        JSONArray array=patientService.getPatientSource();
+        json.put("data",array);
+        json.put("msg","查询成功");
+        json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
+    /**
+     * 首页查询本月转入和转出
+     * @return
+     */
+    @RequestMapping(value = "/getMonthPatient",method= RequestMethod.POST)
+    @ResponseBody
+    public String getMonthPatient(){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        Map<String,Object> map=new HashMap();
+        map.put("monthEnter","monthEnter");//患者本月转入数量sql查询条件
+        int monthEnterNum=patientService.getNowPatientNum(map);
+        map.clear();
+        map.put("monthExit","monthExit");//患者本月转出数量sql查询条件
+        int monthExitNum=patientService.getNowPatientNum(map);
+        JSONArray array=new JSONArray();
+        JSONObject obj1=new JSONObject();
+        obj1.put("value",monthEnterNum);
+        obj1.put("name","转入");
+        JSONObject obj2=new JSONObject();
+        obj2.put("value",monthExitNum);
+        obj2.put("name","转出");
+        array.add(obj1);
+        array.add(obj2);
+        json.put("data",array);
+        json.put("msg","查询成功");
+        json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
+    /**
+     * 首页查询床位列表
+     * @return
+     */
+    @RequestMapping(value = "/getBedPatientList",method= RequestMethod.POST)
+    @ResponseBody
+    public String getBedPatientList(){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        List<Map<String,Object>> list=patientService.getBedPatientList();
+        if(list!=null && list.size()>0){
+            JsonConfig jsonConfig=new JsonConfig();
+            jsonConfig.registerJsonValueProcessor(Timestamp.class,new JsonArrayValueProcessor());
+            json.put("data",JSONArray.fromObject(list,jsonConfig));
+            json.put("msg","查询成功");
+        }
+        json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
 }

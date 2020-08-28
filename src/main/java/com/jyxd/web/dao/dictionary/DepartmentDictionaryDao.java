@@ -43,4 +43,11 @@ public interface DepartmentDictionaryDao {
      * @return
      */
     int queryNum(Map<String, Object> map);
+
+    /**
+     * 查询科室字典bean类列表
+     * @param map
+     * @return list
+     */
+    List<DepartmentDictionary> queryDataList(Map<String, Object> map);
 }
