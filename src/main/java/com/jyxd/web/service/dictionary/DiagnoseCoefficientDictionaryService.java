@@ -37,4 +37,8 @@ public class DiagnoseCoefficientDictionaryService {
     }
 
     public int queryNum(Map<String,Object> map){return diagnoseCoefficientDictionaryDao.queryNum(map);}
+
+    public List<DiagnoseCoefficientDictionary> getList(Map<String,Object> map){
+        return diagnoseCoefficientDictionaryDao.getList(map);
+    }
 }

@@ -201,4 +201,25 @@ public class UserController {
         json.put("msg","退出登录成功");
         return json.toString();
     }
+
+    /**
+     * 床位信息--新增病人--根据条件查询医生或护士员工列表
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/getUserListByType",method= RequestMethod.POST)
+    @ResponseBody
+    public String getUserListByType(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        List<Map<String,Object>> list=userService.getUserListByType(map);
+        if(list!=null && list.size()>0){
+            json.put("data",JSONArray.fromObject(list));
+        }
+        json.put("code",HttpCode.OK_CODE.getCode());
+        json.put("msg","查询成功");
+        return json.toString();
+    }
 }

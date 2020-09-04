@@ -33,4 +33,13 @@ public class MonitorDictionaryService {
     }
 
     public int queryNum(Map<String,Object> map){return monitorDictionaryDao.queryNum(map);}
+
+    /**
+     * 床位安排--查询未分配的监护仪
+     * @param map
+     * @return
+     */
+    public List<MonitorDictionary> getNoBedMonitorList(Map<String,Object> map){
+        return monitorDictionaryDao.getNoBedMonitorList(map);
+    }
 }

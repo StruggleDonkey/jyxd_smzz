@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyxd.web.dao.basic.AbnormalVitalSignsDao">
+
+    <resultMap id="abnormalVitalSignsMap" type="com.jyxd.web.data.basic.AbnormalVitalSigns">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="time" property="time" jdbcType="DATE"/>
+        <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
+        <result column="data_type" property="dataType" jdbcType="INTEGER"/>
+        <result column="central_venous_pressure" property="centralVenousPressure" jdbcType="VARCHAR"/>
+        <result column="heart_rate" property="heartRate" jdbcType="VARCHAR"/>
+        <result column="oxygen_saturation" property="oxygenSaturation" jdbcType="VARCHAR"/>
+        <result column="temperature" property="temperature" jdbcType="VARCHAR"/>
+        <result column="blood_pressure" property="bloodPressure" jdbcType="VARCHAR"/>
+        <result column="breathing" property="breathing" jdbcType="VARCHAR"/>
+        <result column="abnormal_code" property="abnormalCode" jdbcType="VARCHAR"/>
+        <result column="is_processed" property="isProcessed" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="DATE"/>
+        <result column="operator_code" property="operatorCode" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+    </resultMap>
+    
+    <sql id="abnormalVitalSigns_colums">id,time,patient_id,data_type,central_venous_pressure,heart_rate,oxygen_saturation,
+                                        temperature,blood_pressure,breathing,abnormal_code,is_processed,create_time,operator_code,status</sql>
+
+    <sql id="abnormalVitalSigns_propertys">#{id},#{time},#{patientId},#{dataType},#{centralVenousPressure},#{heartRate},#{oxygenSaturation},
+                              #{temperature},#{bloodPressure},#{breathing},#{abnormalCode},#{isProcessed},#{createTime},#{operatorCode},#{status}</sql>
+
+    <sql id="abnormalVitalSigns_update">time=#{time},patient_id=#{patientId},data_type=#{dataType},central_venous_pressure=#{centralVenousPressure},
+                              heart_rate=#{heartRate},oxygen_saturation=#{oxygenSaturation},temperature=#{temperature},blood_pressure=#{bloodPressure},
+                              breathing=#{breathing},abnormal_code=#{abnormalCode},is_processed=#{isProcessed},
+                              create_time=#{createTime},operator_code=#{operatorCode},status=#{status}</sql>
+
+    <insert id="insert">
+        insert into
+        table_abnormal_vital_signs(<include refid="abnormalVitalSigns_colums"></include>)
+        values (<include refid="abnormalVitalSigns_propertys"></include>)
+    </insert>
+
+    <update id="update" parameterType="com.jyxd.web.data.basic.AbnormalVitalSigns" >
+        update
+        table_abnormal_vital_signs
+        set <include refid="abnormalVitalSigns_update"></include>
+        where
+          id=#{id}
+    </update>
+
+    <select id="queryData" resultMap="abnormalVitalSignsMap" parameterType="java.lang.String">
+        select
+          <include refid="abnormalVitalSigns_colums"></include>
+        from
+        table_abnormal_vital_signs
+        where
+          id=#{id}
+    </select>
+
+    <select id="queryList" resultType="java.util.Map">
+        select
+          <include refid="abnormalVitalSigns_colums"></include>
+        from
+        table_abnormal_vital_signs
+        where
+          1=1
+        and  status != -1
+        <if test="content != null and content != ''">
+            and  content like '%${content}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+          count(id)
+        from
+        table_abnormal_vital_signs
+        where
+        1=1
+        and  status != -1
+        <if test="content != null and content != ''">
+            and  content like '%${content}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
+
+</mapper>

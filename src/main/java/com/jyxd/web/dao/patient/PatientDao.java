@@ -84,4 +84,11 @@ public interface PatientDao {
      * @return
      */
     List<Map<String, Object>> getBedPatientList();
+
+    /**
+     *查询待分配或已出科的病人列表（是否分配床位）
+     * @param map
+     * @return
+     */
+    List<Patient> getNoBedPatientList(Map<String, Object> map);
 }

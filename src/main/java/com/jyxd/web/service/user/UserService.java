@@ -37,4 +37,13 @@ public class UserService {
     }
 
     public int queryNum(Map<String,Object> map){return userDao.queryNum(map);}
+
+    /**
+     * 床位信息--新增病人--根据条件查询医生或护士员工列表
+     * @param map
+     * @return
+     */
+    public List<Map<String,Object>> getUserListByType(Map<String,Object> map){
+        return userDao.getUserListByType(map);
+    }
 }

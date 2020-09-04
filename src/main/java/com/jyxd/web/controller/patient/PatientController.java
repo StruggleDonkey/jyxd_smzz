@@ -41,6 +41,7 @@ public class PatientController {
         json.put("data",new ArrayList<>());
         json.put("msg","系统开小差了，请稍后再试。");
         patient.setId(UUIDUtil.getUUID());
+        patient.setCreateTime(new Date());
         patientService.insert(patient);
         json.put("code",HttpCode.OK_CODE.getCode());
         json.put("msg","添加成功");
@@ -410,6 +411,26 @@ public class PatientController {
             JsonConfig jsonConfig=new JsonConfig();
             jsonConfig.registerJsonValueProcessor(Timestamp.class,new JsonArrayValueProcessor());
             json.put("data",JSONArray.fromObject(list,jsonConfig));
+            json.put("msg","查询成功");
+        }
+        json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
+    /**
+     * 查询待分配或已出科的病人列表（是否分配床位）
+     * @return
+     */
+    @RequestMapping(value = "/getNoBedPatientList",method= RequestMethod.POST)
+    @ResponseBody
+    public String getNoBedPatientList(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        List<Patient> list=patientService.getNoBedPatientList(map);
+        if(list!=null && list.size()>0){
+            json.put("data",JSONArray.fromObject(list));
             json.put("msg","查询成功");
         }
         json.put("code",HttpCode.OK_CODE.getCode());

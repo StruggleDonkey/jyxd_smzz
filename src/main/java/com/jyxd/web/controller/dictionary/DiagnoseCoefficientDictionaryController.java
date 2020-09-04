@@ -196,4 +196,79 @@ public class DiagnoseCoefficientDictionaryController {
         return json.toString();
     }
 
+    /**
+     * 返回新增病人中选择诊断分类结果
+     * @return
+     */
+    @RequestMapping(value = "/getDRG",method= RequestMethod.POST)
+    @ResponseBody
+    public String getDRG(){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        Map<String,Object> map=new HashMap<>();
+        JSONArray array=new JSONArray();
+        JSONObject obj1=new JSONObject();
+        JSONObject obj2=new JSONObject();
+        obj1.put("value","手术");
+        obj1.put("label","手术");
+        obj2.put("value","非手术");
+        obj2.put("label","非手术");
+        JSONArray array2=new JSONArray();
+        JSONArray array4=new JSONArray();
+        //手术
+        map.put("operation",1);//是否手术（0：否 1：是）
+        List<DiagnoseCoefficientDictionary> list=diagnoseCoefficientDictionaryService.getList(map);
+        if(list!=null && list.size()>0){
+            for (int i = 0; i <list.size() ; i++) {
+                JSONObject obj4 =new JSONObject();
+                obj4.put("value",list.get(i).getId());
+                obj4.put("label",list.get(i).getDiagnoseTypeName());
+                JSONArray array1=new JSONArray();
+                map.put("diagnoseCoefficientId",list.get(i).getId());
+                List<Map<String,Object>> list1=diagnoseCoefficinetItemDictionaryService.getList(map);
+                if(list1!=null && list1.size()>0){
+                    for (int j = 0; j < list1.size(); j++) {
+                        JSONObject obj3=new JSONObject();
+                        obj3.put("value",list1.get(j).get("id").toString());
+                        obj3.put("label",list1.get(j).get("diagnose_coefficient_name").toString());
+                        array1.add(obj3);
+                    }
+                }
+                obj4.put("children",array1);
+                array2.add(obj4);
+            }
+        }
+        obj1.put("children",array2);
+        //非手术
+        map.put("operation",0);//是否手术（0：否 1：是）
+        List<DiagnoseCoefficientDictionary> list2=diagnoseCoefficientDictionaryService.getList(map);
+        if(list2!=null && list2.size()>0){
+            for (int i = 0; i <list2.size() ; i++) {
+                JSONObject obj5 =new JSONObject();
+                obj5.put("value",list2.get(i).getId());
+                obj5.put("label",list2.get(i).getDiagnoseTypeName());
+                JSONArray array3=new JSONArray();
+                map.put("diagnoseCoefficientId",list2.get(i).getId());
+                List<Map<String,Object>> list3=diagnoseCoefficinetItemDictionaryService.getList(map);
+                if(list3!=null && list3.size()>0){
+                    for (int j = 0; j < list3.size(); j++) {
+                        JSONObject obj6=new JSONObject();
+                        obj6.put("value",list3.get(j).get("id").toString());
+                        obj6.put("label",list3.get(j).get("diagnose_coefficient_name").toString());
+                        array3.add(obj6);
+                    }
+                }
+                obj5.put("children",array3);
+                array4.add(obj5);
+            }
+        }
+        obj2.put("children",array4);
+        array.add(obj1);
+        array.add(obj2);
+        json.put("data",array);
+        json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
 }

@@ -92,4 +92,23 @@
         </if>
     </select>
 
+    <select id="getList" resultMap="diagnoseCoefficientDictionaryMap" parameterType="java.util.Map">
+        select
+        <include refid="diagnoseCoefficientDictionary_colums"></include>
+        from
+        dict_diagnose_coefficient
+        where
+        1=1
+        and  status != -1
+        <if test="diagnoseTypeName != null and diagnoseTypeName != ''">
+            and  diagnose_type_name like '%${diagnoseTypeName}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="operation != null ">
+            and  operation= #{operation}
+        </if>
+    </select>
+
 </mapper>

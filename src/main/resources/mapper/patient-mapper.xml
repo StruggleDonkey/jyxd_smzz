@@ -413,47 +413,47 @@
 
     <select id="getBedPatientList" resultType="java.util.Map" parameterType="java.util.Map">
         select
-        IFNULL(p.visit_id,"") as 住院号,
-        IFNULL(p.name,"") as 姓名,
-        IFNULL(p.age,"") as 年龄,
+        IFNULL(p.visit_id,"") as visit_id,
+        IFNULL(p.name,"") as name,
+        IFNULL(p.age,"") as age,
         CASE
         WHEN(p.sex=0)
         THEN "女"
         WHEN(p.sex=1)
         THEN "男"
         ELSE ""
-        END as 性别,
-        IFNULL(p.enter_time,"") as 入科时间,
-        IFNULL(p.exit_time,"") as 出科时间,
+        END as sex,
+        IFNULL(p.enter_time,"") as enter_time,
+        IFNULL(p.exit_time,"") as exit_time,
         CASE
         WHEN(p.flag=0)
         THEN "出科"
         WHEN(p.flag=1)
         THEN "在科"
         ELSE ""
-        END as 当前状态,
-        IFNULL(p.exit_type,"") as 出科方式,
-        IFNULL(d.department_name,"") as 来源科室,
-        IFNULL(c.department_name,"") as 去向科室,
-        IFNULL(p.bed_code,"") as 入科床号,
-        IFNULL(p.visit_time,"") as 住院时间,
+        END as flag,
+        IFNULL(p.exit_type,"") as exit_type,
+        IFNULL(d.department_name,"") as department_name,
+        IFNULL(c.department_name,"") as department_name,
+        IFNULL(p.bed_code,"") as bed_code,
+        IFNULL(p.visit_time,"") as visit_time,
         CASE
         WHEN(p.unplanned=0)
         THEN "否"
         WHEN(p.unplanned=1)
         THEN "是"
         ELSE ""
-        END as 是否非计划,
-        IFNULL(p.illness_state,"") as 病情,
-        IFNULL(u.login_name,"") as 责任医生,
-        IFNULL(tu.login_name,"") as 责任护士,
-        IFNULL(p.operation_time,"") as 最新手术时间,
-        IFNULL(p.operation_name,"") as 最新手术名称,
-        IFNULL(p.diagnosis_name,"") as 诊断,
-        IFNULL(p.allergies,"") as 过敏史,
-        IFNULL(p.positive,"") as 阳性,
-        IFNULL(to_days(now()) - to_days(p.enter_time),"") as 入科天数,
-        IFNULL(to_days(now()) - to_days(p.operation_time),"") as 手术天数
+        END as unplanned,
+        IFNULL(p.illness_state,"") as illness_state,
+        IFNULL(u.login_name,"") as docter,
+        IFNULL(tu.login_name,"") as nurse,
+        IFNULL(p.operation_time,"") as operation_time,
+        IFNULL(p.operation_name,"") as operation_name,
+        IFNULL(p.diagnosis_name,"") as diagnosis_name,
+        IFNULL(p.allergies,"") as allergies,
+        IFNULL(p.positive,"") as positive,
+        IFNULL(to_days(now()) - to_days(p.enter_time),"") as department_days,
+        IFNULL(to_days(now()) - to_days(p.operation_time),"") as operation_days
         FROM
         p_patient p
         LEFT JOIN dict_department d ON p.department_code = d.department_code
@@ -465,5 +465,23 @@
         and  p.status != -1
         and  p.flag=1
         order by p.enter_time desc
+    </select>
+
+    <select id="getNoBedPatientList" resultMap="patientMap" parameterType="java.util.Map">
+        select
+        <include refid="patient_colums"></include>
+        from
+        p_patient
+        where
+        1=1
+        and status != -1
+        <if test="flag != null and flag == 1">
+            and flag=#{flag}
+            and (
+            bed_code is null OR bed_code="")
+        </if>
+        <if test="flag != null and flag == 0">
+            and flag=#{flag}
+        </if>
     </select>
 </mapper>

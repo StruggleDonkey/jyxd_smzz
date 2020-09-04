@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyxd.web.dao.basic.BedArrangeDao">
+
+    <resultMap id="bedArrangeMap" type="com.jyxd.web.data.basic.BedArrange">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="bed_code" property="bedCode" jdbcType="VARCHAR"/>
+        <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
+        <result column="monitor_code" property="monitorCode" jdbcType="VARCHAR"/>
+    </resultMap>
+    
+    <sql id="bedArrange_colums">id,bed_code,patient_id,monitor_code</sql>
+
+    <sql id="bedArrange_propertys">#{id},#{bedCode},#{patientId},#{monitorCode}</sql>
+
+    <sql id="bedArrange_update">bed_code=#{bedCode},patient_id=#{patientId},monitor_code=#{monitorCode}</sql>
+
+    <insert id="insert">
+        insert into
+        table_bed_arrange(<include refid="bedArrange_colums"></include>)
+        values (<include refid="bedArrange_propertys"></include>)
+    </insert>
+
+    <update id="update" parameterType="com.jyxd.web.data.basic.BedArrange" >
+        update
+        table_bed_arrange
+        set <include refid="bedArrange_update"></include>
+        where
+          id=#{id}
+    </update>
+
+    <select id="queryData" resultMap="bedArrangeMap" parameterType="java.lang.String">
+        select
+          <include refid="bedArrange_colums"></include>
+        from
+        table_bed_arrange
+        where
+          id=#{id}
+    </select>
+
+    <select id="queryList" resultType="java.util.Map">
+        select
+          <include refid="bedArrange_colums"></include>
+        from
+        table_bed_arrange
+        where
+          1=1
+        <if test="content != null and content != ''">
+            and  content like '%${content}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+          count(id)
+        from
+        table_bed_arrange
+        where
+        1=1
+        <if test="content != null and content != ''">
+            and  content like '%${content}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
+
+    <select id="getBedArrangeList" resultType="java.util.Map">
+        SELECT
+            (@i:=@i+1) AS i,
+            IFNULL(db.id, "") AS id,
+            IFNULL(db.bed_name, "") AS bed_name,
+            IFNULL(db.bed_code, "") AS bed_code,
+            IFNULL(pp.age, "") AS age,
+            IFNULL(pp.name, "") AS name,
+            IFNULL(pp.visit_id, "") AS visit_id,
+            IFNULL(pp.visit_code, "") AS visit_code,
+            IFNULL(pp.sex, "") AS sex,
+            IFNULL(dm.monitor_name, "") AS monitor_name,
+            IFNULL(dm.monitor_code, "") AS monitor_code
+        FROM
+            dict_bed db
+        LEFT JOIN table_bed_arrange tba ON db.bed_code = tba.bed_code
+        LEFT JOIN dict_monitor dm ON tba.monitor_code = dm.monitor_code
+        LEFT JOIN p_patient pp ON tba.patient_id = pp.id,(SELECT @i:=0) AS i
+        WHERE
+            db.status !=-1
+    </select>
+
+    <select id="queryDataByCode" resultMap="bedArrangeMap" parameterType="java.util.Map">
+        select
+        <include refid="bedArrange_colums"></include>
+        from
+        table_bed_arrange
+        where
+        1=1
+        <if test="id != null and id != ''">
+            and id=#{id}
+        </if>
+        <if test="bedCode != null and bedCode != ''">
+            and bed_code=#{bedCode}
+        </if>
+        <if test="patientId != null and patientId != ''">
+            and patient_id=#{patientId}
+        </if>
+        <if test="monitorCode != null and monitorCode != ''">
+            and monitor_code=#{monitorCode}
+        </if>
+    </select>
+</mapper>

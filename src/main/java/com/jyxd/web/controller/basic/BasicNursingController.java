@@ -1,7 +1,7 @@
-package com.jyxd.web.controller.dictionary;
+package com.jyxd.web.controller.basic;
 
-import com.jyxd.web.data.dictionary.MonitorDictionary;
-import com.jyxd.web.service.dictionary.MonitorDictionaryService;
+import com.jyxd.web.data.basic.BasicNursing;
+import com.jyxd.web.service.basic.BasicNursingService;
 import com.jyxd.web.util.HttpCode;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
@@ -16,39 +16,40 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping(value = "/monitorDictionary")
-public class MonitorDictionaryController {
+@RequestMapping(value = "/basicNursing")
+public class BasicNursingController {
 
-    private static Logger logger= LoggerFactory.getLogger(MonitorDictionaryController.class);
+    private static Logger logger= LoggerFactory.getLogger(BasicNursingController.class);
 
     @Autowired
-    private MonitorDictionaryService monitorDictionaryService;
+    private BasicNursingService basicNursingService;
 
     /**
-     * 新增一条监护仪字典表数据
-     * @param monitorDictionary
+     * 增加一条基础护理表记录
      * @return
      */
     @RequestMapping(value = "/insert")
     @ResponseBody
-    public String insert(@RequestBody MonitorDictionary monitorDictionary){
+    public String insert(@RequestBody BasicNursing basicNursing){
         JSONObject json=new JSONObject();
         json.put("code", HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         json.put("msg","添加失败");
-        monitorDictionary.setId(UUIDUtil.getUUID());
-        monitorDictionaryService.insert(monitorDictionary);
+        basicNursing.setId(UUIDUtil.getUUID());
+        basicNursing.setCreateTime(new Date());
+        basicNursingService.insert(basicNursing);
         json.put("code",HttpCode.OK_CODE.getCode());
         json.put("msg","添加成功");
         return json.toString();
     }
 
     /**
-     * 更新一条监护仪字典表数据
+     * 更新基础护理表记录状态
      * @param map
      * @return
      */
@@ -58,23 +59,23 @@ public class MonitorDictionaryController {
         JSONObject json=new JSONObject();
         json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("msg","更新失败");
-        if(map !=null && map.containsKey("id") && map.containsKey("status")){
-            MonitorDictionary monitorDictionary=monitorDictionaryService.queryData(map.get("id").toString());
-            if(monitorDictionary!=null){
-                monitorDictionary.setStatus((int)map.get("status"));
-                monitorDictionaryService.update(monitorDictionary);
+        if(map!=null && map.containsKey("id") && map.containsKey("status") ){
+            BasicNursing basicNursing=basicNursingService.queryData(map.get("id").toString());
+            if(basicNursing!=null){
+                basicNursing.setStatus((int)map.get("status"));
+                basicNursingService.update(basicNursing);
                 json.put("msg","更新成功");
-                json.put("code",HttpCode.OK_CODE.getCode());
             }else{
-                json.put("msg","更新失败，查无此条数据。");
+                json.put("msg","更新失败，没有这个对象。");
                 return json.toString();
             }
         }
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
     /**
-     * 编辑监护仪字典表数据
+     * 编辑基础护理表记录单
      * @param map
      * @return
      */
@@ -84,26 +85,24 @@ public class MonitorDictionaryController {
         JSONObject json=new JSONObject();
         json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("msg","编辑失败");
-        if(map!=null && map.containsKey("id") && map.containsKey("status") && map.containsKey("monitorName") && map.containsKey("monitorIp") && map.containsKey("monitorPort")){
-            MonitorDictionary monitorDictionary=monitorDictionaryService.queryData(map.get("id").toString());
-            if(monitorDictionary!=null){
-                monitorDictionary.setStatus((int)map.get("status"));
-                monitorDictionary.setMonitorName(map.get("monitorName").toString());
-                monitorDictionary.setMonitorIp(map.get("monitorIp").toString());
-                monitorDictionary.setMonitorPort(map.get("monitorPort").toString());
-                monitorDictionaryService.update(monitorDictionary);
+        if(map!=null && map.containsKey("id") && map.containsKey("status") && map.containsKey("bedName")){
+            BasicNursing basicNursing=basicNursingService.queryData(map.get("id").toString());
+            if(basicNursing!=null){
+                basicNursing.setStatus((int)map.get("status"));
+                basicNursingService.update(basicNursing);
                 json.put("msg","编辑成功");
-                json.put("code",HttpCode.OK_CODE.getCode());
             }else{
-                json.put("msg","编辑失败，查无此条数据");
+                json.put("msg","编辑失败，没有这个对象。");
                 return json.toString();
             }
         }
+        json.put("code",HttpCode.OK_CODE.getCode());
+
         return json.toString();
     }
 
     /**
-     * 删除一条监护仪字典表数据
+     * 删除基础护理表记录
      * @param map
      * @return
      */
@@ -114,22 +113,22 @@ public class MonitorDictionaryController {
         json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("msg","删除失败");
         if(map.containsKey("id")){
-            MonitorDictionary monitorDictionary=monitorDictionaryService.queryData(map.get("id").toString());
-            if(monitorDictionary!=null){
-                monitorDictionary.setStatus(-1);
-                monitorDictionaryService.update(monitorDictionary);
+            BasicNursing basicNursing=basicNursingService.queryData(map.get("id").toString());
+            if(basicNursing!=null){
+                basicNursing.setStatus(-1);
+                basicNursingService.update(basicNursing);
                 json.put("msg","删除成功");
-                json.put("code",HttpCode.OK_CODE.getCode());
             }else{
-                json.put("msg","删除失败,查无此条数据");
+                json.put("msg","删除失败，没有这个对象。");
                 return json.toString();
             }
         }
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
     /**
-     * 根据主键id查询一条监护仪数据
+     * 根据主键id查询基础护理表记录
      * @param map
      * @return
      */
@@ -141,10 +140,10 @@ public class MonitorDictionaryController {
         json.put("data",new ArrayList<>());
         json.put("msg","暂无数据");
         if(map !=null && map.containsKey("id")){
-            MonitorDictionary monitorDictionary=monitorDictionaryService.queryData(map.get("id").toString());
-            if(monitorDictionary!=null){
+            BasicNursing basicNursing=basicNursingService.queryData(map.get("id").toString());
+            if(basicNursing!=null){
                 json.put("msg","查询成功");
-                json.put("data",JSONObject.fromObject(monitorDictionary));
+                json.put("data",JSONObject.fromObject(basicNursing));
             }
         }
         json.put("code",HttpCode.OK_CODE.getCode());
@@ -152,7 +151,7 @@ public class MonitorDictionaryController {
     }
 
     /**
-     * 根据条件查询监护仪数据列表（可分页）
+     * 根据条件分页查询基础护理表记录列表（也可以不分页）
      * @param map
      * @return
      */
@@ -164,11 +163,11 @@ public class MonitorDictionaryController {
         json.put("data",new ArrayList<>());
         json.put("msg","暂无数据");
         if(map!=null && map.containsKey("start")){
-            int totalCount =monitorDictionaryService.queryNum(map);
+            int totalCount =basicNursingService.queryNum(map);
             map.put("start",((int)map.get("start")-1)*(int)map.get("size"));
             json.put("totalCount",totalCount);
         }
-        List<MonitorDictionary> list =monitorDictionaryService.queryList(map);
+        List<BasicNursing> list =basicNursingService.queryList(map);
         if(list!=null && list.size()>0){
             json.put("msg","查询成功");
             json.put("data",JSONArray.fromObject(list));
@@ -177,24 +176,4 @@ public class MonitorDictionaryController {
         return json.toString();
     }
 
-    /**
-     * 床位安排--查询未分配的监护仪
-     * @param map
-     * @return
-     */
-    @RequestMapping(value = "/getNoBedMonitorList",method= RequestMethod.POST)
-    @ResponseBody
-    public String getNoBedMonitorList(@RequestBody(required=false) Map<String,Object> map){
-        JSONObject json=new JSONObject();
-        json.put("code",HttpCode.FAILURE_CODE.getCode());
-        json.put("data",new ArrayList<>());
-        json.put("msg","暂无数据");
-        List<MonitorDictionary> list =monitorDictionaryService.getNoBedMonitorList(map);
-        if(list!=null && list.size()>0){
-            json.put("msg","查询成功");
-            json.put("data",JSONArray.fromObject(list));
-        }
-        json.put("code",HttpCode.OK_CODE.getCode());
-        return json.toString();
-    }
 }

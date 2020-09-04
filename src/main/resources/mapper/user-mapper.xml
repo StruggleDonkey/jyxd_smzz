@@ -97,4 +97,19 @@
         </if>
     </select>
 
+    <select id="getUserListByType" resultType="java.util.Map">
+        SELECT
+            tu.name,
+            tut.user_type_name,
+            tu.work_number
+        FROM
+            table_user_type tut
+        LEFT JOIN table_user tu ON tut.user_type_code = tu.user_type_code
+        WHERE
+            tut.status = 1
+        AND tu.status = 1
+        <if test="userTypeName != null and userTypeName != ''">
+            and  tut.user_type_name = #{userTypeName}
+        </if>
+    </select>
 </mapper>

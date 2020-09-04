@@ -1,5 +1,6 @@
 package com.jyxd.web.data.patient;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -50,24 +51,28 @@ public class Patient implements Serializable {
     /**
      * 住院时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Column(name = "visit_time")
     private Date visitTime;
 
     /**
      * 入科时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Column(name = "enter_time")
     private Date enterTime;
 
     /**
      * 出科时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Column(name = "exit_time")
     private Date exitTime;
 
     /**
      * 死亡时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Column(name = "death_time")
     private Date deathTime;
 
@@ -176,6 +181,7 @@ public class Patient implements Serializable {
     /**
      * 手术时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Column(name = "operation_time")
     private Date operationTime;
 
@@ -260,6 +266,7 @@ public class Patient implements Serializable {
     /**
      * 采集开关修改时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Column(name = "modify_collect_time")
     private Date modifyCollectTime;
 
@@ -272,6 +279,7 @@ public class Patient implements Serializable {
     /**
      * 采集频率修改时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Column(name = "modify_frequency_time")
     private Date modifyFrequencyTime;
 

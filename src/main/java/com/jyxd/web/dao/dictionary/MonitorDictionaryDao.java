@@ -43,4 +43,11 @@ public interface MonitorDictionaryDao {
      * @return
      */
     int queryNum(Map<String, Object> map);
+
+    /**
+     * 床位安排--查询未分配的监护仪
+     * @param map
+     * @return list
+     */
+    List<MonitorDictionary> getNoBedMonitorList(Map<String, Object> map);
 }

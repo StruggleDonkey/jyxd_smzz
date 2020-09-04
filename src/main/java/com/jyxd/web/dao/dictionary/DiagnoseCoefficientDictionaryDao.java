@@ -50,4 +50,11 @@ public interface DiagnoseCoefficientDictionaryDao {
      * @return
      */
     int queryNum(Map<String, Object> map);
+
+    /**
+     * 根据条件查询列表对象
+     * @param map
+     * @return list
+     */
+    List<DiagnoseCoefficientDictionary> getList(Map<String, Object> map);
 }

@@ -150,4 +150,13 @@ public class PatientService {
         return patientDao.getBedPatientList();
     }
 
+    /**
+     * 查询待分配或已出科的病人列表（是否分配床位）
+     * @param map
+     * @return
+     */
+    public List<Patient> getNoBedPatientList(Map<String,Object> map){
+        return patientDao.getNoBedPatientList(map);
+    }
+
 }
