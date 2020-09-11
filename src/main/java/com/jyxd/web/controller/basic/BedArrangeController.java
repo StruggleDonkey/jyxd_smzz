@@ -323,6 +323,7 @@ public class BedArrangeController {
                     patient.setExitTime(date);
                 }
                 patientService.update(patient);
+
             }
         }
         json.put("msg","出科成功");

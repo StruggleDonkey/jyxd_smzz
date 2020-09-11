@@ -81,6 +81,7 @@
             IFNULL(pp.visit_id, "") AS visit_id,
             IFNULL(pp.visit_code, "") AS visit_code,
             IFNULL(pp.sex, "") AS sex,
+            IFNULL(pp.id, "") AS patientId,
             IFNULL(dm.monitor_name, "") AS monitor_name,
             IFNULL(dm.monitor_code, "") AS monitor_code
         FROM

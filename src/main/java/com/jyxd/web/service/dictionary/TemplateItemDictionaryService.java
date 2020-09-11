@@ -33,4 +33,12 @@ public class TemplateItemDictionaryService {
     }
 
     public int queryNum(Map<String,Object> map){return templateItemDictionaryDao.queryNum(map);}
+
+    public List<Map<String,Object>> getList(Map<String,Object> map){
+        return templateItemDictionaryDao.getList(map);
+    }
+
+    public int getNum(Map<String,Object> map){
+        return templateItemDictionaryDao.getNum(map);
+    }
 }

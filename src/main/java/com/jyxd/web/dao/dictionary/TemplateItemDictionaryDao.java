@@ -43,4 +43,18 @@ public interface TemplateItemDictionaryDao {
      * @return
      */
     int queryNum(Map<String, Object> map);
+
+    /**
+     * 根据条件分页查询护理模板表记录列表（也可以不分页、多表查询）
+     * @param map
+     * @return
+     */
+    List<Map<String,Object>> getList(Map<String,Object> map);
+
+    /**
+     * 根据条件查询列表总记录数--多表查询
+     * @param map
+     * @return
+     */
+    int getNum(Map<String,Object> map);
 }

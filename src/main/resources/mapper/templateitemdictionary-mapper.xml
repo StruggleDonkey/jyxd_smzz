@@ -15,8 +15,8 @@
     </resultMap>
     
     <sql id="templateItemDictionary_colums">id,template_id,template_item_name,spell,content,status,sort_num,operator_code,create_time</sql>
-    <sql id="templateItemDictionary_propertys">#{id},#{templateId},#{templateItemName},#{spell}},#{content}},#{status}},#{sortNum}},#{operatorCode}},#{createTime}}</sql>
-    <sql id="templateItemDictionary_update">template_id=#{templateId},template_item_name=#{templateItemName},spell=#{spell}},content=#{content}},status=#{status}},sort_num=#{sortNum}},operator_code=#{operatorCode}},create_time=#{createTime}</sql>
+    <sql id="templateItemDictionary_propertys">#{id},#{templateId},#{templateItemName},#{spell},#{content},#{status},#{sortNum},#{operatorCode},#{createTime}</sql>
+    <sql id="templateItemDictionary_update">template_id=#{templateId},template_item_name=#{templateItemName},spell=#{spell},content=#{content},status=#{status},sort_num=#{sortNum},operator_code=#{operatorCode},create_time=#{createTime}</sql>
 
     <insert id="insert">
         insert into
@@ -74,4 +74,57 @@
         </if>
     </select>
 
+    <select id="getList" resultType="java.util.Map">
+        select
+          dti.id,
+          dti.template_id,
+          dti.template_item_name,
+          dti.spell,
+          dti.content,
+          dti.status,
+          dti.sort_num,
+          dti.operator_code,
+          dti.create_time,
+          dt.dic_template_name
+        from
+        dict_template_item dti
+        left join dict_template dt on dti.template_id=dt.id
+        where
+        1=1
+        and  dti.status != -1
+        and dt.status !=-1
+        <if test="templateItemName != null and templateItemName != ''">
+            and  dti.template_item_name like '%${templateItemName}%'
+        </if>
+        <if test="status != null ">
+            and  dti.status= #{status}
+        </if>
+        <if test="templateId != null and templateId != ''">
+            and  dti.template_id= #{templateId}
+        </if>
+        order by dti.sort_num
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="getNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+          count(dti.id)
+        from
+        dict_template_item dti
+        left join dict_template dt on dti.template_id=dt.id
+        where
+        1=1
+        and  dti.status != -1
+        and dt.status !=-1
+        <if test="templateItemName != null and templateItemName != ''">
+            and  dti.template_item_name like '%${templateItemName}%'
+        </if>
+        <if test="status != null ">
+            and  dti.status= #{status}
+        </if>
+        <if test="templateId != null and templateId != ''">
+            and  dti.template_id= #{templateId}
+        </if>
+    </select>
 </mapper>
