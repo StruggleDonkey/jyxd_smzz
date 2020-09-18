@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyxd.web.dao.basic.KeyEventDao">
+
+    <resultMap id="keyEventMap" type="com.jyxd.web.data.basic.KeyEvent">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="visit_id" property="visitId" jdbcType="VARCHAR"/>
+        <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
+        <result column="event_time" property="eventTime" jdbcType="DATE"/>
+        <result column="event_level" property="eventLevel" jdbcType="INTEGER"/>
+        <result column="event_type" property="eventType" jdbcType="VARCHAR"/>
+        <result column="event_content" property="eventContent" jdbcType="VARCHAR"/>
+        <result column="is_show" property="isShow" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="DATE"/>
+        <result column="operator_code" property="operatorCode" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+    </resultMap>
+    
+    <sql id="keyEvent_colums">id,visit_id,patient_id,event_time,event_level,event_type,event_content,is_show,create_time,operator_code,status</sql>
+
+    <sql id="keyEvent_propertys">#{id},#{visitId},#{patientId},#{eventTime},#{eventLevel}, #{eventType}, #{event_content}, #{is_show},
+                                  #{createTime},#{operatorCode},#{status}</sql>
+
+    <sql id="keyEvent_update">visit_id=#{visitId},patient_id=#{patientId},event_time=#{eventTime},event_level=#{eventLevel},event_type=#{eventType},
+                              event_content=#{eventContent},is_show=#{isShow},create_time=#{createTime},
+                              operator_code=#{operatorCode},status=#{status}</sql>
+
+    <insert id="insert">
+        insert into
+        table_key_event(<include refid="keyEvent_colums"></include>)
+        values (<include refid="keyEvent_propertys"></include>)
+    </insert>
+
+    <update id="update" parameterType="com.jyxd.web.data.basic.KeyEvent" >
+        update
+        table_key_event
+        set <include refid="keyEvent_update"></include>
+        where
+          id=#{id}
+    </update>
+
+    <select id="queryData" resultMap="keyEventMap" parameterType="java.lang.String">
+        select
+          <include refid="keyEvent_colums"></include>
+        from
+        table_key_event
+        where
+          id=#{id}
+    </select>
+
+    <select id="queryList" resultType="java.util.Map">
+        select
+          <include refid="keyEvent_colums"></include>
+        from
+        table_key_event
+        where
+          1=1
+        and  status != -1
+        <if test="content != null and content != ''">
+            and  content like '%${content}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+          count(id)
+        from
+        table_key_event
+        where
+        1=1
+        and  status != -1
+        <if test="content != null and content != ''">
+            and  content like '%${content}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
+
+</mapper>

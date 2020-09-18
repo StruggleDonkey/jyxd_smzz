@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyxd.web.dao.basic.OperationDao">
+
+    <resultMap id="operationMap" type="com.jyxd.web.data.basic.Operation">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="visit_id" property="visitId" jdbcType="VARCHAR"/>
+        <result column="visit_code" property="visitCode" jdbcType="VARCHAR"/>
+        <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
+        <result column="operation_time" property="operationTime" jdbcType="DATE"/>
+        <result column="operation_id" property="operationId" jdbcType="VARCHAR"/>
+        <result column="operation_code" property="operationCode" jdbcType="VARCHAR"/>
+        <result column="operation_name" property="operationName" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="DATE"/>
+        <result column="operator_code" property="operatorCode" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+    </resultMap>
+    
+    <sql id="operation_colums">id,visit_id,visit_code,patient_id,operation_time,operation_id,operation_code,operation_name,create_time,operator_code,status</sql>
+
+    <sql id="operation_propertys">#{id},#{visitId},#{visitCode},#{patientId},#{operationTime},#{operationId},
+                                  #{operationCode},#{operationName},#{createTime},#{operatorCode},#{status}</sql>
+
+    <sql id="operation_update">visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},
+                              operation_time=#{operationTime},operation_id=#{operationId},operationCode=#{operationCode},operation_name=#{operationName},
+                              create_time=#{createTime},operator_code=#{operatorCode},status=#{status}</sql>
+
+    <insert id="insert">
+        insert into
+        table_operation(<include refid="operation_colums"></include>)
+        values (<include refid="operation_propertys"></include>)
+    </insert>
+
+    <update id="update" parameterType="com.jyxd.web.data.basic.Operation" >
+        update
+        table_operation
+        set <include refid="operation_update"></include>
+        where
+          id=#{id}
+    </update>
+
+    <select id="queryData" resultMap="operationMap" parameterType="java.lang.String">
+        select
+          <include refid="operation_colums"></include>
+        from
+        table_operation
+        where
+          id=#{id}
+    </select>
+
+    <select id="queryList" resultType="java.util.Map">
+        select
+          <include refid="operation_colums"></include>
+        from
+        table_operation
+        where
+          1=1
+        and  status != -1
+        <if test="content != null and content != ''">
+            and  content like '%${content}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+          count(id)
+        from
+        table_operation
+        where
+        1=1
+        and  status != -1
+        <if test="content != null and content != ''">
+            and  content like '%${content}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
+
+</mapper>

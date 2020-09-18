@@ -51,6 +51,7 @@
         <if test="status != null ">
             and  status= #{status}
         </if>
+        order by sort_num
         <if test="start != null ">limit #{start},</if>
         <if test="size != null ">#{size}</if>
     </select>

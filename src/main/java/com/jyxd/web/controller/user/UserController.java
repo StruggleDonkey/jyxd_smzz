@@ -3,10 +3,13 @@ package com.jyxd.web.controller.user;
 import com.jyxd.web.data.user.User;
 import com.jyxd.web.service.user.UserService;
 import com.jyxd.web.util.HttpCode;
+import com.jyxd.web.util.JsonArrayValueProcessor;
 import com.jyxd.web.util.MD5Util;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -176,7 +180,10 @@ public class UserController {
             map.put("password", MD5Util.getMD5String(map.get("password").toString()));
             User user=userService.queryUserByNameAndPassword(map);
             if(user!=null){
+                JsonConfig jsonConfig=new JsonConfig();
+                jsonConfig.registerJsonValueProcessor(Date.class,new JsonArrayValueProcessor());
                 session.setAttribute("user",user);
+                json.put("user",JSONObject.fromObject(user,jsonConfig));
                 json.put("code",HttpCode.OK_CODE.getCode());
                 json.put("msg","登录成功");
             }
@@ -220,6 +227,71 @@ public class UserController {
         }
         json.put("code",HttpCode.OK_CODE.getCode());
         json.put("msg","查询成功");
+        return json.toString();
+    }
+
+    /**
+     * 用户登录成功后获取登录信息
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/getUser",method= RequestMethod.POST)
+    @ResponseBody
+    public String getUser(@RequestBody(required=false) Map<String,Object> map, HttpSession session){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.LOGIN_FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","获取失败！");
+        User user=(User) session.getAttribute("user");
+        if(user!=null){
+            JsonConfig jsonConfig=new JsonConfig();
+            jsonConfig.registerJsonValueProcessor(Date.class,new JsonArrayValueProcessor());
+            json.put("user",JSONObject.fromObject(user,jsonConfig));
+            json.put("code",HttpCode.OK_CODE.getCode());
+            json.put("msg","获取成功");
+        }
+        return json.toString();
+    }
+
+    /**
+     * 解锁 锁屏
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/unlock",method= RequestMethod.POST)
+    @ResponseBody
+    public String unlock(@RequestBody(required=false) Map<String,Object> map, HttpSession session){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.LOGIN_FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","解锁失败！");
+        User user=(User) session.getAttribute("user");
+        if(user!=null && user.getPassword().equals(MD5Util.getMD5String(map.get("password").toString()))){
+            String url=(String)session.getAttribute("url");
+            json.put("url",url);
+            json.put("code",HttpCode.OK_CODE.getCode());
+            json.put("msg","解锁成功");
+        }
+        return json.toString();
+    }
+
+    /**
+     * 锁屏
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/lock",method= RequestMethod.POST)
+    @ResponseBody
+    public String lock(@RequestBody(required=false) Map<String,Object> map, HttpSession session){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.LOGIN_FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","锁屏失败！");
+        if(StringUtils.isNotEmpty(map.get("url").toString())){
+            session.setAttribute("url",map.get("url").toString());
+            json.put("code",HttpCode.OK_CODE.getCode());
+            json.put("msg","锁屏成功");
+        }
         return json.toString();
     }
 }

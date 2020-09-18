@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyxd.web.dao.basic.MedOrderExecDao">
+
+    <resultMap id="medOrderExecMap" type="com.jyxd.web.data.basic.MedOrderExec">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="visit_id" property="visitId" jdbcType="VARCHAR"/>
+        <result column="visit_code" property="visitCode" jdbcType="VARCHAR"/>
+        <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
+        <result column="order_code" property="orderCode" jdbcType="VARCHAR"/>
+        <result column="order_no" property="orderNo" jdbcType="VARCHAR"/>
+        <result column="order_sub_no" property="orderSubNo" jdbcType="VARCHAR"/>
+        <result column="order_name" property="orderName" jdbcType="VARCHAR"/>
+        <result column="specs" property="specs" jdbcType="VARCHAR"/>
+        <result column="drug_type" property="drugType" jdbcType="INTEGER"/>
+        <result column="order_attr" property="orderAttr" jdbcType="VARCHAR"/>
+        <result column="default_time_point" property="defaultTimePoint" jdbcType="DATE"/>
+        <result column="start_time_point" property="startTimePoint" jdbcType="DATE"/>
+        <result column="complete_time_point" property="completeTimePoint" jdbcType="DATE"/>
+        <result column="dosage" property="dosage" jdbcType="VARCHAR"/>
+        <result column="dosage_units" property="dosageUnits" jdbcType="VARCHAR"/>
+        <result column="all_dosage" property="allDosage" jdbcType="VARCHAR"/>
+        <result column="repeat_indicator" property="repeatIndicator" jdbcType="INTEGER"/>
+        <result column="use_mode" property="useMode" jdbcType="VARCHAR"/>
+        <result column="class_type" property="classType" jdbcType="VARCHAR"/>
+        <result column="frequency" property="frequency" jdbcType="VARCHAR"/>
+        <result column="perform_speed" property="performSpeed" jdbcType="VARCHAR"/>
+        <result column="speed_units" property="speedUnits" jdbcType="VARCHAR"/>
+        <result column="nurse_code" property="nurseCode" jdbcType="VARCHAR"/>
+        <result column="order_status" property="orderStatus" jdbcType="INTEGER"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="DATE"/>
+        <result column="update_time" property="updateTime" jdbcType="DATE"/>
+        <result column="is_sync" property="isSync" jdbcType="INTEGER"/>
+    </resultMap>
+    
+    <sql id="medOrderExec_colums">id,visit_id,visit_code,patient_id,order_code,order_no,
+                                    order_sub_no,order_name,specs,drug_type,order_attr,
+                                    default_time_point,start_time_point,complete_time_point,
+                                    dosage,dosage_units,all_dosage,repeat_indicator,use_mode,
+                                    class_type,frequency,perform_speed,speed_units,nurse_code,
+                                    order_status,remark,create_time,update_time,is_sync</sql>
+
+    <sql id="medOrderExec_propertys">#{id},#{visitId},#{visitCode},#{patientId},#{orderCode},#{orderNo},
+                                    #{orderSubNo},#{orderName},#{specs},#{drugType},#{orderAttr},#{defaultTimePoint},
+                                    #{startTimePoint},#{completeTimePoint},#{dosage},#{dosageUnits},#{allDosage},
+                                    #{repeatIndicator},#{useMode},#{classType},#{frequency},#{performSpeed},#{speedUnits},
+                                    #{nurseCode},#{orderStatus},#{remark},#{createTime},#{updateTime},#{isSync}</sql>
+
+    <sql id="medOrderExec_update">visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},
+                                    order_code=#{orderCode},order_no=#{orderNo},order_sub_no=#{orderSubNo},
+                                    order_name=#{orderName},specs=#{specs},drug_type=#{drugType},
+                                    order_attr=#{orderAttr},default_time_point=#{defaultTimePoint},
+                                    start_time_point=#{startTimePoint},complete_time_point=#{completeTimePoint},
+                                    dosage=#{dosage},dosage_units=#{dosageUnits},all_dosage=#{allDosage},
+                                    repeat_indicator=#{repeatIndicator},use_mode=#{useMode},class_type=#{classType},
+                                    frequency=#{frequency},perform_speed=#{performSpeed},speed_units=#{speedUnits},
+                                    nurse_code=#{nurseCode},order_status=#{orderStatus},remark=#{remark},
+                                    create_time=#{createTime},update_time=#{updateTime},is_sync=#{isSync}</sql>
+
+    <insert id="insert">
+        insert into
+        table_med_order_exec(<include refid="medOrderExec_colums"></include>)
+        values (<include refid="medOrderExec_propertys"></include>)
+    </insert>
+
+    <update id="update" parameterType="com.jyxd.web.data.basic.MedOrderExec" >
+        update
+        table_med_order_exec
+        set <include refid="medOrderExec_update"></include>
+        where
+          id=#{id}
+    </update>
+
+    <select id="queryData" resultMap="medOrderExecMap" parameterType="java.lang.String">
+        select
+          <include refid="medOrderExec_colums"></include>
+        from
+        table_med_order_exec
+        where
+          id=#{id}
+    </select>
+
+    <select id="queryList" resultType="java.util.Map">
+        select
+          <include refid="medOrderExec_colums"></include>
+        from
+        table_med_order_exec
+        where
+          1=1
+        <if test="content != null and content != ''">
+            and  content like '%${content}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+          count(id)
+        from
+        table_med_order_exec
+        where
+        1=1
+        <if test="content != null and content != ''">
+            and  content like '%${content}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
+
+</mapper>

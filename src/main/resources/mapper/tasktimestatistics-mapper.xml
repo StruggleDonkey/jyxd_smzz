@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyxd.web.dao.basic.TaskTimeStatisticsDao">
+
+    <resultMap id="taskTimeStatisticsMap" type="com.jyxd.web.data.basic.TaskTimeStatistics">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="statistics_type" property="statisticsType" jdbcType="VARCHAR"/>
+        <result column="statistic_date" property="statisticDate" jdbcType="DATE"/>
+    </resultMap>
+    
+    <sql id="taskTimeStatistics_colums">id,statistics_type,statistic_date</sql>
+
+    <sql id="taskTimeStatistics_propertys">#{id},#{statisticsType},#{statisticDate}</sql>
+
+    <sql id="taskTimeStatistics_update">statistics_type=#{statisticsType},statistic_date=#{statisticDate}</sql>
+
+    <insert id="insert">
+        insert into
+        table_task_time_statistics(<include refid="taskTimeStatistics_colums"></include>)
+        values (<include refid="taskTimeStatistics_propertys"></include>)
+    </insert>
+
+    <update id="update" parameterType="com.jyxd.web.data.basic.TaskTimeStatistics" >
+        update
+        table_task_time_statistics
+        set <include refid="taskTimeStatistics_update"></include>
+        where
+          id=#{id}
+    </update>
+
+    <select id="queryData" resultMap="taskTimeStatisticsMap" parameterType="java.lang.String">
+        select
+          <include refid="taskTimeStatistics_colums"></include>
+        from
+        table_task_time_statistics
+        where
+          id=#{id}
+    </select>
+
+    <select id="queryList" resultType="java.util.Map">
+        select
+          <include refid="taskTimeStatistics_colums"></include>
+        from
+        table_task_time_statistics
+        where
+          1=1
+        <if test="content != null and content != ''">
+            and  content like '%${content}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+          count(id)
+        from
+        table_task_time_statistics
+        where
+        1=1
+        <if test="content != null and content != ''">
+            and  content like '%${content}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
+
+</mapper>

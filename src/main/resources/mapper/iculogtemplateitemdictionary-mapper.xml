@@ -31,7 +31,7 @@
 		#{allowUnplanned},#{synNursing},#{nursingBeginContent},#{nursingEndContent},#{nursingUnplannedEndContent},#{status},#{sortNum},
 		#{operatorCode},#{synTable},#{synCode},#{synValueSelect},#{synValue},#{synMethod},#{createTime}</sql>
     <sql id="icuLogTemplateItemDictionary_update">icu_log_template_id=#{icuLogTemplateId},icu_log_template_item_name=#{icuLogTemplateItemName},
-        icu_log_template_item_type#{icuLogTemplateItemType},log_form=#{logForm},allow_unplanned=#{allowUnplanned},
+        icu_log_template_item_type=#{icuLogTemplateItemType},log_form=#{logForm},allow_unplanned=#{allowUnplanned},
 		syn_nursing=#{synNursing},nursing_begin_content=#{nursingBeginContent},nursing_end_content=#{nursingEndContent},
 		nursing_unplanned_end_content=#{nursingUnplannedEndContent},status=#{status},
 		sort_num=#{sortNum},operator_code=#{operatorCode},syn_table=#{synTable},syn_code=#{synCode},
@@ -93,4 +93,73 @@
         </if>
     </select>
 
+    <select id="getList" resultType="java.util.Map">
+        select
+            IFNULL(dilti.id,"") as id,
+            IFNULL(dilti.icu_log_template_id,"") as icu_log_template_id,
+            IFNULL(dilti.icu_log_template_item_name,"") as icu_log_template_item_name,
+            IFNULL(dilti.icu_log_template_item_type,"") as icu_log_template_item_type,
+            dilti.log_form,
+            IFNULL(dilti.allow_unplanned,"") as allow_unplanned,
+            IFNULL(dilti.syn_nursing,"") as syn_nursing,
+            IFNULL(dilti.nursing_begin_content,"") as nursing_begin_content,
+            IFNULL(dilti.nursing_end_content,"") as nursing_end_content,
+            IFNULL(dilti.nursing_unplanned_end_content,"") as nursing_unplanned_end_content,
+            dilti.status,
+            IFNULL(dilti.sort_num,"") as sort_num,
+            IFNULL(dilti.operator_code,"") as operator_code,
+            IFNULL(dilti.syn_table,"") as syn_table,
+            IFNULL(dilti.syn_code,"") as syn_code,
+            IFNULL(dilti.syn_value_select,"") as syn_value_select,
+            IFNULL(dilti.syn_value,"") as syn_value,
+            IFNULL(dilti.syn_method,"") as syn_method,
+            IFNULL(dilti.create_time,"") as create_time,
+            IFNULL(dilt.template_name,"") as template_name
+        from
+          dict_icu_log_template_item dilti
+        left join dict_icu_log_template dilt on dilti.icu_log_template_id=dilt.id
+        where
+        1=1
+        and  dilti.status != -1
+        and  dilt.status != -1
+        <if test="icuLogTemplateItemName != null and icuLogTemplateItemName != ''">
+            and  dilti.icu_log_template_item_name like '%${icuLogTemplateItemName}%'
+        </if>
+        <if test="icuLogTemplateId != null and icuLogTemplateId != ''">
+            and  dilti.icu_log_template_id = #{icuLogTemplateId}
+        </if>
+        <if test="status != null ">
+            and  dilti.status= #{status}
+        </if>
+        <if test="logForm != null ">
+            and  dilti.log_form= #{logForm}
+        </if>
+        order by dilti.sort_num
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="getNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+        count(dilti.id)
+        from
+        dict_icu_log_template_item dilti
+        left join dict_icu_log_template dilt on dilti.icu_log_template_id=dilt.id
+        where
+        1=1
+        and  dilti.status != -1
+        and  dilt.status != -1
+        <if test="icuLogTemplateItemName != null and icuLogTemplateItemName != ''">
+            and  dilti.icu_log_template_item_name like '%${icuLogTemplateItemName}%'
+        </if>
+        <if test="icuLogTemplateId != null and icuLogTemplateId != ''">
+            and  dilti.icu_log_template_id = #{icuLogTemplateId}
+        </if>
+        <if test="status != null ">
+            and  dilti.status= #{status}
+        </if>
+        <if test="logForm != null ">
+            and  dilti.log_form= #{logForm}
+        </if>
+    </select>
 </mapper>

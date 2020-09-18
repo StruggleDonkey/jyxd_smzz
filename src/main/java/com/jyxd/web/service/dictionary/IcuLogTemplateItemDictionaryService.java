@@ -33,4 +33,10 @@ public class IcuLogTemplateItemDictionaryService {
     }
 
     public int queryNum(Map<String,Object> map){return icuLogTemplateItemDictionaryDao.queryNum(map);}
+
+    public List<Map<String,Object>> getList(Map<String,Object> map){
+        return icuLogTemplateItemDictionaryDao.getList(map);
+    }
+
+    public int getNum(Map<String,Object> map){return icuLogTemplateItemDictionaryDao.getNum(map);}
 }

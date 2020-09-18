@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyxd.web.dao.basic.InOutIcuStatisticsDao">
+
+    <resultMap id="inOutIcuStatisticsMap" type="com.jyxd.web.data.basic.InOutIcuStatistics">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="statistics_date" property="statisticsDate" jdbcType="DATE"/>
+        <result column="old_in_num" property="oldInNum" jdbcType="INTEGER"/>
+        <result column="current_in_num" property="currentInNum" jdbcType="INTEGER"/>
+        <result column="new_in_num" property="newInNum" jdbcType="INTEGER"/>
+        <result column="out_num" property="outNum" jdbcType="INTEGER"/>
+        <result column="out_exit_num" property="outExitNum" jdbcType="INTEGER"/>
+        <result column="out_trans_num" property="outTransNum" jdbcType="INTEGER"/>
+        <result column="out_death_num" property="outDeathNum" jdbcType="INTEGER"/>
+        <result column="out_abandon_num" property="outAbandonNum" jdbcType="INTEGER"/>
+        <result column="out_trans_hosp_num" property="outTransHospNum" jdbcType="INTEGER"/>
+        <result column="two_day_in_again_num" property="twoDayInAgainNum" jdbcType="INTEGER"/>
+    </resultMap>
+    
+    <sql id="inOutIcuStatistics_colums">id,statistics_date,old_in_num,current_in_num,new_in_num,out_num,out_exit_num,out_trans_num,out_death_num,
+                                        out_abandon_num,out_trans_hosp_num,two_day_in_again_num</sql>
+
+    <sql id="inOutIcuStatistics_propertys">#{id},#{statisticsDate},#{oldInNum},#{currentInNum},#{newInNum},#{outNum},#{outExitNum},#{outTransNum},
+                                  #{outDeathNum},#{outAbandonNum},#{outTransHospNum},#{twoDayInAgainNum}</sql>
+
+    <sql id="inOutIcuStatistics_update">statistics_date=#{statisticsDate},old_in_num=#{oldInNum},current_in_num=#{currentInNum}, new_in_num=#{newInNum},
+                              out_num=#{outNum},out_exit_num=#{outExitNum},out_trans_num=#{outTransNum},out_death_num=#{outDeathNum},
+                              out_abandon_num=#{outAbandonNum},out_trans_hosp_num=#{outTransHospNum},two_day_in_again_num=#{twoDayInAgainNum}</sql>
+
+    <insert id="insert">
+        insert into
+        table_in_out_icu_statistics(<include refid="inOutIcuStatistics_colums"></include>)
+        values (<include refid="inOutIcuStatistics_propertys"></include>)
+    </insert>
+
+    <update id="update" parameterType="com.jyxd.web.data.basic.InOutIcuStatistics" >
+        update
+        table_in_out_icu_statistics
+        set <include refid="inOutIcuStatistics_update"></include>
+        where
+          id=#{id}
+    </update>
+
+    <select id="queryData" resultMap="inOutIcuStatisticsMap" parameterType="java.lang.String">
+        select
+          <include refid="inOutIcuStatistics_colums"></include>
+        from
+        table_in_out_icu_statistics
+        where
+          id=#{id}
+    </select>
+
+    <select id="queryList" resultType="java.util.Map">
+        select
+          <include refid="inOutIcuStatistics_colums"></include>
+        from
+        table_in_out_icu_statistics
+        where
+          1=1
+        <if test="content != null and content != ''">
+            and  content like '%${content}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+          count(id)
+        from
+        table_in_out_icu_statistics
+        where
+        1=1
+        <if test="content != null and content != ''">
+            and  content like '%${content}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
+
+</mapper>

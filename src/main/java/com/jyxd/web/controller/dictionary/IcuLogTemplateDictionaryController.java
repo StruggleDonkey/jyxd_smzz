@@ -1,6 +1,7 @@
 package com.jyxd.web.controller.dictionary;
 
 import com.jyxd.web.data.dictionary.IcuLogTemplateDictionary;
+import com.jyxd.web.data.user.User;
 import com.jyxd.web.service.dictionary.IcuLogTemplateDictionaryService;
 import com.jyxd.web.util.HttpCode;
 import com.jyxd.web.util.UUIDUtil;
@@ -15,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -34,18 +37,25 @@ public class IcuLogTemplateDictionaryController {
      */
     @RequestMapping(value = "/insert")
     @ResponseBody
-    public String insert(@RequestBody IcuLogTemplateDictionary icuLogTemplateDictionary){
+    public String insert(@RequestBody IcuLogTemplateDictionary icuLogTemplateDictionary, HttpSession session){
         JSONObject json=new JSONObject();
         json.put("code", HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
+        json.put("msg","新增失败");
         icuLogTemplateDictionary.setId(UUIDUtil.getUUID());
+        icuLogTemplateDictionary.setCreateTime(new Date());
+        User user =(User) session.getAttribute("user");
+        if(user!=null){
+            icuLogTemplateDictionary.setOperatorCode(user.getLoginName());
+        }
         icuLogTemplateDictionaryService.insert(icuLogTemplateDictionary);
         json.put("code",HttpCode.OK_CODE.getCode());
+        json.put("msg","新增成功");
         return json.toString();
     }
 
     /**
-     * 更新或者删除ICU日志模板类型表记录
+     * 更新ICU日志模板类型表记录
      * @param map
      * @return
      */
@@ -54,12 +64,69 @@ public class IcuLogTemplateDictionaryController {
     public String update(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
         json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","更新失败");
         if(map.containsKey("id") && map.containsKey("status")){
             IcuLogTemplateDictionary icuLogTemplateDictionary=icuLogTemplateDictionaryService.queryData(map.get("id").toString());
             icuLogTemplateDictionary.setStatus((int)map.get("status"));
             icuLogTemplateDictionaryService.update(icuLogTemplateDictionary);
+            json.put("code",HttpCode.OK_CODE.getCode());
+            json.put("msg","更新成功");
         }
-        json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
+    /**
+     * 编辑ICU日志模板类型表记录
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/edit")
+    @ResponseBody
+    public String edit(@RequestBody(required=false) Map<String,Object> map,HttpSession session){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","编辑失败");
+        if(map.containsKey("id") && map.containsKey("status")&& map.containsKey("templateName") && map.containsKey("sortNum") ){
+            IcuLogTemplateDictionary icuLogTemplateDictionary=icuLogTemplateDictionaryService.queryData(map.get("id").toString());
+            if(icuLogTemplateDictionary!=null){
+                icuLogTemplateDictionary.setStatus((int)map.get("status"));
+                icuLogTemplateDictionary.setSortNum((int)map.get("sortNum"));
+                icuLogTemplateDictionary.setTemplateName(map.get("templateName").toString());
+                User user =(User) session.getAttribute("user");
+                if(user!=null){
+                    icuLogTemplateDictionary.setOperatorCode(user.getLoginName());
+                }
+                icuLogTemplateDictionaryService.update(icuLogTemplateDictionary);
+                json.put("code",HttpCode.OK_CODE.getCode());
+                json.put("msg","编辑成功");
+            }
+        }
+        return json.toString();
+    }
+
+    /**
+     * 删除ICU日志模板类型表记录
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/delete")
+    @ResponseBody
+    public String delete(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","删除失败");
+        if(map.containsKey("id")){
+            IcuLogTemplateDictionary icuLogTemplateDictionary=icuLogTemplateDictionaryService.queryData(map.get("id").toString());
+            if(icuLogTemplateDictionary!=null){
+                icuLogTemplateDictionary.setStatus(-1);
+                icuLogTemplateDictionaryService.update(icuLogTemplateDictionary);
+                json.put("code",HttpCode.OK_CODE.getCode());
+                json.put("msg","删除成功");
+            }
+        }
         return json.toString();
     }
 

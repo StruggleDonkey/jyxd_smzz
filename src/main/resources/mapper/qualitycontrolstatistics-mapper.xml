@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyxd.web.dao.basic.QualityControlStatisticsDao">
+
+    <resultMap id="qualityControlStatisticsMap" type="com.jyxd.web.data.basic.QualityControlStatistics">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="statistics_date" property="statisticsDate" jdbcType="DATE"/>
+        <result column="statistic_code" property="statisticCode" jdbcType="VARCHAR"/>
+        <result column="statistic_value" property="statisticValue" jdbcType="FLOAT"/>
+        <result column="statistic_chinese_name" property="statisticChineseName" jdbcType="VARCHAR"/>
+        <result column="update_time" property="updateTime" jdbcType="DATE"/>
+    </resultMap>
+    
+    <sql id="qualityControlStatistics_colums">id,statistics_date,statistic_code,statistic_value,statistic_chinese_name,update_time</sql>
+
+    <sql id="qualityControlStatistics_propertys">#{id},#{statisticsDate},#{statisticCode},#{statisticValue},#{statisticChineseName},#{updateTime}</sql>
+
+    <sql id="qualityControlStatistics_update">statistics_date=#{statisticsDate},statistic_code=#{statisticCode},statistic_value=#{statisticValue},
+                              statistic_chinese_name=#{statisticChineseName},update_time=#{updateTime}</sql>
+
+    <insert id="insert">
+        insert into
+        table_quality_control_statistics(<include refid="qualityControlStatistics_colums"></include>)
+        values (<include refid="qualityControlStatistics_propertys"></include>)
+    </insert>
+
+    <update id="update" parameterType="com.jyxd.web.data.basic.QualityControlStatistics" >
+        update
+        table_quality_control_statistics
+        set <include refid="qualityControlStatistics_update"></include>
+        where
+          id=#{id}
+    </update>
+
+    <select id="queryData" resultMap="qualityControlStatisticsMap" parameterType="java.lang.String">
+        select
+          <include refid="qualityControlStatistics_colums"></include>
+        from
+        table_quality_control_statistics
+        where
+          id=#{id}
+    </select>
+
+    <select id="queryList" resultType="java.util.Map">
+        select
+          <include refid="qualityControlStatistics_colums"></include>
+        from
+        table_quality_control_statistics
+        where
+          1=1
+        <if test="content != null and content != ''">
+            and  content like '%${content}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+          count(id)
+        from
+        table_quality_control_statistics
+        where
+        1=1
+        <if test="content != null and content != ''">
+            and  content like '%${content}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
+
+</mapper>
