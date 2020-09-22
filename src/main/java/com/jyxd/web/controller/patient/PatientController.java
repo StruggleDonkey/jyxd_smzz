@@ -437,4 +437,328 @@ public class PatientController {
         return json.toString();
     }
 
+    /**
+     * 统计分析--出入科--转入转出分析
+     * @return
+     */
+    @RequestMapping(value = "/getOutAndIn",method= RequestMethod.POST)
+    @ResponseBody
+    public String getOutAndIn(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        JSONArray array=new JSONArray();
+        JSONObject enterObj=new JSONObject();
+        JSONObject exitObj=new JSONObject();
+        enterObj.put("name","转入患者");
+        enterObj.put("value",0);
+        exitObj.put("name","转出患者");
+        exitObj.put("value",0);
+        if(map.containsKey("type")){
+            //flag 0：出科  1：在科
+            if(map.get("type").toString().equals("按天")){
+                String startTime=map.get("startTime").toString();
+                String endTime=map.get("endTime").toString();
+                map.put("flag",0);//出科
+                map.put("exitStartTime",startTime);
+                map.put("exitEndTime",endTime);
+                int exitNum=patientService.getOutAndIn(map);
+                exitObj.put("value",exitNum);
+                map.put("flag",1);//在科
+                map.put("enterStartTime",startTime);
+                map.put("enterEndTime",endTime);
+                int enterNum=patientService.getOutAndIn(map);
+                enterObj.put("value",enterNum);
+            }
+            if(map.get("type").toString().equals("按月")){
+                String startTime=map.get("year").toString()+"01-01";
+                String endTime=map.get("year").toString()+"12-31";
+                map.put("flag",0);//出科
+                map.put("exitStartTime",startTime);
+                map.put("exitEndTime",endTime);
+                int exitNum=patientService.getOutAndIn(map);
+                exitObj.put("value",exitNum);
+                map.put("flag",1);//在科
+                map.put("enterStartTime",startTime);
+                map.put("enterEndTime",endTime);
+                int enterNum=patientService.getOutAndIn(map);
+                enterObj.put("value",enterNum);
+            }
+        }
+        array.add(exitObj);
+        array.add(enterObj);
+        json.put("data",array);
+        json.put("msg","查询成功");
+        json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
+    /**
+     * 统计分析--出入科--转出方式分析
+     * @return
+     */
+    @RequestMapping(value = "/getExitType",method= RequestMethod.POST)
+    @ResponseBody
+    public String getExitType(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        JSONArray array=new JSONArray();
+        JSONObject obj1=new JSONObject();
+        JSONObject obj2=new JSONObject();
+        JSONObject obj3=new JSONObject();
+        JSONObject obj4=new JSONObject();
+        JSONObject obj5=new JSONObject();
+        obj1.put("name","出院患者");
+        obj1.put("value",0);
+        obj2.put("name","转科患者");
+        obj2.put("value",0);
+        obj3.put("name","死亡患者");
+        obj3.put("value",0);
+        obj4.put("name","放弃患者");
+        obj4.put("value",0);
+        obj5.put("name","转院患者");
+        obj5.put("value",0);
+        if(map.containsKey("type")){
+            //flag 0：出科  1：在科
+            if(map.get("type").toString().equals("按天")){
+                String startTime=map.get("startTime").toString();
+                String endTime=map.get("endTime").toString();
+                map.put("flag",0);//出科
+                map.put("exitStartTime",startTime);
+                map.put("exitEndTime",endTime);
+                map.put("exitType","出院");
+                int num1=patientService.getOutAndIn(map);
+                obj1.put("value",num1);
+                map.put("exitType","转科");
+                int num2=patientService.getOutAndIn(map);
+                obj2.put("value",num2);
+                map.put("exitType","死亡");
+                int num3=patientService.getOutAndIn(map);
+                obj3.put("value",num3);
+                map.put("exitType","放弃");
+                int num4=patientService.getOutAndIn(map);
+                obj4.put("value",num4);
+                map.put("exitType","转院");
+                int num5=patientService.getOutAndIn(map);
+                obj5.put("value",num5);
+            }
+            if(map.get("type").toString().equals("按月")){
+                String startTime=map.get("year").toString()+"01-01";
+                String endTime=map.get("year").toString()+"12-31";
+                map.put("flag",0);//出科
+                map.put("exitStartTime",startTime);
+                map.put("exitEndTime",endTime);
+                map.put("exitType","出院");
+                int num1=patientService.getOutAndIn(map);
+                obj1.put("value",num1);
+                map.put("exitType","转科");
+                int num2=patientService.getOutAndIn(map);
+                obj2.put("value",num2);
+                map.put("exitType","死亡");
+                int num3=patientService.getOutAndIn(map);
+                obj3.put("value",num3);
+                map.put("exitType","放弃");
+                int num4=patientService.getOutAndIn(map);
+                obj4.put("value",num4);
+                map.put("exitType","转院");
+                int num5=patientService.getOutAndIn(map);
+                obj5.put("value",num5);
+            }
+        }
+        array.add(obj1);
+        array.add(obj2);
+        array.add(obj3);
+        array.add(obj4);
+        array.add(obj5);
+        json.put("data",array);
+        json.put("msg","查询成功");
+        json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
+    /**
+     * 统计分析--出入科--转入科室分析
+     * @return
+     */
+    @RequestMapping(value = "/getEnterDepartment",method= RequestMethod.POST)
+    @ResponseBody
+    public String getEnterDepartment(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        if(map.get("type").toString().equals("按天")){
+            String startTime=map.get("startTime").toString();
+            String endTime=map.get("endTime").toString();
+            map.put("enterStartTime",startTime);
+            map.put("enterEndTime",endTime);
+            map.put("flag",1);// 在科
+        }
+        if(map.get("type").toString().equals("按月")) {
+            String startTime = map.get("year").toString() + "01-01";
+            String endTime = map.get("year").toString() + "12-31";
+            map.put("enterStartTime",startTime);
+            map.put("enterEndTime",endTime);
+            map.put("flag",1);// 在科
+        }
+        List<Map<String,Object>> list=patientService.getAllEnterDepartment(map);
+        if(list!=null && list.size()>0){
+            JSONArray array=new JSONArray();
+            for (int i = 0; i <list.size() ; i++) {
+                JSONObject obj=new JSONObject();
+                obj.put("name",map.get("department_name").toString());
+                map.put("departmentCode",map.get("department_code").toString());//转入科室编码
+                int num=patientService.getEnterAndExitDepartment(map);
+                obj.put("value",num);
+                array.add(obj);
+            }
+            json.put("data",array);
+            json.put("msg","查询成功");
+            json.put("code",HttpCode.OK_CODE.getCode());
+        }
+        return json.toString();
+    }
+
+    /**
+     * 统计分析--出入科--转出科室分析
+     * @return
+     */
+    @RequestMapping(value = "/getExitDepartment",method= RequestMethod.POST)
+    @ResponseBody
+    public String getExitDepartment(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        if(map.get("type").toString().equals("按天")){
+            String startTime=map.get("startTime").toString();
+            String endTime=map.get("endTime").toString();
+            map.put("exitStartTime",startTime);
+            map.put("exitEndTime",endTime);
+            map.put("flag",0);// 出科
+        }
+        if(map.get("type").toString().equals("按月")) {
+            String startTime = map.get("year").toString() + "01-01";
+            String endTime = map.get("year").toString() + "12-31";
+            map.put("exitStartTime",startTime);
+            map.put("exitEndTime",endTime);
+            map.put("flag",0);// 出科
+        }
+        List<Map<String,Object>> list=patientService.getAllExitDepartment(map);
+        if(list!=null && list.size()>0){
+            JSONArray array=new JSONArray();
+            for (int i = 0; i <list.size() ; i++) {
+                JSONObject obj=new JSONObject();
+                obj.put("name",map.get("department_name").toString());
+                map.put("toDepartmentCode",map.get("to_department_code").toString());//转出科室编码
+                int num=patientService.getEnterAndExitDepartment(map);
+                obj.put("value",num);
+                array.add(obj);
+            }
+            json.put("data",array);
+            json.put("msg","查询成功");
+            json.put("code",HttpCode.OK_CODE.getCode());
+        }
+        return json.toString();
+    }
+
+    /**
+     * 统计分析--出入科--趋势分析--转出方式
+     * @return
+     */
+    @RequestMapping(value = "/getNumByExitType",method= RequestMethod.POST)
+    @ResponseBody
+    public String getNumByExitType(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        JSONArray array=new JSONArray();
+        JSONObject obj1=new JSONObject();
+        obj1.put("name","出院患者");
+        obj1.put("type","line");
+        obj1.put("stack","总量");
+        JSONObject obj2=new JSONObject();
+        obj2.put("name","转科患者");
+        obj2.put("type","line");
+        obj2.put("stack","总量");
+        JSONObject obj3=new JSONObject();
+        obj3.put("name","死亡患者");
+        obj3.put("type","line");
+        obj3.put("stack","总量");
+        JSONObject obj4=new JSONObject();
+        obj4.put("name","放弃患者");
+        obj4.put("type","line");
+        obj4.put("stack","总量");
+        JSONObject obj5=new JSONObject();
+        obj5.put("name","转院患者");
+        obj5.put("type","line");
+        obj5.put("stack","总量");
+        if(map.get("type").toString().equals("按天")){
+            String startTime=map.get("startTime").toString();
+            String endTime=map.get("endTime").toString();
+            List<String> list=SliceUpDateUtil.sliceUpDateRange(startTime,endTime,3);
+            map.put("exitStartTime",startTime);
+            map.put("exitEndTime",endTime);
+            map.put("list",list);
+            map.put("exitType","出院");
+            List<Map<String,Object>> list1=patientService.getNumByExitType(map);
+            obj1.put("data",JSONArray.fromObject(list1));
+            map.put("exitType","转科");
+            List<Map<String,Object>> list2=patientService.getNumByExitType(map);
+            obj2.put("data",JSONArray.fromObject(list2));
+            map.put("exitType","死亡");
+            List<Map<String,Object>> list3=patientService.getNumByExitType(map);
+            obj3.put("data",JSONArray.fromObject(list3));
+            map.put("exitType","放弃");
+            List<Map<String,Object>> list4=patientService.getNumByExitType(map);
+            obj4.put("data",JSONArray.fromObject(list4));
+            map.put("exitType","转院");
+            List<Map<String,Object>> list5=patientService.getNumByExitType(map);
+            obj5.put("data",JSONArray.fromObject(list5));
+        }
+        if(map.get("type").toString().equals("按月")) {
+            List<String> list=new ArrayList<>();
+            list.add("1");
+            list.add("2");
+            list.add("3");
+            list.add("4");
+            list.add("5");
+            list.add("6");
+            list.add("7");
+            list.add("8");
+            list.add("9");
+            list.add("10");
+            list.add("11");
+            list.add("12");
+            map.put("list",list);
+            map.put("exitType","出院");
+            List<Map<String,Object>> list1=patientService.getNumByExitType(map);
+            obj1.put("data",JSONArray.fromObject(list1));
+            map.put("exitType","转科");
+            List<Map<String,Object>> list2=patientService.getNumByExitType(map);
+            obj2.put("data",JSONArray.fromObject(list2));
+            map.put("exitType","死亡");
+            List<Map<String,Object>> list3=patientService.getNumByExitType(map);
+            obj3.put("data",JSONArray.fromObject(list3));
+            map.put("exitType","放弃");
+            List<Map<String,Object>> list4=patientService.getNumByExitType(map);
+            obj4.put("data",JSONArray.fromObject(list4));
+            map.put("exitType","转院");
+            List<Map<String,Object>> list5=patientService.getNumByExitType(map);
+            obj5.put("data",JSONArray.fromObject(list5));
+        }
+        array.add(obj1);
+        array.add(obj2);
+        array.add(obj3);
+        array.add(obj4);
+        array.add(obj5);
+        json.put("data",array);
+        json.put("msg","查询成功");
+        json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
 }

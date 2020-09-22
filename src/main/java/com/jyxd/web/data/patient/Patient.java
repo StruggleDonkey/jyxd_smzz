@@ -83,7 +83,7 @@ public class Patient implements Serializable {
     private int flag;
 
     /**
-     * 出科方式
+     * 出科方式 (出院、转科、死亡、放弃、转院)
      */
     @Column(name = "exit_type")
     private String exitType;

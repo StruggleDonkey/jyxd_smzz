@@ -91,4 +91,42 @@ public interface PatientDao {
      * @return
      */
     List<Patient> getNoBedPatientList(Map<String, Object> map);
+
+    /**
+     * 统计分析--出入科--转入转出分析
+     * @param map
+     * @return
+     */
+    int getOutAndIn(Map<String, Object> map);
+
+    /**
+     * 查询所有病人的入科科室分类名称
+     * @return
+     */
+    List<Map<String, Object>> getAllEnterDepartment(Map<String, Object> map);
+
+    /**
+     * 统计分析--出入科--转入或转出科室病人数量
+     * @param map
+     * @return
+     */
+    int getEnterAndExitDepartment(Map<String, Object> map);
+
+    /**
+     * 查询所有病人的出科科室分类名称
+     * @return
+     */
+    List<Map<String, Object>> getAllExitDepartment(Map<String, Object> map);
+
+    /**
+     * 统计分析--出入科--趋势分析--转出方式(按天)
+     * @return
+     */
+    List<Map<String, Object>> getNumByExitType(Map<String, Object> map);
+
+    /**
+     * 统计分析--出入科--趋势分析--转出方式（按月）
+     * @return
+     */
+    List<Map<String, Object>> getNumByExitTypeMonth(Map<String, Object> map);
 }

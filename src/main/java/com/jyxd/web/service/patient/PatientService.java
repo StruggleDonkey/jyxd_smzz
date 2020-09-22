@@ -159,4 +159,53 @@ public class PatientService {
         return patientDao.getNoBedPatientList(map);
     }
 
+    /**
+     * 统计分析--出入科--转入转出分析
+     * @param map
+     * @return
+     */
+    public int getOutAndIn(Map<String,Object> map){
+        return patientDao.getOutAndIn(map);
+    }
+
+    /**
+     * 查询所有病人的入科科室分类名称
+     * @return
+     */
+    public List<Map<String,Object>> getAllEnterDepartment(Map<String,Object> map){
+        return patientDao.getAllEnterDepartment(map);
+    }
+
+    /**
+     * 统计分析--出入科--转入或转出科室病人数量
+     * @param map
+     * @return
+     */
+    public int getEnterAndExitDepartment(Map<String,Object> map){
+        return patientDao.getEnterAndExitDepartment(map);
+    }
+
+    /**
+     * 查询所有病人的出科科室分类名称
+     * @return
+     */
+    public List<Map<String,Object>> getAllExitDepartment(Map<String,Object> map){
+        return patientDao.getAllExitDepartment(map);
+    }
+
+    /**
+     * 统计分析--出入科--趋势分析--转出方式
+     * @return
+     */
+    public List<Map<String,Object>> getNumByExitType(Map<String,Object> map){
+        return patientDao.getNumByExitType(map);
+    }
+
+    /**
+     * 统计分析--出入科--趋势分析--转出方式（按月）
+     * @return
+     */
+    public List<Map<String,Object>> getNumByExitTypeMonth(Map<String,Object> map){
+        return patientDao.getNumByExitTypeMonth(map);
+    }
 }

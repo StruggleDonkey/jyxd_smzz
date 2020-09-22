@@ -484,4 +484,154 @@
             and flag=#{flag}
         </if>
     </select>
+
+    <select id="getOutAndIn" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+        count(id)
+        FROM
+        p_patient p
+        where
+        1=1
+        and status != -1
+        <if test="flag != null and flag == 1">
+            and  flag= 1
+            and (
+                enter_time between date_format(#{enterStartTime},'%Y%m%d')
+                and date_format(#{enterEndTime},'%Y%m%d')
+            )
+        </if>
+        <if test="flag != null and flag == 0">
+            and  flag= 0
+            and (
+            exit_time between date_format(#{exitStartTime},'%Y%m%d')
+            and date_format(#{exitEndTime},'%Y%m%d')
+            )
+        </if>
+        <if test="exitType != null and exitType != ''">
+            and  exit_type = #{exitType}
+        </if>
+    </select>
+
+    <!-- 查询所有病人的入科科室分类名称-->
+    <select id="getAllEnterDepartment" resultType="java.util.Map" parameterType="java.util.Map">
+        select
+        p.department_code,
+        IFNULL(d.department_name,"") as department_name
+        FROM
+        p_patient p
+        LEFT JOIN dict_department d ON p.department_code = d.department_code
+        and p.flag = 1
+        and p.status != -1
+        and (
+                 p.enter_time between date_format(#{enterStartTime},'%Y%m%d')
+                and date_format(#{enterEndTime},'%Y%m%d')
+            )
+        GROUP BY p.department_code
+    </select>
+
+    <!-- 统计分析-出入科-转入或转出科室病人数量 -->
+    <select id="getEnterAndExitDepartment" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+        count(id)
+        FROM
+        p_patient
+        where
+        1=1
+        and status != -1
+        <if test="flag != null and flag == 1">
+            and  flag= 1
+            and (
+            enter_time between date_format(#{enterStartTime},'%Y%m%d')
+            and date_format(#{enterEndTime},'%Y%m%d')
+            )
+            and department_code = #{departmentCode}
+        </if>
+        <if test="flag != null and flag == 0">
+            and  flag= 0
+            and (
+            exit_time between date_format(#{exitStartTime},'%Y%m%d')
+            and date_format(#{exitEndTime},'%Y%m%d')
+            )
+            and to_department_code = #{toDepartmentCode}
+        </if>
+        <if test="exitType != null and exitType != ''">
+            and  exit_type = #{exitType}
+        </if>
+    </select>
+
+    <!-- 查询所有病人的出科科室分类名称-->
+    <select id="getAllExitDepartment" resultType="java.util.Map" parameterType="java.util.Map">
+        select
+        p.to_department_code,
+        IFNULL(d.department_name,"") as department_name
+        FROM
+        p_patient p
+        LEFT JOIN dict_department d ON p.to_department_code = d.department_code
+        and p.flag = 0
+        and p.status != -1
+        and (
+               p.exit_time between date_format(#{exitStartTime},'%Y%m%d')
+            and date_format(#{exitEndTime},'%Y%m%d')
+            )
+        GROUP BY p.to_department_code
+    </select>
+
+    <!-- 统计分析-出入科-趋势分析-转出方式 病人数量(按天)-->
+    <select id="getNumByExitType" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        exitTab.exit_time,
+        exitTab.num
+        FROM
+        ( SELECT
+        COUNT(id) AS num,
+        DATE_FORMAT(exit_time, '%Y-%m-%d') AS exit_time
+        FROM
+        p_patient
+        WHERE
+        STATUS != - 1
+        AND flag = 0
+        AND (
+        exit_time BETWEEN date_format(#{exitStartTime}, '%Y-%m-%d')
+        AND date_format(#{exitEndTime}, '%Y-%m-%d')
+        )
+        <if test="exitType != null and exitType != ''">
+            and  exit_type = #{exitType}
+        </if>
+        GROUP BY
+        exit_time
+        <foreach collection="list" item="dateStr" separator="">
+            UNION (SELECT 0,#{dateStr})
+        </foreach>
+          ) AS exitTab
+        GROUP BY exitTab.exit_time
+        order by exitTab.exit_time
+    </select>
+
+    <!-- 统计分析-出入科-趋势分析-转出方式 病人数量(按月)-->
+    <select id="getNumByExitTypeMonth" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        exitTab.mon,
+        exitTab.num
+        FROM
+        ( SELECT
+        COUNT(id) AS num,
+        MONTH (exit_time) AS mon
+        FROM
+        p_patient
+        WHERE
+        STATUS != - 1
+        AND flag = 0
+        YEAR (exit_time) = #{year}
+        <if test="exitType != null and exitType != ''">
+            and  exit_type = #{exitType}
+        </if>
+        GROUP BY
+        mon
+        <foreach collection="list" item="dateStr" separator="">
+            UNION (SELECT 0,#{dateStr})
+        </foreach>
+        ) AS exitTab
+        GROUP BY exitTab.mon
+        order by exitTab.mon
+    </select>
 </mapper>
