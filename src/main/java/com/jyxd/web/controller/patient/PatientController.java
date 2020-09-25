@@ -590,34 +590,38 @@ public class PatientController {
         json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         json.put("msg","暂无数据");
-        if(map.get("type").toString().equals("按天")){
-            String startTime=map.get("startTime").toString();
-            String endTime=map.get("endTime").toString();
-            map.put("enterStartTime",startTime);
-            map.put("enterEndTime",endTime);
-            map.put("flag",1);// 在科
-        }
-        if(map.get("type").toString().equals("按月")) {
-            String startTime = map.get("year").toString() + "01-01";
-            String endTime = map.get("year").toString() + "12-31";
-            map.put("enterStartTime",startTime);
-            map.put("enterEndTime",endTime);
-            map.put("flag",1);// 在科
-        }
-        List<Map<String,Object>> list=patientService.getAllEnterDepartment(map);
-        if(list!=null && list.size()>0){
-            JSONArray array=new JSONArray();
-            for (int i = 0; i <list.size() ; i++) {
-                JSONObject obj=new JSONObject();
-                obj.put("name",map.get("department_name").toString());
-                map.put("departmentCode",map.get("department_code").toString());//转入科室编码
-                int num=patientService.getEnterAndExitDepartment(map);
-                obj.put("value",num);
-                array.add(obj);
+        try {
+            if(map.get("type").toString().equals("按天")){
+                String startTime=map.get("startTime").toString();
+                String endTime=map.get("endTime").toString();
+                map.put("enterStartTime",startTime);
+                map.put("enterEndTime",endTime);
+                map.put("flag",1);// 在科
             }
-            json.put("data",array);
-            json.put("msg","查询成功");
-            json.put("code",HttpCode.OK_CODE.getCode());
+            if(map.get("type").toString().equals("按月")) {
+                String startTime = map.get("year").toString() + "01-01";
+                String endTime = map.get("year").toString() + "12-31";
+                map.put("enterStartTime",startTime);
+                map.put("enterEndTime",endTime);
+                map.put("flag",1);// 在科
+            }
+            List<Map<String,Object>> list=patientService.getAllEnterDepartment(map);
+            if(list!=null && list.size()>0){
+                JSONArray array=new JSONArray();
+                for (int i = 0; i <list.size() ; i++) {
+                    JSONObject obj=new JSONObject();
+                    obj.put("name",list.get(i).get("department_name").toString());
+                    map.put("departmentCode",list.get(i).get("department_code").toString());//转入科室编码
+                    int num=patientService.getEnterAndExitDepartment(map);
+                    obj.put("value",num);
+                    array.add(obj);
+                }
+                json.put("data",array);
+                json.put("msg","查询成功");
+                json.put("code",HttpCode.OK_CODE.getCode());
+            }
+        }catch (Exception e){
+            System.out.println("getEnterDepartment:"+e);
         }
         return json.toString();
     }
@@ -652,8 +656,8 @@ public class PatientController {
             JSONArray array=new JSONArray();
             for (int i = 0; i <list.size() ; i++) {
                 JSONObject obj=new JSONObject();
-                obj.put("name",map.get("department_name").toString());
-                map.put("toDepartmentCode",map.get("to_department_code").toString());//转出科室编码
+                obj.put("name",list.get(i).get("department_name").toString());
+                map.put("toDepartmentCode",list.get(i).get("to_department_code").toString());//转出科室编码
                 int num=patientService.getEnterAndExitDepartment(map);
                 obj.put("value",num);
                 array.add(obj);
@@ -697,68 +701,72 @@ public class PatientController {
         obj5.put("name","转院患者");
         obj5.put("type","line");
         obj5.put("stack","总量");
-        if(map.get("type").toString().equals("按天")){
-            String startTime=map.get("startTime").toString();
-            String endTime=map.get("endTime").toString();
-            List<String> list=SliceUpDateUtil.sliceUpDateRange(startTime,endTime,3);
-            map.put("exitStartTime",startTime);
-            map.put("exitEndTime",endTime);
-            map.put("list",list);
-            map.put("exitType","出院");
-            List<Map<String,Object>> list1=patientService.getNumByExitType(map);
-            obj1.put("data",JSONArray.fromObject(list1));
-            map.put("exitType","转科");
-            List<Map<String,Object>> list2=patientService.getNumByExitType(map);
-            obj2.put("data",JSONArray.fromObject(list2));
-            map.put("exitType","死亡");
-            List<Map<String,Object>> list3=patientService.getNumByExitType(map);
-            obj3.put("data",JSONArray.fromObject(list3));
-            map.put("exitType","放弃");
-            List<Map<String,Object>> list4=patientService.getNumByExitType(map);
-            obj4.put("data",JSONArray.fromObject(list4));
-            map.put("exitType","转院");
-            List<Map<String,Object>> list5=patientService.getNumByExitType(map);
-            obj5.put("data",JSONArray.fromObject(list5));
+        try {
+            if(map.get("type").toString().equals("按天")){
+                String startTime=map.get("startTime").toString();
+                String endTime=map.get("endTime").toString();
+                List<String> list=SliceUpDateUtil.sliceUpDateRange(startTime,endTime,3);
+                map.put("exitStartTime",startTime);
+                map.put("exitEndTime",endTime);
+                map.put("list",list);
+                map.put("exitType","出院");
+                List<Map<String,Object>> list1=patientService.getNumByExitType(map);
+                obj1.put("data",JSONArray.fromObject(list1));
+                map.put("exitType","转科");
+                List<Map<String,Object>> list2=patientService.getNumByExitType(map);
+                obj2.put("data",JSONArray.fromObject(list2));
+                map.put("exitType","死亡");
+                List<Map<String,Object>> list3=patientService.getNumByExitType(map);
+                obj3.put("data",JSONArray.fromObject(list3));
+                map.put("exitType","放弃");
+                List<Map<String,Object>> list4=patientService.getNumByExitType(map);
+                obj4.put("data",JSONArray.fromObject(list4));
+                map.put("exitType","转院");
+                List<Map<String,Object>> list5=patientService.getNumByExitType(map);
+                obj5.put("data",JSONArray.fromObject(list5));
+            }
+            if(map.get("type").toString().equals("按月")) {
+                List<String> list=new ArrayList<>();
+                list.add("1");
+                list.add("2");
+                list.add("3");
+                list.add("4");
+                list.add("5");
+                list.add("6");
+                list.add("7");
+                list.add("8");
+                list.add("9");
+                list.add("10");
+                list.add("11");
+                list.add("12");
+                map.put("list",list);
+                map.put("exitType","出院");
+                List<Map<String,Object>> list1=patientService.getNumByExitTypeMonth(map);
+                obj1.put("data",JSONArray.fromObject(list1));
+                map.put("exitType","转科");
+                List<Map<String,Object>> list2=patientService.getNumByExitTypeMonth(map);
+                obj2.put("data",JSONArray.fromObject(list2));
+                map.put("exitType","死亡");
+                List<Map<String,Object>> list3=patientService.getNumByExitTypeMonth(map);
+                obj3.put("data",JSONArray.fromObject(list3));
+                map.put("exitType","放弃");
+                List<Map<String,Object>> list4=patientService.getNumByExitTypeMonth(map);
+                obj4.put("data",JSONArray.fromObject(list4));
+                map.put("exitType","转院");
+                List<Map<String,Object>> list5=patientService.getNumByExitTypeMonth(map);
+                obj5.put("data",JSONArray.fromObject(list5));
+            }
+            array.add(obj1);
+            array.add(obj2);
+            array.add(obj3);
+            array.add(obj4);
+            array.add(obj5);
+            json.put("data",array);
+            json.put("msg","查询成功");
+            json.put("code",HttpCode.OK_CODE.getCode());
+        }catch (Exception e){
+            System.out.println("getNumByExitType:"+e);
         }
-        if(map.get("type").toString().equals("按月")) {
-            List<String> list=new ArrayList<>();
-            list.add("1");
-            list.add("2");
-            list.add("3");
-            list.add("4");
-            list.add("5");
-            list.add("6");
-            list.add("7");
-            list.add("8");
-            list.add("9");
-            list.add("10");
-            list.add("11");
-            list.add("12");
-            map.put("list",list);
-            map.put("exitType","出院");
-            List<Map<String,Object>> list1=patientService.getNumByExitType(map);
-            obj1.put("data",JSONArray.fromObject(list1));
-            map.put("exitType","转科");
-            List<Map<String,Object>> list2=patientService.getNumByExitType(map);
-            obj2.put("data",JSONArray.fromObject(list2));
-            map.put("exitType","死亡");
-            List<Map<String,Object>> list3=patientService.getNumByExitType(map);
-            obj3.put("data",JSONArray.fromObject(list3));
-            map.put("exitType","放弃");
-            List<Map<String,Object>> list4=patientService.getNumByExitType(map);
-            obj4.put("data",JSONArray.fromObject(list4));
-            map.put("exitType","转院");
-            List<Map<String,Object>> list5=patientService.getNumByExitType(map);
-            obj5.put("data",JSONArray.fromObject(list5));
-        }
-        array.add(obj1);
-        array.add(obj2);
-        array.add(obj3);
-        array.add(obj4);
-        array.add(obj5);
-        json.put("data",array);
-        json.put("msg","查询成功");
-        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 }
