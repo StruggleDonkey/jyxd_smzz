@@ -38,8 +38,7 @@ public class BedDictionaryController {
         JSONObject json=new JSONObject();
         json.put("code", HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
-        json.put("msg","系统开小差了，请稍后再试。");
-        System.out.println(bedDictionary.toString());
+        json.put("msg", "系统开小差了，请稍后再试。");
         bedDictionary.setId(UUIDUtil.getUUID());
         bedDictionaryService.insert(bedDictionary);
         json.put("code",HttpCode.OK_CODE.getCode());

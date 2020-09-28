@@ -81,4 +81,49 @@
         </if>
     </select>
 
+    <select id="getNursingList" resultType="java.util.Map">
+        SELECT
+            pp.id,
+            pp.name,
+            pp.visit_id,
+            pp.visit_code,
+            pp.bed_code,
+            CASE WHEN tbn.code='体温' THEN tbn.content END as 体温,
+            CASE WHEN tbn.code='心率' THEN tbn.content END as 心率,
+            CASE WHEN tbn.code='脉搏' THEN tbn.content END as 脉搏,
+            CASE WHEN tbn.code='呼吸' THEN tbn.content END as 呼吸,
+            CASE WHEN tbn.code='有创血压' THEN tbn.content END as 有创血压,
+            CASE WHEN tbn.code='无创血压' THEN tbn.content END as 无创血压,
+            CASE WHEN tbn.code='SpO₂' THEN tbn.content END as SpO₂,
+            CASE WHEN tbn.code='cmH₂O' THEN tbn.content END as cmH₂O,
+            CASE WHEN tbn.code='mmHg' THEN tbn.content END as mmHg
+        FROM
+            p_patient pp LEFT JOIN table_basic_nursing tbn ON pp.id=tbn.patient_id
+        WHERE
+            pp.flag = 1
+        AND pp.bed_code != ""
+        AND date_format(tbn.data_time,'%Y-%m-%d %H:%i')=date_format(#{time},'%Y-%m-%d %H:%i')
+        union
+        SELECT
+            pp.id,
+            pp.name,
+            pp.visit_id,
+            pp.visit_code,
+            pp.bed_code,
+            CASE WHEN tbn.code='体温' THEN tbn.content END as 体温,
+            CASE WHEN tbn.code='心率' THEN tbn.content END as 心率,
+            CASE WHEN tbn.code='脉搏' THEN tbn.content END as 脉搏,
+            CASE WHEN tbn.code='呼吸' THEN tbn.content END as 呼吸,
+            CASE WHEN tbn.code='有创血压' THEN tbn.content END as 有创血压,
+            CASE WHEN tbn.code='无创血压' THEN tbn.content END as 无创血压,
+            CASE WHEN tbn.code='SpO₂' THEN tbn.content END as SpO₂,
+            CASE WHEN tbn.code='cmH₂O' THEN tbn.content END as cmH₂O,
+            CASE WHEN tbn.code='mmHg' THEN tbn.content END as mmHg
+        FROM
+            p_patient pp LEFT JOIN table_basic_nursing tbn ON pp.id=tbn.patient_id
+        WHERE
+            pp.flag = 1
+        AND pp.bed_code != ""
+    </select>
+
 </mapper>

@@ -46,4 +46,10 @@ public class UserService {
     public List<Map<String,Object>> getUserListByType(Map<String,Object> map){
         return userDao.getUserListByType(map);
     }
+
+    public List<Map<String,Object>> getList(Map<String,Object> map){
+        return userDao.getList(map);
+    }
+
+    public int getNum(Map<String,Object> map){return userDao.getNum(map);}
 }

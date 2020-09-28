@@ -57,4 +57,18 @@ public interface UserDao {
      * @return
      */
     List<Map<String,Object>> getUserListByType(Map<String, Object> map);
+
+    /**
+     * 根据条件分页查询平台用户表记录列表--多表查询
+     * @param map
+     * @return list
+     */
+    List<Map<String, Object>> getList(Map<String, Object> map);
+
+    /**
+     * 根据条件查询列表总记录数--多表查询
+     * @param map
+     * @return
+     */
+    int getNum(Map<String, Object> map);
 }

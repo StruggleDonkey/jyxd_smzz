@@ -4,7 +4,7 @@
 
     <resultMap id="scoreItemDictionaryMap" type="com.jyxd.web.data.dictionary.ScoreItemDictionary">
         <result column="id" property="id" jdbcType="VARCHAR"/>
-        <result column="score_id" property="scoreId" jdbcType="VARCHAR"/>
+        <result column="parent_id" property="parentId" jdbcType="VARCHAR"/>
         <result column="type" property="type" jdbcType="VARCHAR"/>
         <result column="score_item_name" property="scoreItemName" jdbcType="VARCHAR"/>
         <result column="score" property="score" jdbcType="INTEGER"/>
@@ -28,13 +28,13 @@
         <result column="fast_column_name" property="fastColumnName" jdbcType="VARCHAR"/>
     </resultMap>
     
-    <sql id="scoreItemDictionary_colums">id,score_id,type,score_item_name,score,score_item_min,score_item_max,description,sort_num,status,
+    <sql id="scoreItemDictionary_colums">id,parent_id,type,score_item_name,score,score_item_min,score_item_max,description,sort_num,status,
 		mode,by_count,hide_title,create_time,show_mode,force_horizon,double_score,group_num,calculate_num,
 		calculate_rule,item_group_exclusion_num,group_exclusion_num,fast_column_name</sql>
-    <sql id="scoreItemDictionary_propertys">#{id},#{scoreId},#{type},#{scoreItemName},#{score},#{scoreItemMin},#{scoreItemMax},#{description},
+    <sql id="scoreItemDictionary_propertys">#{id},#{parentId},#{type},#{scoreItemName},#{score},#{scoreItemMin},#{scoreItemMax},#{description},
 		#{sortNum},#{status},#{mode},#{byCount},#{hideTitle},#{createTime},#{showMode},#{forceHorizon},#{doubleScore},#{groupNum},
 		#{calculateNum},#{calculateRule},#{itemGroupExclusionNum},#{groupExclusionNum},#{fastColumnName}</sql>
-    <sql id="scoreItemDictionary_update">id=#{id},score_id=#{scoreId},type=#{type},score_item_name=#{scoreItemName},score=#{score},
+    <sql id="scoreItemDictionary_update">parent_id=#{parentId},type=#{type},score_item_name=#{scoreItemName},score=#{score},
         score_item_min=#{scoreItemMin},score_item_max=#{scoreItemMax},description=#{description},
 		sort_num=#{sortNum},status=#{status},mode=#{mode},by_count=#{byCount},hide_title=#{hideTitle},create_time=#{createTime},
 		show_mode=#{showMode},force_horizon=#{forceHorizon},double_score=#{doubleScore},group_num=#{groupNum},calculate_num=#{calculateNum},

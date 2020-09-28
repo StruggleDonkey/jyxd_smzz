@@ -43,4 +43,11 @@ public interface BasicNursingDao {
      * @return
      */
     int queryNum(Map<String, Object> map);
+
+    /**
+     * 快捷录入--护理单--查询所有在科病人护理信息
+     * @param map
+     * @return
+     */
+    List<Map<String, Object>> getNursingList(Map<String, Object> map);
 }

@@ -43,4 +43,16 @@ public interface BedUseStatisticsDao {
      * @return
      */
     int queryNum(Map<String, Object> map);
+
+    /**
+     * 统计分析--床位使用--日期分析（按天）
+     * @return
+     */
+    List<Map<String,Object>> getListByTimeDay(Map<String, Object> map);
+
+    /**
+     * 统计分析--床位使用--日期分析（按月）
+     * @return
+     */
+    List<Map<String,Object>> getListByTimeMonth(Map<String, Object> map);
 }

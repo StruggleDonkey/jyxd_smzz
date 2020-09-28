@@ -82,4 +82,148 @@
         </if>
     </select>
 
+    <!-- 统计分析-出入科-列表展示统计（按天） -->
+    <select id="getListByDay" resultType="java.util.Map">
+        SELECT
+            newTable.old_in_num,
+            newTable.current_in_num,
+            newTable.new_in_num,
+            newTable.out_num,
+            newTable.out_exit_num,
+            newTable.out_trans_num,
+            newTable.out_death_num,
+            newTable.out_abandon_num,
+            newTable.out_trans_hosp_num,
+            newTable.two_day_in_again_num,
+            newTable.statisticsDate
+        FROM
+        (
+        SELECT
+            old_in_num,
+            current_in_num,
+            new_in_num,
+            out_num,
+            out_exit_num,
+            out_trans_num,
+            out_death_num,
+            out_abandon_num,
+            out_trans_hosp_num,
+            two_day_in_again_num,
+            DATE_FORMAT(statistics_date, '%Y-%m-%d') AS statisticsDate
+        FROM
+            table_in_out_icu_statistics
+        WHERE
+            1 = 1
+        AND date_format(statistics_date, '%Y-%m-%d') BETWEEN date_format(#{startTime}, '%Y-%m-%d')
+        AND date_format(#{endTime}, '%Y-%m-%d')
+        GROUP BY statisticsDate
+        <foreach collection="list" item="dateStr" separator="">
+            UNION(SELECT 0,0,0,0,0,0,0,0,0,0,#{dateStr})
+        </foreach>) AS newTable
+        GROUP BY
+            newTable.statisticsDate
+        ORDER BY
+            newTable.statisticsDate
+    </select>
+
+    <!-- 统计分析-出入科-列表展示统计总量（按天） -->
+    <select id="getTotalByDay" resultType="java.util.Map">
+        SELECT
+            sum(old_in_num) AS old_in_num,
+            sum(current_in_num) AS current_in_num,
+            sum(new_in_num) AS new_in_num,
+            sum(out_num) AS out_num,
+            sum(out_exit_num) AS out_exit_num,
+            sum(out_trans_num) AS out_trans_num,
+            sum(out_death_num) AS out_death_num,
+            sum(out_abandon_num) AS out_abandon_num,
+            sum(out_trans_hosp_num) AS out_trans_hosp_num,
+            sum(two_day_in_again_num) AS two_day_in_again_num,
+            '总计' AS statisticsDate
+        FROM
+            table_in_out_icu_statistics
+        WHERE
+            1 = 1
+        AND date_format(statistics_date, '%Y-%m-%d') BETWEEN date_format(#{startTime}, '%Y-%m-%d')
+        AND date_format(#{endTime}, '%Y-%m-%d')
+    </select>
+
+    <!-- 统计分析-出入科-列表展示统计（按月）)-->
+    <select id="getListByMonth" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            newTable.old_in_num,
+            newTable.current_in_num,
+            newTable.new_in_num,
+            newTable.out_num,
+            newTable.out_exit_num,
+            newTable.out_trans_num,
+            newTable.out_death_num,
+            newTable.out_abandon_num,
+            newTable.out_trans_hosp_num,
+            newTable.two_day_in_again_num,
+            newTable.statisticsDate
+        FROM
+        (  SELECT
+            old_in_num,
+            current_in_num,
+            new_in_num,
+            out_num,
+            out_exit_num,
+            out_trans_num,
+            out_death_num,
+            out_abandon_num,
+            out_trans_hosp_num,
+            two_day_in_again_num,
+            MONTH (statistics_date) AS statisticsDate
+        FROM
+          table_in_out_icu_statistics
+        WHERE
+         1 = 1
+        AND YEAR(statistics_date) = #{year}
+        GROUP BY
+        statisticsDate
+        <foreach collection="list" item="dateStr" separator="">
+            UNION(SELECT 0,0,0,0,0,0,0,0,0,0,#{dateStr})
+        </foreach>
+        ) AS newTable
+        GROUP BY newTable.statisticsDate
+        order by newTable.statisticsDate+0
+    </select>
+
+    <!-- 统计分析-出入科-列表展示统计总量（按月） -->
+    <select id="getTotalByMonth" resultType="java.util.Map">
+        SELECT
+            sum(old_in_num) AS old_in_num,
+            sum(current_in_num) AS current_in_num,
+            sum(new_in_num) AS new_in_num,
+            sum(out_num) AS out_num,
+            sum(out_exit_num) AS out_exit_num,
+            sum(out_trans_num) AS out_trans_num,
+            sum(out_death_num) AS out_death_num,
+            sum(out_abandon_num) AS out_abandon_num,
+            sum(out_trans_hosp_num) AS out_trans_hosp_num,
+            sum(two_day_in_again_num) AS two_day_in_again_num,
+            '总计' AS statisticsDate
+        FROM
+            table_in_out_icu_statistics
+        WHERE
+            1 = 1
+        AND YEAR(statistics_date) = #{year}
+    </select>
+
+    <select id="queryDataByDate" resultMap="inOutIcuStatisticsMap" parameterType="java.util.Map">
+        select
+        <include refid="inOutIcuStatistics_colums"></include>
+        from
+        table_in_out_icu_statistics
+        where
+        1=1
+        <if test="id != null and id != ''">
+            and  id=#{id}
+        </if>
+        <if test="statisticsDate != null and statisticsDate != ''">
+            AND date_format(statistics_date, '%Y-%m-%d')=#{statisticsDate}
+        </if>
+    </select>
+
 </mapper>

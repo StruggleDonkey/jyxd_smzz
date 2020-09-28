@@ -100,7 +100,6 @@ public class LogController {
             json.put("data",JSONArray.fromObject(list,jsonConfig));
         }
         json.put("code",HttpCode.OK_CODE.getCode());
-        System.out.println(json);
         return json.toString();
     }
 

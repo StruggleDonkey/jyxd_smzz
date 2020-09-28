@@ -43,4 +43,12 @@ public interface BedDictionaryDao {
      * @return
      */
     int queryNum(Map<String,Object> map);
+
+    /**
+     * 查询所有床位列表
+     * @param map
+     * @return
+     */
+    List<BedDictionary> queryAllList(Map<String,Object> map);
+
 }

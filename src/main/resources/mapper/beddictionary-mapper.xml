@@ -69,4 +69,22 @@
         </if>
     </select>
 
+    <select id="queryAllList" resultMap="bedDictionaryMap" parameterType="java.util.Map">
+        select
+        <include refid="bedDictionary_colums"></include>
+        from
+        dict_bed
+        where
+        1=1
+        and  status != -1
+        <if test="bedName != null and bedName != ''">
+            and  bed_name like '%${bedName}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
 </mapper>

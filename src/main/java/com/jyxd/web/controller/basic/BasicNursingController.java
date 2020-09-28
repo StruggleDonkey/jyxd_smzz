@@ -176,4 +176,28 @@ public class BasicNursingController {
         return json.toString();
     }
 
+    /**
+     * 快捷录入--护理单--查询所有在科病人护理信息
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/getNursingList",method= RequestMethod.POST)
+    @ResponseBody
+    public String getNursingList(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        if(map!=null && map.containsKey("time")){
+            List<Map<String,Object>> list=basicNursingService.getNursingList(map);
+            if(list!=null && list.size()>0){
+                json.put("data",JSONArray.fromObject(list));
+                json.put("code",HttpCode.OK_CODE.getCode());
+                json.put("msg","查询成功");
+            }
+        }
+        return json.toString();
+    }
+
+
 }

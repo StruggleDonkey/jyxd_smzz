@@ -55,6 +55,7 @@
         <result column="is_organ_donation" property="isOrganDonation" jdbcType="INTEGER"/>
         <result column="disease_classification" property="diseaseClassification" jdbcType="VARCHAR"/>
         <result column="is_septic_shock" property="isSepticShock" jdbcType="INTEGER"/>
+        <result column="int_id" property="intId" jdbcType="INTEGER"/>
     </resultMap>
     
     <sql id="patient_colums">id,visit_id,visit_code,visit_num,visit_time,enter_time,exit_time,death_time,flag,exit_type,name,id_card,sex,birthday,
@@ -62,14 +63,14 @@
                               operation_time,doctor_code,nurse_code,allergies,nursing_level,illness_state,positive,department_code,
                               to_department_code,ward_code,bed_code,remark,unplanned,is_collect,modify_collect_time,
                               frequency,modify_frequency_time,status,create_time,contact_man,contact_phone,is_confirmed,is_emergency_operate,
-                              is_brain_death,is_organ_donation,disease_classification,is_septic_shock</sql>
+                              is_brain_death,is_organ_donation,disease_classification,is_septic_shock,int_id</sql>
     <sql id="patient_propertys">#{id},#{visitId},#{visitCode},#{visitNum},#{visitTime},#{enterTime},#{exitTime},#{deathTime},#{flag},#{exitType},#{name},
                                   #{idCard},#{sex},#{birthday},#{age},#{weight},#{height},#{race},#{maritalState},#{bloodType},#{operationId},
                                   #{diagnosisCode},#{diagnosisName},#{operationCode},#{operationName},#{operationTime},#{doctorCode},#{nurseCode},
                                   #{allergies},#{nursingLevel},#{illnessState},#{positive},#{departmentCode},#{toDepartmentCode},#{wardCode},#{bedCode},
                                   #{remark},#{unplanned},#{isCollect},#{modifyCollectTime},#{frequency},#{modifyFrequencyTime},#{status},#{createTime},
                                   #{contactMan},#{contactPhone},#{isConfirmed},#{isEmergencyOperate},#{isBrainDeath},#{isOrganDonation},
-                                  #{diseaseClassification},#{isSepticShock}</sql>
+                                  #{diseaseClassification},#{isSepticShock},#{intId}</sql>
     <sql id="patient_update">visit_id=#{visitId},visit_code=#{visitCode},visit_num=#{visitNum},visit_time=#{visitTime},enter_time=#{enterTime},
                               exit_time=#{exitTime},death_time=#{deathTime},flag=#{flag},exit_type=#{exitType},name=#{name},id_card=#{idCard},
 		                      sex=#{sex},birthday=#{birthday},age=#{age},weight=#{weight},height=#{height},race=#{race},marital_state=#{maritalState},
@@ -81,9 +82,12 @@
 		                      frequency=#{frequency},modify_frequency_time=#{modifyFrequencyTime},status=#{status},create_time=#{createTime},
 		                      contact_man=#{contactMan},contact_phone=#{contactPhone},is_confirmed=#{isConfirmed},is_emergency_operate=#{isEmergencyOperate},
 		                      is_brain_death=#{isBrainDeath},is_organ_donation=#{isOrganDonation},disease_classification=#{diseaseClassification},
-		                      is_septic_shock=#{isSepticShock}</sql>
+		                      is_septic_shock=#{isSepticShock},int_id=#{intId}</sql>
 
     <insert id="insert">
+        <selectKey keyProperty="intId" resultType="int">
+            select @@IDENTITY
+        </selectKey>
         insert into
         p_patient(<include refid="patient_colums"></include>)
         values (<include refid="patient_propertys"></include>)

@@ -196,7 +196,7 @@ public class RoleController {
         json.put("data",new ArrayList<>());
         json.put("msg","暂无数据");
         if(map!=null && map.containsKey("start")){
-            int totalCount =accessService.queryNum(map);
+            int totalCount =roleService.queryNum(map);
             map.put("start",((int)map.get("start")-1)*(int)map.get("size"));
             json.put("totalCount",totalCount);
         }
@@ -208,7 +208,7 @@ public class RoleController {
             Map<String,Object> accessMap=new HashMap<>();
             for (int i = 0; i <array.size() ; i++) {
                 JSONObject obj=(JSONObject) array.get(i);
-                accessMap.put("roleId",obj.getString("roleId"));
+                accessMap.put("roleId",obj.getString("id"));
                 List<Access> accessList=accessService.queryList(accessMap);
                 if(accessList!=null && accessList.size()>0){
                     JSONArray accessArray=JSONArray.fromObject(accessList);
@@ -219,7 +219,6 @@ public class RoleController {
             json.put("msg","查询成功");
         }
         json.put("code",HttpCode.OK_CODE.getCode());
-        System.out.println(json);
         return json.toString();
     }
 

@@ -33,4 +33,8 @@ public class BedDictionaryService {
     }
 
     public int queryNum(Map<String,Object> map){return bedDictionaryDao.queryNum(map);}
+
+    public List<BedDictionary> queryAllList(Map<String,Object> map){
+        return bedDictionaryDao.queryAllList(map);
+    }
 }

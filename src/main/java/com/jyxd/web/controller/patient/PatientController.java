@@ -237,10 +237,10 @@ public class PatientController {
 
     /**
      *
-     *〈设置订单汇总表格数据〉<br>
+     *〈设置表格数据〉<br>
      *
-     * @author czy <br>
-     *         2019年12月31日
+     * @author
+     *
      * @update
      * @param
      * @return  ExcelData

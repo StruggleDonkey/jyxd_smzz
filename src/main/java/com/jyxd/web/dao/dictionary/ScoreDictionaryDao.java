@@ -43,4 +43,11 @@ public interface ScoreDictionaryDao {
      * @return
      */
     int queryNum(Map<String, Object> map);
+
+    /**
+     * 根据评分类型查询评分对象 如：评分类型
+     * @param map
+     * @return
+     */
+    ScoreDictionary queryDataByType(Map<String, Object> map);
 }

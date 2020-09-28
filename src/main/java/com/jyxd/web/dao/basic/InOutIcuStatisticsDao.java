@@ -43,4 +43,39 @@ public interface InOutIcuStatisticsDao {
      * @return
      */
     int queryNum(Map<String, Object> map);
+
+    /**
+     * 统计分析--出入科--列表展示统计（按天）
+     * @param map
+     * @return
+     */
+    List<Map<String, Object>> getListByDay(Map<String, Object> map);
+
+    /**
+     * 统计分析--出入科--列表展示统计总量（按天）
+     * @param map
+     * @return
+     */
+    List<Map<String, Object>> getTotalByDay(Map<String, Object> map);
+
+    /**
+     * 统计分析--出入科--列表展示统计（按月）
+     * @param map
+     * @return
+     */
+    List<Map<String, Object>> getListByMonth(Map<String, Object> map);
+
+    /**
+     * 统计分析--出入科--列表展示统计总量（按月）
+     * @param map
+     * @return
+     */
+    List<Map<String, Object>> getTotalByMonth(Map<String, Object> map);
+
+    /**
+     * 根据条件查询出入科对象
+     * @param map
+     * @return
+     */
+    List<InOutIcuStatistics> queryDataByDate(Map<String, Object> map);
 }

@@ -54,7 +54,6 @@ public class UserTypeController {
             json.put("code",HttpCode.OK_CODE.getCode());
             json.put("msg","添加成功");
         }
-        System.out.println(userType.toString());
         return json.toString();
     }
 
@@ -182,7 +181,6 @@ public class UserTypeController {
             json.put("msg","查询成功");
         }
         json.put("code",HttpCode.OK_CODE.getCode());
-        System.out.println(json);
         return json.toString();
     }
 

@@ -67,6 +67,53 @@
         <if test="size != null ">#{size}</if>
     </select>
 
+    <select id="getList" resultType="java.util.Map">
+        SELECT
+        IFNULL(tu.id,"") as id,
+        IFNULL(tu.work_number,"") as work_number,
+        IFNULL(tu.login_name,"") as login_name,
+        IFNULL(tu.password,"") as password,
+        IFNULL(tu.simplicity,"") as simplicity,
+        tu.sex as sex,
+        IFNULL(tu.user_type_code,"") as user_type_code,
+        IFNULL(tu.role_id,"") as role_id,
+        tu.status as status,
+        IFNULL(tu.enter_time,"") as enter_time,
+        IFNULL(tu.exit_time,"") as exit_time,
+        tu.is_schedual as is_schedual,
+        IFNULL(tu.create_time,"") as create_time,
+        IFNULL(tut.user_type_name,"") as user_type_name,
+        IFNULL(tr.role_name,"") as role_name
+        FROM
+        table_user tu
+        LEFT JOIN table_role tr ON tu.role_id = tr.id
+        LEFT JOIN table_user_type tut ON tu.user_type_code = tut.user_type_code
+        WHERE
+        tu.status !=- 1
+        AND tr.status !=- 1
+        AND tut.status !=- 1
+        <if test="workNumber != null and workNumber != ''">
+            and  tu.work_number =#{workNumber}
+        </if>
+        <if test="sex != null">
+            and  tu.sex =#{sex}
+        </if>
+        <if test="roleId != null and roleId != ''">
+            AND FIND_IN_SET(tu.role_id,#{roleId})
+        </if>
+        <if test="userTypeCode != null and userTypeCode != ''">
+            and  tu.user_type_code =#{userTypeCode}
+        </if>
+        <if test="loginName != null and loginName != ''">
+            and  tu.login_name like '%${loginName}%'
+        </if>
+        <if test="status != null ">
+            and  tu.status= #{status}
+        </if>
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
     <select id="queryUserByNameAndPassword" resultMap="userMap" >
         select
           <include refid="user_colums"></include>
@@ -94,6 +141,37 @@
         </if>
         <if test="status != null ">
             and  status= #{status}
+        </if>
+    </select>
+
+    <select id="getNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        SELECT
+          count(tu.id)
+        FROM
+        table_user tu
+        LEFT JOIN table_role tr ON tu.role_id = tr.id
+        LEFT JOIN table_user_type tut ON tu.user_type_code = tut.user_type_code
+        WHERE
+        tu.status !=- 1
+        AND tr.status !=- 1
+        AND tut.status !=- 1
+        <if test="workNumber != null and workNumber != ''">
+            and  tu.work_number =#{workNumber}
+        </if>
+        <if test="sex != null">
+            and  tu.sex =#{sex}
+        </if>
+        <if test="roleId != null and roleId != ''">
+            AND FIND_IN_SET(tu.role_id,#{roleId})
+        </if>
+        <if test="userTypeCode != null and userTypeCode != ''">
+            and  tu.user_type_code =#{userTypeCode}
+        </if>
+        <if test="loginName != null and loginName != ''">
+            and  tu.login_name like '%${loginName}%'
+        </if>
+        <if test="status != null ">
+            and  tu.status= #{status}
         </if>
     </select>
 

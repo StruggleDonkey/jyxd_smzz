@@ -1,8 +1,11 @@
 package com.jyxd.web.controller.basic;
 
 import com.jyxd.web.data.basic.BedUseStatistics;
+import com.jyxd.web.data.dictionary.BedDictionary;
 import com.jyxd.web.service.basic.BedUseStatisticsService;
+import com.jyxd.web.service.dictionary.BedDictionaryService;
 import com.jyxd.web.util.HttpCode;
+import com.jyxd.web.util.SliceUpDateUtil;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -28,6 +31,9 @@ public class BedUseStatisticsController {
 
     @Autowired
     private BedUseStatisticsService bedUseStatisticsService;
+
+    @Autowired
+    private BedDictionaryService bedDictionaryService;
 
     /**
      * 增加一条床位统计表记录
@@ -172,6 +178,116 @@ public class BedUseStatisticsController {
         if(list!=null && list.size()>0){
             json.put("msg","查询成功");
             json.put("data",JSONArray.fromObject(list));
+        }
+        json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
+    /**
+     * 统计分析--床位使用--日期分析（按天 或 按月）
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/getListByTime",method= RequestMethod.POST)
+    @ResponseBody
+    public String getListByTime(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        JSONArray array=new JSONArray();
+        JSONObject obj1=new JSONObject();
+        obj1.put("name","使用量");
+        obj1.put("type","line");
+        obj1.put("stack","总量");
+        if(map.get("type").toString().equals("按天")) {
+            String startTime = map.get("startTime").toString();
+            String endTime = map.get("endTime").toString();
+            List<String> list = SliceUpDateUtil.sliceUpDateRange(startTime, endTime, 3);
+            map.put("startTime", startTime);
+            map.put("endTime", endTime);
+            map.put("list", list);
+            List<Map<String,Object>> dayList=bedUseStatisticsService.getListByTimeDay(map);
+            obj1.put("data",JSONArray.fromObject(dayList));
+            json.put("msg","查询成功");
+        }
+        if(map.get("type").toString().equals("按月")) {
+            List<String> list = new ArrayList<>();
+            list.add("1");
+            list.add("2");
+            list.add("3");
+            list.add("4");
+            list.add("5");
+            list.add("6");
+            list.add("7");
+            list.add("8");
+            list.add("9");
+            list.add("10");
+            list.add("11");
+            list.add("12");
+            map.put("list", list);
+            List<Map<String,Object>> monthList=bedUseStatisticsService.getListByTimeMonth(map);
+            obj1.put("data",JSONArray.fromObject(monthList));
+            json.put("msg","查询成功");
+        }
+        array.add(obj1);
+        json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
+    /**
+     * 统计分析--床位使用--日期对比分析（按天 或 按月）
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/getListByTimeAndBedCode",method= RequestMethod.POST)
+    @ResponseBody
+    public String getListByTimeAndBedCode(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        JSONArray array=new JSONArray();
+        List<BedDictionary> bedList=bedDictionaryService.queryAllList(map);
+        if(bedList!=null && bedList.size()>0){
+            for (int i = 0; i < bedList.size(); i++) {
+                JSONObject obj1=new JSONObject();
+                obj1.put("name",bedList.get(i).getBedName());
+                obj1.put("type","line");
+                obj1.put("stack","总量");
+                if(map.get("type").toString().equals("按天")) {
+                    String startTime = map.get("startTime").toString();
+                    String endTime = map.get("endTime").toString();
+                    List<String> list = SliceUpDateUtil.sliceUpDateRange(startTime, endTime, 3);
+                    map.put("startTime", startTime);
+                    map.put("endTime", endTime);
+                    map.put("list", list);
+                    map.put("bedCode",bedList.get(i).getBedCode());
+                    List<Map<String,Object>> dayList=bedUseStatisticsService.getListByTimeDay(map);
+                    obj1.put("data",JSONArray.fromObject(dayList));
+                }
+                if(map.get("type").toString().equals("按月")) {
+                    List<String> list = new ArrayList<>();
+                    list.add("1");
+                    list.add("2");
+                    list.add("3");
+                    list.add("4");
+                    list.add("5");
+                    list.add("6");
+                    list.add("7");
+                    list.add("8");
+                    list.add("9");
+                    list.add("10");
+                    list.add("11");
+                    list.add("12");
+                    map.put("list", list);
+                    map.put("bedCode",bedList.get(i).getBedCode());
+                    List<Map<String,Object>> monthList=bedUseStatisticsService.getListByTimeMonth(map);
+                    obj1.put("data",JSONArray.fromObject(monthList));
+                }
+                array.add(obj1);
+                json.put("msg","查询成功");
+            }
         }
         json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();

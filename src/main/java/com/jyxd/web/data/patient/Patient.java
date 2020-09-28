@@ -342,4 +342,12 @@ public class Patient implements Serializable {
      */
     @Column(name = "is_septic_shock")
     private int isSepticShock;
+
+    /**
+     * 自增主键ID
+     */
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Id
+    @Column(name = "int_id")
+    private int intId;
 }

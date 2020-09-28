@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -40,13 +42,42 @@ public class UserController {
      */
     @RequestMapping(value = "/insert")
     @ResponseBody
-    public String insert(@RequestBody User user){
+    public String insert(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
-        json.put("code", HttpCode.FAILURE_CODE.getCode());
-        json.put("data",new ArrayList<>());
-        user.setId(UUIDUtil.getUUID());
-        userService.insert(user);
-        json.put("code",HttpCode.OK_CODE.getCode());
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("msg","新增失败");
+        try {
+            if(map!=null && map.containsKey("status") ){
+                User user=new User();
+                user.setId(UUIDUtil.getUUID());
+                user.setPassword("e10adc3949ba59abbe56e057f20f883e");//密码默认123456
+                user.setCreateTime(new Date());
+                user.setStatus((int)map.get("status"));
+                user.setWorkNumber(map.get("workNumber").toString());
+                user.setLoginName(map.get("loginName").toString());
+                user.setRoleId(map.get("roleId").toString());
+                user.setSex((int)map.get("sex"));
+                user.setIsShedual((int)map.get("isShedual"));
+                if(StringUtils.isNotEmpty(map.get("simplicity").toString())){
+                    user.setSimplicity(map.get("simplicity").toString());
+                }
+                if(StringUtils.isNotEmpty(map.get("userTypeCode").toString())){
+                    user.setUserTypeCode(map.get("userTypeCode").toString());
+                }
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                if(StringUtils.isNotEmpty(map.get("enterTime").toString())){
+                    user.setEnterTime(sdf.parse(map.get("enterTime").toString()));
+                }
+                if(StringUtils.isNotEmpty(map.get("exitTime").toString())){
+                    user.setExitTime(sdf.parse(map.get("exitTime").toString()));
+                }
+                userService.insert(user);
+                json.put("msg","新增成功");
+                json.put("code",HttpCode.OK_CODE.getCode());
+            }
+        }catch (Exception e){
+            logger.info("增加一条平台用户表记录:"+e);
+        }
         return json.toString();
     }
 
@@ -60,16 +91,18 @@ public class UserController {
     public String update(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
         json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("msg","修改失败");
         if(map!=null && map.containsKey("id") && map.containsKey("status") ){
             User user=userService.queryData(map.get("id").toString());
             if(user!=null){
                 user.setStatus((int)map.get("status"));
                 userService.update(user);
+                json.put("msg","修改成功");
+                json.put("code",HttpCode.OK_CODE.getCode());
             }else{
                 return json.toString();
             }
         }
-        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -83,16 +116,40 @@ public class UserController {
     public String edit(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
         json.put("code",HttpCode.FAILURE_CODE.getCode());
-        if(map!=null && map.containsKey("id") && map.containsKey("status") && map.containsKey("bedName")){
-            User user=userService.queryData(map.get("id").toString());
-            if(user!=null){
-                user.setStatus((int)map.get("status"));
-                userService.update(user);
-            }else{
-                return json.toString();
+        json.put("msg","编辑失败");
+        try {
+            if(map!=null && map.containsKey("id") && map.containsKey("status") ){
+                User user=userService.queryData(map.get("id").toString());
+                if(user!=null){
+                    user.setStatus((int)map.get("status"));
+                    user.setWorkNumber(map.get("workNumber").toString());
+                    user.setLoginName(map.get("loginName").toString());
+                    user.setRoleId(map.get("roleId").toString());
+                    user.setSex((int)map.get("sex"));
+                    user.setIsShedual((int)map.get("isShedual"));
+                    if(StringUtils.isNotEmpty(map.get("simplicity").toString())){
+                        user.setSimplicity(map.get("simplicity").toString());
+                    }
+                    if(StringUtils.isNotEmpty(map.get("userTypeCode").toString())){
+                        user.setUserTypeCode(map.get("userTypeCode").toString());
+                    }
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    if(StringUtils.isNotEmpty(map.get("enterTime").toString())){
+                        user.setEnterTime(sdf.parse(map.get("enterTime").toString()));
+                    }
+                    if(StringUtils.isNotEmpty(map.get("exitTime").toString())){
+                        user.setExitTime(sdf.parse(map.get("exitTime").toString()));
+                    }
+                    userService.update(user);
+                    json.put("msg","编辑成功");
+                    json.put("code",HttpCode.OK_CODE.getCode());
+                }else{
+                    return json.toString();
+                }
             }
+        }catch (Exception e){
+            logger.info("编辑平台用户表记录:"+e);
         }
-        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -106,16 +163,43 @@ public class UserController {
     public String delete(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
         json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("msg","删除失败");
         if(map!=null && map.containsKey("id")){
             User user=userService.queryData(map.get("id").toString());
             if(user!=null){
                 user.setStatus(-1);
                 userService.update(user);
+                json.put("code",HttpCode.OK_CODE.getCode());
+                json.put("msg","删除成功");
             }else{
                 return json.toString();
             }
         }
-        json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
+    /**
+     * 重置用户密码为123456
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/resetPassword")
+    @ResponseBody
+    public String resetPassword(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("msg","重置失败");
+        if(map!=null && map.containsKey("id")){
+            User user=userService.queryData(map.get("id").toString());
+            if(user!=null){
+               user.setPassword("e10adc3949ba59abbe56e057f20f883e");//密码123456
+                userService.update(user);
+                json.put("code",HttpCode.OK_CODE.getCode());
+                json.put("msg","重置成功");
+            }else{
+                return json.toString();
+            }
+        }
         return json.toString();
     }
 
@@ -159,6 +243,34 @@ public class UserController {
         List<User> list =userService.queryList(map);
         if(list!=null && list.size()>0){
             json.put("data",JSONArray.fromObject(list));
+        }
+        json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
+    /**
+     * 根据条件分页查询平台用户表列表（也可以不分页）--多表查询
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/getList",method= RequestMethod.POST)
+    @ResponseBody
+    public String getList(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        if(map!=null && map.containsKey("start")){
+            int totalCount =userService.getNum(map);
+            map.put("start",((int)map.get("start")-1)*(int)map.get("size"));
+            json.put("totalCount",totalCount);
+        }
+        List<Map<String,Object>> list =userService.getList(map);
+        if(list!=null && list.size()>0){
+            JsonConfig jsonConfig=new JsonConfig();
+            jsonConfig.registerJsonValueProcessor(Timestamp.class,new JsonArrayValueProcessor());
+            json.put("data",JSONArray.fromObject(list,jsonConfig));
+            json.put("msg","查询成功");
         }
         json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();

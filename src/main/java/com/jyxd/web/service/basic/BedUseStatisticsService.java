@@ -33,4 +33,22 @@ public class BedUseStatisticsService {
     }
 
     public int queryNum(Map<String,Object> map){return bedUseStatisticsDao.queryNum(map);}
+
+    /**
+     * 统计分析--床位使用--日期分析（按天）
+     * @param map
+     * @return
+     */
+    public List<Map<String,Object>> getListByTimeDay(Map<String,Object> map){
+        return bedUseStatisticsDao.getListByTimeDay(map);
+    }
+
+    /**
+     * 统计分析--床位使用--日期分析（按月）
+     * @param map
+     * @return
+     */
+    public List<Map<String,Object>> getListByTimeMonth(Map<String,Object> map){
+        return bedUseStatisticsDao.getListByTimeMonth(map);
+    }
 }

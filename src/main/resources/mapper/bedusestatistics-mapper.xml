@@ -71,4 +71,60 @@
         </if>
     </select>
 
+    <!-- 统计分析-床位使用-日期分析（按天） -->
+    <select id="getListByTimeDay" resultType="java.util.Map">
+        SELECT
+        newTable.time_long,
+        newTable.statisticsDate
+        FROM
+        (
+        SELECT
+        time_long,
+        DATE_FORMAT(statistics_date, '%Y-%m-%d') AS statisticsDate
+        FROM
+        table_bed_use_statistics
+        WHERE
+        1 = 1
+        AND date_format(statistics_date, '%Y-%m-%d') BETWEEN date_format(#{startTime}, '%Y-%m-%d')
+        AND date_format(#{endTime}, '%Y-%m-%d')
+        <if test="bedCode != null and bedCode != ''">
+            and  bed_code =#{bedCode}
+        </if>
+        GROUP BY statisticsDate
+        <foreach collection="list" item="dateStr" separator="">
+            UNION(SELECT 0,#{dateStr})
+        </foreach>) AS newTable
+        GROUP BY
+        newTable.statisticsDate
+        ORDER BY
+        newTable.statisticsDate
+    </select>
+
+    <!-- 统计分析-出入科-列表展示统计（按月）)-->
+    <select id="getListByTimeMonth" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        newTable.time_long,
+        newTable.statisticsDate
+        FROM
+        (  SELECT
+        time_long,
+        MONTH (statistics_date) AS statisticsDate
+        FROM
+        table_bed_use_statistics
+        WHERE
+        1 = 1
+        AND YEAR(statistics_date) = #{year}
+        <if test="bedCode != null and bedCode != ''">
+            and  bed_code =#{bedCode}
+        </if>
+        GROUP BY
+        mon
+        <foreach collection="list" item="dateStr" separator="">
+            UNION(SELECT 0,#{dateStr})
+        </foreach>
+        ) AS newTable
+        GROUP BY newTable.statisticsDate
+        order by newTable.statisticsDate+0
+    </select>
+
 </mapper>

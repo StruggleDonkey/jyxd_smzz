@@ -30,13 +30,13 @@ public class ScoreDictionary implements Serializable {
     private String id;
 
     /**
-     * 评分类型
+     * 评分类型（确保唯一 和 评分知识库表、评分项字典表关联）
      */
     @Column(name = "type")
     private String type;
 
     /**
-     * 评分分类
+     * 评分分类   (重症相关、儿科相关、麻醉相关)
      */
     @Column(name = "score_type")
     private String scoreType;
@@ -156,7 +156,7 @@ public class ScoreDictionary implements Serializable {
     private int showNursing;
 
     /**
-     * 是是否录入其他措施（0：否 1：是）
+     * 是否录入其他措施（0：否 1：是）
      */
     @Column(name = "show_other_step")
     private int showOtherStep;

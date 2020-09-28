@@ -30,10 +30,10 @@ public class ScoreItemDictionary implements Serializable {
     private String id;
 
     /**
-     * 评分字典表主键ID
+     * 父主键
      */
-    @Column(name = "score_id")
-    private String scoreId;
+    @Column(name = "parent_id")
+    private String parentId;
 
     /**
      * 评分类型
