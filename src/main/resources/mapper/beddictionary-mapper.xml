@@ -80,6 +80,9 @@
         <if test="bedName != null and bedName != ''">
             and  bed_name like '%${bedName}%'
         </if>
+        <if test="bedCode != null and bedCode != ''">
+            and  bed_code =#{bedCode}
+        </if>
         <if test="status != null ">
             and  status= #{status}
         </if>

@@ -21,7 +21,7 @@
         <result column="legend" property="legend" jdbcType="VARCHAR"/>
         <result column="has_statistics" property="hasStatistics" jdbcType="INTEGER"/>
         <result column="date_type" property="dateType" jdbcType="VARCHAR"/>
-        <result column="scoreRule" property="scoreRule" jdbcType="VARCHAR"/>
+        <result column="score_rule" property="scoreRule" jdbcType="VARCHAR"/>
         <result column="score_opportunity" property="scoreOpportunity" jdbcType="VARCHAR"/>
         <result column="nursing_step" property="nursingStep" jdbcType="VARCHAR"/>
         <result column="show_nursing" property="showNursing" jdbcType="INTEGER"/>
@@ -33,7 +33,7 @@
     <sql id="scoreDictionary_colums">id,type,score_type,score_name,description,sort_num,status,
         create_time,syn_report,report_type,report_code,syn_nursing,
 		syn_assessment,assessment_type,assessment_code,legend,has_statistics,
-		date_type,scoreRule,score_opportunity,nursing_step,show_nursing,
+		date_type,score_rule,score_opportunity,nursing_step,show_nursing,
 		show_other_step,show_signature,show_smart_score</sql>
     <sql id="scoreDictionary_propertys">#{id},#{type},#{scoreType},#{scoreName},#{description},
         #{sortNum},#{status},#{createTime},#{synReport},#{reportType},#{reportCode},#{synNursing},#{synAssessment},
@@ -43,7 +43,7 @@
         description=#{description},sort_num=#{sortNum},status=#{status},create_time=#{createTime},
 		syn_report=#{synReport},report_type=#{reportType},report_code=#{reportCode},syn_nursing=#{synNursing},
 		syn_assessment=#{synAssessment},assessment_type=#{assessmentType},assessment_code=#{assessmentCode},
-		legend=#{legend},has_statistics=#{hasStatistics},date_type=#{dateType},scoreRule=#{scoreRule},
+		legend=#{legend},has_statistics=#{hasStatistics},date_type=#{dateType},score_rule=#{scoreRule},
 		score_opportunity=#{scoreOpportunity},nursing_step=#{nursingStep},show_nursing=#{showNursing},
 		show_other_step=#{showOtherStep},show_signature=#{showSignature},show_smart_score=#{showSmartScore}</sql>
 

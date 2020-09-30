@@ -97,4 +97,43 @@
         </if>
     </select>
 
+    <select id="querySonList" resultType="java.util.Map">
+        select
+        <include refid="scoreItemDictionary_colums"></include>
+        from
+        dict_bed
+        where
+        1=1
+        and  status != -1
+        <if test="scoreItemName != null and scoreItemName != ''">
+            and  score_item_name like '%${scoreItemName}%'
+        </if>
+        <if test="parentId != null and parentId != ''">
+            and  parent_id =#{parentId}
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="querySonNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+        count(id)
+        from
+        dict_bed
+        where
+        1=1
+        and  status != -1
+        <if test="scoreItemName != null and scoreItemName != ''">
+            and  score_item_name like '%${scoreItemName}%'
+        </if>
+        <if test="parentId != null and parentId != ''">
+            and  parent_id =#{parentId}
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
 </mapper>

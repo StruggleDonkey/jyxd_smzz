@@ -51,4 +51,22 @@ public class BedUseStatisticsService {
     public List<Map<String,Object>> getListByTimeMonth(Map<String,Object> map){
         return bedUseStatisticsDao.getListByTimeMonth(map);
     }
+
+    /**
+     * 根据条件查询床位使用时长 按天
+     * @param map
+     * @return
+     */
+    public Float getBedUseTimeByDay(Map<String,Object> map){
+        return bedUseStatisticsDao.getBedUseTimeByDay(map);
+    }
+
+    /**
+     * 根据条件查询床位使用时长 按月
+     * @param map
+     * @return
+     */
+    public Float getBedUseTimeByMonth(Map<String,Object> map){
+        return bedUseStatisticsDao.getBedUseTimeByMonth(map);
+    }
 }

@@ -213,24 +213,25 @@ public class BedUseStatisticsController {
         }
         if(map.get("type").toString().equals("按月")) {
             List<String> list = new ArrayList<>();
-            list.add("1");
-            list.add("2");
-            list.add("3");
-            list.add("4");
-            list.add("5");
-            list.add("6");
-            list.add("7");
-            list.add("8");
-            list.add("9");
-            list.add("10");
-            list.add("11");
-            list.add("12");
-            map.put("list", list);
-            List<Map<String,Object>> monthList=bedUseStatisticsService.getListByTimeMonth(map);
-            obj1.put("data",JSONArray.fromObject(monthList));
-            json.put("msg","查询成功");
-        }
+        list.add("1");
+        list.add("2");
+        list.add("3");
+        list.add("4");
+        list.add("5");
+        list.add("6");
+        list.add("7");
+        list.add("8");
+        list.add("9");
+        list.add("10");
+        list.add("11");
+        list.add("12");
+        map.put("list", list);
+        List<Map<String,Object>> monthList=bedUseStatisticsService.getListByTimeMonth(map);
+        obj1.put("data",JSONArray.fromObject(monthList));
+        json.put("msg","查询成功");
+    }
         array.add(obj1);
+        json.put("data",array);
         json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
@@ -249,8 +250,10 @@ public class BedUseStatisticsController {
         json.put("msg","暂无数据");
         JSONArray array=new JSONArray();
         List<BedDictionary> bedList=bedDictionaryService.queryAllList(map);
+        JSONArray bedCodeArray=new JSONArray();
         if(bedList!=null && bedList.size()>0){
             for (int i = 0; i < bedList.size(); i++) {
+                bedCodeArray.add(bedList.get(i).getBedName());//床位名称集合
                 JSONObject obj1=new JSONObject();
                 obj1.put("name",bedList.get(i).getBedName());
                 obj1.put("type","line");
@@ -264,7 +267,16 @@ public class BedUseStatisticsController {
                     map.put("list", list);
                     map.put("bedCode",bedList.get(i).getBedCode());
                     List<Map<String,Object>> dayList=bedUseStatisticsService.getListByTimeDay(map);
-                    obj1.put("data",JSONArray.fromObject(dayList));
+                    JSONArray dayTimeLongArray=new JSONArray();//时长量集合
+                    JSONArray dayDateArray=new JSONArray();//日期集合
+                    for (int j = 0; j <dayList.size() ; j++) {
+                        Map<String,Object> dayMap=dayList.get(j);
+                        dayTimeLongArray.add(dayMap.get("timeLong"));
+                        dayDateArray.add(dayMap.get("statisticsDate"));
+                    }
+                    obj1.put("data",dayTimeLongArray);
+                    json.put("bedData",bedCodeArray);
+                    json.put("dateData",dayDateArray);
                 }
                 if(map.get("type").toString().equals("按月")) {
                     List<String> list = new ArrayList<>();
@@ -283,14 +295,63 @@ public class BedUseStatisticsController {
                     map.put("list", list);
                     map.put("bedCode",bedList.get(i).getBedCode());
                     List<Map<String,Object>> monthList=bedUseStatisticsService.getListByTimeMonth(map);
-                    obj1.put("data",JSONArray.fromObject(monthList));
+                    JSONArray monthTimeLongArray=new JSONArray();//时长量集合
+                    JSONArray monthDateArray=new JSONArray();//日期集合
+                    for (int j = 0; j <monthList.size() ; j++) {
+                        Map<String,Object> dayMap=monthList.get(j);
+                        monthTimeLongArray.add(dayMap.get("timeLong"));
+                        monthDateArray.add(dayMap.get("statisticsDate"));
+                    }
+                    obj1.put("data",monthTimeLongArray);
+                    json.put("bedData",bedCodeArray);
+                    json.put("dateData",monthDateArray);
                 }
                 array.add(obj1);
                 json.put("msg","查询成功");
             }
         }
+        json.put("data",array);
         json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
+    /**
+     * 统计使用--床位使用--床位分析
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/getBedAnalyze",method= RequestMethod.POST)
+    @ResponseBody
+    public String getBedAnalyze(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        JSONArray array=new JSONArray();
+        JSONArray bedArray=new JSONArray();//床位名称集合
+        List<BedDictionary> bedList=bedDictionaryService.queryAllList(map);
+        if(bedList!=null && bedList.size()>0){
+            for (int i = 0; i <bedList.size() ; i++) {
+                bedArray.add(bedList.get(i).getBedName());
+                if(map.get("type").toString().equals("按天")) {
+                    JSONObject obj=new JSONObject();
+                    Float timeSum=bedUseStatisticsService.getBedUseTimeByDay(map);
+                    obj.put("value",timeSum);
+                    obj.put("name",bedList.get(i).getBedName());
+                    array.add(obj);
+                }
+                if(map.get("type").toString().equals("按月")) {
+                    JSONObject obj=new JSONObject();
+                    Float timeSum=bedUseStatisticsService.getBedUseTimeByMonth(map);
+                    obj.put("value",timeSum);
+                    obj.put("name",bedList.get(i).getBedName());
+                    array.add(obj);
+                }
+            }
+        }
+        json.put("data",array);
+        json.put("nameData",bedArray);
+        json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
 }

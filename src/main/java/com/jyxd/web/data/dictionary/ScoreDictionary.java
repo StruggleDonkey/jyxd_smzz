@@ -134,7 +134,7 @@ public class ScoreDictionary implements Serializable {
     /**
      * 评分规则
      */
-    @Column(name = "scoreRule")
+    @Column(name = "score_rule")
     private String scoreRule;
 
     /**

@@ -254,7 +254,7 @@ public class InOutIcuStatisticsController {
             map.put("list", list);
             List<Map<String,Object>> monthList=inOutIcuStatisticsService.getListByMonth(map);
             if(monthList!=null && monthList.size()>0){
-                List<Map<String,Object>> monthTotalList=inOutIcuStatisticsService.getTotalByDay(map);
+                List<Map<String,Object>> monthTotalList=inOutIcuStatisticsService.getTotalByMonth(map);
                 monthList.add(0,monthTotalList.get(0));
                 JSONArray array=JSONArray.fromObject(monthList);
                 json.put("data",array);

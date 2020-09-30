@@ -140,9 +140,36 @@ public class ScoreDictionaryController {
         List<ScoreDictionary> list =scoreDictionaryService.queryList(map);
         if(list!=null && list.size()>0){
             json.put("data",JSONArray.fromObject(list));
+            json.put("msg","查询成功");
         }
         json.put("code",HttpCode.OK_CODE.getCode());
-        json.put("msg","查询成功");
+        return json.toString();
+    }
+
+    /**
+     * 字典管理--评分字典--评分列表
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/getList",method= RequestMethod.POST)
+    @ResponseBody
+    public String getList(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","查询失败");
+        JSONObject obj=new JSONObject();
+        JSONArray array=new JSONArray();
+        obj.put("scoreType",map.get("scoreType").toString());
+        List<ScoreDictionary> list =scoreDictionaryService.queryList(map);
+        if(list!=null && list.size()>0){
+            obj.put("size",list.size());
+            obj.put("list",JSONArray.fromObject(list));
+            array.add(obj);
+            json.put("data",array);
+            json.put("msg","查询成功");
+        }
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 

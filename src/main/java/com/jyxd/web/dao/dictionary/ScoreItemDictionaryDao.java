@@ -43,4 +43,18 @@ public interface ScoreItemDictionaryDao {
      * @return
      */
     int queryNum(Map<String, Object> map);
+
+    /**
+     * 根据条件分页查询评分项字典表子评分明细记录列表（也可以不分页）
+     * @param map
+     * @return
+     */
+    List<Map<String, Object>> querySonList(Map<String, Object> map);
+
+    /**
+     * 根据条件查询子评分项列表总记录数
+     * @param map
+     * @return
+     */
+    int querySonNum(Map<String, Object> map);
 }

@@ -33,4 +33,15 @@ public class ScoreItemDictionaryService {
     }
 
     public int queryNum(Map<String,Object> map){return scoreItemDictionaryDao.queryNum(map);}
+
+    /**
+     * 根据条件分页查询评分项字典表子评分明细记录列表（也可以不分页）
+     * @param map
+     * @return
+     */
+    public List<Map<String,Object>> querySonList(Map<String,Object> map){
+        return scoreItemDictionaryDao.querySonList(map);
+    }
+
+    public int querySonNum(Map<String,Object> map){return scoreItemDictionaryDao.querySonNum(map);}
 }
