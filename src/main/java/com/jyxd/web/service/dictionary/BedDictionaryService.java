@@ -37,4 +37,13 @@ public class BedDictionaryService {
     public List<BedDictionary> queryAllList(Map<String,Object> map){
         return bedDictionaryDao.queryAllList(map);
     }
+
+    /**
+     * 根据床位编码查询床位字典对象
+     * @param map
+     * @return
+     */
+    public BedDictionary queryDataByBedCode(Map<String,Object> map){
+        return bedDictionaryDao.queryDataByBedCode(map);
+    }
 }

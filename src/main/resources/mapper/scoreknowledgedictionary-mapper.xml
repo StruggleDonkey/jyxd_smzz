@@ -49,7 +49,10 @@
           1=1
         and  status != -1
         <if test="type != null and type != ''">
-            and  type like '%${type}%'
+            and  type =#{type}
+        </if>
+        <if test="title != null and title != ''">
+            and  title like '%${title}%'
         </if>
         <if test="status != null ">
             and  status= #{status}
@@ -67,7 +70,10 @@
         1=1
         and  status != -1
         <if test="type != null and type != ''">
-            and  type like '%${type}%'
+            and  type =#{type}
+        </if>
+        <if test="title != null and title != ''">
+            and  title like '%${title}%'
         </if>
         <if test="status != null ">
             and  status= #{status}

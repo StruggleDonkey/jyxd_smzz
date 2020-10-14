@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -38,9 +39,12 @@ public class ScoreKnowledgeDictionaryController {
         JSONObject json=new JSONObject();
         json.put("code", HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
+        json.put("msg","添加失败");
         scoreKnowledgeDictionary.setId(UUIDUtil.getUUID());
+        scoreKnowledgeDictionary.setCreateTime(new Date());
         scoreKnowledgeDictionaryService.insert(scoreKnowledgeDictionary);
         json.put("code",HttpCode.OK_CODE.getCode());
+        json.put("msg","添加成功");
         return json.toString();
     }
 
@@ -54,16 +58,18 @@ public class ScoreKnowledgeDictionaryController {
     public String update(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
         json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("msg","更新失败");
         if(map!=null && map.containsKey("id") && map.containsKey("status") ){
             ScoreKnowledgeDictionary scoreKnowledgeDictionary=scoreKnowledgeDictionaryService.queryData(map.get("id").toString());
             if(scoreKnowledgeDictionary!=null){
                 scoreKnowledgeDictionary.setStatus((int)map.get("status"));
                 scoreKnowledgeDictionaryService.update(scoreKnowledgeDictionary);
+                json.put("msg","更新成功");
+                json.put("code",HttpCode.OK_CODE.getCode());
             }else{
                 return json.toString();
             }
         }
-        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -77,17 +83,24 @@ public class ScoreKnowledgeDictionaryController {
     public String edit(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
         json.put("code",HttpCode.FAILURE_CODE.getCode());
-        if(map!=null && map.containsKey("id") && map.containsKey("status") && map.containsKey("bedName")){
+        json.put("msg","编辑失败");
+        if(map!=null && map.containsKey("id") && map.containsKey("status") ){
             ScoreKnowledgeDictionary scoreKnowledgeDictionary=scoreKnowledgeDictionaryService.queryData(map.get("id").toString());
             if(scoreKnowledgeDictionary!=null){
                 scoreKnowledgeDictionary.setStatus((int)map.get("status"));
-
+                scoreKnowledgeDictionary.setDescription(map.get("description").toString());
+                scoreKnowledgeDictionary.setLevel(map.get("level").toString());
+                scoreKnowledgeDictionary.setScoreKnowledgeMax((int)map.get("scoreKnowledgeMax"));
+                scoreKnowledgeDictionary.setScoreKnowledgeMin((int)map.get("scoreKnowledgeMin"));
+                scoreKnowledgeDictionary.setTitle(map.get("title").toString());
+                scoreKnowledgeDictionary.setType(map.get("type").toString());
                 scoreKnowledgeDictionaryService.update(scoreKnowledgeDictionary);
+                json.put("msg","编辑成功");
+                json.put("code",HttpCode.OK_CODE.getCode());
             }else{
                 return json.toString();
             }
         }
-        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -101,16 +114,18 @@ public class ScoreKnowledgeDictionaryController {
     public String delete(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
         json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("msg","删除失败");
         if(map.containsKey("id")){
             ScoreKnowledgeDictionary scoreKnowledgeDictionary=scoreKnowledgeDictionaryService.queryData(map.get("id").toString());
             if(scoreKnowledgeDictionary!=null){
                 scoreKnowledgeDictionary.setStatus(-1);
                 scoreKnowledgeDictionaryService.update(scoreKnowledgeDictionary);
+                json.put("code",HttpCode.OK_CODE.getCode());
+                json.put("msg","删除成功");
             }else{
                 return json.toString();
             }
         }
-        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 

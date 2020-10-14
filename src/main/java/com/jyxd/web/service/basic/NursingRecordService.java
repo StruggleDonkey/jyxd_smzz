@@ -33,4 +33,22 @@ public class NursingRecordService {
     }
 
     public int queryNum(Map<String,Object> map){return nursingRecordDao.queryNum(map);}
+
+    /**
+     * 快捷录入--护理单--查询在科病人的护理信息
+     * @param map
+     * @return
+     */
+    public List<Map<String,Object>> getListByTime(Map<String,Object> map){
+        return nursingRecordDao.getListByTime(map);
+    }
+
+    /**
+     * 根据时间和code查询护理对象
+     * @param map
+     * @return
+     */
+    public NursingRecord queryDataByTimeAndCode(Map<String,Object> map){
+        return nursingRecordDao.queryDataByTimeAndCode(map);
+    }
 }

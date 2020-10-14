@@ -49,6 +49,7 @@
         <if test="status != null ">
             and  status= #{status}
         </if>
+        order by bed_code
         <if test="start != null ">limit #{start},</if>
         <if test="size != null ">#{size}</if>
     </select>
@@ -88,6 +89,21 @@
         </if>
         <if test="start != null ">limit #{start},</if>
         <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="queryDataByBedCode" resultMap="bedDictionaryMap" parameterType="java.util.Map">
+        select
+        <include refid="bedDictionary_colums"></include>
+        from
+        dict_bed
+        where 1=1
+        and status !=-1
+        <if test="bedCode != null and bedCode != ''">
+            and  bed_code =#{bedCode}
+        </if>
+        <if test="id != null and id != ''">
+            and  id =#{id}
+        </if>
     </select>
 
 </mapper>

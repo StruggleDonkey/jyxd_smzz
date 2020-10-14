@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,9 +40,18 @@ public class DepartmentDictionaryController {
         JSONObject json=new JSONObject();
         json.put("code", HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
-        departmentDictionary.setId(UUIDUtil.getUUID());
-        departmentDictionaryService.insert(departmentDictionary);
-        json.put("code",HttpCode.OK_CODE.getCode());
+        json.put("msg","新增失败");
+        Map<String,Object> map=new HashMap<>();
+        map.put("departmentCode",departmentDictionary.getDepartmentCode());
+        if(departmentDictionaryService.queryDataByCode(map)==null){
+            departmentDictionary.setId(UUIDUtil.getUUID());
+            departmentDictionaryService.insert(departmentDictionary);
+            json.put("code",HttpCode.OK_CODE.getCode());
+            json.put("msg","新增成功");
+        }else{
+            json.put("code",HttpCode.EXISTING_CODE.getCode());
+            json.put("msg","新增失败，科室编码已存在请重新输入");
+        }
         return json.toString();
     }
 

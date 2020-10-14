@@ -43,4 +43,18 @@ public interface NursingRecordDao {
      * @return
      */
     int queryNum(Map<String, Object> map);
+
+    /**
+     * 快捷录入--护理单--查询在科病人的护理信息
+     * @param map
+     * @return
+     */
+    List<Map<String, Object>> getListByTime(Map<String, Object> map);
+
+    /**
+     * 根据时间和code查询护理对象
+     * @param map
+     * @return
+     */
+    NursingRecord queryDataByTimeAndCode(Map<String, Object> map);
 }

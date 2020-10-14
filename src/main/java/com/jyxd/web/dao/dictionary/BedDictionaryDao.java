@@ -51,4 +51,11 @@ public interface BedDictionaryDao {
      */
     List<BedDictionary> queryAllList(Map<String,Object> map);
 
+    /**
+     * 根据床位编码查询床位字典对象
+     * @param map
+     * @return
+     */
+    BedDictionary queryDataByBedCode(Map<String,Object> map);
+
 }

@@ -49,6 +49,7 @@
         <if test="status != null ">
             and  status= #{status}
         </if>
+        order by ward_code
         <if test="start != null ">limit #{start},</if>
         <if test="size != null ">#{size}</if>
     </select>
@@ -66,6 +67,21 @@
         </if>
         <if test="status != null ">
             and  status= #{status}
+        </if>
+    </select>
+
+    <select id="queryDataByCode" resultMap="wardDictionaryMap" parameterType="java.util.Map">
+        select
+        <include refid="wardDictionary_colums"></include>
+        from
+        dict_ward
+        where
+        status !=-1
+        <if test="wardCode != null and wardCode != ''">
+            and  ward_code =#{wardCode}
+        </if>
+        <if test="id != null and id != ''">
+            and  id =#{id}
         </if>
     </select>
 

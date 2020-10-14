@@ -43,4 +43,11 @@ public interface BloodSugarDao {
      * @return
      */
     int queryNum(Map<String, Object> map);
+
+    /**
+     * 根据时间查询在科病人的血糖信息
+     * @param map
+     * @return
+     */
+    List<Map<String, Object>> getListByTime(Map<String, Object> map);
 }

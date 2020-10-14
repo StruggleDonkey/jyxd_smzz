@@ -88,4 +88,30 @@
         </if>
     </select>
 
+    <select id="queryDataByTime" resultMap="inputAmountMap" parameterType="java.lang.String">
+        select
+        <include refid="inputAmount_colums"></include>
+        from
+        table_input_amount
+        where 1=1
+        <if test="patientId != null and patientId != ''">
+            and  patient_id =#{patientId}
+        </if>
+        <if test="id != null and id != ''">
+            and  id=#{id}
+        </if>
+        <if test="orderType != null and orderType != ''">
+            and  order_type=#{orderType}
+        </if>
+        <if test="dataTime != null and dataTime != ''">
+            and  date_format(
+            data_time,
+            '%Y%m%d %H%i'
+            ) = date_format(
+            #{dataTime},
+            '%Y%m%d %H%i'
+            )
+        </if>
+    </select>
+
 </mapper>

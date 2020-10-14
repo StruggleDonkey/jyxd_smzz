@@ -43,4 +43,18 @@ public interface OutputAmountDao {
      * @return
      */
     int queryNum(Map<String, Object> map);
+
+    /**
+     * 快捷录入--体温单--体温表单--根据时间查询在科病人体温表单数据
+     * @param map
+     * @return
+     */
+    List<Map<String,Object>> getListByTime(Map<String, Object> map);
+
+    /**
+     * 根据时间查询出量对象
+     * @param map
+     * @return
+     */
+    OutputAmount queryDataByTime(Map<String, Object> map);
 }

@@ -33,4 +33,23 @@ public class BodyTemperatureService {
     }
 
     public int queryNum(Map<String,Object> map){return bodyTemperatureDao.queryNum(map);}
+
+    /**
+     * 根据时间查询在科病人的体温图数据
+     * @param map
+     * @return
+     */
+    public List<Map<String,Object>> getListByTime(Map<String,Object> map){
+        return bodyTemperatureDao.getListByTime(map);
+    }
+
+    /**
+     * 根据时间和code查询体温单对象
+     * @param map
+     * @return
+     */
+    public BodyTemperature queryDataByTimeAndCode(Map<String,Object> map){
+        return bodyTemperatureDao.queryDataByTimeAndCode(map);
+    }
+
 }

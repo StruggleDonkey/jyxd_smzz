@@ -33,4 +33,22 @@ public class OutputAmountService {
     }
 
     public int queryNum(Map<String,Object> map){return outputAmountDao.queryNum(map);}
+
+    /**
+     * 快捷录入--体温单--体温表单--根据时间查询在科病人体温表单数据
+     * @param map
+     * @return
+     */
+    public List<Map<String,Object>> getListByTime(Map<String,Object> map){
+        return outputAmountDao.getListByTime(map);
+    }
+
+    /**
+     * 根据时间查询出量对象
+     * @param map
+     * @return
+     */
+    public OutputAmount queryDataByTime(Map<String,Object> map){
+        return outputAmountDao.queryDataByTime(map);
+    }
 }

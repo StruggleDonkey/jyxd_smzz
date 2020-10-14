@@ -43,4 +43,11 @@ public interface InputAmountDao {
      * @return
      */
     int queryNum(Map<String, Object> map);
+
+    /**
+     * 根据时间查询入量对象
+     * @param map
+     * @return
+     */
+    InputAmount queryDataByTime(Map<String, Object> map);
 }

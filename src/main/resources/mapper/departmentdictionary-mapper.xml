@@ -49,6 +49,7 @@
         <if test="status != null ">
             and  status= #{status}
         </if>
+        order by department_code
         <if test="start != null ">limit #{start},</if>
         <if test="size != null ">#{size}</if>
     </select>
@@ -84,6 +85,21 @@
         </if>
         <if test="status != null ">
             and  status= #{status}
+        </if>
+    </select>
+
+    <select id="queryDataByCode" resultMap="departmentDictionaryMap" parameterType="java.util.Map">
+        select
+        <include refid="departmentDictionary_colums"></include>
+        from
+        dict_department
+        where
+        status != -1
+        <if test="departmentCode != null and departmentCode != ''">
+            and  department_code =#{departmentCode}
+        </if>
+        <if test="id != null and id != ''">
+            and  id =#{id}
         </if>
     </select>
 </mapper>

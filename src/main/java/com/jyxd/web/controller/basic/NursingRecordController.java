@@ -1,11 +1,15 @@
 package com.jyxd.web.controller.basic;
 
 import com.jyxd.web.data.basic.NursingRecord;
+import com.jyxd.web.data.user.User;
 import com.jyxd.web.service.basic.NursingRecordService;
 import com.jyxd.web.util.HttpCode;
+import com.jyxd.web.util.JsonArrayValueProcessor;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +19,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import javax.servlet.http.HttpSession;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "/nursingRecord")
@@ -46,6 +50,205 @@ public class NursingRecordController {
         json.put("code",HttpCode.OK_CODE.getCode());
         json.put("msg","添加成功");
         return json.toString();
+    }
+
+    /**
+     * 快捷录入--护理单--批量新增在科病人的护理信息
+     * @return
+     */
+    @RequestMapping(value = "/batchAdd")
+    @ResponseBody
+    public String batchAdd(@RequestBody(required=false) Map<String,Object> map, HttpSession session){
+        JSONObject json=new JSONObject();
+        json.put("code", HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","添加失败");
+        JSONArray array=JSONArray.fromObject(map.get("list").toString());
+        Map<String,Object> pararemMap=new HashMap<>();
+        pararemMap.put("dataTime",map.get("time").toString());
+        if(array!=null && array.size()>0){
+            for (int i = 0; i < array.size(); i++) {
+                JSONObject obj=(JSONObject) array.get(i);
+                pararemMap.put("patientId",obj.getString("patientId"));
+                //体温
+                 if(StringUtils.isNotEmpty(obj.getString("tiwen"))){
+                     pararemMap.put("code","体温");
+                     //根据时间和code 查询 护理单对象
+                     NursingRecord nursingRecord=nursingRecordService.queryDataByTimeAndCode(pararemMap);
+                     if(nursingRecord==null){
+                         //为空则新增
+                         NursingRecord data=newNursingRecord(obj,session);
+                         data.setCode("体温");
+                         data.setContent(obj.getString("tiwen"));
+                         nursingRecordService.insert(data);
+                     }else{
+                         //不为空则编辑
+                         nursingRecord.setContent(obj.getString("tiwen"));
+                         nursingRecordService.update(nursingRecord);
+                     }
+                 }
+                 //心率
+                if(StringUtils.isNotEmpty(obj.getString("xinlv"))){
+                    pararemMap.put("code","心率");
+                    //根据时间和code 查询 护理单对象
+                    NursingRecord nursingRecord=nursingRecordService.queryDataByTimeAndCode(pararemMap);
+                    if(nursingRecord==null){
+                        //为空则新增
+                        NursingRecord data=newNursingRecord(obj,session);
+                        data.setCode("心率");
+                        data.setContent(obj.getString("xinlv"));
+                        nursingRecordService.insert(data);
+                    }else{
+                        //不为空则编辑
+                        nursingRecord.setContent(obj.getString("xinlv"));
+                        nursingRecordService.update(nursingRecord);
+                    }
+                }
+                //脉搏
+                if(StringUtils.isNotEmpty(obj.getString("maibo"))){
+                    pararemMap.put("code","脉搏");
+                    //根据时间和code 查询 护理单对象
+                    NursingRecord nursingRecord=nursingRecordService.queryDataByTimeAndCode(pararemMap);
+                    if(nursingRecord==null){
+                        //为空则新增
+                        NursingRecord data=newNursingRecord(obj,session);
+                        data.setCode("脉搏");
+                        data.setContent(obj.getString("maibo"));
+                        nursingRecordService.insert(data);
+                    }else{
+                        //不为空则编辑
+                        nursingRecord.setContent(obj.getString("maibo"));
+                        nursingRecordService.update(nursingRecord);
+                    }
+                }
+                //呼吸
+                if(StringUtils.isNotEmpty(obj.getString("huxi"))){
+                    pararemMap.put("code","呼吸");
+                    //根据时间和code 查询 护理单对象
+                    NursingRecord nursingRecord=nursingRecordService.queryDataByTimeAndCode(pararemMap);
+                    if(nursingRecord==null){
+                        //为空则新增
+                        NursingRecord data=newNursingRecord(obj,session);
+                        data.setCode("呼吸");
+                        data.setContent(obj.getString("huxi"));
+                        nursingRecordService.insert(data);
+                    }else{
+                        //不为空则编辑
+                        nursingRecord.setContent(obj.getString("huxi"));
+                        nursingRecordService.update(nursingRecord);
+                    }
+                }
+                //有创血压
+                if(StringUtils.isNotEmpty(obj.getString("youchuangxueya"))){
+                    pararemMap.put("code","有创血压");
+                    //根据时间和code 查询 护理单对象
+                    NursingRecord nursingRecord=nursingRecordService.queryDataByTimeAndCode(pararemMap);
+                    if(nursingRecord==null){
+                        //为空则新增
+                        NursingRecord data=newNursingRecord(obj,session);
+                        data.setCode("有创血压");
+                        data.setContent(obj.getString("youchuangxueya"));
+                        nursingRecordService.insert(data);
+                    }else{
+                        //不为空则编辑
+                        nursingRecord.setContent(obj.getString("youchuangxueya"));
+                        nursingRecordService.update(nursingRecord);
+                    }
+                }
+                //无创血压
+                if(StringUtils.isNotEmpty(obj.getString("wuchuangxueya"))){
+                    pararemMap.put("code","无创血压");
+                    //根据时间和code 查询 护理单对象
+                    NursingRecord nursingRecord=nursingRecordService.queryDataByTimeAndCode(pararemMap);
+                    if(nursingRecord==null){
+                        //为空则新增
+                        NursingRecord data=newNursingRecord(obj,session);
+                        data.setCode("无创血压");
+                        data.setContent(obj.getString("wuchuangxueya"));
+                        nursingRecordService.insert(data);
+                    }else{
+                        //不为空则编辑
+                        nursingRecord.setContent(obj.getString("wuchuangxueya"));
+                        nursingRecordService.update(nursingRecord);
+                    }
+                }
+                //血氧饱和度
+                if(StringUtils.isNotEmpty(obj.getString("xueyangbaohedu"))){
+                    pararemMap.put("code","血氧饱和度");
+                    //根据时间和code 查询 护理单对象
+                    NursingRecord nursingRecord=nursingRecordService.queryDataByTimeAndCode(pararemMap);
+                    if(nursingRecord==null){
+                        //为空则新增
+                        NursingRecord data=newNursingRecord(obj,session);
+                        data.setCode("血氧饱和度");
+                        data.setContent(obj.getString("xueyangbaohedu"));
+                        nursingRecordService.insert(data);
+                    }else{
+                        //不为空则编辑
+                        nursingRecord.setContent(obj.getString("xueyangbaohedu"));
+                        nursingRecordService.update(nursingRecord);
+                    }
+                }
+                //CVPcm
+                if(StringUtils.isNotEmpty(obj.getString("CVPcm"))){
+                    pararemMap.put("code","CVPcm");
+                    //根据时间和code 查询 护理单对象
+                    NursingRecord nursingRecord=nursingRecordService.queryDataByTimeAndCode(pararemMap);
+                    if(nursingRecord==null){
+                        //为空则新增
+                        NursingRecord data=newNursingRecord(obj,session);
+                        data.setCode("CVPcm");
+                        data.setContent(obj.getString("CVPcm"));
+                        nursingRecordService.insert(data);
+                    }else{
+                        //不为空则编辑
+                        nursingRecord.setContent(obj.getString("CVPcm"));
+                        nursingRecordService.update(nursingRecord);
+                    }
+                }
+                //CVPmm
+                if(StringUtils.isNotEmpty(obj.getString("CVPmm"))){
+                    pararemMap.put("code","CVPmm");
+                    //根据时间和code 查询 护理单对象
+                    NursingRecord nursingRecord=nursingRecordService.queryDataByTimeAndCode(pararemMap);
+                    if(nursingRecord==null){
+                        //为空则新增
+                        NursingRecord data=newNursingRecord(obj,session);
+                        data.setCode("CVPmm");
+                        data.setContent(obj.getString("CVPmm"));
+                        nursingRecordService.insert(data);
+                    }else{
+                        //不为空则编辑
+                        nursingRecord.setContent(obj.getString("CVPmm"));
+                        nursingRecordService.update(nursingRecord);
+                    }
+                }
+            }
+            json.put("code",HttpCode.OK_CODE.getCode());
+            json.put("msg","添加成功");
+        }
+        return json.toString();
+    }
+
+    static NursingRecord newNursingRecord(JSONObject jsonObject,HttpSession session){
+        NursingRecord nursingRecord=new NursingRecord();
+        try {
+            SimpleDateFormat sdf =   new SimpleDateFormat( "yyyy-MM-dd HH:mm" );
+            nursingRecord.setStatus(1);
+            nursingRecord.setId(UUIDUtil.getUUID());
+            nursingRecord.setCreateTime(new Date());
+            nursingRecord.setDataTime(sdf.parse(jsonObject.getString("dataTime")));
+            nursingRecord.setPatientId(jsonObject.getString("patientId"));
+            nursingRecord.setVisitCode(jsonObject.getString("visitCode"));
+            nursingRecord.setVisitId(jsonObject.getString("visitId"));
+            User user =(User) session.getAttribute("user");
+            if(user!=null){
+                nursingRecord.setOperatorCode(user.getLoginName());
+            }
+        }catch (Exception e){
+                logger.info("newNursingRecord:"+e);
+        }
+        return nursingRecord;
     }
 
     /**
@@ -173,6 +376,30 @@ public class NursingRecordController {
             json.put("data",JSONArray.fromObject(list));
         }
         json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
+    /**
+     * 快捷录入--护理单--查询在科病人的护理信息
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/getListByTime",method= RequestMethod.POST)
+    @ResponseBody
+    public String getListByTime(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        List<Map<String,Object>> list=nursingRecordService.getListByTime(map);
+        if(list!=null && list.size()>0){
+            JsonConfig jsonConfig=new JsonConfig();
+            jsonConfig.registerJsonValueProcessor(Timestamp.class,new JsonArrayValueProcessor());
+            JSONArray array=JSONArray.fromObject(list,jsonConfig);
+            json.put("data",array);
+            json.put("code",HttpCode.OK_CODE.getCode());
+            json.put("msg","查询成功");
+        }
         return json.toString();
     }
 

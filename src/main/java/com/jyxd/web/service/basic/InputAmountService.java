@@ -33,4 +33,13 @@ public class InputAmountService {
     }
 
     public int queryNum(Map<String,Object> map){return inputAmountDao.queryNum(map);}
+
+    /**
+     * 根据时间查询入量对象
+     * @param map
+     * @return
+     */
+    public InputAmount queryDataByTime(Map<String,Object> map){
+        return inputAmountDao.queryDataByTime(map);
+    }
 }

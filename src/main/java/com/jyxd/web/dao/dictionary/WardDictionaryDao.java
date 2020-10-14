@@ -43,4 +43,11 @@ public interface WardDictionaryDao {
      * @return
      */
     int queryNum(Map<String, Object> map);
+
+    /**
+     * 根据code查询病区字典对象
+     * @param map
+     * @return
+     */
+    WardDictionary queryDataByCode(Map<String, Object> map);
 }

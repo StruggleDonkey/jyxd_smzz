@@ -289,7 +289,7 @@ public class UserController {
         json.put("data",new ArrayList<>());
         json.put("msg","账号密码有误，请重新输入！");
         if(map!=null && map.containsKey("password")){
-            map.put("password", MD5Util.getMD5String(map.get("password").toString()));
+            map.put("password", MD5Util.string2MD5(map.get("password").toString()));
             User user=userService.queryUserByNameAndPassword(map);
             if(user!=null){
                 JsonConfig jsonConfig=new JsonConfig();
@@ -359,6 +359,7 @@ public class UserController {
             JsonConfig jsonConfig=new JsonConfig();
             jsonConfig.registerJsonValueProcessor(Date.class,new JsonArrayValueProcessor());
             json.put("user",JSONObject.fromObject(user,jsonConfig));
+            json.put("password",MD5Util.convertMD5(user.getPassword()));
             json.put("code",HttpCode.OK_CODE.getCode());
             json.put("msg","获取成功");
         }
@@ -406,4 +407,33 @@ public class UserController {
         }
         return json.toString();
     }
+
+    /**
+     * 修改密码
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/updatePassword")
+    @ResponseBody
+    public String updatePassword(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("msg","修改失败");
+        if(map!=null && map.containsKey("id") && map.containsKey("password") && map.containsKey("newPassword")){
+            User user=userService.queryData(map.get("id").toString());
+            if(user!=null){
+                if(user.getPassword().equals(MD5Util.string2MD5(map.get("password").toString()))){
+                    user.setPassword(MD5Util.string2MD5(map.get("newPassword").toString()));
+                    userService.update(user);
+                    json.put("code",HttpCode.OK_CODE.getCode());
+                    json.put("msg","修改成功");
+                }else{
+                    json.put("code",HttpCode.PASSWORD_ERROR_CODE.getCode());
+                    json.put("msg","原密码错误，请重新输入原密码！");
+                }
+            }
+        }
+        return json.toString();
+    }
+
 }

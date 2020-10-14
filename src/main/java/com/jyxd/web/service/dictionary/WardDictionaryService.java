@@ -33,4 +33,13 @@ public class WardDictionaryService {
     }
 
     public int queryNum(Map<String,Object> map){return wardDictionaryDao.queryNum(map);}
+
+    /**
+     * 根据code查询病区字典对象
+     * @param map
+     * @return
+     */
+    public WardDictionary queryDataByCode(Map<String,Object> map){
+        return wardDictionaryDao.queryDataByCode(map);
+    }
 }

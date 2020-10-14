@@ -87,9 +87,11 @@ public class ScoreItemDictionaryController {
                 scoreItemDictionary.setShowMode((int)map.get("showMode"));
                 scoreItemDictionary.setForceHorizon((int)map.get("forceHorizon"));
                 scoreItemDictionary.setGroupExclusionNum(map.get("groupExclusionNum").toString());
-                scoreItemDictionary.setFastColumnName(map.get("fastColumnName").toString());
+                //scoreItemDictionary.setFastColumnName(map.get("fastColumnName").toString());
                 scoreItemDictionary.setGroupNum(map.get("groupNum").toString());
-                scoreItemDictionary.setCalculateNum((Double) map.get("calculateNum"));
+                String calculateNum=map.get("calculateNum").toString();
+                System.out.println(Double.valueOf(calculateNum).doubleValue());
+                scoreItemDictionary.setCalculateNum(Double.valueOf(calculateNum).doubleValue());
                 scoreItemDictionary.setCalculateRule(map.get("calculateRule").toString());
                 scoreItemDictionary.setSortNum((int)map.get("sortNum"));
                 scoreItemDictionary.setDescription(map.get("description").toString());
@@ -263,6 +265,27 @@ public class ScoreItemDictionaryController {
             scoreItemDictionary.setStatus(-1);
             scoreItemDictionaryService.update(scoreItemDictionary);
             json.put("msg","删除成功");
+            json.put("code",HttpCode.OK_CODE.getCode());
+        }
+        return json.toString();
+    }
+
+    /**
+     * 字典管理--评分字典--更新状态（评分项或评分项明细）
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/updateStatus")
+    @ResponseBody
+    public String updateStatus(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("msg","更新失败");
+        if(map.containsKey("id") && map.containsKey("status")){
+            ScoreItemDictionary scoreItemDictionary=scoreItemDictionaryService.queryData(map.get("id").toString());
+            scoreItemDictionary.setStatus((int)map.get("status"));
+            scoreItemDictionaryService.update(scoreItemDictionary);
+            json.put("msg","更新成功");
             json.put("code",HttpCode.OK_CODE.getCode());
         }
         return json.toString();

@@ -81,4 +81,32 @@
         </if>
     </select>
 
+    <select id="getListByTime " resultType="java.util.Map">
+        SELECT
+            IFNULL(pp.visit_id, "") AS visit_id,
+            IFNULL(pp.name, "") AS name,
+            IFNULL(pp.visit_code, "") AS visit_code,
+            IFNULL(pp.int_id, "") AS int_id,
+            IFNULL(pp.bed_code, "") AS bed_code,
+            IFNULL(tbs.id, "") AS id,
+            IFNULL(tbs.code, "") AS code,
+            IFNULL(tbs.data_time, "") AS data_time,
+            IFNULL(tbs.content, "") AS content
+        FROM
+            p_patient pp
+        LEFT JOIN table_blood_sugar tbs ON pp.int_id = tbs.patient_id
+        <if test="time != null and time != ''">
+            AND date_format(
+            tbs.data_time,
+            '%Y%m%d %H%i'
+            ) = date_format(
+            #{time},
+            '%Y%m%d %H%i'
+            )
+        </if>
+        WHERE
+            pp. STATUS !=- 1
+        AND pp.flag = 1
+    </select>
+
 </mapper>

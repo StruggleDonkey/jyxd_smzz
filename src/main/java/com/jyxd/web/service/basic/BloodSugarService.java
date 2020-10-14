@@ -33,4 +33,13 @@ public class BloodSugarService {
     }
 
     public int queryNum(Map<String,Object> map){return bloodSugarDao.queryNum(map);}
+
+    /**
+     * 根据时间查询在科病人的血糖信息
+     * @param map
+     * @return
+     */
+    public List<Map<String,Object>> getListByTime(Map<String,Object> map){
+        return bloodSugarDao.getListByTime(map);
+    }
 }

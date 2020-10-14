@@ -85,4 +85,85 @@
         </if>
     </select>
 
+    <select id="getListByTime" resultType="java.util.Map">
+        SELECT
+            IFNULL(dd.visit_id,"") AS visit_id,
+            IFNULL(dd.name,"") AS name,
+            IFNULL(dd.visit_code,"") AS visit_code,
+            IFNULL(dd.int_id,"") AS int_id,
+            IFNULL(dd.bed_code,"") AS bed_code,
+            SUM(IFNULL(CASE WHEN
+            dd.output_name='大便次数'
+            THEN
+            dd.dosage
+            END,""))
+             AS dabian,
+            SUM(IFNULL(CASE WHEN
+            dd.output_name='尿量'
+            THEN
+            dd.dosage
+            END,""))
+             AS niaoliang,
+            SUM(IFNULL(CASE WHEN
+            dd.order_type='液体入量'
+            THEN
+            dd.dosage
+            END,""))
+             AS yeti
+         FROM(
+        SELECT
+           pp.visit_id,pp.name,pp.visit_code,pp.int_id,pp.bed_code,toa.output_name,toa.dosage,"" order_type,pp.status,pp.flag
+         FROM p_patient pp LEFT JOIN table_output_amount toa ON pp.int_id=toa.patient_id
+        <if test="time != null and time != ''">
+            AND date_format(
+            toa.data_time,
+            '%Y%m%d %H%i'
+            ) = date_format(
+            #{time},
+            '%Y%m%d %H%i'
+            )
+        </if>
+        union all
+        SELECT
+           pp.visit_id,pp.name,pp.visit_code,pp.int_id,pp.bed_code,"" output_name,tia.dosage ,tia.order_type,pp.status,pp.flag
+         FROM p_patient pp LEFT JOIN table_input_amount tia ON pp.int_id=tia.patient_id
+        <if test="time != null and time != ''">
+            AND date_format(
+            tia.data_time,
+            '%Y%m%d %H%i'
+            ) = date_format(
+            #{time},
+            '%Y%m%d %H%i'
+            )
+        </if>) dd
+        WHERE 1=1 AND dd.status!=-1 AND dd.flag=1
+        GROUP BY dd.int_id,dd.visit_id,dd.visit_code,dd.name,dd.bed_code
+    </select>
+
+    <select id="queryDataByTime" resultMap="outputAmountMap" parameterType="java.lang.String">
+        select
+        <include refid="outputAmount_colums"></include>
+        from
+        table_output_amount
+        where 1=1
+        <if test="patientId != null and patientId != ''">
+            and  patient_id =#{patientId}
+        </if>
+        <if test="id != null and id != ''">
+            and  id=#{id}
+        </if>
+        <if test="outputName != null and outputName != ''">
+            and  output_name=#{outputName}
+        </if>
+        <if test="dataTime != null and dataTime != ''">
+            and  date_format(
+            data_time,
+            '%Y%m%d %H%i'
+            ) = date_format(
+            #{dataTime},
+            '%Y%m%d %H%i'
+            )
+        </if>
+    </select>
+
 </mapper>

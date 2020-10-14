@@ -81,4 +81,99 @@
         </if>
     </select>
 
+    <select id="getListByTime" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+	        IFNULL(pp.visit_id, "") AS visit_id,
+            IFNULL(pp.name, "") AS name,
+            IFNULL(pp.visit_code, "") AS visit_code,
+            IFNULL(pp.int_id, "") AS int_id,
+            IFNULL(pp.bed_code, "") AS bed_code,
+            SUM(IFNULL(CASE
+                        WHEN(tnr.code='体温')
+                        THEN tnr.content
+                        END,""))
+                        as tiwen,
+            SUM(IFNULL(CASE
+                        WHEN(tnr.code='心率')
+                        THEN tnr.content
+                        END,""))
+                        as xinlv,
+            SUM(IFNULL(CASE
+                        WHEN(tnr.code='脉搏')
+                        THEN tnr.content
+                        END,""))
+                        as maibo,
+            SUM(IFNULL(CASE
+                        WHEN(tnr.code='呼吸')
+                        THEN tnr.content
+                        END,""))
+                        as huxi,
+            SUM(IFNULL(CASE
+                        WHEN(tnr.code='心率')
+                        THEN tnr.content
+                        END,""))
+                        as xinlv,
+            SUM(IFNULL(CASE
+                        WHEN(tnr.code='有创血压')
+                        THEN tnr.content
+                        END,""))
+                        as youchuangxueya,
+						SUM(IFNULL(CASE
+                        WHEN(tnr.code='无创血压')
+                        THEN tnr.content
+                        END,""))
+                        as wuchuangxueya,
+            SUM(IFNULL(CASE
+                        WHEN(tnr.code='血氧饱和度')
+                        THEN tnr.content
+                        END,""))
+                        as xueyangbaohedu,
+            SUM(IFNULL(CASE
+                        WHEN(tnr.code='CVPcm')
+                        THEN tnr.content
+                        END,""))
+                        as CVPcm,
+            SUM(IFNULL(CASE
+                        WHEN(tnr.code='CVPmm')
+                        THEN tnr.content
+                        END,""))
+                        as CVPmm,
+            IFNULL(tnr.data_time, "") AS data_time
+            FROM
+                p_patient pp
+            LEFT JOIN table_nursing_record tnr ON pp.int_id = tnr.patient_id
+            <if test="time != null and time != ''">
+                AND date_format(
+                tnr.data_time,
+                '%Y%m%d %H%i'
+                ) = date_format(
+                #{time},
+                '%Y%m%d %H%i')
+            </if>
+            WHERE 1=1 AND pp.status!=-1 AND pp.flag=1
+            GROUP BY int_id
+    </select>
+
+    <select id="queryDataByTimeAndCode" resultMap="nursingRecordMap" parameterType="java.lang.String">
+        select
+        <include refid="nursingRecord_colums"></include>
+        from
+        table_nursing_record
+        where
+        1=1
+        <if test="dataTime != null and dataTime != ''">
+            AND date_format(
+            tnr.data_time,
+            '%Y%m%d %H%i'
+            ) = date_format(
+            #{dataTime},
+            '%Y%m%d %H%i')
+        </if>
+        <if test="code != null and code != ''">
+            AND code =#{code}
+        </if>
+        <if test="patientId != null and patientId != ''">
+            AND patient_id =#{patientId}
+        </if>
+    </select>
 </mapper>

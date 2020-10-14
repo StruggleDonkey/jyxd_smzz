@@ -43,12 +43,12 @@
 
     <insert id="insert">
         insert into
-          dict_bed(<include refid="scoreItemDictionary_colums"></include>)
+        dict_score_item(<include refid="scoreItemDictionary_colums"></include>)
         values (<include refid="scoreItemDictionary_propertys"></include>)
     </insert>
 
     <update id="update" parameterType="com.jyxd.web.data.dictionary.ScoreItemDictionary" >
-        update dict_bed
+        update dict_score_item
         set <include refid="scoreItemDictionary_update"></include>
         where
           id=#{id}
@@ -58,7 +58,7 @@
         select
           <include refid="scoreItemDictionary_colums"></include>
         from
-          dict_bed
+        dict_score_item
         where
           id=#{id}
     </select>
@@ -67,12 +67,15 @@
         select
           <include refid="scoreItemDictionary_colums"></include>
         from
-          dict_bed
+        dict_score_item
         where
           1=1
         and  status != -1
         <if test="scoreItemName != null and scoreItemName != ''">
             and  score_item_name like '%${scoreItemName}%'
+        </if>
+        <if test="type != null and type != ''">
+            and  type = #{type}
         </if>
         <if test="status != null ">
             and  status= #{status}
@@ -85,12 +88,15 @@
         select
           count(id)
         from
-        dict_bed
+        dict_score_item
         where
         1=1
         and  status != -1
         <if test="scoreItemName != null and scoreItemName != ''">
             and  score_item_name like '%${scoreItemName}%'
+        </if>
+        <if test="type != null and type != ''">
+            and  type = #{type}
         </if>
         <if test="status != null ">
             and  status= #{status}
@@ -98,22 +104,52 @@
     </select>
 
     <select id="querySonList" resultType="java.util.Map">
-        select
-        <include refid="scoreItemDictionary_colums"></include>
-        from
-        dict_bed
-        where
-        1=1
-        and  status != -1
+        SELECT
+          dd.*,
+          IFNULL(dsi.score_item_name, "") AS name
+        FROM
+        (
+        SELECT
+        IFNULL(id, "") AS id,
+        IFNULL(parent_id, "") AS parent_id,
+        IFNULL(type, "") AS type,
+        IFNULL(score_item_name, "") AS score_item_name,
+        IFNULL(score, "") AS score,
+        IFNULL(score_item_min, "") AS score_item_min,
+        IFNULL(score_item_max, "") AS score_item_max,
+        IFNULL(description, "") AS description,
+        sort_num,
+        STATUS,
+        MODE,
+        IFNULL(by_count, "") AS by_count,
+        IFNULL(hide_title, "") AS hide_title,
+        IFNULL(create_time, "") AS create_time,
+        IFNULL(show_mode, "") AS show_mode,
+        IFNULL(force_horizon, "") AS force_horizon,
+        IFNULL(double_score, "") AS double_score,
+        IFNULL(group_num, "") AS group_num,
+        calculate_num,
+        IFNULL(calculate_rule, "") AS calculate_rule,
+        IFNULL(item_group_exclusion_num, "") AS item_group_exclusion_num,
+        IFNULL(group_exclusion_num, "") AS group_exclusion_num,
+        IFNULL(fast_column_name, "") AS fast_column_name
+        FROM
+        dict_score_item
+        WHERE
+        1 = 1
+        AND STATUS != - 1
         <if test="scoreItemName != null and scoreItemName != ''">
             and  score_item_name like '%${scoreItemName}%'
         </if>
         <if test="parentId != null and parentId != ''">
             and  parent_id =#{parentId}
         </if>
+        <if test="type != null and type != ''">
+            and  type =#{type} and (parent_id != null || parent_id !="")
+        </if>
         <if test="status != null ">
             and  status= #{status}
-        </if>
+        </if>) AS dd LEFT JOIN dict_score_item dsi ON dd.parent_id=dsi.id
         <if test="start != null ">limit #{start},</if>
         <if test="size != null ">#{size}</if>
     </select>
@@ -122,7 +158,7 @@
         select
         count(id)
         from
-        dict_bed
+        dict_score_item
         where
         1=1
         and  status != -1
@@ -131,6 +167,9 @@
         </if>
         <if test="parentId != null and parentId != ''">
             and  parent_id =#{parentId}
+        </if>
+        <if test="type != null and type != ''">
+            and  type =#{type} and (parent_id != null || parent_id !="")
         </if>
         <if test="status != null ">
             and  status= #{status}

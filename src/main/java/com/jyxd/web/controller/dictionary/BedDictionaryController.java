@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,15 +40,22 @@ public class BedDictionaryController {
         json.put("code", HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         json.put("msg", "系统开小差了，请稍后再试。");
-        bedDictionary.setId(UUIDUtil.getUUID());
-        bedDictionaryService.insert(bedDictionary);
-        json.put("code",HttpCode.OK_CODE.getCode());
-        json.put("msg","添加成功");
+        Map<String,Object> map=new HashMap<>();
+        map.put("bedCode",bedDictionary.getBedCode());
+        if(bedDictionaryService.queryDataByBedCode(map)==null){
+            bedDictionary.setId(UUIDUtil.getUUID());
+            bedDictionaryService.insert(bedDictionary);
+            json.put("code",HttpCode.OK_CODE.getCode());
+            json.put("msg","添加成功");
+        }else{
+            json.put("code",HttpCode.EXISTING_CODE.getCode());
+            json.put("msg","床位编码已存在，请重新输入");
+        }
         return json.toString();
     }
 
     /**
-     * 更新床位地点记录状态
+     * 更新床位记录状态
      * @param map
      * @return
      */

@@ -50,4 +50,11 @@ public interface DepartmentDictionaryDao {
      * @return list
      */
     List<DepartmentDictionary> queryDataList(Map<String, Object> map);
+
+    /**
+     * 根据code查询科室字典对象
+     * @param map
+     * @return
+     */
+    DepartmentDictionary queryDataByCode(Map<String, Object> map);
 }

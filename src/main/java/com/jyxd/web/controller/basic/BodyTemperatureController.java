@@ -1,11 +1,14 @@
 package com.jyxd.web.controller.basic;
 
 import com.jyxd.web.data.basic.BodyTemperature;
+import com.jyxd.web.data.user.User;
 import com.jyxd.web.service.basic.BodyTemperatureService;
 import com.jyxd.web.util.HttpCode;
+import com.jyxd.web.util.JsonArrayValueProcessor;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import javax.servlet.http.HttpSession;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "/bodyTemperature")
@@ -35,16 +38,50 @@ public class BodyTemperatureController {
      */
     @RequestMapping(value = "/insert")
     @ResponseBody
-    public String insert(@RequestBody BodyTemperature bodyTemperature){
+    public String insert(@RequestBody (required=false) Map<String,Object> map, HttpSession session){
         JSONObject json=new JSONObject();
         json.put("code", HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         json.put("msg","添加失败");
-        bodyTemperature.setId(UUIDUtil.getUUID());
-        bodyTemperature.setCreateTime(new Date());
-        bodyTemperatureService.insert(bodyTemperature);
-        json.put("code",HttpCode.OK_CODE.getCode());
-        json.put("msg","添加成功");
+        try {
+            JSONArray array=JSONArray.fromObject(map.get("list").toString());
+            Map<String,Object> parameMap=new HashMap<>();
+            SimpleDateFormat sdf =   new SimpleDateFormat( "yyyy-MM-dd HH:mm" );
+            parameMap.put("dataTime",map.get("time").toString());
+            if(array!=null && array.size()>0){
+                for (int i = 0; i <array.size(); i++) {
+                    JSONObject obj=(JSONObject) array.get(i);
+                    parameMap.put("code",obj.getString("code"));
+                    BodyTemperature bodyTemperature=bodyTemperatureService.queryDataByTimeAndCode(parameMap);
+                    if(bodyTemperature!=null){
+                        //不等于null 为编辑
+                        bodyTemperature.setContent(obj.getString("content"));
+                        bodyTemperatureService.update(bodyTemperature);
+                    }else{
+                        //等于null 为新增
+                        BodyTemperature data=new BodyTemperature();
+                        data.setId(UUIDUtil.getUUID());
+                        data.setCreateTime(new Date());
+                        data.setStatus(1);
+                        User user=(User) session.getAttribute("user");
+                        if(user!=null){
+                            data.setOperatorCode(user.getLoginName());
+                        }
+                        data.setContent(obj.getString("content"));
+                        data.setCode(obj.getString("code"));
+                        data.setPatientId(obj.getString("patientId"));
+                        data.setVisitCode(obj.getString("visitCode"));
+                        data.setVisitId(obj.getString("visitId"));
+                        data.setDataTime(sdf.parse(obj.getString("dataTime")));
+                        bodyTemperatureService.insert(data);
+                    }
+                }
+                json.put("code",HttpCode.OK_CODE.getCode());
+                json.put("msg","添加成功");
+            }
+        }catch (Exception e){
+            logger.info("增加一条体温单数据表记录:"+e);
+        }
         return json.toString();
     }
 
@@ -173,6 +210,30 @@ public class BodyTemperatureController {
             json.put("data",JSONArray.fromObject(list));
         }
         json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
+    /**
+     * 根据时间查询在科病人的体温图数据
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/getListByTime",method= RequestMethod.POST)
+    @ResponseBody
+    public String getListByTime(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        List<Map<String,Object>> list=bodyTemperatureService.getListByTime(map);
+        if(list!=null && list.size()>0){
+            JsonConfig jsonConfig=new JsonConfig();
+            jsonConfig.registerJsonValueProcessor(Timestamp.class,new JsonArrayValueProcessor());
+            JSONArray array=JSONArray.fromObject(list,jsonConfig);
+            json.put("data",array);
+            json.put("code",HttpCode.OK_CODE.getCode());
+            json.put("msg","查询成功");
+        }
         return json.toString();
     }
 

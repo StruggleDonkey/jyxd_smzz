@@ -43,4 +43,18 @@ public interface BodyTemperatureDao {
      * @return
      */
     int queryNum(Map<String, Object> map);
+
+    /**
+     * 根据时间查询在科病人的体温图数据
+     * @param map
+     * @return
+     */
+    List<Map<String,Object>> getListByTime(Map<String, Object> map);
+
+    /**
+     * 根据时间和code查询体温单对象
+     * @param map
+     * @return
+     */
+    BodyTemperature queryDataByTimeAndCode(Map<String, Object> map);
 }
