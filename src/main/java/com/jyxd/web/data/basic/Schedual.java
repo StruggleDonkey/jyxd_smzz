@@ -42,7 +42,7 @@ public class Schedual implements Serializable {
     private Date schedualDate;
 
     /**
-     * 班别(0:日班 1:晚班 2:夜班)
+     * 班别(1:日班 2:晚班 3:夜班)
      */
     @Column(name = "shift")
     private int shift;

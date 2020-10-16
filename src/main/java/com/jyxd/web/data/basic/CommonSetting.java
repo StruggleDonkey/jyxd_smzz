@@ -21,7 +21,7 @@ public class CommonSetting implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-            * 主键ID
+     * 主键ID
      */
     @Id
     @Column(name = "id", length = 32, nullable = false)
@@ -36,7 +36,7 @@ public class CommonSetting implements Serializable {
     private String settingName;
 
     /**
-     * 类型
+     * 类型     (已有类型：排班时间、监护仪采集频率、默认首页)
      */
     @Column(name = "setting_type")
     private String settingType;

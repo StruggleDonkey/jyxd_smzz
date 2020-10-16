@@ -67,13 +67,37 @@
         table_common_setting
         where
         1=1
-        and  status != -1
         <if test="content != null and content != ''">
             and  content like '%${content}%'
         </if>
-        <if test="status != null ">
-            and  status= #{status}
-        </if>
     </select>
 
+    <select id="getSchedualTimeList" resultMap="commonSettingMap" parameterType="java.util.Map">
+        select
+        <include refid="commonSetting_colums"></include>
+        from
+        table_common_setting
+        where
+        1=1
+        <if test="settingType != null and settingType != ''">
+            and setting_type =#{settingType}
+        </if>
+        <if test="settingName != null and settingName != ''">
+            and setting_name =#{settingName}
+        </if>
+        order by sort_num
+    </select>
+
+    <!-- 系统设置-通用设置-监护仪采集频率/默认首页-查询监护仪频率或默认首页 -->
+    <select id="getCommonSettingByType" resultMap="commonSettingMap" parameterType="java.util.Map">
+        select
+        <include refid="commonSetting_colums"></include>
+        from
+        table_common_setting
+        where
+        1=1
+        <if test="settingType != null and settingType != ''">
+            and setting_type =#{settingType}
+        </if>
+    </select>
 </mapper>

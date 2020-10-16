@@ -9,6 +9,7 @@
         <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
         <result column="table_name" property="tableName" jdbcType="VARCHAR"/>
         <result column="template" property="template" jdbcType="VARCHAR"/>
+        <result column="unit" property="unit" jdbcType="VARCHAR"/>
         <result column="is_sync" property="isSync" jdbcType="INTEGER"/>
         <result column="is_alarm" property="isAlarm" jdbcType="INTEGER"/>
         <result column="create_time" property="createTime" jdbcType="DATE"/>
@@ -16,13 +17,13 @@
         <result column="status" property="status" jdbcType="INTEGER"/>
     </resultMap>
     
-    <sql id="vitalSignAlarm_colums">id,setting_type,setting_content,patient_id,table_name,template,is_sync,is_alarm,create_time,operator_code,status</sql>
+    <sql id="vitalSignAlarm_colums">id,setting_type,setting_content,patient_id,table_name,template,unit,is_sync,is_alarm,create_time,operator_code,status</sql>
 
-    <sql id="vitalSignAlarm_propertys">#{id},#{settingType},#{settingContent},#{patientId},#{tableName},#{template},#{isSync},
+    <sql id="vitalSignAlarm_propertys">#{id},#{settingType},#{settingContent},#{patientId},#{tableName},#{template},#{unit},#{isSync},
                                   #{isAlarm},#{createTime},#{operatorCode},#{status}</sql>
 
     <sql id="vitalSignAlarm_update">setting_type=#{settingType},setting_content=#{settingContent},patient_id=#{patientId},
-                              table_name=#{tableName},template=#{template},is_sync=#{isSync},is_alarm=#{isAlarm},create_time=#{createTime},
+                              table_name=#{tableName},template=#{template},unit=#{unit},is_sync=#{isSync},is_alarm=#{isAlarm},create_time=#{createTime},
                               operator_code=#{operatorCode},status=#{status}</sql>
 
     <insert id="insert">
@@ -56,9 +57,6 @@
         where
           1=1
         and  status != -1
-        <if test="content != null and content != ''">
-            and  content like '%${content}%'
-        </if>
         <if test="status != null ">
             and  status= #{status}
         </if>
@@ -74,12 +72,23 @@
         where
         1=1
         and  status != -1
-        <if test="content != null and content != ''">
-            and  content like '%${content}%'
-        </if>
         <if test="status != null ">
             and  status= #{status}
         </if>
     </select>
 
+    <select id="queryDataByType" resultMap="vitalSignAlarmMap" parameterType="java.util.Map">
+        select
+        <include refid="vitalSignAlarm_colums"></include>
+        from
+        table_vital_sign_alarm
+        where
+        status !=-1
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="settingType != null and settingType != ''">
+            and  setting_type= #{settingType}
+        </if>
+    </select>
 </mapper>

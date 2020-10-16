@@ -47,7 +47,7 @@ public class UserController {
         json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("msg","新增失败");
         try {
-            if(map!=null && map.containsKey("status") ){
+            if(map!=null && map.containsKey("status") && userService.queryDataByWorkNumber(map)==null){
                 User user=new User();
                 user.setId(UUIDUtil.getUUID());
                 user.setPassword("e10adc3949ba59abbe56e057f20f883e");//密码默认123456

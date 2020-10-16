@@ -190,4 +190,16 @@
             and  tut.user_type_name = #{userTypeName}
         </if>
     </select>
+
+    <select id="queryDataByWorkNumber" resultMap="userMap" parameterType="java.util.Map">
+        select
+        <include refid="user_colums"></include>
+        from
+        table_user
+        where
+        status!=-1
+        <if test="workNumber != null and workNumber != ''">
+            and  work_number =#{workNumber}
+        </if>
+    </select>
 </mapper>

@@ -60,6 +60,12 @@ public class VitalSignAlarm implements Serializable {
     private String template;
 
     /**
+     * 单位
+     */
+    @Column(name = "unit")
+    private String unit;
+
+    /**
      * 是否同步至护理单(1：是；0：否)
      */
     @Column(name = "is_sync")

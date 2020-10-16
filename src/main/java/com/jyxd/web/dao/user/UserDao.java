@@ -71,4 +71,12 @@ public interface UserDao {
      * @return
      */
     int getNum(Map<String, Object> map);
+
+    /**
+     * 根据工号查询用户
+     * @param map
+     * @return
+     */
+    User queryDataByWorkNumber(Map<String, Object> map);
+
 }

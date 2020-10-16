@@ -52,4 +52,13 @@ public class UserService {
     }
 
     public int getNum(Map<String,Object> map){return userDao.getNum(map);}
+
+    /**
+     * 根据工号查询用户
+     * @param map
+     * @return
+     */
+    public User queryDataByWorkNumber(Map<String,Object> map){
+        return userDao.queryDataByWorkNumber(map);
+    }
 }

@@ -43,4 +43,11 @@ public interface VitalSignAlarmDao {
      * @return
      */
     int queryNum(Map<String, Object> map);
+
+    /**
+     * 系统设置--报警设置--查询指标名称
+     * @param map
+     * @return
+     */
+    VitalSignAlarm queryDataByType(Map<String, Object> map);
 }

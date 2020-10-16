@@ -43,4 +43,18 @@ public interface CommonSettingDao {
      * @return
      */
     int queryNum(Map<String, Object> map);
+
+    /**
+     * 查询排班时间的通用设置列表
+     * @param map
+     * @return
+     */
+    List<CommonSetting> getSchedualTimeList(Map<String, Object> map);
+
+    /**
+     * 系统设置--通用设置--监护仪采集频率/默认首页--查询监护仪频率或默认首页
+     * @param map
+     * @return
+     */
+    CommonSetting getCommonSettingByType(Map<String, Object> map);
 }

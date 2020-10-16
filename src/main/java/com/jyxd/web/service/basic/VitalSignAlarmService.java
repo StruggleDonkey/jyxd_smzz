@@ -33,4 +33,13 @@ public class VitalSignAlarmService {
     }
 
     public int queryNum(Map<String,Object> map){return vitalSignAlarmDao.queryNum(map);}
+
+    /**
+     * 系统设置--报警设置--查询指标名称
+     * @param map
+     * @return
+     */
+    public VitalSignAlarm queryDataByType(Map<String,Object> map){
+        return vitalSignAlarmDao.queryDataByType(map);
+    }
 }

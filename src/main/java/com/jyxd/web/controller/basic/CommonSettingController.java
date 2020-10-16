@@ -6,6 +6,7 @@ import com.jyxd.web.util.HttpCode;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -173,6 +174,160 @@ public class CommonSettingController {
             json.put("data",JSONArray.fromObject(list));
         }
         json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
+    /**
+     * 增加或更新一条通用设置表记录(排班时间)
+     * @return
+     */
+    @RequestMapping(value = "/updateSchedualTime")
+    @ResponseBody
+    public String updateSchedualTime(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code", HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","添加失败");
+        JSONArray array=JSONArray.fromObject(map.get("list").toString());
+        if(array!=null && array.size()>0){
+            for (int i = 0; i < array.size(); i++) {
+                JSONObject obj=(JSONObject) array.get(i);
+                if(StringUtils.isNotEmpty(obj.getString("id"))){
+                    //id 不为空则编辑
+                    CommonSetting commonSetting=commonSettingService.queryData(obj.getString("id"));
+                    commonSetting.setSettingContent(obj.getString("settingContent"));
+                    commonSettingService.update(commonSetting);
+                }else{
+                    //id为空则新增
+                    CommonSetting commonSetting=new CommonSetting();
+                    commonSetting.setId(UUIDUtil.getUUID());
+                    commonSetting.setCreateTime(new Date());
+                    commonSetting.setSettingName(obj.getString("settingName"));
+                    commonSetting.setSettingContent(obj.getString("settingContent"));
+                    commonSetting.setSettingType("排班时间");
+                    if("白班".equals(obj.getString("settingName"))){
+                        commonSetting.setSortNum(1);
+                    }else if("晚班".equals(obj.getString("settingName"))){
+                        commonSetting.setSortNum(2);
+                    }else{
+                        commonSetting.setSortNum(3);
+                    }
+                    commonSettingService.insert(commonSetting);
+                }
+            }
+            json.put("code",HttpCode.OK_CODE.getCode());
+            json.put("msg","添加成功");
+        }
+        return json.toString();
+    }
+
+    /**
+     * 查询排班时间的通用设置列表
+     * @return
+     * @param map settingType=排班时间
+     */
+    @RequestMapping(value = "/getSchedualTimeList")
+    @ResponseBody
+    public String getSchedualTimeList(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code", HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","查询失败");
+        List<CommonSetting> list=commonSettingService.getSchedualTimeList(map);
+        if(list!=null && list.size()>0){
+            JSONArray array=JSONArray.fromObject(list);
+            json.put("data",array);
+            json.put("msg","查询成功");
+            json.put("code",HttpCode.OK_CODE.getCode());
+        }
+        return json.toString();
+    }
+
+    /**
+     * 新增或更新通用设置表记录(监护仪采集频率)
+     * @return
+     * @param commonSetting
+     */
+    @RequestMapping(value = "/updateMonitorFrequency")
+    @ResponseBody
+    public String updateMonitorFrequency(@RequestBody CommonSetting commonSetting){
+        JSONObject json=new JSONObject();
+        json.put("code", HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","更新失败");
+        if(StringUtils.isNotEmpty(commonSetting.getId())){
+            //id不为空 则编辑
+            CommonSetting data=commonSettingService.queryData(commonSetting.getId());
+            data.setSettingContent(commonSetting.getSettingContent());
+            commonSettingService.update(data);
+            json.put("msg","更新成功");
+            json.put("code",HttpCode.OK_CODE.getCode());
+        }else{
+            //id为空则新增
+            commonSetting.setSettingName("监护仪采集频率");
+            commonSetting.setSettingType("监护仪采集频率");
+            commonSetting.setCreateTime(new Date());
+            commonSetting.setSortNum(1);
+            commonSetting.setId(UUIDUtil.getUUID());
+            commonSettingService.insert(commonSetting);
+            json.put("msg","更新成功");
+            json.put("code",HttpCode.OK_CODE.getCode());
+        }
+        return json.toString();
+    }
+
+    /**
+     * 系统设置--通用设置--监护仪采集频率/默认首页--查询监护仪频率或默认首页
+     * @return
+     * @param map
+     */
+    @RequestMapping(value = "/getCommonSettingByType")
+    @ResponseBody
+    public String getCommonSettingByType(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code", HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","查询失败");
+        CommonSetting commonSetting=commonSettingService.getCommonSettingByType(map);
+        if(commonSetting!=null){
+            JSONObject obj=JSONObject.fromObject(commonSetting);
+            json.put("data",obj);
+            json.put("msg","查询成功");
+            json.put("code",HttpCode.OK_CODE.getCode());
+        }
+        return json.toString();
+    }
+
+    /**
+     * 新增或更新通用设置表记录(默认首页)
+     * @return
+     * @param commonSetting
+     */
+    @RequestMapping(value = "/updateDefaultPage")
+    @ResponseBody
+    public String updateDefaultPage(@RequestBody CommonSetting commonSetting){
+        JSONObject json=new JSONObject();
+        json.put("code", HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","更新失败");
+        if(StringUtils.isNotEmpty(commonSetting.getId())){
+            //id不为空 则编辑
+            CommonSetting data=commonSettingService.queryData(commonSetting.getId());
+            data.setSettingContent(commonSetting.getSettingContent());
+            commonSettingService.update(data);
+            json.put("msg","更新成功");
+            json.put("code",HttpCode.OK_CODE.getCode());
+        }else{
+            //id为空则新增
+            commonSetting.setSettingName("默认首页");
+            commonSetting.setSettingType("默认首页");
+            commonSetting.setCreateTime(new Date());
+            commonSetting.setSortNum(1);
+            commonSetting.setId(UUIDUtil.getUUID());
+            commonSettingService.insert(commonSetting);
+            json.put("msg","更新成功");
+            json.put("code",HttpCode.OK_CODE.getCode());
+        }
         return json.toString();
     }
 
