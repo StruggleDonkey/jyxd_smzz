@@ -1,11 +1,11 @@
 package com.jyxd.web.controller.basic;
 
 import com.jyxd.web.data.basic.BloodSugar;
+import com.jyxd.web.data.log.Log;
 import com.jyxd.web.data.user.User;
 import com.jyxd.web.service.basic.BloodSugarService;
-import com.jyxd.web.util.HttpCode;
-import com.jyxd.web.util.JsonArrayValueProcessor;
-import com.jyxd.web.util.UUIDUtil;
+import com.jyxd.web.service.log.LogService;
+import com.jyxd.web.util.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
@@ -22,7 +22,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpSession;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/bloodSugar")
@@ -32,6 +35,9 @@ public class BloodSugarController {
 
     @Autowired
     private BloodSugarService bloodSugarService;
+
+    @Autowired
+    private LogService logService;
 
     /**
      * 增加一条血糖表记录
@@ -55,6 +61,18 @@ public class BloodSugarController {
                         BloodSugar bloodSugar=bloodSugarService.queryData(obj.getString("id"));
                         bloodSugar.setContent(obj.getString("content"));
                         bloodSugar.setCode(obj.getString("code"));
+                        User user=(User) session.getAttribute("user");
+                        if(user!=null){
+                            //添加操作日志信息
+                            Log log=new Log();
+                            log.setId(UUIDUtil.getUUID());
+                            log.setOperatorCode(user.getLoginName());
+                            log.setOperateTime(new Date());
+                            log.setMenuCode(MenuCode.XTDKJLR_CODE.getCode());
+                            log.setContent(map.toString());
+                            log.setOperateType(LogTypeCode.UPDATE_CODE.getCode());
+                            logService.insert(log);
+                        }
                         bloodSugarService.update(bloodSugar);
                     }else {
                         //id 为null 说明是新增
@@ -65,6 +83,15 @@ public class BloodSugarController {
                         User user=(User) session.getAttribute("user");
                         if(user!=null){
                             bloodSugar.setOperatorCode(user.getLoginName());
+                            //添加操作日志信息
+                            Log log=new Log();
+                            log.setId(UUIDUtil.getUUID());
+                            log.setOperatorCode(user.getLoginName());
+                            log.setOperateTime(new Date());
+                            log.setMenuCode(MenuCode.XTDKJLR_CODE.getCode());
+                            log.setContent(map.toString());
+                            log.setOperateType(LogTypeCode.ADD_CODE.getCode());
+                            logService.insert(log);
                         }
                         bloodSugar.setCode(obj.getString("code"));
                         bloodSugar.setContent(obj.getString("content"));

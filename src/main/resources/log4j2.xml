@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Configuration后面的status，这个用于设置log4j2自身内部的信息输出，可以不设置，当设置成trace时，
+ 你会看到log4j2内部各种详细输出。可以设置成OFF(关闭)或Error(只输出错误信息)
+-->
 <configuration status="OFF">
+
+    <!--变量配置-->
+    <Properties>
+        <!-- 格式化输出：%date表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度 %msg：日志消息，%n是换行符-->
+        <!-- %logger{36} 表示 Logger 名字最长36个字符 -->
+        <property name="LOG_PATTERN" value="%date{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n" />
+        <!-- 定义日志存储的路径  定义日志存储的路径，不要配置相对路径-->
+        <property name="FILE_PATH" value="/logs" />
+        <!--项目名称-->
+        <property name="FILE_NAME" value="jyxd_smzz" />
+    </Properties>
+
     <appenders>
 
         <Console name="Console" target="SYSTEM_OUT">
@@ -10,8 +25,8 @@
 
         <!--处理DEBUG级别的日志，并把该日志放到logs/debug.log文件中-->
         <!--打印出DEBUG级别日志，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
-        <RollingFile name="RollingFileDebug" fileName="/log/debug.log"
-                     filePattern="log/$${date:yyyy-MM}/debug-%d{yyyy-MM-dd}-%i.log.gz">
+        <RollingFile name="RollingFileDebug" fileName="${FILE_PATH}/${FILE_NAME}/debug.log"
+                     filePattern="${FILE_PATH}/${FILE_NAME}-INFO-%d{yyyy-MM-dd}_%i.log.gz">
             <Filters>
                 <ThresholdFilter level="DEBUG"/>
                 <ThresholdFilter level="INFO" onMatch="DENY" onMismatch="NEUTRAL"/>
@@ -24,10 +39,10 @@
             </Policies>
         </RollingFile>
 
-        <!--处理INFO级别的日志，并把该日志放到logs/info.log文件中-->
-        <RollingFile name="RollingFileInfo" fileName="/log/info.log"
-                     filePattern="log/$${date:yyyy-MM}/info-%d{yyyy-MM-dd}-%i.log.gz">
-            <Filters>
+        <!-- 这个会打印出所有的info及以下级别的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
+        <RollingFile name="RollingFileInfo" fileName="${FILE_PATH}/${FILE_NAME}/info.log"
+                     filePattern="${FILE_PATH}/${FILE_NAME}-INFO-%d{yyyy-MM-dd}_%i.log.gz">
+        <Filters>
                 <!--只接受INFO级别的日志，其余的全部拒绝处理-->
                 <ThresholdFilter level="INFO"/>
                 <ThresholdFilter level="WARN" onMatch="DENY" onMismatch="NEUTRAL"/>
@@ -40,10 +55,11 @@
             </Policies>
         </RollingFile>
 
-        <!--处理WARN级别的日志，并把该日志放到logs/warn.log文件中-->
-        <RollingFile name="RollingFileWarn" fileName="/log/warn.log"
-                     filePattern="log/$${date:yyyy-MM}/warn-%d{yyyy-MM-dd}-%i.log.gz">
-            <Filters>
+        <!--处理WARN级别的日志，并把该日志放到${FILE_PATH}/${FILE_NAME}/warn.log文件中-->
+        <RollingFile name="RollingFileWarn" fileName="${FILE_PATH}/${FILE_NAME}/warn.log"
+                     filePattern="${FILE_PATH}/${FILE_NAME}-WARN-%d{yyyy-MM-dd}_%i.log.gz">
+
+        <Filters>
                 <ThresholdFilter level="WARN"/>
                 <ThresholdFilter level="ERROR" onMatch="DENY" onMismatch="NEUTRAL"/>
             </Filters>
@@ -56,9 +72,10 @@
         </RollingFile>
 
         <!--处理error级别的日志，并把该日志放到logs/error.log文件中-->
-        <RollingFile name="RollingFileError" fileName="/log/error.log"
-                     filePattern="log/$${date:yyyy-MM}/error-%d{yyyy-MM-dd}-%i.log.gz">
-            <ThresholdFilter level="ERROR"/>
+        <RollingFile name="RollingFileError" fileName="${FILE_PATH}/${FILE_NAME}/error.log"
+                     filePattern="${FILE_PATH}/${FILE_NAME}-ERROR-%d{yyyy-MM-dd}_%i.log.gz">
+
+        <ThresholdFilter level="ERROR"/>
             <PatternLayout
                     pattern="[%d{yyyy-MM-dd HH:mm:ss}] %-5level %class{36} %L %M - %msg%xEx%n"/>
             <Policies>
@@ -108,5 +125,9 @@
         <logger name="org.springframework.boot.actuate.autoconfigure.CrshAutoConfiguration" level="warn"/>
         <logger name="org.springframework.boot.actuate.endpoint.jmx" level="warn"/>
         <logger name="org.thymeleaf" level="warn"/>
+        <!--过滤掉spring和mybatis的一些无用的DEBUG信息-->
+        <logger name="org.mybatis" level="info" additivity="false">
+        <AppenderRef ref="Console"/>
+        </logger>
     </loggers>
 </configuration>

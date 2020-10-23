@@ -1,14 +1,15 @@
 package com.jyxd.web.controller.basic;
 
 import com.jyxd.web.data.basic.BodyTemperature;
+import com.jyxd.web.data.log.Log;
 import com.jyxd.web.data.user.User;
 import com.jyxd.web.service.basic.BodyTemperatureService;
-import com.jyxd.web.util.HttpCode;
-import com.jyxd.web.util.JsonArrayValueProcessor;
-import com.jyxd.web.util.UUIDUtil;
+import com.jyxd.web.service.log.LogService;
+import com.jyxd.web.util.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,9 @@ public class BodyTemperatureController {
     @Autowired
     private BodyTemperatureService bodyTemperatureService;
 
+    @Autowired
+    private LogService logService;
+
     /**
      * 增加一条体温单数据表记录
      * @return
@@ -51,38 +55,150 @@ public class BodyTemperatureController {
             if(array!=null && array.size()>0){
                 for (int i = 0; i <array.size(); i++) {
                     JSONObject obj=(JSONObject) array.get(i);
-                    parameMap.put("code",obj.getString("code"));
-                    BodyTemperature bodyTemperature=bodyTemperatureService.queryDataByTimeAndCode(parameMap);
-                    if(bodyTemperature!=null){
-                        //不等于null 为编辑
-                        bodyTemperature.setContent(obj.getString("content"));
-                        bodyTemperatureService.update(bodyTemperature);
-                    }else{
-                        //等于null 为新增
-                        BodyTemperature data=new BodyTemperature();
-                        data.setId(UUIDUtil.getUUID());
-                        data.setCreateTime(new Date());
-                        data.setStatus(1);
-                        User user=(User) session.getAttribute("user");
-                        if(user!=null){
-                            data.setOperatorCode(user.getLoginName());
+                    parameMap.put("patientId",obj.getString("patientId"));
+                    //口温
+                    if(StringUtils.isNotEmpty(obj.getString("kouwen"))){
+                        parameMap.put("code","口温");
+                        //根据时间和code 查询 体温单对象
+                        BodyTemperature bodyTemperature=bodyTemperatureService.queryDataByTimeAndCode(parameMap);
+                        if(bodyTemperature!=null){
+                            //不等于null 为编辑
+                            bodyTemperature.setContent(obj.getString("kouwen"));
+                            bodyTemperatureService.update(bodyTemperature);
+                        }else{
+                            //等于null 为新增
+                            BodyTemperature data=newBodyTemperature(obj,session);
+                            data.setCode("口温");
+                            data.setContent(obj.getString("kouwen"));
+                            bodyTemperatureService.insert(data);
                         }
-                        data.setContent(obj.getString("content"));
-                        data.setCode(obj.getString("code"));
-                        data.setPatientId(obj.getString("patientId"));
-                        data.setVisitCode(obj.getString("visitCode"));
-                        data.setVisitId(obj.getString("visitId"));
-                        data.setDataTime(sdf.parse(obj.getString("dataTime")));
-                        bodyTemperatureService.insert(data);
                     }
+                    //腋温
+                    if(StringUtils.isNotEmpty(obj.getString("yewen"))){
+                        parameMap.put("code","腋温");
+                        //根据时间和code 查询 体温单对象
+                        BodyTemperature bodyTemperature=bodyTemperatureService.queryDataByTimeAndCode(parameMap);
+                        if(bodyTemperature!=null){
+                            //不等于null 为编辑
+                            bodyTemperature.setContent(obj.getString("yewen"));
+                            bodyTemperatureService.update(bodyTemperature);
+                        }else{
+                            //等于null 为新增
+                            BodyTemperature data=newBodyTemperature(obj,session);
+                            data.setCode("腋温");
+                            data.setContent(obj.getString("yewen"));
+                            bodyTemperatureService.insert(data);
+                        }
+                    }
+                    //肛温
+                    if(StringUtils.isNotEmpty(obj.getString("gangwen"))){
+                        parameMap.put("code","肛温");
+                        //根据时间和code 查询 体温单对象
+                        BodyTemperature bodyTemperature=bodyTemperatureService.queryDataByTimeAndCode(parameMap);
+                        if(bodyTemperature!=null){
+                            //不等于null 为编辑
+                            bodyTemperature.setContent(obj.getString("gangwen"));
+                            bodyTemperatureService.update(bodyTemperature);
+                        }else{
+                            //等于null 为新增
+                            BodyTemperature data=newBodyTemperature(obj,session);
+                            data.setCode("肛温");
+                            data.setContent(obj.getString("gangwen"));
+                            bodyTemperatureService.insert(data);
+                        }
+                    }
+                    //脉搏
+                    if(StringUtils.isNotEmpty(obj.getString("maibo"))){
+                        parameMap.put("code","脉搏");
+                        //根据时间和code 查询 体温单对象
+                        BodyTemperature bodyTemperature=bodyTemperatureService.queryDataByTimeAndCode(parameMap);
+                        if(bodyTemperature!=null){
+                            //不等于null 为编辑
+                            bodyTemperature.setContent(obj.getString("maibo"));
+                            bodyTemperatureService.update(bodyTemperature);
+                        }else{
+                            //等于null 为新增
+                            BodyTemperature data=newBodyTemperature(obj,session);
+                            data.setCode("脉搏");
+                            data.setContent(obj.getString("maibo"));
+                            bodyTemperatureService.insert(data);
+                        }
+                    }
+                    //心率
+                    if(StringUtils.isNotEmpty(obj.getString("xinlv"))){
+                        parameMap.put("code","心率");
+                        //根据时间和code 查询 体温单对象
+                        BodyTemperature bodyTemperature=bodyTemperatureService.queryDataByTimeAndCode(parameMap);
+                        if(bodyTemperature!=null){
+                            //不等于null 为编辑
+                            bodyTemperature.setContent(obj.getString("xinlv"));
+                            bodyTemperatureService.update(bodyTemperature);
+                        }else{
+                            //等于null 为新增
+                            BodyTemperature data=newBodyTemperature(obj,session);
+                            data.setCode("心率");
+                            data.setContent(obj.getString("xinlv"));
+                            bodyTemperatureService.insert(data);
+                        }
+                    }
+                    //呼吸
+                    if(StringUtils.isNotEmpty(obj.getString("huxi"))){
+                        parameMap.put("code","呼吸");
+                        //根据时间和code 查询 体温单对象
+                        BodyTemperature bodyTemperature=bodyTemperatureService.queryDataByTimeAndCode(parameMap);
+                        if(bodyTemperature!=null){
+                            //不等于null 为编辑
+                            bodyTemperature.setContent(obj.getString("huxi"));
+                            bodyTemperatureService.update(bodyTemperature);
+                        }else{
+                            //等于null 为新增
+                            BodyTemperature data=newBodyTemperature(obj,session);
+                            data.setCode("呼吸");
+                            data.setContent(obj.getString("huxi"));
+                            bodyTemperatureService.insert(data);
+                        }
+                    }
+                }
+                User user=(User) session.getAttribute("user");
+                if(user!=null){
+                    //添加操作日志信息
+                    Log log=new Log();
+                    log.setId(UUIDUtil.getUUID());
+                    log.setOperatorCode(user.getLoginName());
+                    log.setOperateTime(new Date());
+                    log.setMenuCode(MenuCode.TWDKJLR_CODE.getCode());
+                    log.setContent(map.toString());
+                    log.setOperateType(LogTypeCode.ADD_CODE.getCode());
+                    logService.insert(log);
                 }
                 json.put("code",HttpCode.OK_CODE.getCode());
                 json.put("msg","添加成功");
             }
         }catch (Exception e){
-            logger.info("增加一条体温单数据表记录:"+e);
+            logger.info("增加一条体温单数据表记录:"+e.getMessage()+"  ------   "+e.toString()+"   "+e.getLocalizedMessage());
         }
         return json.toString();
+    }
+
+    public BodyTemperature newBodyTemperature(JSONObject jsonObject,HttpSession session){
+        BodyTemperature bodyTemperature=new BodyTemperature();
+        SimpleDateFormat sdf =   new SimpleDateFormat( "yyyy-MM-dd HH:mm" );
+        try {
+            bodyTemperature.setId(UUIDUtil.getUUID());
+            bodyTemperature.setCreateTime(new Date());
+            bodyTemperature.setStatus(1);
+            bodyTemperature.setDataTime(sdf.parse(jsonObject.getString("dataTime")));
+            bodyTemperature.setPatientId(jsonObject.getString("patientId"));
+            bodyTemperature.setVisitCode(jsonObject.getString("visitCode"));
+            bodyTemperature.setVisitId(jsonObject.getString("visitId"));
+            User user =(User) session.getAttribute("user");
+            if(user!=null){
+                bodyTemperature.setOperatorCode(user.getLoginName());
+            }
+        }catch (Exception e){
+            logger.info("newBodyTemperature:"+e);
+        }
+        return bodyTemperature;
     }
 
     /**

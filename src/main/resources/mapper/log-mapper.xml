@@ -16,7 +16,7 @@
     </resultMap>
     
     <sql id="log_colums">id,operate_type,operate_time,operator_code,menu_code,type,content,visit_id,visit_code,patient_id</sql>
-    <sql id="log_propertys">#{id},#{operateType},#{operateTime},#{operatorCode},#{menuCode},#{type},#{content},#{visit_id},#{visit_code},#{patient_id}</sql>
+    <sql id="log_propertys">#{id},#{operateType},#{operateTime},#{operatorCode},#{menuCode},#{type},#{content},#{visitId},#{visitCode},#{patientId}</sql>
     <sql id="log_update">operate_type=#{operateType},operate_time=#{operateTime},operator_code=#{operatorCode},menu_code=#{menuCode},type=#{type},
                             content=#{content},visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId}</sql>
 
@@ -60,7 +60,7 @@
             and  operator_code =#{operatorCode}
         </if>
         <if test="startTime != null and startTime != ''">
-            and operate_time between date_format(#{startTime},'%Y%m%d')
+            and date_format(operate_time,'%Y%m%d') between date_format(#{startTime},'%Y%m%d')
             and date_format(#{endTime},'%Y%m%d')
         </if>
         ORDER BY operate_time DESC
@@ -85,7 +85,7 @@
             and  operator_code =#{operatorCode}
         </if>
         <if test="startTime != null and startTime != ''">
-            and operate_time between date_format(#{startTime},'%Y%m%d')
+            and date_format(operate_time,'%Y%m%d') between date_format(#{startTime},'%Y%m%d')
             and date_format(#{endTime},'%Y%m%d')
         </if>
     </select>

@@ -91,6 +91,7 @@ public class MonitorDictionaryController {
                 monitorDictionary.setMonitorName(map.get("monitorName").toString());
                 monitorDictionary.setMonitorIp(map.get("monitorIp").toString());
                 monitorDictionary.setMonitorPort(map.get("monitorPort").toString());
+                monitorDictionary.setMonitorType(map.get("monitorType").toString());
                 monitorDictionaryService.update(monitorDictionary);
                 json.put("msg","编辑成功");
                 json.put("code",HttpCode.OK_CODE.getCode());

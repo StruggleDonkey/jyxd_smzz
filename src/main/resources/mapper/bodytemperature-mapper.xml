@@ -148,9 +148,12 @@
         <if test="id != null and id != ''">
             AND id=#{id}
         </if>
+        <if test="patientId != null and patientId != ''">
+            AND patient_id=#{patientId}
+        </if>
         <if test="dataTime != null and dataTime != ''">
             AND date_format(
-            tbe.data_time,
+            data_time,
             '%Y%m%d %H%i'
             ) = date_format(
             #{dataTime},

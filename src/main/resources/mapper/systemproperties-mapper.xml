@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyxd.web.dao.basic.SystemPropertiesDao">
+
+    <!--<resultMap id="systemPropertiesMap" type="com.jyxd.web.data.basic.SystemProperties">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="sys_key" property="sysKey" jdbcType="VARCHAR"/>
+        <result column="sys_value" property="sysValue" jdbcType="VARCHAR"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+    </resultMap>-->
+    
+    <!--<sql id="systemProperties_colums">key,value,remark</sql>
+
+    <sql id="systemProperties_propertys">#{key},#{value},#{remark}</sql>
+
+    <sql id="systemProperties_update">key=#{key},value=#{value},remark=#{remark}</sql>-->
+
+    <select id="querySystemProperties" resultType="java.lang.String">
+        select
+          sys_value
+        from
+        sys_properties
+        where
+          sys_key =#{sysKey}
+    </select>
+
+</mapper>

@@ -1,9 +1,13 @@
 package com.jyxd.web.controller.basic;
 
 import com.jyxd.web.data.basic.VitalSignAlarm;
+import com.jyxd.web.data.log.Log;
 import com.jyxd.web.data.user.User;
 import com.jyxd.web.service.basic.VitalSignAlarmService;
+import com.jyxd.web.service.log.LogService;
 import com.jyxd.web.util.HttpCode;
+import com.jyxd.web.util.LogTypeCode;
+import com.jyxd.web.util.MenuCode;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -30,6 +34,9 @@ public class VitalSignAlarmController {
 
     @Autowired
     private VitalSignAlarmService vitalSignAlarmService;
+
+    @Autowired
+    private LogService logService;
 
     /**
      * 增加一条生命体征告警设置记录
@@ -73,6 +80,15 @@ public class VitalSignAlarmController {
         User user=(User) session.getAttribute("user");
         if(user!=null){
             vitalSignAlarm.setOperatorCode(user.getLoginName());
+            //添加操作日志信息
+            Log log=new Log();
+            log.setId(UUIDUtil.getUUID());
+            log.setOperatorCode(user.getLoginName());
+            log.setOperateTime(new Date());
+            log.setMenuCode(MenuCode.BJSZ_CODE.getCode());
+            log.setContent(vitalSignAlarm.toString());
+            log.setOperateType(LogTypeCode.ADD_CODE.getCode());
+            logService.insert(log);
         }
         vitalSignAlarmService.insert(vitalSignAlarm);
         json.put("code",HttpCode.OK_CODE.getCode());
@@ -87,7 +103,7 @@ public class VitalSignAlarmController {
      */
     @RequestMapping(value = "/update")
     @ResponseBody
-    public String update(@RequestBody(required=false) Map<String,Object> map){
+    public String update(@RequestBody(required=false) Map<String,Object> map,HttpSession session){
         JSONObject json=new JSONObject();
         json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("msg","更新失败");
@@ -96,6 +112,19 @@ public class VitalSignAlarmController {
             if(vitalSignAlarm!=null){
                 vitalSignAlarm.setStatus((int)map.get("status"));
                 vitalSignAlarmService.update(vitalSignAlarm);
+                User user=(User) session.getAttribute("user");
+                if(user!=null){
+                    vitalSignAlarm.setOperatorCode(user.getLoginName());
+                    //添加操作日志信息
+                    Log log=new Log();
+                    log.setId(UUIDUtil.getUUID());
+                    log.setOperatorCode(user.getLoginName());
+                    log.setOperateTime(new Date());
+                    log.setMenuCode(MenuCode.BJSZ_CODE.getCode());
+                    log.setContent(map.toString());
+                    log.setOperateType(LogTypeCode.UPDATE_CODE.getCode());
+                    logService.insert(log);
+                }
                 json.put("msg","更新成功");
                 json.put("code",HttpCode.OK_CODE.getCode());
             }
@@ -123,6 +152,15 @@ public class VitalSignAlarmController {
                 User user=(User) session.getAttribute("user");
                 if(user!=null){
                     vitalSignAlarm.setOperatorCode(user.getLoginName());
+                    //添加操作日志信息
+                    Log log=new Log();
+                    log.setId(UUIDUtil.getUUID());
+                    log.setOperatorCode(user.getLoginName());
+                    log.setOperateTime(new Date());
+                    log.setMenuCode(MenuCode.BJSZ_CODE.getCode());
+                    log.setContent(map.toString());
+                    log.setOperateType(LogTypeCode.UPDATE_CODE.getCode());
+                    logService.insert(log);
                 }
                 vitalSignAlarm.setSettingContent(map.get("settingContent").toString());
                 vitalSignAlarm.setSettingType(map.get("settingType").toString());
@@ -168,7 +206,7 @@ public class VitalSignAlarmController {
      */
     @RequestMapping(value = "/delete")
     @ResponseBody
-    public String delete(@RequestBody(required=false) Map<String,Object> map){
+    public String delete(@RequestBody(required=false) Map<String,Object> map,HttpSession session){
         JSONObject json=new JSONObject();
         json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("msg","删除失败");
@@ -176,6 +214,19 @@ public class VitalSignAlarmController {
             VitalSignAlarm vitalSignAlarm=vitalSignAlarmService.queryData(map.get("id").toString());
             if(vitalSignAlarm!=null){
                 vitalSignAlarm.setStatus(-1);
+                User user=(User) session.getAttribute("user");
+                if(user!=null){
+                    vitalSignAlarm.setOperatorCode(user.getLoginName());
+                    //添加操作日志信息
+                    Log log=new Log();
+                    log.setId(UUIDUtil.getUUID());
+                    log.setOperatorCode(user.getLoginName());
+                    log.setOperateTime(new Date());
+                    log.setMenuCode(MenuCode.BJSZ_CODE.getCode());
+                    log.setContent(map.toString());
+                    log.setOperateType(LogTypeCode.DELETE_CODE.getCode());
+                    logService.insert(log);
+                }
                 vitalSignAlarmService.update(vitalSignAlarm);
                 json.put("msg","删除成功");
                 json.put("code",HttpCode.OK_CODE.getCode());
@@ -279,10 +330,9 @@ public class VitalSignAlarmController {
         array.add(obj8);
         for (int i = 0; i <array.size(); i++) {
             JSONObject obj=(JSONObject) array.get(i);
-            map.put("settingType",obj.getString("settingType"));
+            map.put("settingType",obj.get("settingType").toString());
             if(vitalSignAlarmService.queryDataByType(map)!=null){
                 obj.put("status",1);
-                array.add(i,obj);
             }
         }
         json.put("data",array);

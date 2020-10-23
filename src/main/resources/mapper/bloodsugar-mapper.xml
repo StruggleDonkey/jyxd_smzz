@@ -81,7 +81,7 @@
         </if>
     </select>
 
-    <select id="getListByTime " resultType="java.util.Map">
+    <select id="getListByTime" resultType="java.util.Map">
         SELECT
             IFNULL(pp.visit_id, "") AS visit_id,
             IFNULL(pp.name, "") AS name,

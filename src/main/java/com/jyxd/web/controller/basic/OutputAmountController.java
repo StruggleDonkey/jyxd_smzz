@@ -2,12 +2,12 @@ package com.jyxd.web.controller.basic;
 
 import com.jyxd.web.data.basic.InputAmount;
 import com.jyxd.web.data.basic.OutputAmount;
+import com.jyxd.web.data.log.Log;
 import com.jyxd.web.data.user.User;
 import com.jyxd.web.service.basic.InputAmountService;
 import com.jyxd.web.service.basic.OutputAmountService;
-import com.jyxd.web.util.HttpCode;
-import com.jyxd.web.util.JsonArrayValueProcessor;
-import com.jyxd.web.util.UUIDUtil;
+import com.jyxd.web.service.log.LogService;
+import com.jyxd.web.util.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
@@ -37,6 +37,9 @@ public class OutputAmountController {
 
     @Autowired
     private InputAmountService inputAmountService;
+
+    @Autowired
+    private LogService logService;
 
     /**
      * 增加一条出量表记录
@@ -137,6 +140,17 @@ public class OutputAmountController {
                             inputAmountService.insert(data);
                         }
                     }
+                }
+                if(user!=null){
+                    //添加操作日志信息
+                    Log log=new Log();
+                    log.setId(UUIDUtil.getUUID());
+                    log.setOperatorCode(user.getLoginName());
+                    log.setOperateTime(new Date());
+                    log.setMenuCode(MenuCode.TWDKJLR_CODE.getCode());
+                    log.setContent(map.toString());
+                    log.setOperateType(LogTypeCode.ADD_CODE.getCode());
+                    logService.insert(log);
                 }
                 json.put("code",HttpCode.OK_CODE.getCode());
                 json.put("msg","添加成功");

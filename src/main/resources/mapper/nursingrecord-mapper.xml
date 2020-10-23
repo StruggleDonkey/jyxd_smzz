@@ -163,7 +163,7 @@
         1=1
         <if test="dataTime != null and dataTime != ''">
             AND date_format(
-            tnr.data_time,
+            data_time,
             '%Y%m%d %H%i'
             ) = date_format(
             #{dataTime},
