@@ -21,13 +21,34 @@ public class ApplicationStartQuartzJobListener implements ApplicationListener<Co
     @Autowired
     private QuartzSchedulerUtil quartzScheduler;
 
+//    @Bean(name="SchedulerFactory")
+//    public SchedulerFactoryBean schedulerFactoryBean() throws IOException {
+//           SchedulerFactoryBean factory = new SchedulerFactoryBean();
+//           factory.setQuartzProperties(quartzProperties());
+//           return factory;
+//         }
+//
+//    /**
+//      * 加载Quartz配置
+//     *
+//      */
+//    @Bean
+//    public Properties quartzProperties() throws IOException {
+//         //使用Spring的PropertiesFactoryBean对属性配置文件进行管理
+//        PropertiesFactoryBean propertiesFactoryBean = new PropertiesFactoryBean();
+//        propertiesFactoryBean.setLocation(new ClassPathResource("/quartz.properties"));
+//        propertiesFactoryBean.afterPropertiesSet();
+//        Properties properties = propertiesFactoryBean.getObject();
+//        return properties;
+//    }
+
     /**
      * 初始启动quartz
      */
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         try {
-            quartzScheduler.startJob();
+            quartzScheduler.startJob(scheduler());
             System.out.println("任务已经启动...");
         } catch (SchedulerException e) {
             e.printStackTrace();

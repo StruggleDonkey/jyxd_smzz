@@ -18,6 +18,7 @@ public class SchedulerQuartzJob1 implements Job {
     private static Logger logger= LoggerFactory.getLogger(SchedulerQuartzJob1.class);
 
 
+
     @Override
     public void execute(JobExecutionContext arg0) throws JobExecutionException {
         try {

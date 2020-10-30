@@ -287,14 +287,14 @@ public class CommonSettingController {
         JSONObject json=new JSONObject();
         json.put("code", HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
-        json.put("msg","查询失败");
+        json.put("msg","暂无数据");
         CommonSetting commonSetting=commonSettingService.getCommonSettingByType(map);
         if(commonSetting!=null){
             JSONObject obj=JSONObject.fromObject(commonSetting);
             json.put("data",obj);
             json.put("msg","查询成功");
-            json.put("code",HttpCode.OK_CODE.getCode());
         }
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 

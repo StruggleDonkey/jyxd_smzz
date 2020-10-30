@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 
-@Service
+@Service("quartzTimeService")
 @Transactional
 public class QuartzTimeService {
 

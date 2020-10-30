@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 统计任务执行时间表
+ * 统计任务表
  */
 @Entity
 @Table(name = "table_task_time_statistics")

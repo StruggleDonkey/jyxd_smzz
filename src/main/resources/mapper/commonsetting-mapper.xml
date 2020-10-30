@@ -17,7 +17,7 @@
     <sql id="commonSetting_propertys">#{id},#{settingName},#{settingType},#{settingSubType},#{settingContent},#{createTime},#{sortNum}</sql>
 
     <sql id="commonSetting_update">setting_name=#{settingName},setting_type=#{settingType},setting_sub_type=#{settingSubType},
-                              setting_content=#{settingContent},create_time=#{createTime},sort_num=#{sortNum},</sql>
+                              setting_content=#{settingContent},create_time=#{createTime},sort_num=#{sortNum}</sql>
 
     <insert id="insert">
         insert into

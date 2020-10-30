@@ -67,7 +67,7 @@ public class Log implements Serializable {
     private String content;
 
     /**
-     * 操作功能
+     * 住院号
      */
     @Column(name = "visit_id")
     private String visitId;

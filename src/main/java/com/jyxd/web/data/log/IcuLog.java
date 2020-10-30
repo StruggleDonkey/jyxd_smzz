@@ -43,7 +43,7 @@ public class IcuLog implements Serializable {
     private String visitCode;
 
     /**
-     * patient_key
+     * 病人主键id
      */
     @Column(name = "patient_id")
     private String patientId;

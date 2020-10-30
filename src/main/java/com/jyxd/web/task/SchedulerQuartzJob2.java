@@ -22,11 +22,40 @@ public class SchedulerQuartzJob2 implements Job {
         before();
         // TODO 业务
         logger.info("Job key:"+arg0.getJobDetail().getKey());
-        after();
+        try {
+            /*SchedulerFactory schedulerFactoryBean = new StdSchedulerFactory();
+            QuartzSchedulerUtil quartzSchedulerUtil=new QuartzSchedulerUtil();
+            Scheduler scheduler = schedulerFactoryBean.getScheduler();
+            quartzSchedulerUtil.modifyJob("job2", "group2","0/1 * * * * ?",scheduler);
+            logger.info("修改Job2任务");*/
+        }catch (Exception e){
+            logger.info("Job2任务异常："+e);
+        }
+
+        //getAllJobs();
     }
 
-    private void after(){
-        logger.info("Job2任务开始执行");
-    }
+    /*public static void getAllJobs() {
+        try {
+            SchedulerFactory schedulerFactoryBean = new StdSchedulerFactory();
+            Scheduler scheduler = schedulerFactoryBean.getScheduler();
+            System.out.println("-------------");
+            for (String groupName : scheduler.getJobGroupNames()) {
+                System.out.println("+_++++++++++++++++++");
+                for (JobKey jobKey : scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName))) {
+                    System.out.println("=============");
+                    String jobName = jobKey.getName();
+                    String jobGroup = jobKey.getGroup();
+                    //get job's trigger
+                    List<Trigger> triggers = (List<Trigger>) scheduler.getTriggersOfJob(jobKey);
+                    Date nextFireTime = triggers.get(0).getNextFireTime();
+                    System.out.println("[jobName] : " + jobName + " [groupName] : "
+                            + jobGroup + " - " + nextFireTime);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }*/
 
 }

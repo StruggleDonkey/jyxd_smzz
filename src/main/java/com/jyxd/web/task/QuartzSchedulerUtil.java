@@ -1,5 +1,8 @@
 package com.jyxd.web.task;
 
+import com.jyxd.web.data.basic.QuartzTask;
+import com.jyxd.web.service.basic.QuartzTaskService;
+import com.jyxd.web.util.UUIDUtil;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 任务调度处理
@@ -16,19 +21,24 @@ public class QuartzSchedulerUtil {
 
     private static Logger logger= LoggerFactory.getLogger(QuartzSchedulerUtil.class);
 
-    // 任务调度
+    /*// 任务调度
     @Autowired
-    private Scheduler scheduler;
+    private Scheduler scheduler;*/
+
+    @Autowired
+    private QuartzTaskService quartzTaskService;
 
     /**
      * 开始执行所有任务
      *
      * @throws SchedulerException
      */
-    public void startJob() throws SchedulerException {
-        //startJob1(scheduler);
-        //startJob2(scheduler);
-        //scheduler.start();
+    public void startJob(Scheduler scheduler) throws SchedulerException {
+        logger.info("scheduler:"+scheduler.toString());
+        //startJob1(scheduler);测试
+        //startJob2(scheduler);测试
+        startJob3(scheduler);
+        scheduler.start();
     }
 
     /**
@@ -39,7 +49,7 @@ public class QuartzSchedulerUtil {
      * @return
      * @throws SchedulerException
      */
-    public String getJobInfo(String name, String group) throws SchedulerException {
+    public String getJobInfo(String name, String group,Scheduler scheduler) throws SchedulerException {
         TriggerKey triggerKey = new TriggerKey(name, group);
         CronTrigger cronTrigger = (CronTrigger) scheduler.getTrigger(triggerKey);
         return String.format("time:%s,state:%s", cronTrigger.getCronExpression(),
@@ -55,7 +65,7 @@ public class QuartzSchedulerUtil {
      * @return
      * @throws SchedulerException
      */
-    public boolean modifyJob(String name, String group, String time) throws SchedulerException {
+    public boolean modifyJob(String name, String group, String time,Scheduler scheduler) throws SchedulerException {
         Date date = null;
         TriggerKey triggerKey = new TriggerKey(name, group);
         CronTrigger cronTrigger = (CronTrigger) scheduler.getTrigger(triggerKey);
@@ -70,11 +80,30 @@ public class QuartzSchedulerUtil {
     }
 
     /**
+     * 立即执行某个任务
+     *
+     * @param name
+     * @param group
+     * @param time
+     * @return
+     * @throws SchedulerException
+     */
+    public boolean beginJob(String name, String group, String time,Scheduler scheduler) throws SchedulerException {
+        Date date = null;
+        TriggerKey triggerKey = new TriggerKey(name, group);
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(time);
+        CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(name, group)
+                .withSchedule(cronScheduleBuilder).build();
+        date = scheduler.rescheduleJob(triggerKey, trigger);
+        return date != null;
+    }
+
+    /**
      * 暂停所有任务
      *
      * @throws SchedulerException
      */
-    public void pauseAllJob() throws SchedulerException {
+    public void pauseAllJob(Scheduler scheduler) throws SchedulerException {
         scheduler.pauseAll();
     }
 
@@ -85,7 +114,7 @@ public class QuartzSchedulerUtil {
      * @param group
      * @throws SchedulerException
      */
-    public void pauseJob(String name, String group) throws SchedulerException {
+    public void pauseJob(String name, String group,Scheduler scheduler) throws SchedulerException {
         JobKey jobKey = new JobKey(name, group);
         System.out.println(jobKey.toString());
         JobDetail jobDetail = scheduler.getJobDetail(jobKey);
@@ -99,7 +128,7 @@ public class QuartzSchedulerUtil {
      *
      * @throws SchedulerException
      */
-    public void resumeAllJob() throws SchedulerException {
+    public void resumeAllJob(Scheduler scheduler) throws SchedulerException {
         scheduler.resumeAll();
     }
 
@@ -110,7 +139,7 @@ public class QuartzSchedulerUtil {
      * @param group
      * @throws SchedulerException
      */
-    public void resumeJob(String name, String group) throws SchedulerException {
+    public void resumeJob(String name, String group,Scheduler scheduler) throws SchedulerException {
         JobKey jobKey = new JobKey(name, group);
         JobDetail jobDetail = scheduler.getJobDetail(jobKey);
         if (jobDetail == null)
@@ -125,7 +154,7 @@ public class QuartzSchedulerUtil {
      * @param group
      * @throws SchedulerException
      */
-    public void deleteJob(String name, String group) throws SchedulerException {
+    public void deleteJob(String name, String group,Scheduler scheduler) throws SchedulerException {
         JobKey jobKey = new JobKey(name, group);
         JobDetail jobDetail = scheduler.getJobDetail(jobKey);
         if (jobDetail == null)
@@ -138,7 +167,7 @@ public class QuartzSchedulerUtil {
      * @return
      * @throws Exception
      */
-    public String trigger(String name,String group) throws Exception {
+    public String trigger(String name,String group,Scheduler scheduler) throws Exception {
         // 获取任务
         JobKey jobKey = new JobKey(name,group);
         System.out.println("jobKey:"+jobKey);
@@ -162,7 +191,7 @@ public class QuartzSchedulerUtil {
      * @return
      * @throws Exception
      */
-    public String pause(String name,String group) throws Exception {
+    public String pause(String name,String group,Scheduler scheduler) throws Exception {
         JobKey key = new JobKey(name,group);
         scheduler.pauseJob(key);
         return "pause";
@@ -173,10 +202,9 @@ public class QuartzSchedulerUtil {
      * @return
      * @throws Exception
      */
-    public String start() throws Exception {
-        JobKey key = new JobKey("job1");
+    public void start(String name,String group,Scheduler scheduler) throws Exception {
+        JobKey key = new JobKey(name,group);
         scheduler.resumeJob(key);
-        return "start";
     }
 
     private void startJob1(Scheduler scheduler) throws SchedulerException {
@@ -196,6 +224,37 @@ public class QuartzSchedulerUtil {
         JobDetail jobDetail = JobBuilder.newJob(SchedulerQuartzJob2.class).withIdentity("job2", "group2").build();
         CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("0/5 * * * * ?");
         CronTrigger cronTrigger = TriggerBuilder.newTrigger().withIdentity("job2", "group2")
+                .withSchedule(cronScheduleBuilder).build();
+        scheduler.scheduleJob(jobDetail, cronTrigger);
+    }
+
+    private void startJob3(Scheduler scheduler) throws SchedulerException {
+        JobDetail jobDetail = JobBuilder.newJob(TestJob.class).withIdentity("testJob", "testJob").build();
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("0 0 0/1 * * ? *");//每小时一次
+        Map<String,Object> map=new HashMap<>();
+        map.put("jobName","testJob");
+        map.put("jobGroup","testJob");
+        QuartzTask quartzTask =quartzTaskService.queryDataByNameAndGroup(map);
+        if(quartzTask==null){
+            //如果为空 说明数据库中没有这个任务 需要添加
+            QuartzTask data=new QuartzTask();
+            data.setId(UUIDUtil.getUUID());
+            data.setCreateTime(new Date());
+            data.setCron("0 0 0/1 * * ? *");
+            data.setDescription("测试定时任务");
+            data.setJobGroup("testJob");
+            data.setJobName("testJob");
+            data.setStatus(1);
+            data.setTaskName("testJob");
+            data.setType("系统任务");
+            quartzTaskService.insert(data);
+        }else if(quartzTask.getStatus()==1){
+            //转态 1: 正常执行
+            cronScheduleBuilder = CronScheduleBuilder.cronSchedule(quartzTask.getCron());
+        }else{
+            return;
+        }
+        CronTrigger cronTrigger = TriggerBuilder.newTrigger().withIdentity("testJob", "testJob")
                 .withSchedule(cronScheduleBuilder).build();
         scheduler.scheduleJob(jobDetail, cronTrigger);
     }

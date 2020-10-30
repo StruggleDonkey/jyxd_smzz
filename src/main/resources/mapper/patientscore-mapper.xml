@@ -20,18 +20,19 @@
         <result column="other_step" property="otherStep" jdbcType="VARCHAR"/>
         <result column="signature" property="signature" jdbcType="VARCHAR"/>
         <result column="mortality_rate" property="mortalityRate" jdbcType="VARCHAR"/>
+        <result column="extend_column" property="extendColumn" jdbcType="VARCHAR"/>
     </resultMap>
     
     <sql id="patientScore_colums">id,visit_id,visit_code,patient_id,type,score_time,score,score_knowledge_id,create_time,operator_code,
-                                    status,report_time,assessment_time,nursing_step,other_step,signature,mortality_rate
+                                    status,report_time,assessment_time,nursing_step,other_step,signature,mortality_rate,extend_column
                               </sql>
     <sql id="patientScore_propertys">#{id},#{visitId},#{visitCode},#{patientId},#{type},#{scoreTime},#{score},#{scoreKnowledgeId},#{createTime},
-                                  #{operatorCode},#{status},#{reportTime},#{assessmentTime},#{nursingStep},#{otherStep},#{signature},#{mortalityRate}
+                                  #{operatorCode},#{status},#{reportTime},#{assessmentTime},#{nursingStep},#{otherStep},#{signature},#{mortalityRate},#{extendColumn}
                               </sql>
     <sql id="patientScore_update">visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},type=#{type},score_time=#{scoreTime},
                               score=#{score},score_knowledge_id=#{scoreKnowledgeId},create_time=#{createTime},operator_code=#{operatorCode}
 		                      status=#{status},report_time=#{reportTime},assessment_time=#{assessmentTime},nursing_step=#{nursingStep},
-		                      other_step=#{otherStep},signature=#{signature},mortality_rate=#{mortalityRate}
+		                      other_step=#{otherStep},signature=#{signature},mortality_rate=#{mortalityRate},extend_column=#{extendColumn}
 		                      </sql>
 
     <insert id="insert">

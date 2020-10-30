@@ -196,4 +196,22 @@ public class MedOrderExec implements Serializable {
      */
     @Column(name = "is_sync")
     private int isSync;
+
+    /**
+     * 医嘱每天执行次数 默认1
+     */
+    @Column(name = "order_exec_num")
+    private int orderExecNum;
+
+    /**
+     * 剩余同步次数 默认1
+     */
+    @Column(name = "sync_num")
+    private int syncNum;
+
+    /**
+     * 最新同步时间
+     */
+    @Column(name = "recent_sync_time")
+    private Date recentSyncTime;
 }

@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 定时任务上次执行的时间
+ * 定时任务执行的时间
  */
 @Entity
 @Table(name = "table_quartz_time")
@@ -30,15 +30,38 @@ public class QuartzTime implements Serializable {
     private String id;
 
     /**
-     * 时间
+     * 定时任务主键ID
      */
-    @Column(name = "time")
-    private Date time;
+    @Column(name = "quartztask_id")
+    private String quartzTaskId;
 
     /**
-     * 类型
+     * 开始时间
      */
-    @Column(name = "type")
-    private String type;
+    @Column(name = "start_time")
+    private Date startTime;
 
+    /**
+     * 结束时间
+     */
+    @Column(name = "end_time")
+    private Date endTime;
+
+    /**
+     * 下次执行时间
+     */
+    @Column(name = "next_time")
+    private Date nextTime;
+
+    /**
+     * 执行时长
+     */
+    @Column(name = "time_length")
+    private String timeLength;
+
+    /**
+     * 状态 1：正常
+     */
+    @Column(name = "status")
+    private int status;
 }

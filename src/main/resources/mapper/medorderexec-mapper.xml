@@ -32,6 +32,9 @@
         <result column="create_time" property="createTime" jdbcType="DATE"/>
         <result column="update_time" property="updateTime" jdbcType="DATE"/>
         <result column="is_sync" property="isSync" jdbcType="INTEGER"/>
+        <result column="order_exec_num" property="orderExecNum" jdbcType="INTEGER"/>
+        <result column="sync_num" property="syncNum" jdbcType="INTEGER"/>
+        <result column="recent_sync_time" property="recentSyncTime" jdbcType="DATE"/>
     </resultMap>
     
     <sql id="medOrderExec_colums">id,visit_id,visit_code,patient_id,order_code,order_no,
@@ -39,13 +42,13 @@
                                     default_time_point,start_time_point,complete_time_point,
                                     dosage,dosage_units,all_dosage,repeat_indicator,use_mode,
                                     class_type,frequency,perform_speed,speed_units,nurse_code,
-                                    order_status,remark,create_time,update_time,is_sync</sql>
+                                    order_status,remark,create_time,update_time,is_sync,order_exec_num,sync_num,recent_sync_time</sql>
 
     <sql id="medOrderExec_propertys">#{id},#{visitId},#{visitCode},#{patientId},#{orderCode},#{orderNo},
                                     #{orderSubNo},#{orderName},#{specs},#{drugType},#{orderAttr},#{defaultTimePoint},
                                     #{startTimePoint},#{completeTimePoint},#{dosage},#{dosageUnits},#{allDosage},
-                                    #{repeatIndicator},#{useMode},#{classType},#{frequency},#{performSpeed},#{speedUnits},
-                                    #{nurseCode},#{orderStatus},#{remark},#{createTime},#{updateTime},#{isSync}</sql>
+                                    #{repeatIndicator},#{useMode},#{classType},#{frequency},#{performSpeed},#{speedUnits},#{nurseCode},
+                                    #{orderStatus},#{remark},#{createTime},#{updateTime},#{isSync},#{orderExecNum},#{syncNum},#{recentSyncTime}</sql>
 
     <sql id="medOrderExec_update">visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},
                                     order_code=#{orderCode},order_no=#{orderNo},order_sub_no=#{orderSubNo},
@@ -56,7 +59,8 @@
                                     repeat_indicator=#{repeatIndicator},use_mode=#{useMode},class_type=#{classType},
                                     frequency=#{frequency},perform_speed=#{performSpeed},speed_units=#{speedUnits},
                                     nurse_code=#{nurseCode},order_status=#{orderStatus},remark=#{remark},
-                                    create_time=#{createTime},update_time=#{updateTime},is_sync=#{isSync}</sql>
+                                    create_time=#{createTime},update_time=#{updateTime},is_sync=#{isSync}
+                                    order_exec_num=#{orderExecNum},sync_num=#{syncNum},recent_sync_time=#{recentSyncTime}</sql>
 
     <insert id="insert">
         insert into

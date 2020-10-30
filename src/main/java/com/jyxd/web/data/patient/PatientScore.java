@@ -124,4 +124,10 @@ public class PatientScore implements Serializable {
      */
     @Column(name = "mortality_rate")
     private String mortalityRate;
+
+    /**
+     * 扩展字段
+     */
+    @Column(name = "extend_column")
+    private String extendColumn;
 }

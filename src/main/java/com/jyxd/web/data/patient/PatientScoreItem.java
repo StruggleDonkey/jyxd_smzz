@@ -47,7 +47,7 @@ public class PatientScoreItem implements Serializable {
     @Column(name = "visit_code")
     private String visitCode;
 
-    /**s
+    /**
      * 病人主键id
      */
     @Column(name = "patient_id")
@@ -64,6 +64,12 @@ public class PatientScoreItem implements Serializable {
      */
     @Column(name = "score_time")
     private Date scoreTime;
+
+    /**
+     * 评分项明细主键
+     */
+    @Column(name = "item_id")
+    private String itemId;
 
     /**
      * 评分项主键

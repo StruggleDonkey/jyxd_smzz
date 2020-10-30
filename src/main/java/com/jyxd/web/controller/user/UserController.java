@@ -57,6 +57,7 @@ public class UserController {
                 user.setLoginName(map.get("loginName").toString());
                 user.setRoleId(map.get("roleId").toString());
                 user.setSex((int)map.get("sex"));
+                user.setUserName(map.get("userName").toString());
                 user.setIsShedual((int)map.get("isShedual"));
                 if(StringUtils.isNotEmpty(map.get("simplicity").toString())){
                     user.setSimplicity(map.get("simplicity").toString());
@@ -126,6 +127,7 @@ public class UserController {
                     user.setLoginName(map.get("loginName").toString());
                     user.setRoleId(map.get("roleId").toString());
                     user.setSex((int)map.get("sex"));
+                    user.setUserName(map.get("userName").toString());
                     user.setIsShedual((int)map.get("isShedual"));
                     if(StringUtils.isNotEmpty(map.get("simplicity").toString())){
                         user.setSimplicity(map.get("simplicity").toString());

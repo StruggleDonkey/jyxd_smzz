@@ -3,9 +3,11 @@ package com.jyxd.web.controller.basic;
 import com.jyxd.web.data.basic.QuartzTime;
 import com.jyxd.web.service.basic.QuartzTimeService;
 import com.jyxd.web.util.HttpCode;
+import com.jyxd.web.util.JsonArrayValueProcessor;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -168,8 +171,10 @@ public class QuartzTimeController {
         }
         List<QuartzTime> list =quartzTimeService.queryList(map);
         if(list!=null && list.size()>0){
+            JsonConfig jsonConfig=new JsonConfig();
+            jsonConfig.registerJsonValueProcessor(Timestamp.class,new JsonArrayValueProcessor());
             json.put("msg","查询成功");
-            json.put("data",JSONArray.fromObject(list));
+            json.put("data",JSONArray.fromObject(list,jsonConfig));
         }
         json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();

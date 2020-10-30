@@ -90,4 +90,61 @@
         </if>
     </select>
 
+    <select id="getList" resultType="java.util.Map">
+        select
+          IFNULL(ll.id,"") as id,
+          IFNULL(ll.operate_type,"") as operate_type,
+          IFNULL(ll.operate_time,"") as operate_time,
+          IFNULL(ll.operator_code,"") as operator_code,
+          IFNULL(ll.menu_code,"") as menu_code,
+          IFNULL(ll.type,"") as type,
+          IFNULL(ll.content,"") as content,
+          IFNULL(ll.visit_id,"") as visit_id,
+          IFNULL(ll.visit_code,"") as visit_code,
+          IFNULL(ll.patient_id,"") as patient_id,
+          IFNULL(pp.name,"") as name
+        from
+        l_log ll left join p_patient pp on ll.patient_id=pp.int_id
+        where
+        1=1
+        <if test="operateType != null and operateType != ''">
+            and  ll.operate_type =#{operateType}
+        </if>
+        <if test="menuCode != null and menuCode != ''">
+            and  ll.menu_code =#{menuCode}
+        </if>
+        <if test="operatorCode != null and operatorCode != ''">
+            and  ll.operator_code =#{operatorCode}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            and date_format(ll.operate_time,'%Y%m%d') between date_format(#{startTime},'%Y%m%d')
+            and date_format(#{endTime},'%Y%m%d')
+        </if>
+        ORDER BY ll.operate_time DESC
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="getNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+        count(id)
+        from
+        l_log
+        where
+        1=1
+        <if test="operateType != null and operateType != ''">
+            and  operate_type =#{operateType}
+        </if>
+        <if test="menuCode != null and menuCode != ''">
+            and  menu_code =#{menuCode}
+        </if>
+        <if test="operatorCode != null and operatorCode != ''">
+            and  operator_code =#{operatorCode}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            and date_format(operate_time,'%Y%m%d') between date_format(#{startTime},'%Y%m%d')
+            and date_format(#{endTime},'%Y%m%d')
+        </if>
+    </select>
+
 </mapper>

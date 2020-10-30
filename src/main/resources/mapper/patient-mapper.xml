@@ -449,8 +449,8 @@
         ELSE ""
         END as unplanned,
         IFNULL(p.illness_state,"") as illness_state,
-        IFNULL(u.login_name,"") as docter,
-        IFNULL(tu.login_name,"") as nurse,
+        IFNULL(u.user_name,"") as docter,
+        IFNULL(tu.user_name,"") as nurse,
         IFNULL(p.operation_time,"") as operation_time,
         IFNULL(p.operation_name,"") as operation_name,
         IFNULL(p.diagnosis_name,"") as diagnosis_name,

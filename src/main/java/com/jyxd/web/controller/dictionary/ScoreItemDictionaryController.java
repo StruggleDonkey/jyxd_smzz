@@ -282,7 +282,9 @@ public class ScoreItemDictionaryController {
         json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("msg","更新失败");
         if(map.containsKey("id") && map.containsKey("status")){
+            System.out.println(map.toString());
             ScoreItemDictionary scoreItemDictionary=scoreItemDictionaryService.queryData(map.get("id").toString());
+            System.out.println(scoreItemDictionary.toString());
             scoreItemDictionary.setStatus((int)map.get("status"));
             scoreItemDictionaryService.update(scoreItemDictionary);
             json.put("msg","更新成功");

@@ -10,18 +10,19 @@
         <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
         <result column="type" property="type" jdbcType="VARCHAR"/>
         <result column="score_time" property="scoreTime" jdbcType="DATE"/>
+        <result column="item_id" property="itemId" jdbcType="VARCHAR"/>
         <result column="parent_id" property="parentId" jdbcType="VARCHAR"/>
         <result column="create_time" property="createTime" jdbcType="DATE"/>
         <result column="content" property="content" jdbcType="VARCHAR"/>
         <result column="extra_content" property="extraContent" jdbcType="VARCHAR"/>
     </resultMap>
     
-    <sql id="patientScoreItem_colums">id,patient_score_id,visit_id,visit_code,patient_id,type,score_time,parent_id,create_time,content,extra_content</sql>
+    <sql id="patientScoreItem_colums">id,patient_score_id,visit_id,visit_code,patient_id,type,score_time,item_id,parent_id,create_time,content,extra_content</sql>
 
-    <sql id="patientScoreItem_propertys">#{id},#{patientScoreId},#{visitId},#{visitCode},#{patientId},#{type},#{scoreTime},#{parentId},#{createTime},#{content},#{extraContent}</sql>
+    <sql id="patientScoreItem_propertys">#{id},#{patientScoreId},#{visitId},#{visitCode},#{patientId},#{type},#{scoreTime},#{itemId},#{parentId},#{createTime},#{content},#{extraContent}</sql>
 
     <sql id="patientScoreItem_update">patient_score_id=#{patientScoreId},visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},type=#{type},
-                            score_time=#{scoreTime},parent_id=#{parentId},create_time=#{createTime},content=#{content},extra_content=#{extraContent}</sql>
+                            score_time=#{scoreTime},item_id=#{itemId},parent_id=#{parentId},create_time=#{createTime},content=#{content},extra_content=#{extraContent}</sql>
 
     <insert id="insert">
         insert into

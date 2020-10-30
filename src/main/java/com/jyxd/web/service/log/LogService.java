@@ -34,4 +34,10 @@ public class LogService {
 
     public int queryNum(Map<String,Object> map){return logDao.queryNum(map);}
 
+    public List<Map<String,Object>> getList(Map<String,Object> map){
+        return logDao.getList(map);
+    }
+
+    public int getNum(Map<String,Object> map){return logDao.getNum(map);}
+
 }

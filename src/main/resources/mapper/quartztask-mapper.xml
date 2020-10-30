@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyxd.web.dao.basic.QuartzTaskDao">
+
+    <resultMap id="quartzTaskMap" type="com.jyxd.web.data.basic.QuartzTask">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="job_name" property="jobName" jdbcType="VARCHAR"/>
+        <result column="job_group" property="jobGroup" jdbcType="VARCHAR"/>
+        <result column="task_name" property="taskName" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="VARCHAR"/>
+        <result column="cron" property="cron" jdbcType="VARCHAR"/>
+        <result column="description" property="description" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="DATE"/>
+    </resultMap>
+    
+    <sql id="quartzTask_colums">id,job_name,job_group,task_name,type,cron,description,status,create_time</sql>
+
+    <sql id="quartzTask_propertys">#{id},#{jobName},#{jobGroup},#{taskName},#{type},#{cron},#{description},#{status},#{createTime}</sql>
+
+    <sql id="quartzTask_update">job_name=#{jobName},job_group=#{jobGroup},task_name=#{taskName},type=#{type},cron=#{cron},
+                               description=#{description},status=#{status},create_time=#{createTime}</sql>
+
+    <insert id="insert">
+        insert into
+        table_quartz_task(<include refid="quartzTask_colums"></include>)
+        values (<include refid="quartzTask_propertys"></include>)
+    </insert>
+
+    <update id="update" parameterType="com.jyxd.web.data.basic.QuartzTask" >
+        update
+        table_quartz_task
+        set <include refid="quartzTask_update"></include>
+        where
+          id=#{id}
+    </update>
+
+    <select id="queryData" resultMap="quartzTaskMap" parameterType="java.lang.String">
+        select
+          <include refid="quartzTask_colums"></include>
+        from
+        table_quartz_task
+        where
+          id=#{id}
+    </select>
+
+    <select id="queryList" resultType="java.util.Map">
+        select
+          <include refid="quartzTask_colums"></include>
+        from
+        table_quartz_task
+        where
+          1=1
+        and  status != -1
+        <if test="jobName != null and jobName != ''">
+            and  job_name =#{jobName}
+        </if>
+        <if test="jobGroup != null and jobGroup != ''">
+            and  job_group =#{jobGroup}
+        </if>
+        <if test="taskName != null and taskName != ''">
+            and  task_name =#{taskName}
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+          count(id)
+        from
+        table_quartz_task
+        where
+        1=1
+        and  status != -1
+        <if test="jobName != null and jobName != ''">
+            and  job_name =#{jobName}
+        </if>
+        <if test="jobGroup != null and jobGroup != ''">
+            and  job_group =#{jobGroup}
+        </if>
+        <if test="taskName != null and taskName != ''">
+            and  task_name =#{taskName}
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
+
+    <select id="queryDataByNameAndGroup" resultMap="quartzTaskMap" parameterType="java.util.Map">
+        select
+        <include refid="quartzTask_colums"></include>
+        from
+        table_quartz_task
+        where
+        status !=-1
+        <if test="jobName != null and jobName != ''">
+            and  job_name =#{jobName}
+        </if>
+        <if test="jobGroup != null and jobGroup != ''">
+            and  job_group =#{jobGroup}
+        </if>
+    </select>
+
+    <select id="getList" resultType="java.util.Map">
+        SELECT
+            IFNULL(tqta.id,"") as id,
+            IFNULL(tqta.job_name,"") as job_name,
+            IFNULL(tqta.job_group,"") as job_group,
+            IFNULL(tqta.task_name,"") as task_name,
+            IFNULL(tqta.type,"") as type,
+            IFNULL(tqta.cron,"") as cron,
+            IFNULL(tqta.description,"") as description,
+            tqta.status,
+            IFNULL(tqti.start_time,"") as start_time,
+            IFNULL(tqti.end_time,"") as end_time,
+            IFNULL(tqti.next_time,"") as next_time,
+            IFNULL(tqti.time_length,"") as time_length,
+            MAX(tqti.start_time)
+        FROM
+            table_quartz_task tqta
+        LEFT JOIN table_quartz_time tqti ON tqta.id = tqti.quartztask_id
+        where
+        tqta.status !=-1
+        <if test="type != null and type != ''">
+            and  tqta.type =#{type}
+        </if>
+        <if test="status != null ">
+            and  tqta.status =#{status}
+        </if>
+        GROUP BY id
+    </select>
+
+</mapper>
