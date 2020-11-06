@@ -77,4 +77,25 @@
         </if>
     </select>
 
+    <select id="getList" resultMap="accessMap" parameterType="java.util.Map">
+        select
+        <include refid="access_colums"></include>
+        from
+        table_access
+        where
+        1=1
+        and  status != -1
+        <if test="menuCode != null and menuCode != ''">
+            and  menu_code like '%${menuCode}%'
+        </if>
+        <if test="roleId != null and roleId != ''">
+            and  role_id = #{roleId}
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="start != null">limit #{start},</if>
+        <if test="size != null">#{size}</if>
+    </select>
+
 </mapper>

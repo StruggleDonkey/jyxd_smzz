@@ -85,18 +85,28 @@
           id=#{id}
     </select>
 
-    <select id="queryList" resultType="java.util.Map">
+    <select id="queryList" resultMap="medOrderExecMap" parameterType="java.util.Map">
         select
           <include refid="medOrderExec_colums"></include>
         from
         table_med_order_exec
         where
           1=1
-        <if test="content != null and content != ''">
-            and  content like '%${content}%'
+        <if test="startTime != null and startTime != ''">
+            and   date_format(default_time_point,'%Y%m%d') between date_format(#{startTime},'%Y%m%d')
+            and date_format(#{endTime},'%Y%m%d')
         </if>
-        <if test="status != null ">
-            and  status= #{status}
+        <if test="orderStatus != null and orderStatus != 5">
+            and  order_status= #{orderStatus}
+        </if>
+        <if test="isSync != null and isSync != 5">
+            and  is_sync= #{isSync}
+        </if>
+        <if test="drugType != null and drugType != 5">
+            and  drug_type= #{drugType}
+        </if>
+        <if test="repeatIndicator != null and repeatIndicator != 5">
+            and  repeat_indicator= #{repeatIndicator}
         </if>
         <if test="start != null ">limit #{start},</if>
         <if test="size != null ">#{size}</if>
@@ -109,11 +119,21 @@
         table_med_order_exec
         where
         1=1
-        <if test="content != null and content != ''">
-            and  content like '%${content}%'
+        <if test="startTime != null and startTime != ''">
+            and   date_format(default_time_point,'%Y%m%d') between date_format(#{startTime},'%Y%m%d')
+            and date_format(#{endTime},'%Y%m%d')
         </if>
-        <if test="status != null ">
-            and  status= #{status}
+        <if test="orderStatus != null and orderStatus != 5">
+            and  order_status= #{orderStatus}
+        </if>
+        <if test="isSync != null and isSync != 5">
+            and  is_sync= #{isSync}
+        </if>
+        <if test="drugType != null and drugType != 5">
+            and  drug_type= #{drugType}
+        </if>
+        <if test="repeatIndicator != null and repeatIndicator != 5">
+            and  repeat_indicator= #{repeatIndicator}
         </if>
     </select>
 

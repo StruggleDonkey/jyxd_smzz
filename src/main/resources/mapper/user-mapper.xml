@@ -109,6 +109,9 @@
         <if test="loginName != null and loginName != ''">
             and  tu.login_name like '%${loginName}%'
         </if>
+        <if test="userName != null and userName != ''">
+            and  tu.user_name =#{userName}
+        </if>
         <if test="status != null ">
             and  tu.status= #{status}
         </if>
@@ -171,6 +174,9 @@
         </if>
         <if test="loginName != null and loginName != ''">
             and  tu.login_name like '%${loginName}%'
+        </if>
+        <if test="userName != null and userName != ''">
+            and  tu.user_name =#{userName}
         </if>
         <if test="status != null ">
             and  tu.status= #{status}

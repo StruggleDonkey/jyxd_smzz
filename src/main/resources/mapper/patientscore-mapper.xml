@@ -91,4 +91,24 @@
         </if>
     </select>
 
+    <!-- 根据评分类型 分数 病人主键id 查询评分记录列表 -->
+    <select id="queryDataByScoreAndType" resultMap="patientScoreMap" parameterType="java.util.Map">
+        select
+        <include refid="patientScore_colums"></include>
+        from
+        p_patient_score
+        where
+        1=1
+        and  status != -1
+        <if test="patientId != null and patientId != ''">
+            and  patient_id =#{patientId}
+        </if>
+        <if test="type != null and type != ''">
+            and  type =#{type}
+        </if>
+        <if test="score != null ">
+            and  score =#{score}
+        </if>
+    </select>
+
 </mapper>

@@ -48,6 +48,9 @@
         <if test="roleName != null and roleName != ''">
             and  role_name like '%${roleName}%'
         </if>
+        <if test="userTypeCode != null and userTypeCode != ''">
+            and  user_type_code =#{userTypeCode}
+        </if>
         <if test="status != null ">
             and  status= #{status}
         </if>
@@ -77,6 +80,9 @@
         and  status != -1
         <if test="roleName != null and roleName != ''">
             and  role_name like '%${roleName}%'
+        </if>
+        <if test="userTypeCode != null and userTypeCode != ''">
+            and  user_type_code =#{userTypeCode}
         </if>
         <if test="status != null ">
             and  status= #{status}

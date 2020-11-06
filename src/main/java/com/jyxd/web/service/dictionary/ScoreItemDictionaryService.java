@@ -44,4 +44,22 @@ public class ScoreItemDictionaryService {
     }
 
     public int querySonNum(Map<String,Object> map){return scoreItemDictionaryDao.querySonNum(map);}
+
+    /**
+     * 根据type 查询 评分项列表 （parent_id为空的情况）
+     * @param map
+     * @return
+     */
+    public List<ScoreItemDictionary> queryParentListByType(Map<String,Object> map){
+        return scoreItemDictionaryDao.queryParentListByType(map);
+    }
+
+    /**
+     * 根据type 和parentId 查询 评分项列表 （parent_id不为空的情况）
+     * @param map
+     * @return
+     */
+    public List<ScoreItemDictionary> querySonListByType(Map<String,Object> map){
+        return scoreItemDictionaryDao.querySonListByType(map);
+    }
 }

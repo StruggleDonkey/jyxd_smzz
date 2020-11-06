@@ -3,9 +3,11 @@ package com.jyxd.web.controller.basic;
 import com.jyxd.web.data.basic.MedOrderExec;
 import com.jyxd.web.service.basic.MedOrderExecService;
 import com.jyxd.web.util.HttpCode;
+import com.jyxd.web.util.JsonArrayValueProcessor;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -169,8 +171,10 @@ public class MedOrderExecController {
         }
         List<MedOrderExec> list =medOrderExecService.queryList(map);
         if(list!=null && list.size()>0){
+            JsonConfig jsonConfig=new JsonConfig();
+            jsonConfig.registerJsonValueProcessor(Date.class,new JsonArrayValueProcessor());
             json.put("msg","查询成功");
-            json.put("data",JSONArray.fromObject(list));
+            json.put("data",JSONArray.fromObject(list,jsonConfig));
         }
         json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();

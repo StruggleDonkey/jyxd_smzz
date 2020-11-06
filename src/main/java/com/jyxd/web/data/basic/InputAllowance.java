@@ -1,6 +1,5 @@
 package com.jyxd.web.data.basic;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -9,12 +8,12 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 护理记录表
+ * 入量余量表
  */
 @Entity
-@Table(name = "table_nursing_record")
+@Table(name = "table_input_allowance")
 @Data
-public class NursingRecord implements Serializable {
+public class InputAllowance implements Serializable {
 
     /**
      * 序列
@@ -49,23 +48,40 @@ public class NursingRecord implements Serializable {
     private String patientId;
 
     /**
+     * 入量类型
+     */
+    @Column(name = "order_type")
+    private String orderType;
+
+    /**
+     * 医嘱主键
+     */
+    @Column(name = "order_no")
+    private String orderNo;
+
+    /**
+     * 班别(0:日班 1:晚班 2:夜班)
+     */
+    @Column(name = "shift")
+    private int shift;
+
+    /**
      * 记录时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Column(name = "data_time")
     private Date dataTime;
 
     /**
-     * 项目code (重症评分为：score)
+     * 使用剂量
      */
-    @Column(name = "code")
-    private String code;
+    @Column(name = "dosage")
+    private String dosage;
 
     /**
-     * 内容
+     * 剩余剂量
      */
-    @Column(name = "content")
-    private String content;
+    @Column(name = "allowance_dosage")
+    private String allowanceDosage;
 
     /**
      * 创建时间

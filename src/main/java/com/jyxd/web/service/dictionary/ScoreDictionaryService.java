@@ -42,4 +42,13 @@ public class ScoreDictionaryService {
     public ScoreDictionary queryDataByType(Map<String,Object> map){
         return scoreDictionaryDao.queryDataByType(map);
     }
+
+    /**
+     * 根据评分名称查询评分对象
+     * @param map
+     * @return
+     */
+    public ScoreDictionary queryDataByName(Map<String,Object> map){
+        return scoreDictionaryDao.queryDataByName(map);
+    }
 }

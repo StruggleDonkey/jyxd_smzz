@@ -34,4 +34,7 @@ public class AccessService {
 
     public int queryNum(Map<String,Object> map){return accessDao.queryNum(map);}
 
+    public List<Access> getList(Map<String,Object> map){
+        return accessDao.getList(map);
+    }
 }

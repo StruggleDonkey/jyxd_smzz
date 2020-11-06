@@ -80,4 +80,17 @@
         </if>
     </select>
 
+    <!--  根据评分类型和分数查询评分知识库对象 -->
+    <select id="queryDataByTypeAndScore" resultMap="scoreKnowledgeDictionaryMap" parameterType="java.util.Map">
+        select
+        <include refid="scoreKnowledgeDictionary_colums"></include>
+        from
+        dict_score_knowledge
+        where
+        type=#{type}
+        AND
+        #{score} BETWEEN IFNULL(score_knowledge_min,0)
+        AND IFNULL(score_knowledge_max,999)
+    </select>
+
 </mapper>

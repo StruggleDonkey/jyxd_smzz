@@ -3,9 +3,11 @@ package com.jyxd.web.controller.dictionary;
 import com.jyxd.web.data.dictionary.ScoreDictionary;
 import com.jyxd.web.service.dictionary.ScoreDictionaryService;
 import com.jyxd.web.util.HttpCode;
+import com.jyxd.web.util.JsonArrayValueProcessor;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -173,4 +175,26 @@ public class ScoreDictionaryController {
         return json.toString();
     }
 
+    /**
+     * 根据评分名称查询评分详细信息
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/queryDataByName",method= RequestMethod.POST)
+    @ResponseBody
+    public String queryDataByName(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        ScoreDictionary scoreDictionary =scoreDictionaryService.queryDataByName(map);
+        if(scoreDictionary!=null){
+            JsonConfig jsonConfig=new JsonConfig();
+            jsonConfig.registerJsonValueProcessor(Date.class,new JsonArrayValueProcessor());
+            json.put("data",JSONObject.fromObject(scoreDictionary,jsonConfig));
+            json.put("msg","查询成功");
+        }
+        json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
 }

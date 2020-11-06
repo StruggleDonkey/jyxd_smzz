@@ -134,19 +134,19 @@ public class ScoreDictionary implements Serializable {
     /**
      * 评分规则
      */
-    @Column(name = "score_rule")
+    @Column(name = "score_rule", length = 1000)
     private String scoreRule;
 
     /**
      * 评估时机
      */
-    @Column(name = "score_opportunity")
+    @Column(name = "score_opportunity", length = 1000)
     private String scoreOpportunity;
 
     /**
      * 护理措施
      */
-    @Column(name = "nursing_step")
+    @Column(name = "nursing_step", length = 1000)
     private String nursingStep;
 
     /**

@@ -214,4 +214,5 @@ public class MedOrderExec implements Serializable {
      */
     @Column(name = "recent_sync_time")
     private Date recentSyncTime;
+
 }

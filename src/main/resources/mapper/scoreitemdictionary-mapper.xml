@@ -175,4 +175,41 @@
             and  status= #{status}
         </if>
     </select>
+
+    <!-- 根据type 查询 评分项列表 （parent_id为空的情况） -->
+    <select id="queryParentListByType" resultMap="scoreItemDictionaryMap" parameterType="java.util.Map">
+        SELECT
+        <include refid="scoreItemDictionary_colums"></include>
+        FROM
+        dict_score_item
+        WHERE
+        1 = 1
+        AND STATUS != - 1
+        <if test="type != null and type != ''">
+            and  type =#{type} and (parent_id = null || parent_id ="")
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
+
+    <!-- 根据type 和parentId 查询 评分项列表 （parent_id不为空的情况） -->
+    <select id="querySonListByType" resultMap="scoreItemDictionaryMap" parameterType="java.util.Map">
+        SELECT
+        <include refid="scoreItemDictionary_colums"></include>
+        FROM
+        dict_score_item
+        WHERE
+        1 = 1
+        AND STATUS != - 1
+        <if test="type != null and type != ''">
+            and  type =#{type}
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="parentId != null and parentId != ''">
+            and  parent_id =#{parentId}
+        </if>
+    </select>
 </mapper>

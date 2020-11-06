@@ -33,4 +33,13 @@ public class PatientScoreService {
     }
 
     public int queryNum(Map<String,Object> map){return patientScoreDao.queryNum(map);}
+
+    /**
+     * 根据评分类型 分数 病人主键id 查询评分记录列表
+     * @param map
+     * @return
+     */
+    public List<PatientScore> queryDataByScoreAndType(Map<String,Object> map){
+        return patientScoreDao.queryDataByScoreAndType(map);
+    }
 }

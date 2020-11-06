@@ -57,4 +57,18 @@ public interface ScoreItemDictionaryDao {
      * @return
      */
     int querySonNum(Map<String, Object> map);
+
+    /**
+     * 根据type 查询 评分项列表 （parent_id为空的情况）
+     * @param map
+     * @return
+     */
+    List<ScoreItemDictionary> queryParentListByType(Map<String,Object> map);
+
+    /**
+     * 根据type 和parentId 查询 评分项列表 （parent_id不为空的情况）
+     * @param map
+     * @return
+     */
+    List<ScoreItemDictionary> querySonListByType(Map<String,Object> map);
 }

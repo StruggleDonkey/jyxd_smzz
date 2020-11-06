@@ -43,4 +43,11 @@ public interface AccessDao {
      * @return
      */
     int queryNum(Map<String, Object> map);
+
+    /**
+     * 根据条件分页查询角角色权限表记录列表
+     * @param map
+     * @return list
+     */
+    List<Access> getList(Map<String, Object> map);
 }

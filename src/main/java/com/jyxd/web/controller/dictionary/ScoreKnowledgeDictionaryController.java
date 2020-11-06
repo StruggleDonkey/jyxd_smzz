@@ -3,9 +3,11 @@ package com.jyxd.web.controller.dictionary;
 import com.jyxd.web.data.dictionary.ScoreKnowledgeDictionary;
 import com.jyxd.web.service.dictionary.ScoreKnowledgeDictionaryService;
 import com.jyxd.web.util.HttpCode;
+import com.jyxd.web.util.JsonArrayValueProcessor;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -169,6 +171,29 @@ public class ScoreKnowledgeDictionaryController {
         List<ScoreKnowledgeDictionary> list =scoreKnowledgeDictionaryService.queryList(map);
         if(list!=null && list.size()>0){
             json.put("data",JSONArray.fromObject(list));
+        }
+        json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
+    /**
+     * 根据评分类型和分数查询评分知识库对象
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/queryDataByTypeAndScore",method= RequestMethod.POST)
+    @ResponseBody
+    public String queryDataByTypeAndScore(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        ScoreKnowledgeDictionary scoreKnowledgeDictionary=scoreKnowledgeDictionaryService.queryDataByTypeAndScore(map);
+        if(scoreKnowledgeDictionary!=null){
+            JsonConfig jsonConfig=new JsonConfig();
+            jsonConfig.registerJsonValueProcessor(Date.class,new JsonArrayValueProcessor());
+            json.put("data",JSONArray.fromObject(scoreKnowledgeDictionary,jsonConfig));
+            json.put("msg","查询成功");
         }
         json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();

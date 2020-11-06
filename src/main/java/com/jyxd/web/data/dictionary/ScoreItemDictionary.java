@@ -160,4 +160,5 @@ public class ScoreItemDictionary implements Serializable {
      */
     @Column(name = "fast_column_name")
     private String fastColumnName;
+
 }

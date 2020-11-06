@@ -1,6 +1,10 @@
 package com.jyxd.web.controller.user;
 
+import com.jyxd.web.data.user.Access;
+import com.jyxd.web.data.user.Role;
 import com.jyxd.web.data.user.User;
+import com.jyxd.web.service.user.AccessService;
+import com.jyxd.web.service.user.RoleService;
 import com.jyxd.web.service.user.UserService;
 import com.jyxd.web.util.HttpCode;
 import com.jyxd.web.util.JsonArrayValueProcessor;
@@ -22,10 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpSession;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "/user")
@@ -35,6 +36,12 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private AccessService accessService;
+
+    @Autowired
+    private RoleService roleService;
 
     /**
      * 增加一条平台用户表记录
@@ -297,6 +304,16 @@ public class UserController {
                 JsonConfig jsonConfig=new JsonConfig();
                 jsonConfig.registerJsonValueProcessor(Date.class,new JsonArrayValueProcessor());
                 session.setAttribute("user",user);
+                Map<String,Object> hashMap=new HashMap<>();
+                hashMap.put("roleId",user.getRoleId());
+                List<Access> list=accessService.getList(hashMap);
+                JSONArray jsonArray=new JSONArray();
+                if(list!=null && list.size()>0){
+                    for (int i = 0; i < list.size(); i++) {
+                        jsonArray.add(list.get(i).getMenuCode());
+                    }
+                }
+                json.put("menu",jsonArray);
                 json.put("user",JSONObject.fromObject(user,jsonConfig));
                 json.put("code",HttpCode.OK_CODE.getCode());
                 json.put("msg","登录成功");
@@ -360,8 +377,25 @@ public class UserController {
         if(user!=null){
             JsonConfig jsonConfig=new JsonConfig();
             jsonConfig.registerJsonValueProcessor(Date.class,new JsonArrayValueProcessor());
-            json.put("user",JSONObject.fromObject(user,jsonConfig));
+            JSONObject jsonObject=JSONObject.fromObject(user,jsonConfig);
             json.put("password",MD5Util.convertMD5(user.getPassword()));
+            Map<String,Object> hashMap=new HashMap<>();
+            hashMap.put("roleId",user.getRoleId());
+            List<Access> list=accessService.getList(hashMap);
+            JSONArray jsonArray=new JSONArray();
+            if(list!=null && list.size()>0){
+                for (int i = 0; i < list.size(); i++) {
+                    jsonArray.add(list.get(i).getMenuCode());
+                }
+            }
+            jsonObject.put("menu",jsonArray);
+            Role role=roleService.queryData(user.getRoleId());
+            if(role!=null){
+                JSONArray jsonArray1=new JSONArray();
+                jsonArray1.add(role.getRoleName());
+                jsonObject.put("roles",jsonArray1);
+            }
+            json.put("data",jsonObject);
             json.put("code",HttpCode.OK_CODE.getCode());
             json.put("msg","获取成功");
         }

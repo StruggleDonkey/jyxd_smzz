@@ -50,4 +50,11 @@ public interface ScoreDictionaryDao {
      * @return
      */
     ScoreDictionary queryDataByType(Map<String, Object> map);
+
+    /**
+     * 根据评分名称查询评分对象
+     * @param map
+     * @return
+     */
+    ScoreDictionary queryDataByName(Map<String,Object> map);
 }

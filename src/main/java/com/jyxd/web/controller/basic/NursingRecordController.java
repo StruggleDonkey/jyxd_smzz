@@ -42,13 +42,17 @@ public class NursingRecordController {
      */
     @RequestMapping(value = "/insert")
     @ResponseBody
-    public String insert(@RequestBody NursingRecord nursingRecord){
+    public String insert(@RequestBody NursingRecord nursingRecord,HttpSession session){
         JSONObject json=new JSONObject();
         json.put("code", HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         json.put("msg","添加失败");
         nursingRecord.setId(UUIDUtil.getUUID());
         nursingRecord.setCreateTime(new Date());
+        User user=(User)session.getAttribute("user");
+        if(user!=null){
+            nursingRecord.setOperatorCode(user.getLoginName());
+        }
         nursingRecordService.insert(nursingRecord);
         json.put("code",HttpCode.OK_CODE.getCode());
         json.put("msg","添加成功");

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyxd.web.dao.basic.InputAllowanceDao">
+
+    <resultMap id="inputAllowanceMap" type="com.jyxd.web.data.basic.InputAllowance">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="visit_id" property="visitId" jdbcType="VARCHAR"/>
+        <result column="visit_code" property="visitCode" jdbcType="VARCHAR"/>
+        <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
+        <result column="order_type" property="orderType" jdbcType="VARCHAR"/>
+        <result column="order_no" property="orderNo" jdbcType="VARCHAR"/>
+        <result column="shift" property="shift" jdbcType="INTEGER"/>
+        <result column="data_time" property="dataTime" jdbcType="DATE"/>
+        <result column="dosage" property="dosage" jdbcType="VARCHAR"/>
+        <result column="allowance_dosage" property="allowanceDosage" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="DATE"/>
+        <result column="operator_code" property="operatorCode" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+    </resultMap>
+    
+    <sql id="inputAllowance_colums">id,visit_id,visit_code,patient_id,order_type,order_no,shift,data_time,dosage,
+                                    allowance_dosage,create_time,operator_code,status</sql>
+
+    <sql id="inputAllowance_propertys">#{id},#{visitId},#{visitCode},#{patientId},#{orderType},#{orderNo},#{shift},#{dataTime},
+                                  #{dosage},#{allowanceDosage},#{createTime},#{operatorCode},#{status}</sql>
+
+    <sql id="inputAllowance_update">visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},
+                              order_type=#{orderType},order_no=#{orderNo},shift=#{shift},data_time=#{dataTime},
+                              dosage=#{dosage},allowance_dosage=#{allowanceDosage},
+                              create_time=#{createTime},operator_code=#{operatorCode},status=#{status}</sql>
+
+    <insert id="insert">
+        insert into
+        table_input_allowance(<include refid="inputAllowance_colums"></include>)
+        values (<include refid="inputAllowance_propertys"></include>)
+    </insert>
+
+    <update id="update" parameterType="com.jyxd.web.data.basic.InputAllowance" >
+        update
+        table_input_allowance
+        set <include refid="inputAllowance_colums"></include>
+        where
+          id=#{id}
+    </update>
+
+    <select id="queryData" resultMap="inputAllowanceMap" parameterType="java.lang.String">
+        select
+          <include refid="inputAllowance_colums"></include>
+        from
+        table_input_allowance
+        where
+          id=#{id}
+    </select>
+
+    <select id="queryList" resultType="java.util.Map">
+        select
+          <include refid="inputAllowance_colums"></include>
+        from
+        table_input_allowance
+        where
+          1=1
+        and  status != -1
+        <if test="content != null and content != ''">
+            and  content like '%${content}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+          count(id)
+        from
+        table_input_allowance
+        where
+        1=1
+        and  status != -1
+        <if test="content != null and content != ''">
+            and  content like '%${content}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
+
+</mapper>

@@ -43,4 +43,11 @@ public interface PatientScoreDao {
      * @return
      */
     int queryNum(Map<String, Object> map);
+
+    /**
+     * 根据评分类型 分数 病人主键id 查询评分记录列表
+     * @param map
+     * @return
+     */
+    List<PatientScore> queryDataByScoreAndType(Map<String,Object> map);
 }

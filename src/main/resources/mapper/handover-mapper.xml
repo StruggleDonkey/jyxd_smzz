@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyxd.web.dao.basic.HandoverDao">
+
+    <resultMap id="handoverMap" type="com.jyxd.web.data.basic.Handover">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="visit_id" property="visitId" jdbcType="VARCHAR"/>
+        <result column="visit_code" property="visitCode" jdbcType="VARCHAR"/>
+        <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
+        <result column="info_date" property="infoDate" jdbcType="DATE"/>
+        <result column="shift" property="shift" jdbcType="INTEGER"/>
+        <result column="handover_time" property="handoverTime" jdbcType="DATE"/>
+        <result column="handover_begin_time" property="handoverBeginTime" jdbcType="DATE"/>
+        <result column="handover_end_time" property="handoverEndTime" jdbcType="DATE"/>
+        <result column="send_operator" property="sendOperator" jdbcType="VARCHAR"/>
+        <result column="send_description" property="sendDescription" jdbcType="VARCHAR"/>
+        <result column="receive_description" property="receiveDescription" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="DATE"/>
+        <result column="operator_code" property="operatorCode" jdbcType="DATE"/>
+    </resultMap>
+    
+    <sql id="handover_colums">id,visit_id,visit_code,patient_id,info_date,shift,handover_time,handover_begin_time,handover_end_time,
+                              send_operator,send_description,receive_description,status,create_time,operator_code</sql>
+
+    <sql id="handover_propertys">#{id},#{visitId},#{visitCode},#{patientId},#{infoDate},#{shift},#{handoverTime},#{handoverBeginTime},
+                                  #{handoverEndTime},#{sendOperator},#{sendDescription},#{receiveDescription},
+                                   #{status},#{createTime},#{operatorCode}</sql>
+
+    <sql id="handover_update">visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},info_date=#{infoDate},shift=#{shift},
+                              handover_time=#{handoverTime},handover_begin_time=#{handoverBeginTime},handover_end_time=#{handoverEndTime},
+                              send_operator=#{sendOperator},send_description=#{sendDescription},receive_description=#{receiveDescription},
+                              status=#{status},create_time=#{createTime},operator_code=#{operatorCode}</sql>
+
+    <insert id="insert">
+        insert into
+        table_handover(<include refid="handover_colums"></include>)
+        values (<include refid="handover_propertys"></include>)
+    </insert>
+
+    <update id="update" parameterType="com.jyxd.web.data.basic.Handover" >
+        update
+        table_handover
+        set <include refid="handover_update"></include>
+        where
+          id=#{id}
+    </update>
+
+    <select id="queryData" resultMap="handoverMap" parameterType="java.lang.String">
+        select
+          <include refid="handover_colums"></include>
+        from
+        table_handover
+        where
+          id=#{id}
+    </select>
+
+    <select id="queryList" resultType="java.util.Map">
+        select
+          <include refid="handover_colums"></include>
+        from
+        table_handover
+        where
+          1=1
+        and  status != -1
+        <if test="content != null and content != ''">
+            and  content like '%${content}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+          count(id)
+        from
+        table_handover
+        where
+        1=1
+        and  status != -1
+        <if test="content != null and content != ''">
+            and  content like '%${content}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
+
+</mapper>

@@ -33,4 +33,13 @@ public class ScoreKnowledgeDictionaryService {
     }
 
     public int queryNum(Map<String,Object> map){return scoreKnowledgeDictionaryDao.queryNum(map);}
+
+    /**
+     * 根据评分类型和分数查询评分知识库对象
+     * @param map type score
+     * @return
+     */
+    public ScoreKnowledgeDictionary queryDataByTypeAndScore(Map<String,Object> map){
+        return scoreKnowledgeDictionaryDao.queryDataByTypeAndScore(map);
+    }
 }
