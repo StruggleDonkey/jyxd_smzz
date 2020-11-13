@@ -420,6 +420,9 @@
         IFNULL(db.id,"") as bed_code_id,
         IFNULL(db.bed_name,"") as bed_code_name,
         IFNULL(p.visit_id,"") as visit_id,
+        IFNULL(p.visit_code,"") as visit_code,
+        IFNULL(p.id,"") as patient_id,
+        p.int_id,
         IFNULL(p.name,"") as name,
         IFNULL(p.age,"") as age,
         CASE

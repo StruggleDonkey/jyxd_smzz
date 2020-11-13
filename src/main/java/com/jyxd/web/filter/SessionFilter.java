@@ -17,7 +17,7 @@ public class SessionFilter implements Filter {
     String NO_LOGIN = "您还未登录";
 
     //不需要登录就可以访问的路径(比如:注册登录等)
-    String[] includeUrls = new String[]{"/login","/user/login","/download/plugin","/user/logout","/patientScore/getListByScoreName"};
+    String[] includeUrls = new String[]{"/login","/user/login","/download/plugin","/user/logout"};
 
 
     @Override

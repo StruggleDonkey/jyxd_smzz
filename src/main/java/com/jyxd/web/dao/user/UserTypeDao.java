@@ -50,4 +50,11 @@ public interface UserTypeDao {
      * @return
      */
     int queryNum(Map<String, Object> map);
+
+    /**
+     * 根据用户类型名称 查询用户类型
+     * @param map
+     */
+    UserType queryDataByName(Map<String, Object> map);
+
 }

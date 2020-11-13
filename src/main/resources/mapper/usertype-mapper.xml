@@ -83,4 +83,16 @@
         </if>
     </select>
 
+    <select id="queryDataByName" resultMap="userTypeMap" parameterType="java.util.Map">
+        select
+        <include refid="userType_colums"></include>
+        from
+        table_user_type
+        where
+        status !=-1
+        <if test="userTypeName != null and userTypeName != ''">
+            and  user_type_name =#{userTypeName}
+        </if>
+    </select>
+
 </mapper>

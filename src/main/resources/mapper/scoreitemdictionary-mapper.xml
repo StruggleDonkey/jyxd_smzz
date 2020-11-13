@@ -76,6 +76,7 @@
         </if>
         <if test="type != null and type != ''">
             and  type = #{type}
+            and (parent_id = "" || parent_id=null)
         </if>
         <if test="status != null ">
             and  status= #{status}
@@ -97,6 +98,7 @@
         </if>
         <if test="type != null and type != ''">
             and  type = #{type}
+            and (parent_id = "" || parent_id=null)
         </if>
         <if test="status != null ">
             and  status= #{status}

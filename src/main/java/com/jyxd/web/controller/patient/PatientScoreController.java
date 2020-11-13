@@ -15,6 +15,7 @@ import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,33 +78,34 @@ public class PatientScoreController {
             patientScore.setVisitCode(map.get("visitCode").toString());
             patientScore.setType(map.get("type").toString());
             patientScore.setPatientId(map.get("patientId").toString());
-            if(map.get("reportTime")!=null){
+            if(StringUtils.isNotEmpty(map.get("reportTime").toString())){
                 patientScore.setReportTime(format.parse(map.get("reportTime").toString()));
             }
-            if(map.get("assessmentTime")!=null){
+            if(StringUtils.isNotEmpty(map.get("assessmentTime").toString())){
                 patientScore.setAssessmentTime(format.parse(map.get("assessmentTime").toString()));
             }
-            if(map.get("nursingStep")!=null){
+            if(StringUtils.isNotEmpty(map.get("nursingStep").toString())){
                 patientScore.setNursingStep(map.get("nursingStep").toString());
             }
-            if(map.get("otherStep")!=null){
+            if(StringUtils.isNotEmpty(map.get("otherStep").toString())){
                 patientScore.setOtherStep(map.get("otherStep").toString());
             }
-            if(map.get("mortalityRate")!=null){
+            if(StringUtils.isNotEmpty(map.get("mortalityRate").toString())){
                 patientScore.setMortalityRate(map.get("mortalityRate").toString());
             }
-            if(map.get("extendColumn")!=null){
+            if(StringUtils.isNotEmpty(map.get("extendColumn").toString())){
                 patientScore.setExtendColumn(map.get("extendColumn").toString());
             }
-            if(map.get("scoreKnowledgeId")!=null){
+            if(StringUtils.isNotEmpty(map.get("scoreKnowledgeId").toString())){
                 patientScore.setScoreKnowledgeId(map.get("scoreKnowledgeId").toString());
             }
             patientScoreService.insert(patientScore);
-
+            System.out.println("11111111111");
             //新增病人评分明细记录
             if(map.get("list")!=null){
                 JSONArray array=JSONArray.fromObject(map.get("list").toString());
                 for (int i = 0; i < array.size(); i++) {
+                    System.out.println("2222222222222");
                     JSONObject jsonObject=(JSONObject) array.get(i);
                     PatientScoreItem patientScoreItem=new PatientScoreItem();
                     patientScoreItem.setId(UUIDUtil.getUUID());
@@ -111,21 +113,27 @@ public class PatientScoreController {
                     patientScoreItem.setVisitId(map.get("visitId").toString());
                     patientScoreItem.setVisitCode(map.get("visitCode").toString());
                     patientScoreItem.setType(map.get("type").toString());
+                    System.out.println("6666666666666");
                     patientScoreItem.setPatientId(map.get("patientId").toString());
                     patientScoreItem.setScoreTime(format.parse(map.get("scoreTime").toString()));
+                    System.out.println("8888888888888");
                     patientScoreItem.setPatientScoreId(patientScore.getId());
+                    System.out.println("9999999999999999");
                     patientScoreItem.setParentId(jsonObject.getString("parentId"));
                     patientScoreItem.setItemId(jsonObject.getString("itemId"));
+                    System.out.println("7777777777777777777");
                     patientScoreItem.setContent(jsonObject.getString("content"));
                     patientScoreItem.setExtraContent(jsonObject.getString("extraContent"));
                     patientScoreItemService.insert(patientScoreItem);
+                    System.out.println("33333333333");
                 }
             }
+            System.out.println("444444444444");
             json.put("code",HttpCode.OK_CODE.getCode());
             json.put("msg","添加成功");
         }catch (Exception e){
             logger.info("增加一条病人评分表记录:"+e);
-            json.put("msg","异常");
+            json.put("msg","保存失败");
         }
         return json.toString();
     }
@@ -333,4 +341,34 @@ public class PatientScoreController {
         return json.toString();
     }
 
+    /**
+     * 重症评分--跌倒坠床--新增评分--获取护理措施(跌倒坠床专用接口)
+     * @param map id
+     * @return
+     */
+    @RequestMapping(value = "/getNursingStepById",method= RequestMethod.POST)
+    @ResponseBody
+    public String getNursingStepById(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        if(map!=null && map.containsKey("id")){
+            JSONArray array=new JSONArray();
+            ScoreDictionary scoreDictionary=scoreDictionaryService.queryData(map.get("id").toString());
+            if(scoreDictionary!=null && StringUtils.isNotEmpty(scoreDictionary.getNursingStep())){
+                String[] biaozhun=scoreDictionary.getNursingStep().split("标准防范跌倒措施&@&");
+                for (int i = 1; i < biaozhun.length-1; i++) {
+                    array.add(biaozhun[i]);
+                }
+                String[] gaofengxian=biaozhun[biaozhun.length-1].split("高风险防范跌倒措施&@&");
+                for (int i = 0; i < gaofengxian.length; i++) {
+                    array.add(gaofengxian[i]);
+                }
+                json.put("data",array);
+            }
+        }
+        json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
 }

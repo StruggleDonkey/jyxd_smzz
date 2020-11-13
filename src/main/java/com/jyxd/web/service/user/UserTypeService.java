@@ -37,4 +37,8 @@ public class UserTypeService {
     }
 
     public int queryNum(Map<String,Object> map){return userTypeDao.queryNum(map);}
+
+    public UserType queryDataByName(Map<String,Object> map){
+        return userTypeDao.queryDataByName(map);
+    }
 }

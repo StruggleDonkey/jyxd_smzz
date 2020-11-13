@@ -1,11 +1,15 @@
 package com.jyxd.web.controller.user;
 
+import com.jyxd.web.data.basic.CommonSetting;
 import com.jyxd.web.data.user.Access;
 import com.jyxd.web.data.user.Role;
 import com.jyxd.web.data.user.User;
+import com.jyxd.web.data.user.UserType;
+import com.jyxd.web.service.basic.CommonSettingService;
 import com.jyxd.web.service.user.AccessService;
 import com.jyxd.web.service.user.RoleService;
 import com.jyxd.web.service.user.UserService;
+import com.jyxd.web.service.user.UserTypeService;
 import com.jyxd.web.util.HttpCode;
 import com.jyxd.web.util.JsonArrayValueProcessor;
 import com.jyxd.web.util.MD5Util;
@@ -42,6 +46,12 @@ public class UserController {
 
     @Autowired
     private RoleService roleService;
+
+    @Autowired
+    private CommonSettingService commonSettingService;
+
+    @Autowired
+    private UserTypeService userTypeService;
 
     /**
      * 增加一条平台用户表记录
@@ -395,6 +405,15 @@ public class UserController {
                 jsonArray1.add(role.getRoleName());
                 jsonObject.put("roles",jsonArray1);
             }
+            //查询默认首页
+            Map<String,Object> map1=new HashMap<>();
+            map1.put("settingType","默认首页");
+            CommonSetting commonSetting=commonSettingService.getCommonSettingByType(map1);
+            if(commonSetting!=null){
+                json.put("homePage",commonSetting.getSettingContent());
+            }else{
+                json.put("homePage","工作站");//默认为工作站
+            }
             json.put("data",jsonObject);
             json.put("code",HttpCode.OK_CODE.getCode());
             json.put("msg","获取成功");
@@ -472,4 +491,29 @@ public class UserController {
         return json.toString();
     }
 
+    /**
+     * 根据用户类型查询用户列表
+     * @param map userTypeName
+     * @return
+     */
+    @RequestMapping(value = "/getUserListByUserType")
+    @ResponseBody
+    public String getUserListByUserType(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("msg","修改失败");
+        if(map!=null){
+          UserType userType =userTypeService.queryDataByName(map);
+          if(userType!=null){
+              map.put("userTypeCode",userType.getUserTypeCode());
+          }
+        }
+        List<Map<String,Object>> list=userService.getList(map);
+        if(list!=null && list.size()>0){
+            json.put("data",JSONArray.fromObject(list));
+            json.put("code",HttpCode.OK_CODE.getCode());
+            json.put("msg","成功");
+        }
+        return json.toString();
+    }
 }
