@@ -57,4 +57,11 @@ public interface TemplateItemDictionaryDao {
      * @return
      */
     int getNum(Map<String,Object> map);
+
+    /**
+     * 重症评分--护理单--护理记录--查询护理模板名称列表及其数量
+     * @param map
+     * @return
+     */
+     List<Map<String,Object>> getTemplateNameAndAmount(Map<String,Object> map);
 }

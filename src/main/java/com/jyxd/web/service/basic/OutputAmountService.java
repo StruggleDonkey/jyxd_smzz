@@ -51,4 +51,13 @@ public class OutputAmountService {
     public OutputAmount queryDataByTime(Map<String,Object> map){
         return outputAmountDao.queryDataByTime(map);
     }
+
+    /**
+     * 护理文书--护理单--出量--查询病人出量列表
+     * @param map
+     * @return
+     */
+    public List<Map<String,Object>> getPatientOutputList(Map<String,Object> map){
+        return outputAmountDao.getPatientOutputList(map);
+    }
 }

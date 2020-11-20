@@ -79,4 +79,10 @@ public interface UserDao {
      */
     User queryDataByWorkNumber(Map<String, Object> map);
 
+    /**
+     * 根据登录名查询用户
+     * @param map
+     * @return
+     */
+    User queryDataByLoginName(Map<String,Object> map);
 }

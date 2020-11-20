@@ -43,4 +43,32 @@ public interface PatientScoreItemDao {
      * @return
      */
     int queryNum(Map<String, Object> map);
+
+    /**
+     * 根据条件查询病人评分明细对象 评分时间 评分项 评分明细 病人主键id 病人评分主键id
+     * @param map
+     * @return
+     */
+    PatientScoreItem queryDataByTypeAndTime(Map<String,Object> map);
+
+    /**
+     * 根据病人评分主键id 查询病人评分明细中 评分明细主键id 集合
+     * @param patientScoreId
+     * @return
+     */
+    List<String> getItemIdByPatientScoreId(String patientScoreId);
+
+    /**
+     * 根据病人评分主键id 查询病人评分明细列表
+     * @param map
+     * @return
+     */
+    List<PatientScoreItem> queryListByPatientScoreId(Map<String,Object> map);
+
+    /**
+     * 删除对象
+     * @param
+     * @return
+     */
+     boolean deleteData(String id);
 }

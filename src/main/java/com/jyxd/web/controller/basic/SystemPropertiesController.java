@@ -47,4 +47,25 @@ public class SystemPropertiesController {
         return json.toString();
     }
 
+    /**
+     * 护理文书--护理单--出量/入量--查询所有出量/入量类型
+     * @param map remark=出量类型  或者 remark=入量类型
+     * @return
+     */
+    @RequestMapping(value = "/getOutTypeList",method= RequestMethod.POST)
+    @ResponseBody
+    public String getOutTypeList(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        List<Map<String,Object>> list=systemPropertiesService.getOutTypeList(map);
+        if(list!=null && list.size()>0){
+            json.put("msg","查询成功");
+            json.put("data",JSONArray.fromObject(list));
+        }
+        json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
 }

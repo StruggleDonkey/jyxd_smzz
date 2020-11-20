@@ -210,4 +210,16 @@
             and  work_number =#{workNumber}
         </if>
     </select>
+
+    <select id="queryDataByLoginName" resultMap="userMap" parameterType="java.util.Map">
+        select
+        <include refid="user_colums"></include>
+        from
+        table_user
+        where
+        status!=-1
+        <if test="loginName != null and loginName != ''">
+            and  login_name =#{loginName}
+        </if>
+    </select>
 </mapper>

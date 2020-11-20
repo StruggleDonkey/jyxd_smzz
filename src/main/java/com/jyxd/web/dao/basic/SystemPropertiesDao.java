@@ -14,4 +14,11 @@ public interface SystemPropertiesDao {
      * @return
      */
     List<String> querySystemProperties(Map<String,Object> map);
+
+    /**
+     * 护理文书--护理单--出量--查询所有出量类型
+     * @param map remark=出量类型
+     * @return
+     */
+    List<Map<String,Object>> getOutTypeList(Map<String,Object> map);
 }

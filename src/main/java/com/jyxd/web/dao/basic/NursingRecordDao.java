@@ -57,4 +57,11 @@ public interface NursingRecordDao {
      * @return
      */
     NursingRecord queryDataByTimeAndCode(Map<String, Object> map);
+
+    /**
+     * 护理文书--护理单--护理记录--查询护理记录列表
+     * @param map code=score
+     * @return
+     */
+     List<Map<String,Object>> getListByCode(Map<String,Object> map);
 }

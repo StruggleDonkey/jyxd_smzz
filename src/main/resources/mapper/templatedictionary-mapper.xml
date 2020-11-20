@@ -71,4 +71,18 @@
         </if>
     </select>
 
+    <select id="getTemplateNameList" resultType="java.lang.String" parameterType="java.util.Map">
+        SELECT
+        dict_template_name
+        FROM
+        dict_template
+        WHERE
+        STATUS !=- 1
+        <if test="status != null ">
+            AND  status= #{status}
+        </if>
+        GROUP BY
+        dict_template_name
+    </select>
+
 </mapper>

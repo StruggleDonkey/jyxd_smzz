@@ -2,13 +2,16 @@ package com.jyxd.web.controller.patient;
 
 import com.jyxd.web.data.dictionary.ScoreDictionary;
 import com.jyxd.web.data.dictionary.ScoreItemDictionary;
+import com.jyxd.web.data.dictionary.ScoreKnowledgeDictionary;
 import com.jyxd.web.data.patient.PatientScore;
 import com.jyxd.web.data.patient.PatientScoreItem;
 import com.jyxd.web.data.user.User;
 import com.jyxd.web.service.dictionary.ScoreDictionaryService;
 import com.jyxd.web.service.dictionary.ScoreItemDictionaryService;
+import com.jyxd.web.service.dictionary.ScoreKnowledgeDictionaryService;
 import com.jyxd.web.service.patient.PatientScoreItemService;
 import com.jyxd.web.service.patient.PatientScoreService;
+import com.jyxd.web.service.user.UserService;
 import com.jyxd.web.util.HttpCode;
 import com.jyxd.web.util.JsonArrayValueProcessor;
 import com.jyxd.web.util.UUIDUtil;
@@ -49,6 +52,12 @@ public class PatientScoreController {
 
     @Autowired
     private PatientScoreItemService patientScoreItemService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private ScoreKnowledgeDictionaryService scoreKnowledgeDictionaryService;
 
     /**
      * 增加一条病人评分表记录
@@ -100,12 +109,10 @@ public class PatientScoreController {
                 patientScore.setScoreKnowledgeId(map.get("scoreKnowledgeId").toString());
             }
             patientScoreService.insert(patientScore);
-            System.out.println("11111111111");
             //新增病人评分明细记录
             if(map.get("list")!=null){
                 JSONArray array=JSONArray.fromObject(map.get("list").toString());
                 for (int i = 0; i < array.size(); i++) {
-                    System.out.println("2222222222222");
                     JSONObject jsonObject=(JSONObject) array.get(i);
                     PatientScoreItem patientScoreItem=new PatientScoreItem();
                     patientScoreItem.setId(UUIDUtil.getUUID());
@@ -113,22 +120,16 @@ public class PatientScoreController {
                     patientScoreItem.setVisitId(map.get("visitId").toString());
                     patientScoreItem.setVisitCode(map.get("visitCode").toString());
                     patientScoreItem.setType(map.get("type").toString());
-                    System.out.println("6666666666666");
                     patientScoreItem.setPatientId(map.get("patientId").toString());
                     patientScoreItem.setScoreTime(format.parse(map.get("scoreTime").toString()));
-                    System.out.println("8888888888888");
                     patientScoreItem.setPatientScoreId(patientScore.getId());
-                    System.out.println("9999999999999999");
                     patientScoreItem.setParentId(jsonObject.getString("parentId"));
                     patientScoreItem.setItemId(jsonObject.getString("itemId"));
-                    System.out.println("7777777777777777777");
                     patientScoreItem.setContent(jsonObject.getString("content"));
                     patientScoreItem.setExtraContent(jsonObject.getString("extraContent"));
                     patientScoreItemService.insert(patientScoreItem);
-                    System.out.println("33333333333");
                 }
             }
-            System.out.println("444444444444");
             json.put("code",HttpCode.OK_CODE.getCode());
             json.put("msg","添加成功");
         }catch (Exception e){
@@ -371,4 +372,387 @@ public class PatientScoreController {
         json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
+
+    /**
+     * 重症评分--跌倒坠床--查询病人评分列表
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/getPatientScoreList",method= RequestMethod.POST)
+    @ResponseBody
+    public String getPatientScoreList(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        JSONArray allArray=new JSONArray();
+        JSONObject obj=new JSONObject();
+        ScoreDictionary scoreDictionary=scoreDictionaryService.queryDataByType(map);
+        if(map!=null && map.containsKey("type") && map.containsKey("patientId")){
+            if(scoreDictionary!=null){
+                //查询病人是否有评分记录
+                List<PatientScore> list=patientScoreService.queryDataListGroupByTime(map);
+               if(list!=null && list.size()>0){
+                   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                //list不为空代表有数据
+                   for (int i = 0; i < list.size(); i++) {
+                       JSONObject jsonObject=new JSONObject();
+                       JSONArray array=new JSONArray();
+                       PatientScore patientScore=list.get(i);
+                       // 获取准确时间 带时分秒
+                       String times=patientScoreService.getTimeById(patientScore.getId());
+                       jsonObject.put("nursingStep","");//护理措施
+                       jsonObject.put("otherStep","");//其他措施
+                       jsonObject.put("signature","");//签名
+                       jsonObject.put("mortalityRate","");//预计病死率
+                       jsonObject.put("patientScoreId",patientScore.getId());//病人评分主键id
+                       jsonObject.put("date",times.substring(0,9));//日期 2020-11-16
+                       jsonObject.put("time",times.substring(11,16));//时间 14:42
+                       jsonObject.put("score",patientScore.getScore());//总分
+                       if(StringUtils.isNotEmpty(patientScore.getNursingStep())){
+                           jsonObject.put("nursingStep",patientScore.getNursingStep());//护理措施
+                       }
+                       if(StringUtils.isNotEmpty(patientScore.getOtherStep())){
+                           jsonObject.put("otherStep",patientScore.getOtherStep());//其他措施
+                       }
+                       if(StringUtils.isNotEmpty(patientScore.getMortalityRate())){
+                           jsonObject.put("mortalityRate",patientScore.getMortalityRate());//预计病死率
+                       }
+                       map.put("loginName",patientScore.getSignature());//签名（用户登录名）
+                       User user=userService.queryDataByLoginName(map);
+                       if(user!=null){
+                           jsonObject.put("signature",user.getUserName());//签名
+                       }
+                       //根据type 查询 评分项列表 （parent_id为空的情况）
+                       List<ScoreItemDictionary> parentList=scoreItemDictionaryService.queryParentListByType(map);
+                       if(parentList!=null && parentList.size()>0){
+                           for (int j = 0; j < parentList.size(); j++) {
+                               JSONObject jsonObject1=new JSONObject();
+                               jsonObject1.put("planLable",parentList.get(j).getScoreItemName());//评分项名称
+                               JSONArray jsonArray=new JSONArray();
+                               //根据type 和parentId 查询 评分项列表 （parent_id不为空的情况）
+                               map.put("parentId",parentList.get(j).getId());//评分项主键id
+                               List<ScoreItemDictionary> sonList=scoreItemDictionaryService.querySonListByType(map);
+                               if(sonList!=null && sonList.size()>0){
+                                   for (int k = 0; k <sonList.size() ; k++) {
+                                       JSONObject jsonObject2=new JSONObject();
+                                       jsonObject2.put("stageLable",sonList.get(k).getScoreItemName());
+                                       jsonObject2.put("value","");
+                                       //根据条件查询病人评分明细对象 评分时间 评分项 评分明细 病人主键id 病人评分主键id
+                                       map.put("scoreTime",times);//评分时间
+                                       map.put("patientScoreId",patientScore.getId());//病人评分主键id
+                                       map.put("itemId",sonList.get(k).getId());//评分明细
+                                       PatientScoreItem patientScoreItem=patientScoreItemService.queryDataByTypeAndTime(map);
+                                       if(patientScoreItem!=null){
+                                           jsonObject2.put("value",sonList.get(k).getScore());//评分
+                                       }
+                                       jsonArray.add(jsonObject2);
+                                   }
+                               }
+                               jsonObject1.put("stageList",jsonArray);
+                               array.add(jsonObject1);
+                           }
+                       }
+                       jsonObject.put("planList",array);
+                       allArray.add(jsonObject);
+                       json.put("data",allArray);
+                       json.put("code",HttpCode.OK_CODE.getCode());//成功
+                       json.put("msg","查询成功");//成功
+                   }
+               }else{
+                   obj.put("date","");//日期 2020-11-16
+                   obj.put("time","");//时间 14:42
+                   obj.put("score","");//总分
+                   obj.put("nursingStep","");//护理措施
+                   obj.put("otherStep","");//其他措施
+                   obj.put("signature","");//签名
+                   obj.put("mortalityRate","");//预计病死率
+                   JSONArray array=new JSONArray();
+                   //根据type 查询 评分项列表 （parent_id为空的情况）
+                   List<ScoreItemDictionary> parentList=scoreItemDictionaryService.queryParentListByType(map);
+                   if(parentList!=null && parentList.size()>0){
+                       for (int i = 0; i < parentList.size(); i++) {
+                           JSONObject jsonObject=new JSONObject();
+                           jsonObject.put("planLable",parentList.get(i).getScoreItemName());//评分项名称
+                           JSONArray jsonArray=new JSONArray();
+                           //根据type 和parentId 查询 评分项列表 （parent_id不为空的情况）
+                           map.put("parentId",parentList.get(i).getId());//评分项主键id
+                           List<ScoreItemDictionary> sonList=scoreItemDictionaryService.querySonListByType(map);
+                           if(sonList!=null && sonList.size()>0){
+                               for (int j = 0; j < sonList.size(); j++) {
+                                   JSONObject jsonObject1=new JSONObject();
+                                   jsonObject1.put("stageLable",sonList.get(j).getScoreItemName());//评分项明细名称
+                                   jsonObject1.put("value","");//评分
+                                   jsonArray.add(jsonObject1);//添加到数组中
+                               }
+                           }
+                           jsonObject.put("stageList",jsonArray);
+                           array.add(jsonObject);
+                       }
+                   }
+                   obj.put("planList",array);
+                   allArray.add(obj);
+                   json.put("data",allArray);
+                   json.put("code",HttpCode.OK_CODE.getCode());
+               }
+            }
+        }else if(map!=null && !map.containsKey("patientId")){
+            //不包含 病人主键id 返回提示消息 选择病人
+            json.put("code",HttpCode.NO_PATIENT_CODE.getCode());
+            json.put("msg","请先选择病人");
+            if(scoreDictionary!=null){
+                obj.put("date","");//日期 2020-11-16
+                obj.put("time","");//时间 14:42
+                obj.put("score","");//总分
+                obj.put("nursingStep","");//护理措施
+                obj.put("otherStep","");//其他措施
+                obj.put("signature","");//签名
+                obj.put("mortalityRate","");//预计病死率
+                JSONArray array=new JSONArray();
+                //根据type 查询 评分项列表 （parent_id为空的情况）
+                List<ScoreItemDictionary> parentList=scoreItemDictionaryService.queryParentListByType(map);
+                if(parentList!=null && parentList.size()>0){
+                    for (int i = 0; i < parentList.size(); i++) {
+                        JSONObject jsonObject=new JSONObject();
+                        jsonObject.put("planLable",parentList.get(i).getScoreItemName());//评分项名称
+                        JSONArray jsonArray=new JSONArray();
+                        //根据type 和parentId 查询 评分项列表 （parent_id不为空的情况）
+                        map.put("parentId",parentList.get(i).getId());//评分项主键id
+                        List<ScoreItemDictionary> sonList=scoreItemDictionaryService.querySonListByType(map);
+                        if(sonList!=null && sonList.size()>0){
+                            for (int j = 0; j < sonList.size(); j++) {
+                                JSONObject jsonObject1=new JSONObject();
+                                jsonObject1.put("stageLable",sonList.get(j).getScoreItemName());//评分项明细名称
+                                jsonObject1.put("value","");//评分
+                                jsonArray.add(jsonObject1);//添加到数组中
+                            }
+                        }
+                        jsonObject.put("stageList",jsonArray);
+                        array.add(jsonObject);
+                    }
+                }
+                obj.put("planList",array);
+                allArray.add(obj);
+                json.put("data",allArray);
+            }
+        }
+        return json.toString();
+    }
+
+    /**
+     * 重症评分--跌倒坠床--点击编辑按钮查询评分详情
+     * @param map type patientScoreId
+     * @return
+     */
+    @RequestMapping(value = "/getEditDetail",method= RequestMethod.POST)
+    @ResponseBody
+    public String getEditDetail(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        //根据唯一评分类型查询评分项列表
+        List<ScoreItemDictionary> list=scoreItemDictionaryService.queryParentListByType(map);
+        if(list!=null && list.size()>0){
+            JsonConfig jsonConfig=new JsonConfig();
+            jsonConfig.registerJsonValueProcessor(Date.class,new JsonArrayValueProcessor());
+            JSONArray array=JSONArray.fromObject(list,jsonConfig);
+            for (int i = 0; i < array.size(); i++) {
+                JSONObject jsonObject=(JSONObject) array.get(i);
+                map.put("parentId",jsonObject.getString("id"));//父键id
+                //根据type和parentId 查询评分项明细列表
+                List<ScoreItemDictionary> sonList=scoreItemDictionaryService.querySonListByType(map);
+                JSONArray array1=JSONArray.fromObject(sonList,jsonConfig);
+                for (int j = 0; j < array1.size(); j++) {
+                    JSONObject obj=(JSONObject)array1.get(j);
+                    // flag 0:未选中   1:已选中
+                    obj.put("flag",0);
+                    if(StringUtils.isNotEmpty(map.get("patientScoreId").toString())){
+                        List<String> itemIdList=patientScoreItemService.getItemIdByPatientScoreId(map.get("patientScoreId").toString());
+                        if(itemIdList!=null && itemIdList.size()>0){
+                            StringBuffer str=new StringBuffer();
+                            for (int k = 0; k <itemIdList.size() ; k++) {
+                                str.append(itemIdList.get(k)+",");
+                            }
+                            if(str.toString().contains(obj.getString("id"))){
+                                //判断病人评分明细主键id集合中是否有评分明细主键id
+                                obj.put("flag",1);
+                            }
+                        }
+                    }
+                }
+                jsonObject.put("data",array1);
+            }
+            json.put("data",array);
+            json.put("msg","查询成功");
+        }
+        PatientScore patientScore=patientScoreService.queryData(map.get("patientScoreId").toString());
+        if(patientScore!=null){
+            JsonConfig jsonConfig=new JsonConfig();
+            jsonConfig.registerJsonValueProcessor(Date.class,new JsonArrayValueProcessor());
+            JSONObject jsonObject=JSONObject.fromObject(patientScore,jsonConfig);
+            json.put("patientScore",jsonObject);
+            ScoreKnowledgeDictionary scoreKnowledgeDictionary=scoreKnowledgeDictionaryService.queryDataByTypeAndScore(map);
+            if(scoreKnowledgeDictionary!=null){
+                jsonConfig.registerJsonValueProcessor(Date.class,new JsonArrayValueProcessor());
+                json.put("knowledge",JSONArray.fromObject(scoreKnowledgeDictionary,jsonConfig));
+            }
+        }
+        json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
+    /**
+     * 重症评分--跌倒坠床--点击删除按钮 删除病人评分
+     * @param map patientScoreId
+     * @return
+     */
+    @RequestMapping(value = "/deletePatientScore",method= RequestMethod.POST)
+    @ResponseBody
+    public String deletePatientScore(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        if(map!=null && StringUtils.isNotEmpty(map.get("patientScoreId").toString())){
+            PatientScore patientScore=patientScoreService.queryData(map.get("patientScoreId").toString());
+            if(patientScore!=null){
+                patientScore.setStatus(-1);//删除
+                patientScoreService.update(patientScore);
+                //删除评分明细
+                List<PatientScoreItem> list=patientScoreItemService.queryListByPatientScoreId(map);
+                if(list!=null && list.size()>0){
+                    for (int i = 0; i < list.size(); i++) {
+                        patientScoreItemService.deleteData(list.get(i).getId());
+                    }
+                }
+                json.put("code",HttpCode.OK_CODE.getCode());
+                json.put("msg","删除成功");
+            }
+        }
+        return json.toString();
+    }
+
+    /**
+     * 重症评分--跌倒坠床--编辑保存病人评分
+     * @param map patientScoreId
+     * @return
+     */
+    @RequestMapping(value = "/editPatientScore",method= RequestMethod.POST)
+    @ResponseBody
+    public String editPatientScore(@RequestBody(required=false) Map<String,Object> map,HttpSession session){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        //先删除 再新增
+        if(map!=null && StringUtils.isNotEmpty(map.get("patientScoreId").toString())){
+            PatientScore patientScore=patientScoreService.queryData(map.get("patientScoreId").toString());
+            if(patientScore!=null){
+                patientScore.setStatus(-1);//删除
+                patientScoreService.update(patientScore);
+                //删除评分明细
+                List<PatientScoreItem> list=patientScoreItemService.queryListByPatientScoreId(map);
+                if(list!=null && list.size()>0){
+                    for (int i = 0; i < list.size(); i++) {
+                        patientScoreItemService.deleteData(list.get(i).getId());
+                    }
+                }
+                json.put("code",HttpCode.OK_CODE.getCode());
+                json.put("msg","删除成功");
+            }
+        }
+        //以下部分为新增
+        try {
+            PatientScore patientScore=new PatientScore();
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            patientScore.setId(UUIDUtil.getUUID());
+            patientScore.setCreateTime(new Date());
+            patientScore.setScoreTime(format.parse(map.get("scoreTime").toString()));
+            patientScore.setScore((int)map.get("score"));
+            patientScore.setStatus(1);
+            User user=(User) session.getAttribute("user");
+            if(user!=null){
+                patientScore.setOperatorCode(user.getLoginName());
+            }
+            patientScore.setSignature(map.get("signature").toString());
+            patientScore.setVisitId(map.get("visitId").toString());
+            patientScore.setVisitCode(map.get("visitCode").toString());
+            patientScore.setType(map.get("type").toString());
+            patientScore.setPatientId(map.get("patientId").toString());
+            if(StringUtils.isNotEmpty(map.get("reportTime").toString())){
+                patientScore.setReportTime(format.parse(map.get("reportTime").toString()));
+            }
+            if(StringUtils.isNotEmpty(map.get("assessmentTime").toString())){
+                patientScore.setAssessmentTime(format.parse(map.get("assessmentTime").toString()));
+            }
+            if(StringUtils.isNotEmpty(map.get("nursingStep").toString())){
+                patientScore.setNursingStep(map.get("nursingStep").toString());
+            }
+            if(StringUtils.isNotEmpty(map.get("otherStep").toString())){
+                patientScore.setOtherStep(map.get("otherStep").toString());
+            }
+            if(StringUtils.isNotEmpty(map.get("mortalityRate").toString())){
+                patientScore.setMortalityRate(map.get("mortalityRate").toString());
+            }
+            if(StringUtils.isNotEmpty(map.get("extendColumn").toString())){
+                patientScore.setExtendColumn(map.get("extendColumn").toString());
+            }
+            if(StringUtils.isNotEmpty(map.get("scoreKnowledgeId").toString())){
+                patientScore.setScoreKnowledgeId(map.get("scoreKnowledgeId").toString());
+            }
+            patientScoreService.insert(patientScore);
+            //新增病人评分明细记录
+            if(map.get("list")!=null){
+                JSONArray array=JSONArray.fromObject(map.get("list").toString());
+                for (int i = 0; i < array.size(); i++) {
+                    JSONObject jsonObject=(JSONObject) array.get(i);
+                    PatientScoreItem patientScoreItem=new PatientScoreItem();
+                    patientScoreItem.setId(UUIDUtil.getUUID());
+                    patientScoreItem.setCreateTime(new Date());
+                    patientScoreItem.setVisitId(map.get("visitId").toString());
+                    patientScoreItem.setVisitCode(map.get("visitCode").toString());
+                    patientScoreItem.setType(map.get("type").toString());
+                    patientScoreItem.setPatientId(map.get("patientId").toString());
+                    patientScoreItem.setScoreTime(format.parse(map.get("scoreTime").toString()));
+                    patientScoreItem.setPatientScoreId(patientScore.getId());
+                    patientScoreItem.setParentId(jsonObject.getString("parentId"));
+                    patientScoreItem.setItemId(jsonObject.getString("itemId"));
+                    patientScoreItem.setContent(jsonObject.getString("content"));
+                    patientScoreItem.setExtraContent(jsonObject.getString("extraContent"));
+                    patientScoreItemService.insert(patientScoreItem);
+                }
+            }
+            json.put("code",HttpCode.OK_CODE.getCode());
+            json.put("msg","编辑成功");
+        }catch (Exception e){
+            logger.info("重症评分--跌倒坠床--编辑保存病人评分:"+e);
+            json.put("msg","编辑失败");
+        }
+        return json.toString();
+    }
+
+    /**
+     * 重症评分--跌倒坠床--复制评分--查询病人该项评分列表
+     * @param map patientId type
+     * @return
+     */
+    @RequestMapping(value = "/getListByPatientIdAndType",method= RequestMethod.POST)
+    @ResponseBody
+    public String getListByPatientIdAndType(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        if(map!=null && StringUtils.isNotEmpty(map.get("patientId").toString())){
+            List<Map<String,Object>> list=patientScoreService.getListByPatientIdAndType(map);
+            if(list!=null && list.size()>0){
+                json.put("data",JSONArray.fromObject(list));
+                json.put("code",HttpCode.OK_CODE.getCode());
+                json.put("msg","查询成功");
+            }
+        }
+        return json.toString();
+    }
+
 }

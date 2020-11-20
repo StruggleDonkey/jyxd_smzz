@@ -51,4 +51,13 @@ public class NursingRecordService {
     public NursingRecord queryDataByTimeAndCode(Map<String,Object> map){
         return nursingRecordDao.queryDataByTimeAndCode(map);
     }
+
+    /**
+     * 护理文书--护理单--护理记录--查询护理记录列表
+     * @param map code=score
+     * @return
+     */
+    public List<Map<String,Object>> getListByCode(Map<String,Object> map){
+        return nursingRecordDao.getListByCode(map);
+    }
 }

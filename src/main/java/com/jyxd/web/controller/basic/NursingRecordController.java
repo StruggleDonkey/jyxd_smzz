@@ -307,19 +307,31 @@ public class NursingRecordController {
         JSONObject json=new JSONObject();
         json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("msg","编辑失败");
-        if(map!=null && map.containsKey("id") && map.containsKey("status") && map.containsKey("bedName")){
-            NursingRecord nursingRecord=nursingRecordService.queryData(map.get("id").toString());
-            if(nursingRecord!=null){
-                nursingRecord.setStatus((int)map.get("status"));
-                nursingRecordService.update(nursingRecord);
-                json.put("msg","编辑成功");
-            }else{
-                json.put("msg","编辑失败，没有这个对象。");
-                return json.toString();
+        try {
+            if(map!=null && map.containsKey("id") ){
+                NursingRecord nursingRecord=nursingRecordService.queryData(map.get("id").toString());
+                if(nursingRecord!=null){
+                    if(StringUtils.isNotEmpty(map.get("operatorCode").toString())){
+                        nursingRecord.setOperatorCode(map.get("operatorCode").toString());
+                    }
+                    if(StringUtils.isNotEmpty(map.get("content").toString())){
+                        nursingRecord.setContent(map.get("content").toString());
+                    }
+                    if(StringUtils.isNotEmpty(map.get("dateTime").toString())){
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        nursingRecord.setDataTime(sdf.parse(map.get("dataTime").toString()));
+                    }
+                    nursingRecordService.update(nursingRecord);
+                    json.put("msg","编辑成功");
+                    json.put("code",HttpCode.OK_CODE.getCode());
+                }else{
+                    json.put("msg","编辑失败，没有这个对象。");
+                    return json.toString();
+                }
             }
+        }catch (Exception e){
+            logger.info("编辑护理记录表记录单:"+e);
         }
-        json.put("code",HttpCode.OK_CODE.getCode());
-
         return json.toString();
     }
 
@@ -340,12 +352,12 @@ public class NursingRecordController {
                 nursingRecord.setStatus(-1);
                 nursingRecordService.update(nursingRecord);
                 json.put("msg","删除成功");
+                json.put("code",HttpCode.OK_CODE.getCode());
             }else{
                 json.put("msg","删除失败，没有这个对象。");
                 return json.toString();
             }
         }
-        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -418,6 +430,69 @@ public class NursingRecordController {
             json.put("data",array);
             json.put("code",HttpCode.OK_CODE.getCode());
             json.put("msg","查询成功");
+        }
+        return json.toString();
+    }
+
+    /**
+     * 护理文书--护理单--护理记录--新增一条护理记录
+     * @return
+     */
+    @RequestMapping(value = "/add")
+    @ResponseBody
+    public String add(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code", HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","添加失败");
+        try {
+            NursingRecord nursingRecord=new NursingRecord();
+            nursingRecord.setId(UUIDUtil.getUUID());
+            nursingRecord.setCreateTime(new Date());
+            nursingRecord.setStatus(1);
+            if(StringUtils.isNotEmpty(map.get("operatorCode").toString())){
+                nursingRecord.setOperatorCode(map.get("operatorCode").toString());
+            }
+            if(StringUtils.isNotEmpty(map.get("content").toString())){
+                nursingRecord.setContent(map.get("content").toString());
+            }
+            nursingRecord.setCode(map.get("code").toString());//固定为 score
+            nursingRecord.setVisitId(map.get("visitId").toString());
+            nursingRecord.setVisitCode(map.get("visitCode").toString());
+            nursingRecord.setPatientId(map.get("patientId").toString());
+            if(StringUtils.isNotEmpty(map.get("dateTime").toString())){
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                nursingRecord.setDataTime(sdf.parse(map.get("dataTime").toString()));
+            }
+            nursingRecordService.insert(nursingRecord);
+            json.put("code",HttpCode.OK_CODE.getCode());
+            json.put("msg","添加成功");
+        }catch (Exception e){
+            logger.info("护理文书--护理单--护理记录--新增一条护理记录:"+e);
+        }
+        return json.toString();
+    }
+
+    /**
+     * 护理文书--护理单--护理记录--查询护理记录列表
+     * @return code=score status=1
+     */
+    @RequestMapping(value = "/getListByCode")
+    @ResponseBody
+    public String getListByCode(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code", HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        try {
+            List<Map<String,Object>> list=nursingRecordService.getListByCode(map);
+            if(list!=null && list.size()>0){
+                json.put("data",JSONArray.fromObject(list));
+                json.put("code",HttpCode.OK_CODE.getCode());
+                json.put("msg","查询成功");
+            }
+        }catch (Exception e){
+            logger.info("护理文书--护理单--护理记录--查询护理记录列表:"+e);
         }
         return json.toString();
     }

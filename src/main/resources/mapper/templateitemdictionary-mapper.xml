@@ -127,4 +127,24 @@
             and  dti.template_id= #{templateId}
         </if>
     </select>
+
+    <!--  重症评分-护理单-护理记录-查询护理模板名称列表及其数量 -->
+    <select id="getTemplateNameAndAmount" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            dt.id AS id,
+            dt.dict_template_name AS name,
+            COUNT(dti.id) AS amount
+        FROM
+            dict_template_item dti
+        LEFT JOIN dict_template dt ON dt.id = dti.template_id
+        WHERE
+            dti.status != - 1
+        AND dt.status != - 1
+        <if test="status != null ">
+            and  dti.status = #{status}
+            and  dt.status = #{status}
+        </if>
+        GROUP BY
+          dt.dict_template_name
+    </select>
 </mapper>

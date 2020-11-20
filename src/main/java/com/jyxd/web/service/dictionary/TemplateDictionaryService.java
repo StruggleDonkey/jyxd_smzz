@@ -33,4 +33,5 @@ public class TemplateDictionaryService {
     }
 
     public int queryNum(Map<String,Object> map){return templateDictionaryDao.queryNum(map);}
+
 }

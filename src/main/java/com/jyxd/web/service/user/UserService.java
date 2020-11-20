@@ -61,4 +61,14 @@ public class UserService {
     public User queryDataByWorkNumber(Map<String,Object> map){
         return userDao.queryDataByWorkNumber(map);
     }
+
+    /**
+     * 根据登录名查询用户
+     * @param map
+     * @return
+     */
+    public User queryDataByLoginName(Map<String,Object> map){
+        return userDao.queryDataByLoginName(map);
+    }
+
 }

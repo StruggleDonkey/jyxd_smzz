@@ -17,10 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "/templateItemDictionary")
@@ -203,6 +200,40 @@ public class TemplateItemDictionaryController {
         List<Map<String,Object>> list =templateItemDictionaryService.getList(map);
         if(list!=null && list.size()>0){
             json.put("data",JSONArray.fromObject(list));
+        }
+        json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
+
+    /**
+     * 护理文书--护理单--护理记录--查询护理模板名称列表及其数量
+     * @param map status=1
+     * @return
+     */
+    @RequestMapping(value = "/getTemplateNameAndAmount",method= RequestMethod.POST)
+    @ResponseBody
+    public String getTemplateNameAndAmount(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        if(map!=null && map.containsKey("status")){
+            List<Map<String,Object>> list=templateItemDictionaryService.getTemplateNameAndAmount(map);
+            int amount=0;
+            if(list!=null && list.size()>0){
+                for (int i = 0; i < list.size(); i++) {
+                    Map<String,Object> listMap=list.get(i);
+                    amount+=(int)listMap.get("amount");
+                }
+                Map<String,Object> map1=new HashMap<>();
+                map1.put("id","");
+                map1.put("name","全部");
+                map1.put("amount",amount);
+                list.add(0,map1);
+                JSONArray array=JSONArray.fromObject(list);
+                json.put("data",array);
+                json.put("msg","查询成功");
+            }
         }
         json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();

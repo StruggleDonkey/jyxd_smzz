@@ -24,4 +24,13 @@
           sys_key =#{sysKey}
     </select>
 
+    <select id="getOutTypeList" resultType="java.util.Map" parameterType="java.util.Map">
+        select
+          *
+        from
+        sys_properties
+        where
+          remark =#{remark}
+    </select>
+
 </mapper>

@@ -57,4 +57,12 @@ public interface OutputAmountDao {
      * @return
      */
     OutputAmount queryDataByTime(Map<String, Object> map);
+
+    /**
+     * 护理文书--护理单--出量--查询病人出量列表
+     * @param map
+     * @return
+     */
+     List<Map<String,Object>> getPatientOutputList(Map<String,Object> map);
+
 }

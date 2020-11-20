@@ -166,4 +166,31 @@
         </if>
     </select>
 
+    <select id="getPatientOutputList" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            IFNULL(toa.id, "") AS id,
+            IFNULL(
+            date_format(toa.data_time, '%Y-%m-%d'),
+            ""
+            ) AS date,
+            IFNULL(
+            date_format(toa.data_time, '%H:%i'),
+            ""
+            ) AS time,
+            IFNULL(sp.sys_key, "") AS type,
+            IFNULL(toa.dosage, "") AS dosage,
+            IFNULL(tu.user_name, "") AS name
+        FROM
+        table_output_amount toa
+        LEFT JOIN table_user tu ON tu.login_name = toa.operator_code
+        LEFT JOIN sys_properties sp ON sp.sys_value = toa.output_type
+        WHERE
+          toa.status != - 1
+        <if test="status != null ">
+            and status= #{status}
+        </if>
+        <if test="patientId != null and patientId != ''">
+            AND toa.patient_id = #{patientId}
+        </if>
+    </select>
 </mapper>

@@ -30,7 +30,7 @@
                                   #{operatorCode},#{status},#{reportTime},#{assessmentTime},#{nursingStep},#{otherStep},#{signature},#{mortalityRate},#{extendColumn}
                               </sql>
     <sql id="patientScore_update">visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},type=#{type},score_time=#{scoreTime},
-                              score=#{score},score_knowledge_id=#{scoreKnowledgeId},create_time=#{createTime},operator_code=#{operatorCode}
+                              score=#{score},score_knowledge_id=#{scoreKnowledgeId},create_time=#{createTime},operator_code=#{operatorCode},
 		                      status=#{status},report_time=#{reportTime},assessment_time=#{assessmentTime},nursing_step=#{nursingStep},
 		                      other_step=#{otherStep},signature=#{signature},mortality_rate=#{mortalityRate},extend_column=#{extendColumn}
 		                      </sql>
@@ -109,6 +109,92 @@
         <if test="score != null ">
             and  score =#{score}
         </if>
+    </select>
+
+    <!-- 根据评分类型 病人主键id 查询评分记录列表 （group by 评分时间） -->
+    <select id="queryDataListGroupByTime" resultMap="patientScoreMap" parameterType="java.util.Map">
+        select
+        <include refid="patientScore_colums"></include>
+        from
+        p_patient_score
+        where
+        1=1
+        and  status != -1
+        <if test="patientId != null and patientId != ''">
+            and  patient_id =#{patientId}
+        </if>
+        <if test="type != null and type != ''">
+            and  type =#{type}
+        </if>
+        GROUP BY score_time
+        ORDER BY score_time
+    </select>
+
+    <!-- 根据评分时间 评分类型 病人主键id 查询 病人评分列表 -->
+    <select id="getPatientScoreList" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            IFNULL(psi.id, "") AS id,
+            IFNULL(psi.item_id, "") AS item_id,
+            IFNULL(psi.parent_id, "") AS parent_id,
+            IFNULL(psi.patient_id, "") AS patient_id,
+            IFNULL(b. NAME, "") AS NAME,
+            IFNULL(b.score_item_name, "") AS score_item_name,
+            IFNULL(psi.type, "") AS type,
+            IFNULL(psi.patient_score_id, "") AS patient_score_id
+        FROM
+            (
+                SELECT
+                    a.*, dsi.score_item_name AS NAME
+                FROM
+                    (
+                        SELECT
+                            *
+                        FROM
+                            dict_score_item
+                        WHERE
+                            1 = 1
+                        AND STATUS != - 1
+                        AND type = #{type}
+                        AND (
+                            parent_id != NULL || parent_id != ""
+                        )
+                    ) a
+                LEFT JOIN dict_score_item dsi ON dsi.id = a.parent_id
+            ) b
+        LEFT JOIN p_patient_score_item psi ON psi.type = b.type
+        AND psi.item_id = b.id
+        AND psi.parent_id = b.parent_id
+        AND psi.patient_id = #{patientId}
+        AND psi.score_time = #{scoreTime}
+    </select>
+
+    <!-- 根据主键id 获取评分时间  带准确时分秒的 -->
+    <select id="getTimeById" resultType="java.lang.String" parameterType="java.lang.String">
+        select
+        score_time
+        from
+        p_patient_score
+        where
+        1=1
+        and  status != -1
+        <if test="id != null and id != ''">
+            and  id =#{id}
+        </if>
+    </select>
+
+    <select id="getListByPatientIdAndType" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            pps.id,
+            date_format(pps.score_time, '%Y-%m-%d') AS date,
+            date_format(pps.score_time, '%H:%i') AS time,
+            pps.score,
+            tu.user_name AS NAME
+        FROM
+            p_patient_score pps
+        LEFT JOIN table_user tu ON tu.login_name = pps.signature
+        WHERE
+            pps.patient_id = #{patientId}
+        AND pps.type = #{type}
     </select>
 
 </mapper>

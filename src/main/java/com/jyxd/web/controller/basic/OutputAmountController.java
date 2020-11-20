@@ -198,19 +198,43 @@ public class OutputAmountController {
         JSONObject json=new JSONObject();
         json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("msg","编辑失败");
-        if(map!=null && map.containsKey("id") && map.containsKey("status") && map.containsKey("bedName")){
-            OutputAmount outputAmount=outputAmountService.queryData(map.get("id").toString());
-            if(outputAmount!=null){
-                outputAmount.setStatus((int)map.get("status"));
-                outputAmountService.update(outputAmount);
-                json.put("msg","编辑成功");
-            }else{
-                json.put("msg","编辑失败，没有这个对象。");
-                return json.toString();
+        try {
+            if(map!=null && map.containsKey("id")){
+                OutputAmount outputAmount=outputAmountService.queryData(map.get("id").toString());
+                if(outputAmount!=null){
+                    if(StringUtils.isNotEmpty(map.get("dataTime").toString())){
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        outputAmount.setDataTime(sdf.parse(map.get("dataTime").toString()));
+                    }
+                    if(StringUtils.isNotEmpty(map.get("outputName").toString())){
+                        outputAmount.setOutputName(map.get("outputName").toString());
+                    }
+                    if(StringUtils.isNotEmpty(map.get("dosage").toString())){
+                        outputAmount.setDosage(map.get("dosage").toString());
+                    }
+                    if(StringUtils.isNotEmpty(map.get("operatorCode").toString())){
+                        outputAmount.setOperatorCode(map.get("operatorCode").toString());
+                    }
+                    if(StringUtils.isNotEmpty(map.get("dosageUnits").toString())){
+                        outputAmount.setDosageUnits(map.get("dosageUnits").toString());
+                    }
+                    if(StringUtils.isNotEmpty(map.get("outputType").toString())){
+                        outputAmount.setOutputType(map.get("outputType").toString());
+                    }
+                    if(StringUtils.isNotEmpty(map.get("speed").toString())){
+                        outputAmount.setSpeed(map.get("speed").toString());
+                    }
+                    outputAmountService.update(outputAmount);
+                    json.put("msg","编辑成功");
+                    json.put("code",HttpCode.OK_CODE.getCode());
+                }else{
+                    json.put("msg","编辑失败，没有这个对象。");
+                    return json.toString();
+                }
             }
+        }catch (Exception e){
+            logger.info("编辑出量表记录单:"+e);
         }
-        json.put("code",HttpCode.OK_CODE.getCode());
-
         return json.toString();
     }
 
@@ -309,6 +333,82 @@ public class OutputAmountController {
             json.put("data",array);
             json.put("code",HttpCode.OK_CODE.getCode());
             json.put("msg","查询成功");
+        }
+        return json.toString();
+    }
+
+    /**
+     * 护理文书--护理单--出量--新增一条出量记录
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/add",method= RequestMethod.POST)
+    @ResponseBody
+    public String add(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","新增失败");
+        try {
+            OutputAmount outputAmount=new OutputAmount();
+            outputAmount.setId(UUIDUtil.getUUID());
+            outputAmount.setCreateTime(new Date());
+            outputAmount.setVisitId(map.get("visitId").toString());
+            outputAmount.setVisitCode(map.get("visitCode").toString());
+            outputAmount.setPatientId(map.get("patientId").toString());
+            outputAmount.setStatus(1);
+            if(StringUtils.isNotEmpty(map.get("dataTime").toString())){
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                outputAmount.setDataTime(sdf.parse(map.get("dataTime").toString()));
+            }
+            if(StringUtils.isNotEmpty(map.get("outputName").toString())){
+                outputAmount.setOutputName(map.get("outputName").toString());
+            }
+            if(StringUtils.isNotEmpty(map.get("dosage").toString())){
+                outputAmount.setDosage(map.get("dosage").toString());
+            }
+            if(StringUtils.isNotEmpty(map.get("operatorCode").toString())){
+                outputAmount.setOperatorCode(map.get("operatorCode").toString());
+            }
+            if(StringUtils.isNotEmpty(map.get("dosageUnits").toString())){
+                outputAmount.setDosageUnits(map.get("dosageUnits").toString());
+            }
+            if(StringUtils.isNotEmpty(map.get("outputType").toString())){
+                outputAmount.setOutputType(map.get("outputType").toString());
+            }
+            if(StringUtils.isNotEmpty(map.get("speed").toString())){
+                outputAmount.setSpeed(map.get("speed").toString());
+            }
+            outputAmountService.insert(outputAmount);
+            json.put("code",HttpCode.OK_CODE.getCode());
+            json.put("msg","新增成功");
+        }catch (Exception e){
+            logger.info("护理文书--护理单--出量--新增一条出量记录:"+e);
+        }
+        return json.toString();
+    }
+
+    /**
+     * 护理文书--护理单--出量--查询病人出量列表
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/getPatientOutputList",method= RequestMethod.POST)
+    @ResponseBody
+    public String getPatientOutputList(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        try {
+            List<Map<String,Object>> list=outputAmountService.getPatientOutputList(map);
+            if(list!=null && list.size()>0){
+                json.put("data",JSONArray.fromObject(list));
+                json.put("code",HttpCode.OK_CODE.getCode());
+                json.put("msg","查询成功");
+            }
+        }catch (Exception e){
+            logger.info("护理文书--护理单--出量--查询病人出量列表:"+e);
         }
         return json.toString();
     }

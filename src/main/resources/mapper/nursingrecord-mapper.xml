@@ -176,4 +176,25 @@
             AND patient_id =#{patientId}
         </if>
     </select>
+
+    <select id="getListByCode" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            IFNULL(tnr.id, "") AS id,
+            IFNULL(date_format(tnr.data_time, '%Y-%m-%d'), "") AS date,
+            IFNULL(date_format(tnr.data_time, '%H:%i'), "") AS time,
+            IFNULL(tnr.content, "") AS content,
+            IFNULL(ts.user_name, "") AS name
+        FROM
+          table_nursing_record tnr
+        LEFT JOIN table_user ts ON tnr.operator_code = ts.login_name
+        WHERE
+          tnr.status !=-1
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="code != null and code != ''">
+            AND code=#{code}
+        </if>
+    </select>
+
 </mapper>
