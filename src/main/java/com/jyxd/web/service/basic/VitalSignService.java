@@ -33,4 +33,30 @@ public class VitalSignService {
     }
 
     public int queryNum(Map<String,Object> map){return vitalSignDao.queryNum(map);}
+
+    /**
+     * 根据时间和code查询对象
+     * @param map
+     * @return
+     */
+    public VitalSign queryDataByTimeAndCode(Map<String,Object> map){
+        return vitalSignDao.queryDataByTimeAndCode(map);
+    }
+
+    /**
+     * 根据时间和病人主键id查询对象列表
+     * @param map
+     * @return
+     */
+    public List<VitalSign> queryListByTime(Map<String,Object> map){
+        return vitalSignDao.queryListByTime(map);
+    }
+
+    /**
+     * 护理文书--护理单--生命体征--根据病人主键id 查询生命体征列表
+     * @return
+     */
+    public List<Map<String,Object>> getList(Map<String,Object> map){
+        return vitalSignDao.getList(map);
+    }
 }

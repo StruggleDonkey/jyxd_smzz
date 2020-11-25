@@ -374,6 +374,35 @@ public class PatientScoreController {
     }
 
     /**
+     * 重症评分--跌倒坠床--新增评分--获取护理措施
+     * @param map id
+     * @return
+     */
+    @RequestMapping(value = "/getNursingStepsById",method= RequestMethod.POST)
+    @ResponseBody
+    public String getNursingStepsById(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        if(map!=null && map.containsKey("id")){
+            JSONArray array=new JSONArray();
+            ScoreDictionary scoreDictionary=scoreDictionaryService.queryData(map.get("id").toString());
+            if(scoreDictionary!=null && StringUtils.isNotEmpty(scoreDictionary.getNursingStep())){
+                String[] biaozhun=scoreDictionary.getNursingStep().split("\\|");
+                for (int i = 0; i < biaozhun.length; i++) {
+                    if(i>0){
+                        array.add(biaozhun[i-1].substring(biaozhun[i-1].length()-1,biaozhun[i-1].length()) +biaozhun[i].substring(0,biaozhun[i].length()-1));
+                    }
+                }
+                json.put("data",array);
+            }
+        }
+        json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
+    /**
      * 重症评分--跌倒坠床--查询病人评分列表
      * @param map
      * @return

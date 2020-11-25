@@ -101,4 +101,10 @@ public class OutputAmount implements Serializable {
     @Column(name = "status")
     private int status;
 
+    /**
+     * 核对人签名
+     */
+    @Column(name = "check_signature")
+    private String checkSignature;
+
 }

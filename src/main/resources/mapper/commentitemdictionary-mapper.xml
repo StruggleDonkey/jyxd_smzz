@@ -123,4 +123,28 @@
         </if>
     </select>
 
+    <select id="getCodeListByType" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            IFNULL(dci.id, "") AS id,
+            IFNULL(dci.common_item_code, "") AS code,
+            IFNULL(dci.common_item_name, "") AS itemName,
+            IFNULL(dci.type, "") AS type,
+            IFNULL(dci.description, "") AS description,
+            IFNULL(dc.common_name, "") AS name
+        FROM
+          dict_common_item dci
+        LEFT JOIN dict_common dc ON dc.type = dci.type
+        WHERE
+          1 = 1
+        AND dci.status !=- 1
+        AND dc.status !=- 1
+        <if test="type != null and type != ''">
+            AND dci.type = #{type}
+        </if>
+        <if test="status != null ">
+            AND dci.status = #{status}
+            AND dc.status = #{status}
+        </if>
+    </select>
+
 </mapper>

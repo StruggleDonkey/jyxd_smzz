@@ -89,4 +89,20 @@
         </if>
     </select>
 
+    <select id="queryTypeByName" resultType="java.lang.String" parameterType="java.util.Map">
+        select
+        type
+        from
+        dict_common
+        where
+        1=1
+        and status != -1
+        <if test="commonName != null and commonName != ''">
+            and  common_name = #{commonName}
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
+
 </mapper>

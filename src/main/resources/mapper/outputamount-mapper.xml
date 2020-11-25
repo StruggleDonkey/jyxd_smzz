@@ -16,17 +16,18 @@
         <result column="create_time" property="createTime" jdbcType="DATE"/>
         <result column="operator_code" property="operatorCode" jdbcType="VARCHAR"/>
         <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="check_signature" property="checkSignature" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="outputAmount_colums">id,visit_id,visit_code,patient_id,data_time,output_type,output_name,
-                                dosage,dosage_units,speed,create_time,operator_code,status</sql>
+                                dosage,dosage_units,speed,create_time,operator_code,status,check_signature</sql>
 
     <sql id="outputAmount_propertys">#{id},#{visitId},#{visitCode},#{patientId},#{dataTime},#{outputType},#{outputName},
-                                    #{dosage},#{dosageUnits},#{speed},#{createTime},#{operatorCode},#{status}</sql>
+                                    #{dosage},#{dosageUnits},#{speed},#{createTime},#{operatorCode},#{status},#{checkSignature}</sql>
 
     <sql id="outputAmount_update">visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},data_time=#{dataTime},output_type=#{outputType},
-                              output_name=#{outputName},dosage=#{dosage},
-                              dosage_units=#{dosageUnits},speed=#{speed},create_time=#{createTime},operator_code=#{operatorCode},status=#{status}</sql>
+                              output_name=#{outputName},dosage=#{dosage},dosage_units=#{dosageUnits},speed=#{speed},
+                              create_time=#{createTime},operator_code=#{operatorCode},status=#{status},check_signature=#{checkSignature}</sql>
 
     <insert id="insert">
         insert into
@@ -182,12 +183,12 @@
             IFNULL(tu.user_name, "") AS name
         FROM
         table_output_amount toa
-        LEFT JOIN table_user tu ON tu.login_name = toa.operator_code
+        LEFT JOIN table_user tu ON tu.login_name = toa.check_signature
         LEFT JOIN sys_properties sp ON sp.sys_value = toa.output_type
         WHERE
           toa.status != - 1
         <if test="status != null ">
-            and status= #{status}
+            and toa.status= #{status}
         </if>
         <if test="patientId != null and patientId != ''">
             AND toa.patient_id = #{patientId}

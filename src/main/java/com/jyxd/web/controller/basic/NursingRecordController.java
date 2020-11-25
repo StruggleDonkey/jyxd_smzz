@@ -485,11 +485,16 @@ public class NursingRecordController {
         json.put("data",new ArrayList<>());
         json.put("msg","暂无数据");
         try {
-            List<Map<String,Object>> list=nursingRecordService.getListByCode(map);
-            if(list!=null && list.size()>0){
-                json.put("data",JSONArray.fromObject(list));
-                json.put("code",HttpCode.OK_CODE.getCode());
-                json.put("msg","查询成功");
+            if(map.containsKey("patientId") && StringUtils.isNotEmpty(map.get("patientId").toString())){
+                List<Map<String,Object>> list=nursingRecordService.getListByCode(map);
+                if(list!=null && list.size()>0){
+                    json.put("data",JSONArray.fromObject(list));
+                    json.put("code",HttpCode.OK_CODE.getCode());
+                    json.put("msg","查询成功");
+                }
+            }else{
+                json.put("code",HttpCode.NO_PATIENT_CODE.getCode());
+                json.put("msg","请先选择病人");
             }
         }catch (Exception e){
             logger.info("护理文书--护理单--护理记录--查询护理记录列表:"+e);

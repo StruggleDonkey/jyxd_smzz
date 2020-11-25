@@ -37,4 +37,13 @@ public class CommonDictionaryService {
     }
 
     public int queryNum(Map<String,Object> map){return commonDictionaryDao.queryNum(map);}
+
+    /**
+     * 根据名称获取type
+     * @param map
+     * @return
+     */
+    public String queryTypeByName(Map<String,Object> map){
+        return commonDictionaryDao.queryTypeByName(map);
+    }
 }

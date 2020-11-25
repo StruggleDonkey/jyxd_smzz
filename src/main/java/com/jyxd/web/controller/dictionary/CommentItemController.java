@@ -2,10 +2,12 @@ package com.jyxd.web.controller.dictionary;
 
 import com.jyxd.web.data.dictionary.CommenItemDictionary;
 import com.jyxd.web.service.dictionary.CommentItemService;
+import com.jyxd.web.service.dictionary.CommonDictionaryService;
 import com.jyxd.web.util.HttpCode;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,9 @@ public class CommentItemController {
 
     @Autowired
     private CommentItemService commentItemService;
+
+    @Autowired
+    private CommonDictionaryService commonDictionaryService;
 
     /**
      * 新增一条通用字典表数据
@@ -186,6 +191,31 @@ public class CommentItemController {
         if(list!=null && list.size()>0){
             json.put("data",JSONArray.fromObject(list));
             json.put("msg","查询成功");
+        }
+        json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
+    /**
+     * 根据名称获取code数组（适用于护理文书--护理单--获取出入量类型、护理文书--护理单模块内容）
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/getCodeListByName",method= RequestMethod.POST)
+    @ResponseBody
+    public String getCodeListByName(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("msg","暂无数据");
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        String type=commonDictionaryService.queryTypeByName(map);
+        if(StringUtils.isNotEmpty(type)){
+            map.put("type",type);
+            List<Map<String,Object>> list =commentItemService.getCodeListByType(map);
+            if(list!=null && list.size()>0){
+                json.put("data",JSONArray.fromObject(list));
+                json.put("msg","查询成功");
+            }
         }
         json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();

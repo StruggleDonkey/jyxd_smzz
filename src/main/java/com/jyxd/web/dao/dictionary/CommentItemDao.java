@@ -50,4 +50,11 @@ public interface CommentItemDao {
      * @return
      */
     int queryNum(Map<String, Object> map);
+
+    /**
+     * 根据type获取对象列表
+     * @param map
+     * @return
+     */
+     List<Map<String,Object>> getCodeListByType(Map<String,Object> map);
 }

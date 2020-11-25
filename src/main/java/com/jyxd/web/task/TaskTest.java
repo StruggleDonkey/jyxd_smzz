@@ -58,4 +58,17 @@ public class TaskTest {
         }
     }
 
+    /*public static void main(String[] args) {
+        String msg="A|告知患儿及家属跌倒坠床相关因素和预防措施B|床栏保护C|保护性约束D|挂警示标识E|保持地面干燥、通道通畅F|保持光线适宜";
+        JSONArray array=new JSONArray();
+
+            String[] biaozhun=msg.split("\\|");
+            for (int i = 0; i < biaozhun.length; i++) {
+                if(i>0){
+                    array.add(biaozhun[i-1].substring(biaozhun[i-1].length()-1,biaozhun[i-1].length()) +biaozhun[i].substring(0,biaozhun[i].length()-1));
+                }
+
+            }
+        System.out.println(array.toString());
+    }*/
 }

@@ -1,5 +1,6 @@
 package com.jyxd.web.data.basic;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -50,11 +51,48 @@ public class VitalSign implements Serializable {
     /**
      * 记录时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Column(name = "data_time")
     private Date dataTime;
 
     /**
-     * 项目code
+     *  项目code
+     *  （神志：consciousness
+     *  瞳孔大小左：pupilLeft
+     *  瞳孔大小右：pupilRight
+     *  瞳孔反射左：lightReflectionLeft
+     *  瞳孔反射右：lightReflectionRight
+     *  体温：temperature
+     *  心率：hr
+     *  脉搏：pulse
+     *  心律：heartRate
+     *  呼吸：br
+     *  有创血压：ibp
+     *  无创血压：bp
+     *  SpO₂：spo2
+     *  CVPcmH₂O：cvp
+     *  CVPmmHg：cvpmmHg
+     *  血糖：bloodSugar
+     *  人工气道方式：airWayStyle
+     *  气囊压力cmH₂O：airbagPressure
+     *  插管深度cm：rsDepth
+     *  机械通气-模式：rsModel
+     *  机械通气-氧浓度：rsOxygen
+     *  机械通气-潮气量：rsMoisture
+     *  机械通气-PC：pc
+     *  机械通气-频率：rsFrequency
+     *  机械通气-PS：ps
+     *  机械通气-PEEP：peep
+     *  机械通气-IPAP：ipap
+     *  机械通气-EPAP：epap
+     *  机械通气-BPM：bpm
+     *  机械通气-I/E：ie
+     *  呼吸音左：breathSoundLeft
+     *  呼吸音右：breathSoundRight
+     *  吸氧-方式：inhaleOxygenStyle
+     *  吸氧-L/分：inhaleOxygenConcentration
+     *  吸氧-氧浓度：inhaleOxygenConcentration2
+     *  签名：signature）
      */
     @Column(name = "code")
     private String code;

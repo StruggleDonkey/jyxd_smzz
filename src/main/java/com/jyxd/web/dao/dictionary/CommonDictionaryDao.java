@@ -50,4 +50,11 @@ public interface CommonDictionaryDao {
      * @return
      */
     int queryNum(Map<String, Object> map);
+
+    /**
+     * 根据名称获取type
+     * @param map
+     * @return
+     */
+     String queryTypeByName(Map<String,Object> map);
 }

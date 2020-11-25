@@ -39,4 +39,14 @@ public class CommentItemService {
     public int queryNum(Map<String,Object> map){
         return commentItemDao.queryNum(map);
     }
+
+    /**
+     * 根据type获取对象列表
+     * @param map
+     * @return
+     */
+    public List<Map<String,Object>> getCodeListByType(Map<String,Object> map){
+        return commentItemDao.getCodeListByType(map);
+    }
+
 }

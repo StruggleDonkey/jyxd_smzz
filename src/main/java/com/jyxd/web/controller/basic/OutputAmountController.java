@@ -202,26 +202,27 @@ public class OutputAmountController {
             if(map!=null && map.containsKey("id")){
                 OutputAmount outputAmount=outputAmountService.queryData(map.get("id").toString());
                 if(outputAmount!=null){
-                    if(StringUtils.isNotEmpty(map.get("dataTime").toString())){
+                    if(map.containsKey("dataTime") && StringUtils.isNotEmpty(map.get("dataTime").toString())){
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         outputAmount.setDataTime(sdf.parse(map.get("dataTime").toString()));
                     }
-                    if(StringUtils.isNotEmpty(map.get("outputName").toString())){
+                    if(map.containsKey("outputName") && StringUtils.isNotEmpty(map.get("outputName").toString())){
                         outputAmount.setOutputName(map.get("outputName").toString());
                     }
-                    if(StringUtils.isNotEmpty(map.get("dosage").toString())){
+                    if(map.containsKey("dosage") && StringUtils.isNotEmpty(map.get("dosage").toString())){
                         outputAmount.setDosage(map.get("dosage").toString());
                     }
-                    if(StringUtils.isNotEmpty(map.get("operatorCode").toString())){
-                        outputAmount.setOperatorCode(map.get("operatorCode").toString());
+                    if(map.containsKey("checkSignature") && StringUtils.isNotEmpty(map.get("checkSignature").toString())){
+                        outputAmount.setCheckSignature(map.get("checkSignature").toString());
+                        outputAmount.setCheckSignature(map.get("checkSignature").toString());
                     }
-                    if(StringUtils.isNotEmpty(map.get("dosageUnits").toString())){
+                    if(map.containsKey("dosageUnits") && StringUtils.isNotEmpty(map.get("dosageUnits").toString())){
                         outputAmount.setDosageUnits(map.get("dosageUnits").toString());
                     }
-                    if(StringUtils.isNotEmpty(map.get("outputType").toString())){
+                    if(map.containsKey("outputType") && StringUtils.isNotEmpty(map.get("outputType").toString())){
                         outputAmount.setOutputType(map.get("outputType").toString());
                     }
-                    if(StringUtils.isNotEmpty(map.get("speed").toString())){
+                    if(map.containsKey("speed") && StringUtils.isNotEmpty(map.get("speed").toString())){
                         outputAmount.setSpeed(map.get("speed").toString());
                     }
                     outputAmountService.update(outputAmount);
@@ -344,7 +345,7 @@ public class OutputAmountController {
      */
     @RequestMapping(value = "/add",method= RequestMethod.POST)
     @ResponseBody
-    public String add(@RequestBody(required=false) Map<String,Object> map){
+    public String add(@RequestBody(required=false) Map<String,Object> map,HttpSession session){
         JSONObject json=new JSONObject();
         json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
@@ -357,27 +358,31 @@ public class OutputAmountController {
             outputAmount.setVisitCode(map.get("visitCode").toString());
             outputAmount.setPatientId(map.get("patientId").toString());
             outputAmount.setStatus(1);
-            if(StringUtils.isNotEmpty(map.get("dataTime").toString())){
+            if(map.containsKey("dataTime") && StringUtils.isNotEmpty(map.get("dataTime").toString())){
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 outputAmount.setDataTime(sdf.parse(map.get("dataTime").toString()));
             }
-            if(StringUtils.isNotEmpty(map.get("outputName").toString())){
+            if(map.containsKey("outputName") && StringUtils.isNotEmpty(map.get("outputName").toString())){
                 outputAmount.setOutputName(map.get("outputName").toString());
             }
-            if(StringUtils.isNotEmpty(map.get("dosage").toString())){
+            if(map.containsKey("dosage") && StringUtils.isNotEmpty(map.get("dosage").toString())){
                 outputAmount.setDosage(map.get("dosage").toString());
             }
-            if(StringUtils.isNotEmpty(map.get("operatorCode").toString())){
-                outputAmount.setOperatorCode(map.get("operatorCode").toString());
+            if(map.containsKey("checkSignature") && StringUtils.isNotEmpty(map.get("checkSignature").toString())){
+                outputAmount.setCheckSignature(map.get("checkSignature").toString());
             }
-            if(StringUtils.isNotEmpty(map.get("dosageUnits").toString())){
+            if(map.containsKey("dosageUnits") && StringUtils.isNotEmpty(map.get("dosageUnits").toString())){
                 outputAmount.setDosageUnits(map.get("dosageUnits").toString());
             }
-            if(StringUtils.isNotEmpty(map.get("outputType").toString())){
+            if(map.containsKey("outputType") && StringUtils.isNotEmpty(map.get("outputType").toString())){
                 outputAmount.setOutputType(map.get("outputType").toString());
             }
-            if(StringUtils.isNotEmpty(map.get("speed").toString())){
+            if(map.containsKey("speed") && StringUtils.isNotEmpty(map.get("speed").toString())){
                 outputAmount.setSpeed(map.get("speed").toString());
+            }
+            User user=(User)session.getAttribute("user");
+            if(user!=null){
+                outputAmount.setOperatorCode(user.getLoginName());
             }
             outputAmountService.insert(outputAmount);
             json.put("code",HttpCode.OK_CODE.getCode());
@@ -401,11 +406,16 @@ public class OutputAmountController {
         json.put("data",new ArrayList<>());
         json.put("msg","暂无数据");
         try {
-            List<Map<String,Object>> list=outputAmountService.getPatientOutputList(map);
-            if(list!=null && list.size()>0){
-                json.put("data",JSONArray.fromObject(list));
-                json.put("code",HttpCode.OK_CODE.getCode());
-                json.put("msg","查询成功");
+            if(map.containsKey("patientId") && StringUtils.isNotEmpty(map.get("patientId").toString())){
+                List<Map<String,Object>> list=outputAmountService.getPatientOutputList(map);
+                if(list!=null && list.size()>0){
+                    json.put("data",JSONArray.fromObject(list));
+                    json.put("code",HttpCode.OK_CODE.getCode());
+                    json.put("msg","查询成功");
+                }
+            }else{
+                json.put("code",HttpCode.NO_PATIENT_CODE.getCode());
+                json.put("msg","请先选择病人");
             }
         }catch (Exception e){
             logger.info("护理文书--护理单--出量--查询病人出量列表:"+e);
