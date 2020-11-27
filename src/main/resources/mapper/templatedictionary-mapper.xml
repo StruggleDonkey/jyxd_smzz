@@ -4,16 +4,16 @@
 
     <resultMap id="templateDictionaryMap" type="com.jyxd.web.data.dictionary.TemplateDictionary">
         <result column="id" property="id" jdbcType="VARCHAR"/>
-        <result column="dic_template_name" property="dicTemplateName" jdbcType="VARCHAR"/>
+        <result column="dict_template_name" property="dicTemplateName" jdbcType="VARCHAR"/>
         <result column="status" property="status" jdbcType="INTEGER"/>
         <result column="sort_num" property="sortNum" jdbcType="INTEGER"/>
         <result column="operator_code" property="operatorCode" jdbcType="VARCHAR"/>
         <result column="create_time" property="createTime" jdbcType="DATE"/>
     </resultMap>
     
-    <sql id="templateDictionary_colums">id,dic_template_name,status,sort_num,operator_code,create_time</sql>
+    <sql id="templateDictionary_colums">id,dict_template_name,status,sort_num,operator_code,create_time</sql>
     <sql id="templateDictionary_propertys">#{id},#{dicTemplateName},#{status},#{sortNum},#{operatorCode},#{createTime}</sql>
-    <sql id="templateDictionary_update">dic_template_name=#{dicTemplateName},status=#{status},sort_num=#{sortNum},operator_code=#{operatorCode},create_time=#{createTime}</sql>
+    <sql id="templateDictionary_update">dict_template_name=#{dicTemplateName},status=#{status},sort_num=#{sortNum},operator_code=#{operatorCode},create_time=#{createTime}</sql>
 
     <insert id="insert">
         insert into

@@ -57,4 +57,18 @@ public interface CommentItemDao {
      * @return
      */
      List<Map<String,Object>> getCodeListByType(Map<String,Object> map);
+
+    /**
+     * 根据codes 获取多个名称（以逗号分隔）
+     * @param map
+     * @return
+     */
+     String getNamesByCodes(Map<String,Object> map);
+
+    /**
+     * 根据type 获取多个名称（以 空格分隔）
+     * @param map
+     * @return
+     */
+     String getNamesByType(Map<String,Object> map);
 }

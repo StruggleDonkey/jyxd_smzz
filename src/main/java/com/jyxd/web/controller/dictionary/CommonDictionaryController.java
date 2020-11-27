@@ -8,6 +8,7 @@ import com.jyxd.web.util.HttpCode;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -183,6 +184,29 @@ public class CommonDictionaryController {
         List<CommonDictionary> list =commonDictionaryService.queryList(map);
         if(list!=null && list.size()>0){
             json.put("data",JSONArray.fromObject(list));
+            json.put("msg","查询成功");
+        }
+        json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
+    /**
+     * 护理文书--护理单--根据名称获取提示信息（如生命体征下  获取神志、心律等提示信息）
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/getNameByName",method= RequestMethod.POST)
+    @ResponseBody
+    public String getNameByName(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        String type=commonDictionaryService.queryTypeByName(map);
+        if(StringUtils.isNotEmpty(type)){
+            map.put("type",type);
+            String msg=commentItemService.getNamesByType(map);
+            json.put("data",msg);
             json.put("msg","查询成功");
         }
         json.put("code",HttpCode.OK_CODE.getCode());

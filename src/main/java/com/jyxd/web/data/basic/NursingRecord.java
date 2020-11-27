@@ -56,8 +56,9 @@ public class NursingRecord implements Serializable {
     private Date dataTime;
 
     /**
-     * 项目code (重症评分为：score （通过护理文书--护理单--护理记录手动添加时也是score）)（快捷录入时   脉搏：maibo 心率：xinlv 体温：tiwen
-     *        呼吸：huxi 有创血压：youchuangxueya 无创血压：wuchuangxueya 血氧饱和度：xueyangbaohedu CVPcm：CVPcm CVPmm：CVPmm）
+     * 项目code (重症评分为：score )（快捷录入时   脉搏：maibo 心率：xinlv 体温：tiwen
+     *        呼吸：huxi 有创血压：youchuangxueya 无创血压：wuchuangxueya 血氧饱和度：xueyangbaohedu CVPcm：CVPcm CVPmm：CVPmm
+     *        （通过护理文书--护理单--护理记录手动添加时也是nursingRecordContent））
      */
     @Column(name = "code")
     private String code;

@@ -32,7 +32,7 @@ public class TemplateDictionary implements Serializable {
     /**
      * 模板类型名称
      */
-    @Column(name = "dic_template_name")
+    @Column(name = "dict_template_name")
     private String dicTemplateName;
 
     /**

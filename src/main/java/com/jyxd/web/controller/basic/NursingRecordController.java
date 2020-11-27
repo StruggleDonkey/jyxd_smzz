@@ -311,13 +311,13 @@ public class NursingRecordController {
             if(map!=null && map.containsKey("id") ){
                 NursingRecord nursingRecord=nursingRecordService.queryData(map.get("id").toString());
                 if(nursingRecord!=null){
-                    if(StringUtils.isNotEmpty(map.get("operatorCode").toString())){
+                    if(map.containsKey("operatorCode") && StringUtils.isNotEmpty(map.get("operatorCode").toString())){
                         nursingRecord.setOperatorCode(map.get("operatorCode").toString());
                     }
-                    if(StringUtils.isNotEmpty(map.get("content").toString())){
+                    if(map.containsKey("content") && StringUtils.isNotEmpty(map.get("content").toString())){
                         nursingRecord.setContent(map.get("content").toString());
                     }
-                    if(StringUtils.isNotEmpty(map.get("dateTime").toString())){
+                    if(map.containsKey("dateTime") && StringUtils.isNotEmpty(map.get("dateTime").toString())){
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         nursingRecord.setDataTime(sdf.parse(map.get("dataTime").toString()));
                     }
@@ -450,17 +450,17 @@ public class NursingRecordController {
             nursingRecord.setId(UUIDUtil.getUUID());
             nursingRecord.setCreateTime(new Date());
             nursingRecord.setStatus(1);
-            if(StringUtils.isNotEmpty(map.get("operatorCode").toString())){
+            if(map.containsKey("operatorCode") && StringUtils.isNotEmpty(map.get("operatorCode").toString())){
                 nursingRecord.setOperatorCode(map.get("operatorCode").toString());
             }
-            if(StringUtils.isNotEmpty(map.get("content").toString())){
+            if(map.containsKey("content") && StringUtils.isNotEmpty(map.get("content").toString())){
                 nursingRecord.setContent(map.get("content").toString());
             }
-            nursingRecord.setCode(map.get("code").toString());//固定为 score
+            nursingRecord.setCode(map.get("code").toString());//固定为 nursingRecordContent
             nursingRecord.setVisitId(map.get("visitId").toString());
             nursingRecord.setVisitCode(map.get("visitCode").toString());
             nursingRecord.setPatientId(map.get("patientId").toString());
-            if(StringUtils.isNotEmpty(map.get("dateTime").toString())){
+            if(map.containsKey("dataTime") && StringUtils.isNotEmpty(map.get("dataTime").toString())){
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 nursingRecord.setDataTime(sdf.parse(map.get("dataTime").toString()));
             }

@@ -147,4 +147,26 @@
         </if>
     </select>
 
+    <select id="getNamesByCodes" resultType="java.lang.String" parameterType="java.util.Map">
+        SELECT
+            GROUP_CONCAT(common_item_name ORDER BY common_item_code)
+        FROM
+            dict_common_item
+        WHERE
+        status !=-1
+        AND FIND_IN_SET(common_item_code,#{codes})
+        AND type = #{type}
+    </select>
+
+    <!-- 根据type 获取多个名称（以 空格分隔） -->
+    <select id="getNamesByType" resultType="java.lang.String" parameterType="java.util.Map">
+        SELECT
+        GROUP_CONCAT(concat(common_item_name,description) ORDER BY common_item_code separator ' ')
+        FROM
+            dict_common_item
+        WHERE
+           status !=-1
+        AND type = #{type}
+    </select>
+
 </mapper>

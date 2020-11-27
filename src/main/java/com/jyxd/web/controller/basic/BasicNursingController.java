@@ -1,11 +1,14 @@
 package com.jyxd.web.controller.basic;
 
 import com.jyxd.web.data.basic.BasicNursing;
+import com.jyxd.web.data.user.User;
 import com.jyxd.web.service.basic.BasicNursingService;
+import com.jyxd.web.service.dictionary.CommentItemService;
 import com.jyxd.web.util.HttpCode;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import javax.servlet.http.HttpSession;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "/basicNursing")
@@ -29,19 +30,26 @@ public class BasicNursingController {
     @Autowired
     private BasicNursingService basicNursingService;
 
+    @Autowired
+    private CommentItemService commentItemService;
+
     /**
      * 增加一条基础护理表记录
      * @return
      */
     @RequestMapping(value = "/insert")
     @ResponseBody
-    public String insert(@RequestBody BasicNursing basicNursing){
+    public String insert(@RequestBody BasicNursing basicNursing, HttpSession session){
         JSONObject json=new JSONObject();
         json.put("code", HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         json.put("msg","添加失败");
         basicNursing.setId(UUIDUtil.getUUID());
         basicNursing.setCreateTime(new Date());
+        User user =(User)session.getAttribute("user");
+        if(user!=null){
+            basicNursing.setOperatorCode(user.getLoginName());
+        }
         basicNursingService.insert(basicNursing);
         json.put("code",HttpCode.OK_CODE.getCode());
         json.put("msg","添加成功");
@@ -199,5 +207,112 @@ public class BasicNursingController {
         return json.toString();
     }
 
+    /**
+     * 护理文书--护理单--基础护理--保存基础护理数据
+     * @return
+     */
+    @RequestMapping(value = "/saveData")
+    @ResponseBody
+    public String saveData(@RequestBody BasicNursing basicNursing, HttpSession session){
+        JSONObject json=new JSONObject();
+        json.put("code", HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","添加失败");
+        Map<String,Object> map=new HashMap<>();
+        map.put("status",1);
+        map.put("patientId",basicNursing.getPatientId());
+        map.put("dataTime",basicNursing.getDataTime());
+        map.put("code",basicNursing.getCode());
+        //先根据病人id 时间 code  查询基础护理对象
+        BasicNursing data=basicNursingService.getDataByPatientIdAndCodeAndTime(map);
+        User user =(User)session.getAttribute("user");
+        if(data!=null){
+            //对象存在则编辑 不存在则新增
+            data.setContent(basicNursing.getContent());
+            if(user!=null){
+                data.setOperatorCode(user.getLoginName());
+            }
+            basicNursingService.update(data);
+        }else{
+            basicNursing.setId(UUIDUtil.getUUID());
+            basicNursing.setCreateTime(new Date());
+            if(user!=null){
+                basicNursing.setOperatorCode(user.getLoginName());
+            }
+            basicNursingService.insert(basicNursing);
+        }
+        json.put("code",HttpCode.OK_CODE.getCode());
+        json.put("msg","添加成功");
+        return json.toString();
+    }
+
+    /**
+     * 护理文书--护理单--基础护理--删除整行
+     * @return
+     */
+    @RequestMapping(value = "/deleteData")
+    @ResponseBody
+    public String deleteData(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code", HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","删除失败");
+        List<BasicNursing> list=basicNursingService.queryListByPatientIdAndTime(map);
+        if(list!=null && list.size()>0){
+            for (int i = 0; i < list.size(); i++) {
+                BasicNursing basicNursing=list.get(i);
+                basicNursing.setStatus(-1);
+                basicNursingService.update(basicNursing);
+            }
+            json.put("code",HttpCode.OK_CODE.getCode());
+            json.put("msg","删除成功");
+        }
+        return json.toString();
+    }
+
+    /**
+     * 护理文书--护理单--基础护理--根据病人id查询基础护理列表
+     * @return
+     */
+    @RequestMapping(value = "/getListByPatientId")
+    @ResponseBody
+    public String getListByPatientId(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code", HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","删除失败");
+        List<Map<String,Object>> list=basicNursingService.getListByPatientId(map);
+        if(list!=null && list.size()>0){
+            String msg="";
+            for (int i = 0; i < list.size(); i++) {
+                Map<String,Object> map1=list.get(i);
+                //护理-气压治疗：airPressureTreatment
+                if(StringUtils.isNotEmpty(map.get("airPressureTreatment").toString())){
+                    map.put("codes",map.get("airPressureTreatment").toString());
+                    map.put("type","air_pressure_treatment");
+                    msg=commentItemService.getNamesByCodes(map);
+                    map1.put("airPressureTreatment",msg);
+                }
+                //护理-皮肤护理：skinNursing
+                if(StringUtils.isNotEmpty(map.get("skinNursing").toString())){
+                    map.put("codes",map.get("skinNursing").toString());
+                    map.put("type","skin_nursing");
+                    msg=commentItemService.getNamesByCodes(map);
+                    map1.put("skinNursing",msg);
+                }
+                //护理-基础护理：basicNursing
+                if(StringUtils.isNotEmpty(map.get("basicNursing").toString())){
+                    map.put("codes",map.get("basicNursing").toString());
+                    map.put("type","basic_nursing");
+                    msg=commentItemService.getNamesByCodes(map);
+                    map1.put("basicNursing",msg);
+                }
+            }
+            json.put("data",JSONArray.fromObject(list));
+            json.put("code",HttpCode.OK_CODE.getCode());
+            json.put("msg","删除成功");
+        }
+        return json.toString();
+    }
 
 }

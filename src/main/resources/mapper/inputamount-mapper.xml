@@ -19,17 +19,22 @@
         <result column="create_time" property="createTime" jdbcType="DATE"/>
         <result column="operator_code" property="operatorCode" jdbcType="VARCHAR"/>
         <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="use_mode" property="useMode" jdbcType="VARCHAR"/>
+        <result column="check_signature" property="checkSignature" jdbcType="VARCHAR"/>
     </resultMap>
     
     <sql id="inputAmount_colums">id,visit_id,visit_code,patient_id,data_time,order_type,order_code,order_no,order_sub_no,order_name,
-                                dosage,dosage_units,speed,create_time,operator_code,status</sql>
+                                dosage,dosage_units,speed,create_time,operator_code,status,remark,use_mode,check_signature</sql>
 
     <sql id="inputAmount_propertys">#{id},#{visitId},#{visitCode},#{patientId},#{dataTime},#{orderType},#{orderCode},#{orderNo},#{orderSubNo},
-                                  #{orderName},#{dosage},#{dosageUnits},#{speed},#{createTime},#{operatorCode},#{status}</sql>
+                                  #{orderName},#{dosage},#{dosageUnits},#{speed},#{createTime},#{operatorCode},#{status},
+                                  #{remark},#{useMode},#{checkSignature} </sql>
 
     <sql id="inputAmount_update">visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},data_time=#{dataTime},order_type=#{orderType},
                               order_code=#{orderCode},orderNo=#{orderNo},order_sub_no=#{orderSubNo},order_name=#{orderName},dosage=#{dosage},
-                              dosage_units=#{dosageUnits},speed=#{speed},create_time=#{createTime},operator_code=#{operatorCode},status=#{status}</sql>
+                              dosage_units=#{dosageUnits},speed=#{speed},create_time=#{createTime},operator_code=#{operatorCode},status=#{status},
+                              remark=#{remark},use_mode=#{useMode},check_signature=#{checkSignature}</sql>
 
     <insert id="insert">
         insert into
@@ -65,6 +70,9 @@
         <if test="content != null and content != ''">
             and  content like '%${content}%'
         </if>
+        <if test="patientId != null and patientId != ''">
+            and  patient_id = #{patientId}
+        </if>
         <if test="status != null ">
             and  status= #{status}
         </if>
@@ -82,6 +90,9 @@
         and  status != -1
         <if test="content != null and content != ''">
             and  content like '%${content}%'
+        </if>
+        <if test="patientId != null and patientId != ''">
+            and  patient_id = #{patientId}
         </if>
         <if test="status != null ">
             and  status= #{status}
@@ -112,6 +123,36 @@
             '%Y%m%d %H%i'
             )
         </if>
+    </select>
+
+    <select id="getListByPatientId" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            IFNULL(tia.id,"") AS id,
+            IFNULL(tia.patient_id,"") AS patient_id,
+            IFNULL(date_format(tia.data_time,'%Y-%m-%d'),"") AS date,
+            IFNULL(date_format(tia.data_time,'%H:%i'),"") AS time,
+            IFNULL(dci.common_item_name,"") AS type_name,
+            IFNULL(tia.order_code,"") AS order_code,
+            IFNULL(tia.order_no,"") AS order_no,
+            IFNULL(tia.order_sub_no,"") AS order_sub_no,
+            IFNULL(tia.order_name,"") AS order_name,
+            IFNULL(tia.dosage,"") AS dosage,
+            IFNULL(tia.dosage_units,"") AS dosage_units,
+            IFNULL(tia.speed,"") AS speed,
+            IFNULL(tua.user_name,"") AS user_name,
+            IFNULL(tia.remark,"") AS remark,
+            IFNULL(dcia.common_item_name,"") AS type_name,
+            IFNULL(tub.user_name,"") AS check_user_name
+        FROM
+            table_input_amount tia
+        LEFT JOIN dict_common_item dci ON dci.common_item_code = tia.order_type AND dci.type='intake'
+        LEFT JOIN table_user tua ON tua.login_name = tia.operator_code
+        LEFT JOIN dict_common_item dcia ON dcia.common_item_code = tia.use_mode AND dcia.type='use_mode'
+        LEFT JOIN table_user tub ON tub.login_name = tia.check_signature
+        WHERE 1=1
+        AND tia.status != -1
+        AND tia.patient_id=#{patietId}
+        AND tia.status=#{status}
     </select>
 
 </mapper>

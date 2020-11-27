@@ -219,11 +219,11 @@ public class TemplateItemDictionaryController {
         json.put("data",new ArrayList<>());
         if(map!=null && map.containsKey("status")){
             List<Map<String,Object>> list=templateItemDictionaryService.getTemplateNameAndAmount(map);
-            int amount=0;
+            long amount=0;
             if(list!=null && list.size()>0){
                 for (int i = 0; i < list.size(); i++) {
                     Map<String,Object> listMap=list.get(i);
-                    amount+=(int)listMap.get("amount");
+                    amount+=(long)listMap.get("amount");
                 }
                 Map<String,Object> map1=new HashMap<>();
                 map1.put("id","");

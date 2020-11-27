@@ -196,6 +196,7 @@
             1 = 1
         AND tvs.status !=- 1
         AND tvs.patient_id=#{patientId}
+        AND date_format(tvs.data_time, '%Y-%m-%d')=#{dataTime}
         GROUP BY tvs.data_time
     </select>
 

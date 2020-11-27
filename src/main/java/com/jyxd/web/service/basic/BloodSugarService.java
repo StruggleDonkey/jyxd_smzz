@@ -42,4 +42,31 @@ public class BloodSugarService {
     public List<Map<String,Object>> getListByTime(Map<String,Object> map){
         return bloodSugarDao.getListByTime(map);
     }
+
+    /**
+     * 根据病人id code 时间 查询血糖对象
+     * @param map
+     * @return
+     */
+    public BloodSugar queryDataByCodeAndPatientId(Map<String,Object> map){
+        return bloodSugarDao.queryDataByCodeAndPatientId(map);
+    }
+
+    /**
+     * 根据时间和病人id查询血糖列表
+     * @param map
+     * @return
+     */
+    public List<BloodSugar> queryListByTimeAndPatientId(Map<String,Object> map){
+        return bloodSugarDao.queryListByTimeAndPatientId(map);
+    }
+
+    /**
+     * 护理文书--血糖监测--根据病人id 和 时间查询血糖列表
+     * @param map
+     * @return
+     */
+    public List<Map<String,Object>> getList(Map<String,Object> map){
+        return bloodSugarDao.getList(map);
+    }
 }

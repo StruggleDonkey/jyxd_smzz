@@ -85,7 +85,7 @@
           dti.sort_num,
           dti.operator_code,
           dti.create_time,
-          dt.dic_template_name
+          dt.dict_template_name
         from
         dict_template_item dti
         left join dict_template dt on dti.template_id=dt.id

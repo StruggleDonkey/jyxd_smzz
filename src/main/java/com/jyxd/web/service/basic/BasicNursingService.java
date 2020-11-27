@@ -42,4 +42,32 @@ public class BasicNursingService {
     public List<Map<String,Object>> getNursingList(Map<String,Object> map){
         return basicNursingDao.getNursingList(map);
     }
+
+    /**
+     * 根据病人id 时间 code  查询基础护理对象
+     * @param map
+     * @return
+     */
+    public BasicNursing getDataByPatientIdAndCodeAndTime(Map<String,Object> map){
+        return basicNursingDao.getDataByPatientIdAndCodeAndTime(map);
+    }
+
+    /**
+     * 根据病人id 时间  查询基础护理对象列表
+     * @param map
+     * @return
+     */
+    public List<BasicNursing> queryListByPatientIdAndTime(Map<String,Object> map){
+        return basicNursingDao.queryListByPatientIdAndTime(map);
+    }
+
+    /**
+     * 护理文书--护理单--基础护理--根据病人id查询基础护理列表
+     * @param map
+     * @return
+     */
+    public List<Map<String,Object>> getListByPatientId(Map<String,Object> map){
+        return basicNursingDao.getListByPatientId(map);
+    }
+
 }

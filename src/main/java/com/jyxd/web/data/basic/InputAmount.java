@@ -1,5 +1,6 @@
 package com.jyxd.web.data.basic;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -51,6 +52,7 @@ public class InputAmount implements Serializable {
      * 记录时间
      */
     @Column(name = "data_time")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date dataTime;
 
     /**
@@ -118,5 +120,23 @@ public class InputAmount implements Serializable {
      */
     @Column(name = "status")
     private int status;
+
+    /**
+     * 医嘱嘱托
+     */
+    @Column(name = "remark")
+    private String remark;
+
+    /**
+     * 给药途径
+     */
+    @Column(name = "use_mode")
+    private String useMode;
+
+    /**
+     * 核对人签名
+     */
+    @Column(name = "check_signature")
+    private String checkSignature;
 
 }

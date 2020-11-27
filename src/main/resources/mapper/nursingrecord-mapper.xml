@@ -190,10 +190,13 @@
         WHERE
           tnr.status !=-1
         <if test="status != null ">
-            and  status= #{status}
+            and  tnr.status= #{status}
         </if>
         <if test="code != null and code != ''">
-            AND code=#{code}
+            AND tnr.code=#{code}
+        </if>
+        <if test="patientId != null and patientId != ''">
+            AND tnr.patient_id=#{patientId}
         </if>
     </select>
 

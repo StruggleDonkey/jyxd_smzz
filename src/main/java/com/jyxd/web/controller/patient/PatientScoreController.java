@@ -317,7 +317,7 @@ public class PatientScoreController {
         json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         json.put("msg","暂无数据");
-        List<PatientScore> list =patientScoreService.queryList(map);
+        List<PatientScore> list =patientScoreService.queryDataByScoreAndType(map);
         if(list!=null && list.size()>0){
             JSONArray array=new JSONArray();//时间
             JSONArray jsonArray=new JSONArray();//分数
@@ -336,6 +336,7 @@ public class PatientScoreController {
             obj.put("data",jsonArray);
             dataArray.add(obj);
             json.put("array",dataArray);
+            json.put("number",list.size());
             json.put("msg","查询成功");
         }
         json.put("code",HttpCode.OK_CODE.getCode());

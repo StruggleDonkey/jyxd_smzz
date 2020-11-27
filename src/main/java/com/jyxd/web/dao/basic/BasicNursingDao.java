@@ -50,4 +50,25 @@ public interface BasicNursingDao {
      * @return
      */
     List<Map<String, Object>> getNursingList(Map<String, Object> map);
+
+    /**
+     * 根据病人id 时间 code  查询基础护理对象
+     * @param map
+     * @return
+     */
+     BasicNursing getDataByPatientIdAndCodeAndTime(Map<String,Object> map);
+
+    /**
+     * 根据病人id 时间  查询基础护理对象列表
+     * @param map
+     * @return
+     */
+     List<BasicNursing> queryListByPatientIdAndTime(Map<String,Object> map);
+
+    /**
+     * 护理文书--护理单--基础护理--根据病人id查询基础护理列表
+     * @param map
+     * @return
+     */
+     List<Map<String,Object>> getListByPatientId(Map<String,Object> map);
 }

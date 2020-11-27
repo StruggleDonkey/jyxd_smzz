@@ -109,4 +109,77 @@
         AND pp.flag = 1
     </select>
 
+    <select id="queryDataByCodeAndPatientId" resultMap="bloodSugarMap" parameterType="java.util.Map">
+        select
+        <include refid="bloodSugar_colums"></include>
+        from
+        table_blood_sugar
+        where
+        1=1
+        and status !=-1
+        <if test="dataTime != null and dataTime != ''">
+            and date_format(
+            data_time,
+            '%Y%m%d %H%i'
+            ) = date_format(
+            #{dataTime},
+            '%Y%m%d %H%i'
+            )
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="code != null and code != ''">
+            and  code = #{code}
+        </if>
+        <if test="patientId != null and patientId != ''">
+            and  patient_id = #{patientId}
+        </if>
+    </select>
+
+    <select id="queryListByTimeAndPatientId" resultMap="bloodSugarMap" parameterType="java.util.Map">
+        select
+        <include refid="bloodSugar_colums"></include>
+        from
+        table_blood_sugar
+        where
+        1=1
+        and  status != -1
+        <if test="patientId != null and patientId != ''">
+            and  patient_id =#{patientId}
+        </if>
+        <if test="dataTime != null and dataTime != ''">
+            and date_format(
+            data_time,
+            '%Y%m%d %H%i'
+            ) = date_format(
+            #{dataTime},
+            '%Y%m%d %H%i'
+            )
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
+
+    <select id="getList" resultType="java.util.Map" parameterType="java.util.Map">
+       SELECT
+            IFNULL(tbs.patient_id,"") AS patient_id,
+            date_format(tbs.data_time, '%Y-%m-%d') AS date,
+            date_format(tbs.data_time, '%H:%i') AS time,
+            IFNULL(max(CASE WHEN tbs.code='bloodSugarType' THEN dcia.common_item_name END),"")  AS bloodSugarType,
+            IFNULL(max(CASE WHEN tbs.code='dosage' THEN tbs.content END),"") AS dosage,
+            IFNULL(max(CASE WHEN tbs.code='signature' THEN tu.user_name END),"") AS signature
+        FROM
+            table_blood_sugar tbs LEFT JOIN dict_common_item dcia ON dcia.common_item_code=tbs.content AND dcia.type='blood_sugar_type'
+        LEFT JOIN table_user tu ON tu.login_name=tbs.content
+        WHERE
+            1 = 1
+        AND tbs.status !=-1
+        AND tbs.status !=#{status}
+        AND tbs.patient_id=#{patientId}
+        AND date_format(tbs.data_time, '%Y-%m-%d')=#{dataTime}
+        GROUP BY tbs.data_time
+    </select>
+
 </mapper>

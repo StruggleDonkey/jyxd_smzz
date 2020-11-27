@@ -6,6 +6,7 @@ import com.jyxd.web.util.HttpCode;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -173,6 +174,59 @@ public class InputAmountController {
             json.put("data",JSONArray.fromObject(list));
         }
         json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
+    /**
+     * 护理文书--护理单--入量--保存一条入量记录
+     * @param inputAmount
+     * @return
+     */
+    @RequestMapping(value = "/saveData",method= RequestMethod.POST)
+    @ResponseBody
+    public String saveData(@RequestBody InputAmount inputAmount){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        //有id 则编辑  无id 则新增
+        if(inputAmount!=null && StringUtils.isNotEmpty(inputAmount.getId())){
+            inputAmount.setCreateTime(new Date());
+            inputAmountService.update(inputAmount);
+            json.put("msg","编辑成功");
+        }else{
+            inputAmount.setCreateTime(new Date());
+            inputAmountService.insert(inputAmount);
+            json.put("msg","新增成功");
+        }
+        json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
+    /**
+     * 护理文书--护理单--入量--根据病人id查询入量列表
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/getListByPatientId",method= RequestMethod.POST)
+    @ResponseBody
+    public String getListByPatientId(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        if(map!=null && map.containsKey("patientId")){
+            List<Map<String,Object>> list=inputAmountService.getListByPatientId(map);
+            if(list!=null && list.size()>0){
+                json.put("data",JSONArray.fromObject(list));
+                json.put("code",HttpCode.OK_CODE.getCode());
+                json.put("mag","查询成功");
+            }
+        }else{
+            json.put("code",HttpCode.NO_PATIENT_CODE.getCode());
+            json.put("mag","请先选择病人");
+        }
+
         return json.toString();
     }
 

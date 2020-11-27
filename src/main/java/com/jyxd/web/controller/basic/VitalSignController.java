@@ -303,4 +303,51 @@ public class VitalSignController {
         return json.toString();
     }
 
+    /**
+     * 保存一条生命体征表记录
+     * @return
+     */
+    @RequestMapping(value = "/saveData")
+    @ResponseBody
+    public String saveData(@RequestBody VitalSign vitalSign, HttpSession session){
+        JSONObject json=new JSONObject();
+        json.put("code", HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","添加失败");
+        try {
+            if(StringUtils.isNotEmpty(vitalSign.getPatientId())){
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Map<String,Object> map=new HashMap<>();
+                map.put("status",1);
+                map.put("dataTime",format.format(vitalSign.getDataTime()));
+                map.put("code",vitalSign.getCode());
+                map.put("patientId",vitalSign.getPatientId());
+
+                //首先根据时间和code 和 病人主键id查询对象 是否已经有数据 如果有则编辑
+                VitalSign data=vitalSignService.queryDataByTimeAndCode(map);
+                if(data!=null){
+                    data.setContent(vitalSign.getContent());
+                    data.setUpdateTime(new Date());
+                    vitalSignService.update(data);
+                    json.put("code",HttpCode.OK_CODE.getCode());
+                    json.put("msg","添加成功");
+                }else{
+                    vitalSign.setId(UUIDUtil.getUUID());
+                    vitalSign.setCreateTime(new Date());
+                    vitalSign.setUpdateTime(new Date());
+                    vitalSign.setStatus(1);
+                    vitalSignService.insert(vitalSign);
+                    json.put("code",HttpCode.OK_CODE.getCode());
+                    json.put("msg","添加成功");
+                }
+            }else{
+                json.put("code",HttpCode.NO_PATIENT_CODE.getCode());
+                json.put("msg","请先选择病人");
+            }
+        }catch (Exception e){
+            logger.info(":"+e);
+        }
+        return json.toString();
+    }
+
 }

@@ -22,10 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpSession;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "/bloodSugar")
@@ -259,6 +256,101 @@ public class BloodSugarController {
             json.put("data",array);
             json.put("code",HttpCode.OK_CODE.getCode());
             json.put("msg","查询成功");
+        }
+        return json.toString();
+    }
+
+    /**
+     * 护理文书--血糖监测--保存一条数据
+     * @param bloodSugar
+     * @return
+     */
+    @RequestMapping(value = "/saveData",method= RequestMethod.POST)
+    @ResponseBody
+    public String saveData(@RequestBody(required=false) BloodSugar bloodSugar,HttpSession session){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Map<String,Object> map=new HashMap<String,Object>();
+            map.put("status",1);
+            map.put("patientId",bloodSugar.getPatientId());
+            map.put("code",bloodSugar.getCode());
+            map.put("dateTime",format.format(bloodSugar.getDataTime()));
+            BloodSugar data=bloodSugarService.queryDataByCodeAndPatientId(map);
+            if(StringUtils.isNotEmpty(bloodSugar.getPatientId())){
+                if(data!=null){
+                    //不等于空则编辑
+                    data.setContent(bloodSugar.getContent());
+                    bloodSugarService.update(data);
+                }else{
+                    //等于空则新增
+                    bloodSugar.setId(UUIDUtil.getUUID());
+                    bloodSugar.setCreateTime(new Date());
+                    User user=(User)session.getAttribute("user");
+                    if(user!=null){
+                        bloodSugar.setOperatorCode(user.getLoginName());
+                    }
+                    bloodSugarService.insert(bloodSugar);
+                }
+                json.put("code",HttpCode.OK_CODE.getCode());
+                json.put("msg","查询成功");
+            }else{
+                json.put("code",HttpCode.NO_PATIENT_CODE.getCode());
+                json.put("msg","请先选择病人");
+            }
+        }catch (Exception e){
+            logger.info(":"+e);
+        }
+        return json.toString();
+    }
+
+    /**
+     * 护理文书--血糖监测--删除整行
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/deleteData")
+    @ResponseBody
+    public String deleteData(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("msg","删除失败");
+            List<BloodSugar> list=bloodSugarService.queryListByTimeAndPatientId(map);
+            if(list!=null && list.size()>0){
+                for (int i = 0; i < list.size(); i++) {
+                    list.get(i).setStatus(-1);
+                    bloodSugarService.update(list.get(i));
+                }
+                json.put("code",HttpCode.OK_CODE.getCode());
+                json.put("msg","删除成功");
+            }
+        return json.toString();
+    }
+
+    /**
+     * 护理文书--血糖监测--根据病人id 和 时间查询血糖列表
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/getList")
+    @ResponseBody
+    public String getList(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("msg","删除失败");
+        if(map!=null && map.containsKey("patientId")){
+            List<Map<String,Object>> list=bloodSugarService.getList(map);
+            if(list!=null && list.size()>0){
+                json.put("data",JSONArray.fromObject(list));
+                json.put("code",HttpCode.OK_CODE.getCode());
+                json.put("msg","删除成功");
+            }
+        }else{
+            json.put("code",HttpCode.NO_PATIENT_CODE.getCode());
+            json.put("msg","请先选择病人");
         }
         return json.toString();
     }

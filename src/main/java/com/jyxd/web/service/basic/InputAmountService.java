@@ -42,4 +42,13 @@ public class InputAmountService {
     public InputAmount queryDataByTime(Map<String,Object> map){
         return inputAmountDao.queryDataByTime(map);
     }
+
+    /**
+     * 护理文书--护理单--入量--根据病人id查询入量列表
+     * @param map
+     * @return
+     */
+    public List<Map<String,Object>> getListByPatientId(Map<String,Object> map){
+        return inputAmountDao.getListByPatientId(map);
+    }
 }

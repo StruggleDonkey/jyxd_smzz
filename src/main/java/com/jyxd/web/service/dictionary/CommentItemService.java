@@ -49,4 +49,21 @@ public class CommentItemService {
         return commentItemDao.getCodeListByType(map);
     }
 
+    /**
+     * 根据codes 获取多个名称（以逗号分隔）
+     * @param map
+     * @return
+     */
+    public String getNamesByCodes(Map<String,Object> map){
+        return commentItemDao.getNamesByCodes(map);
+    }
+
+    /**
+     * 根据type 获取多个名称（以 空格分隔）
+     * @param map
+     * @return
+     */
+    public String getNamesByType(Map<String,Object> map){
+        return commentItemDao.getNamesByType(map);
+    }
 }

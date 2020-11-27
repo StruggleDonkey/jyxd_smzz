@@ -1,5 +1,6 @@
 package com.jyxd.web.data.basic;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -51,10 +52,15 @@ public class BloodSugar implements Serializable {
      * 记录时间
      */
     @Column(name = "data_time")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date dataTime;
 
     /**
-     * 项目code
+     * 项目code（
+     * dosage 血糖
+     * signature 签名
+     * bloodSugarType 类型
+     * ）
      */
     @Column(name = "code")
     private String code;
