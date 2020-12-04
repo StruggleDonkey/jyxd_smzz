@@ -195,6 +195,7 @@ public class InputAmountController {
             inputAmountService.update(inputAmount);
             json.put("msg","编辑成功");
         }else{
+            inputAmount.setId(UUIDUtil.getUUID());
             inputAmount.setCreateTime(new Date());
             inputAmountService.insert(inputAmount);
             json.put("msg","新增成功");
@@ -220,13 +221,12 @@ public class InputAmountController {
             if(list!=null && list.size()>0){
                 json.put("data",JSONArray.fromObject(list));
                 json.put("code",HttpCode.OK_CODE.getCode());
-                json.put("mag","查询成功");
+                json.put("msg","查询成功");
             }
         }else{
             json.put("code",HttpCode.NO_PATIENT_CODE.getCode());
-            json.put("mag","请先选择病人");
+            json.put("msg","请先选择病人");
         }
-
         return json.toString();
     }
 

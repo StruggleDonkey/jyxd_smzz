@@ -322,7 +322,6 @@ public class VitalSignController {
                 map.put("dataTime",format.format(vitalSign.getDataTime()));
                 map.put("code",vitalSign.getCode());
                 map.put("patientId",vitalSign.getPatientId());
-
                 //首先根据时间和code 和 病人主键id查询对象 是否已经有数据 如果有则编辑
                 VitalSign data=vitalSignService.queryDataByTimeAndCode(map);
                 if(data!=null){

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyxd.web.dao.basic.BloodPurifyDao">
+
+    <resultMap id="bloodPurifyMap" type="com.jyxd.web.data.basic.BloodPurify">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="visit_id" property="visitId" jdbcType="VARCHAR"/>
+        <result column="visit_code" property="visitCode" jdbcType="VARCHAR"/>
+        <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
+        <result column="maintenance_id" property="maintenanceId" jdbcType="VARCHAR"/>
+        <result column="data_time" property="dataTime" />
+        <result column="code" property="code" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" />
+        <result column="operator_code" property="operatorCode" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+    </resultMap>
+    
+    <sql id="bloodPurify_colums">id,visit_id,visit_code,patient_id,maintenance_id,
+                                        data_time,code,content,create_time,operator_code,status</sql>
+
+    <sql id="bloodPurify_propertys">#{id},#{visitId},#{visitCode},#{patientId},#{maintenanceId},
+                                  #{dataTime},#{code},#{content},#{createTime},#{operatorCode},#{status}</sql>
+
+    <sql id="bloodPurify_update">visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},
+                                      maintenance_id=#{maintenanceId},
+                                      data_time=#{dataTime},code=#{code},content=#{content},create_time=#{createTime},
+                                      operator_code=#{operatorCode},status=#{status}</sql>
+
+    <insert id="insert">
+        insert into
+        table_blood_purify(<include refid="bloodPurify_colums"></include>)
+        values (<include refid="bloodPurify_propertys"></include>)
+    </insert>
+
+    <update id="update" parameterType="com.jyxd.web.data.basic.BloodPurifyRecord" >
+        update
+        table_blood_purify
+        set <include refid="bloodPurify_update"></include>
+        where
+          id=#{id}
+    </update>
+
+    <select id="queryData" resultMap="bloodPurifyMap" parameterType="java.lang.String">
+        select
+          <include refid="bloodPurify_colums"></include>
+        from
+        table_blood_purify
+        where
+          id=#{id}
+    </select>
+
+    <select id="queryList" resultType="java.util.Map">
+        select
+          <include refid="bloodPurify_colums"></include>
+        from
+        table_blood_purify
+        where
+          1=1
+        and  status != -1
+        <if test="content != null and content != ''">
+            and  content like '%${content}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+          count(id)
+        from
+        table_blood_purify
+        where
+        1=1
+        and  status != -1
+        <if test="content != null and content != ''">
+            and  content like '%${content}%'
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
+
+    <select id="getList" resultType="java.util.Map">
+        SELECT
+        IFNULL(max(CASE WHEN code='beginTime' THEN content END),"")  AS beginTime,
+        IFNULL(max(CASE WHEN code='endTime' THEN content END),"")  AS endTime,
+        maintenance_id
+        from
+          t_maintenance_blood_purify_info
+        WHERE 1=1
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        GROUP BY maintenance_id
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="getNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        SELECT
+        count(maintenance_id)
+        from
+        t_maintenance_blood_purify_info
+        WHERE 1=1
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        GROUP BY maintenance_id
+    </select>
+
+    <select id="queryListByMaintenanceId" resultMap="bloodPurifyMap" parameterType="java.lang.String">
+        select
+        <include refid="bloodPurify_colums"></include>
+        from
+        table_blood_purify
+        where
+        1=1
+        and  status != -1
+        <if test="maintenanceId != null and maintenanceId != ''">
+            and  maintenance_id =#{maintenanceId}
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
+
+    <select id="getDataByMaintenanceId" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        visit_id,
+        visit_code,
+        patient_id,
+        maintenance_id,
+        IFNULL(max(CASE WHEN code='beginTime' THEN content END),"")  AS beginTime,
+        IFNULL(max(CASE WHEN code='endTime' THEN content END),"")  AS endTime,
+        IFNULL(max(CASE WHEN code='punctureLeft' THEN content END),"")  AS punctureLeft,
+        IFNULL(max(CASE WHEN code='punctureRight' THEN content END),"")  AS punctureRight,
+        IFNULL(max(CASE WHEN code='thighVein' THEN content END),"")  AS thighVein,
+        IFNULL(max(CASE WHEN code='neckVein' THEN content END),"")  AS neckVein,
+        IFNULL(max(CASE WHEN code='clavicleVein' THEN content END),"")  AS clavicleVein,
+        IFNULL(max(CASE WHEN code='innerVein' THEN content END),"")  AS innerVein,
+        IFNULL(max(CASE WHEN code='duration' THEN content END),"")  AS duration,
+        IFNULL(max(CASE WHEN code='preWashLiquid' THEN content END),"")  AS preWashLiquid,
+        IFNULL(max(CASE WHEN code='heparin' THEN content END),"")  AS heparin,
+        IFNULL(max(CASE WHEN code='lowMolecularHeparin' THEN content END),"")  AS lowMolecularHeparin,
+        IFNULL(max(CASE WHEN code='agatroban' THEN content END),"")  AS agatroban,
+        IFNULL(max(CASE WHEN code='citrate' THEN content END),"")  AS citrate,
+        IFNULL(max(CASE WHEN code='sealLiquid' THEN content END),"")  AS sealLiquid,
+        IFNULL(max(CASE WHEN code='sealTime' THEN content END),"")  AS sealTime,
+        IFNULL(max(CASE WHEN code='cvvh' THEN content END),"")  AS cvvh,
+        IFNULL(max(CASE WHEN code='cvvhd' THEN content END),"")  AS cvvhd,
+        IFNULL(max(CASE WHEN code='cvvhdf' THEN content END),"")  AS cvvhdf,
+        IFNULL(max(CASE WHEN code='pe' THEN content END),"")  AS pe,
+        IFNULL(max(CASE WHEN code='hp' THEN content END),"")  AS hp,
+        IFNULL(max(CASE WHEN code='beginTreater' THEN content END),"")  AS beginTreater,
+        IFNULL(max(CASE WHEN code='checker' THEN content END),"")  AS checker,
+        IFNULL(max(CASE WHEN code='endTreater' THEN content END),"")  AS endTreater,
+        IFNULL(max(CASE WHEN code='doctorSignature' THEN content END),"")  AS doctorSignature,
+        IFNULL(max(CASE WHEN code='dataTime' THEN content END),"")  AS dataTime
+        from
+        t_maintenance_blood_purify_info
+        WHERE 1=1
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="maintenanceId != null and maintenanceId != ''">
+            and  maintenance_id =#{maintenanceId}
+        </if>
+        GROUP BY maintenance_id
+    </select>
+
+</mapper>

@@ -271,14 +271,14 @@ public class BloodSugarController {
         JSONObject json=new JSONObject();
         json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
-        json.put("msg","暂无数据");
+        json.put("msg","失败");
         try {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Map<String,Object> map=new HashMap<String,Object>();
             map.put("status",1);
             map.put("patientId",bloodSugar.getPatientId());
             map.put("code",bloodSugar.getCode());
-            map.put("dateTime",format.format(bloodSugar.getDataTime()));
+            map.put("dataTime",format.format(bloodSugar.getDataTime()));
             BloodSugar data=bloodSugarService.queryDataByCodeAndPatientId(map);
             if(StringUtils.isNotEmpty(bloodSugar.getPatientId())){
                 if(data!=null){
@@ -296,7 +296,7 @@ public class BloodSugarController {
                     bloodSugarService.insert(bloodSugar);
                 }
                 json.put("code",HttpCode.OK_CODE.getCode());
-                json.put("msg","查询成功");
+                json.put("msg","成功");
             }else{
                 json.put("code",HttpCode.NO_PATIENT_CODE.getCode());
                 json.put("msg","请先选择病人");
@@ -340,13 +340,13 @@ public class BloodSugarController {
     public String getList(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
         json.put("code",HttpCode.FAILURE_CODE.getCode());
-        json.put("msg","删除失败");
+        json.put("msg","暂无数据");
         if(map!=null && map.containsKey("patientId")){
             List<Map<String,Object>> list=bloodSugarService.getList(map);
             if(list!=null && list.size()>0){
                 json.put("data",JSONArray.fromObject(list));
                 json.put("code",HttpCode.OK_CODE.getCode());
-                json.put("msg","删除成功");
+                json.put("msg","查询成功");
             }
         }else{
             json.put("code",HttpCode.NO_PATIENT_CODE.getCode());

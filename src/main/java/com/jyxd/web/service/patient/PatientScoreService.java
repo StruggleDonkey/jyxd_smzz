@@ -79,4 +79,12 @@ public class PatientScoreService {
         return patientScoreDao.getListByPatientIdAndType(map);
     }
 
+    /**
+     * 重症评分-评分管理-根据病人id 评分类型 查询病人评分及风险等级列表（也可以不分页）
+     * @param map
+     * @return
+     */
+    public List<Map<String,Object>> getPatientScoreAndLevel(Map<String,Object> map){
+        return patientScoreDao.getPatientScoreAndLevel(map);
+    }
 }

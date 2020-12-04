@@ -68,6 +68,12 @@
         <if test="name != null and name != ''">
             and  name like '%${name}%'
         </if>
+        <if test="patientId != null and patientId != ''">
+            and  patient_id =#{patientId}
+        </if>
+        <if test="type != null and type != ''">
+            and type=#{type}
+        </if>
         <if test="status != null ">
             and  status= #{status}
         </if>
@@ -85,6 +91,12 @@
         and  status != -1
         <if test="name != null and name != ''">
             and  name like '%${name}%'
+        </if>
+        <if test="patientId != null and patientId != ''">
+            and  patient_id =#{patientId}
+        </if>
+        <if test="type != null and type != ''">
+            and type=#{type}
         </if>
         <if test="status != null ">
             and  status= #{status}
@@ -195,6 +207,50 @@
         WHERE
             pps.patient_id = #{patientId}
         AND pps.type = #{type}
+    </select>
+
+    <!-- 重症评分-评分管理-根据病人id 评分类型 查询病人评分及风险等级列表-->
+    <select id="getPatientScoreAndLevel" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        IFNULL(pps.id,"") AS id,
+        IFNULL(pps.visit_id,"") AS visit_id,
+        IFNULL(pps.visit_code,"") AS visit_code,
+        IFNULL(pps.patient_id,"") AS patient_id,
+        IFNULL(pps.type,"") AS type,
+        IFNULL(pps.score_time,"") AS score_time,
+        IFNULL(pps.score,"") AS score,
+        IFNULL(pps.score_knowledge_id,"") AS score_knowledge_id,
+        IFNULL(pps.create_time,"") AS create_time,
+        IFNULL(pps.report_time,"") AS report_time,
+        pps.status,
+        IFNULL(ts.user_name,"") AS user_name,
+        IFNULL(pps.assessment_time,"") AS assessment_time,
+        IFNULL(pps.nursing_step,"") AS nursing_step,
+        IFNULL(pps.other_step,"") AS other_step,
+        IFNULL(pps.signature,"") AS signature,
+        IFNULL(pps.mortality_rate,"") AS mortality_rate,
+        IFNULL(pps.extend_column,"") AS extend_column,
+        IFNULL(dsk.level,"") AS level
+        FROM
+        p_patient_score pps
+        LEFT JOIN dict_score_knowledge dsk ON pps.score BETWEEN IFNULL(score_knowledge_min,0) AND dsk.status = 1
+        <if test="type != null and type != ''">
+            AND dsk.type=#{type}
+        </if>
+        LEFT JOIN table_user ts ON ts.login_name=pps.operator_code
+        WHERE 1=1
+        AND pps.status !=-1
+        <if test="patientId != null and patientId != ''">
+            AND  pps.patient_id =#{patientId}
+        </if>
+        <if test="type != null and type != ''">
+            AND pps.type=#{type}
+        </if>
+        <if test="status != null ">
+            AND  pps.status= #{status}
+        </if>
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
     </select>
 
 </mapper>

@@ -7,10 +7,10 @@
         <result column="visit_id" property="visitId" jdbcType="VARCHAR"/>
         <result column="visit_code" property="visitCode" jdbcType="VARCHAR"/>
         <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
-        <result column="data_time" property="dataTime" jdbcType="DATE"/>
+        <result column="data_time" property="dataTime" />
         <result column="code" property="code" jdbcType="VARCHAR"/>
         <result column="content" property="content" jdbcType="VARCHAR"/>
-        <result column="create_time" property="createTime" jdbcType="DATE"/>
+        <result column="create_time" property="createTime" />
         <result column="operator_code" property="operatorCode" jdbcType="VARCHAR"/>
         <result column="status" property="status" jdbcType="INTEGER"/>
         <result column="update_time" property="updateTime" jdbcType="DATE"/>

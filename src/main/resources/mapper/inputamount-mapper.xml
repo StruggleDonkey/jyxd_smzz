@@ -32,7 +32,7 @@
                                   #{remark},#{useMode},#{checkSignature} </sql>
 
     <sql id="inputAmount_update">visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},data_time=#{dataTime},order_type=#{orderType},
-                              order_code=#{orderCode},orderNo=#{orderNo},order_sub_no=#{orderSubNo},order_name=#{orderName},dosage=#{dosage},
+                              order_code=#{orderCode},order_no=#{orderNo},order_sub_no=#{orderSubNo},order_name=#{orderName},dosage=#{dosage},
                               dosage_units=#{dosageUnits},speed=#{speed},create_time=#{createTime},operator_code=#{operatorCode},status=#{status},
                               remark=#{remark},use_mode=#{useMode},check_signature=#{checkSignature}</sql>
 
@@ -141,7 +141,7 @@
             IFNULL(tia.speed,"") AS speed,
             IFNULL(tua.user_name,"") AS user_name,
             IFNULL(tia.remark,"") AS remark,
-            IFNULL(dcia.common_item_name,"") AS type_name,
+            IFNULL(dcia.common_item_name,"") AS use_mode,
             IFNULL(tub.user_name,"") AS check_user_name
         FROM
             table_input_amount tia
@@ -151,7 +151,7 @@
         LEFT JOIN table_user tub ON tub.login_name = tia.check_signature
         WHERE 1=1
         AND tia.status != -1
-        AND tia.patient_id=#{patietId}
+        AND tia.patient_id=#{patientId}
         AND tia.status=#{status}
     </select>
 

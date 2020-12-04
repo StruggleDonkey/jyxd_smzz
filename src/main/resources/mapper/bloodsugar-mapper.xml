@@ -7,10 +7,10 @@
         <result column="visit_id" property="visitId" jdbcType="VARCHAR"/>
         <result column="visit_code" property="visitCode" jdbcType="VARCHAR"/>
         <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
-        <result column="data_time" property="dataTime" jdbcType="DATE"/>
+        <result column="data_time" property="dataTime" />
         <result column="code" property="code" jdbcType="VARCHAR"/>
         <result column="content" property="content" jdbcType="VARCHAR"/>
-        <result column="create_time" property="createTime" jdbcType="DATE"/>
+        <result column="create_time" property="createTime" />
         <result column="operator_code" property="operatorCode" jdbcType="VARCHAR"/>
         <result column="status" property="status" jdbcType="INTEGER"/>
     </resultMap>
@@ -129,7 +129,7 @@
         <if test="status != null ">
             and  status= #{status}
         </if>
-        <if test="code != null and code != ''">
+        <if test="code != null and code != '' and code != null">
             and  code = #{code}
         </if>
         <if test="patientId != null and patientId != ''">
@@ -176,7 +176,7 @@
         WHERE
             1 = 1
         AND tbs.status !=-1
-        AND tbs.status !=#{status}
+        AND tbs.status =#{status}
         AND tbs.patient_id=#{patientId}
         AND date_format(tbs.data_time, '%Y-%m-%d')=#{dataTime}
         GROUP BY tbs.data_time

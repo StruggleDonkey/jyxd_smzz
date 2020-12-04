@@ -78,4 +78,11 @@ public interface PatientScoreDao {
      * @return
      */
      List<Map<String,Object>>  getListByPatientIdAndType(Map<String,Object> map);
+
+    /**
+     * 重症评分-评分管理-根据病人id 评分类型 查询病人评分及风险等级列表（也可以不分页）
+     * @param map
+     * @return
+     */
+     List<Map<String,Object>> getPatientScoreAndLevel(Map<String,Object> map);
 }
