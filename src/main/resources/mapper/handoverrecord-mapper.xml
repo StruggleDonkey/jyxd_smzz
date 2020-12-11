@@ -4,6 +4,7 @@
 
     <resultMap id="handoverRecordMap" type="com.jyxd.web.data.basic.HandoverRecord">
         <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="handover_id" property="handoverId" jdbcType="VARCHAR"/>
         <result column="visit_id" property="visitId" jdbcType="VARCHAR"/>
         <result column="visit_code" property="visitCode" jdbcType="VARCHAR"/>
         <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
@@ -18,13 +19,13 @@
         <result column="status" property="status" jdbcType="INTEGER"/>
     </resultMap>
     
-    <sql id="handoverRecord_colums">id,visit_id,visit_code,patient_id,group_no,row_no,sub_row_no,sub_row_code,
+    <sql id="handoverRecord_colums">id,handover_id,visit_id,visit_code,patient_id,group_no,row_no,sub_row_no,sub_row_code,
                                     code,content,create_time,operator_code,status</sql>
 
-    <sql id="handoverRecord_propertys">#{id},#{visitId},#{visitCode},#{patientId},#{groupNo},#{rowNo},#{subRowNo},#{subRowCode},
+    <sql id="handoverRecord_propertys">#{id},#{handoverId},#{visitId},#{visitCode},#{patientId},#{groupNo},#{rowNo},#{subRowNo},#{subRowCode},
                                   #{code},#{content},#{createTime},#{operatorCode},#{status}</sql>
 
-    <sql id="handoverRecord_update">visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},group_no=#{groupNo},
+    <sql id="handoverRecord_update">handover_id=#{handoverId},visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},group_no=#{groupNo},
                               row_no=#{rowNo},sub_row_no=#{subRowNo},sub_row_code=#{subRowCode},code=#{code},content=#{content},
                               create_time=#{createTime},operator_code=#{operatorCode},status=#{status}</sql>
 

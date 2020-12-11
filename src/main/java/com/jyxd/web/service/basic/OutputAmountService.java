@@ -2,6 +2,7 @@ package com.jyxd.web.service.basic;
 
 import com.jyxd.web.dao.basic.OutputAmountDao;
 import com.jyxd.web.data.basic.OutputAmount;
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,5 +60,19 @@ public class OutputAmountService {
      */
     public List<Map<String,Object>> getPatientOutputList(Map<String,Object> map){
         return outputAmountDao.getPatientOutputList(map);
+    }
+
+    /**
+     * 根据病人id查询病人在某个时间段的出量汇总信息
+     * @param map
+     * @return
+     */
+    public JSONObject getOutAmount(Map<String,Object> map){
+        JSONObject jsonObject=new JSONObject();
+        Map<String,Object> outMap=outputAmountDao.getOutAmount(map);
+        if(outMap!=null){
+            jsonObject=JSONObject.fromObject(outMap);
+        }
+        return jsonObject;
     }
 }

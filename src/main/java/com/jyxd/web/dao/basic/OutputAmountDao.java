@@ -65,4 +65,11 @@ public interface OutputAmountDao {
      */
      List<Map<String,Object>> getPatientOutputList(Map<String,Object> map);
 
+    /**
+     * 根据病人id查询病人在某个时间段的出量汇总信息
+     * @param map
+     * @return
+     */
+    Map<String,Object> getOutAmount(Map<String,Object> map);
+
 }

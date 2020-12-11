@@ -2,6 +2,7 @@ package com.jyxd.web.service.basic;
 
 import com.jyxd.web.dao.basic.VitalSignDao;
 import com.jyxd.web.data.basic.VitalSign;
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,4 +60,47 @@ public class VitalSignService {
     public List<Map<String,Object>> getList(Map<String,Object> map){
         return vitalSignDao.getList(map);
     }
+
+    /**
+     * 根据病人id获取某个时间段生命体征最大值
+     * @param map
+     * @return
+     */
+    public JSONObject getMaxVitalSign(Map<String,Object> map){
+        JSONObject jsonObject=new JSONObject();
+        Map<String,Object> maxMap=vitalSignDao.getMaxVitalSign(map);
+        if(maxMap!=null){
+            jsonObject=JSONObject.fromObject(maxMap);
+        }
+        return jsonObject;
+    }
+
+    /**
+     * 根据病人id获取某个时间段生命体征最小值
+     * @param map
+     * @return
+     */
+    public JSONObject getMinVitalSign(Map<String,Object> map){
+        JSONObject jsonObject=new JSONObject();
+        Map<String,Object> maxMap=vitalSignDao.getMinVitalSign(map);
+        if(maxMap!=null){
+            jsonObject=JSONObject.fromObject(maxMap);
+        }
+        return jsonObject;
+    }
+
+    /**
+     * 根据病人id获取某个时间生命体征值
+     * @param map
+     * @return
+     */
+    public JSONObject getNowVitalSign(Map<String,Object> map){
+        JSONObject jsonObject=new JSONObject();
+        Map<String,Object> maxMap=vitalSignDao.getNowVitalSign(map);
+        if(maxMap!=null){
+            jsonObject=JSONObject.fromObject(maxMap);
+        }
+        return jsonObject;
+    }
+
 }

@@ -7,10 +7,10 @@
         <result column="visit_id" property="visitId" jdbcType="VARCHAR"/>
         <result column="visit_code" property="visitCode" jdbcType="VARCHAR"/>
         <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
-        <result column="data_time" property="dataTime" jdbcType="DATE"/>
+        <result column="data_time" property="dataTime" />
         <result column="code" property="code" jdbcType="VARCHAR"/>
         <result column="content" property="content" jdbcType="VARCHAR"/>
-        <result column="create_time" property="createTime" jdbcType="DATE"/>
+        <result column="create_time" property="createTime" />
         <result column="operator_code" property="operatorCode" jdbcType="VARCHAR"/>
         <result column="status" property="status" jdbcType="INTEGER"/>
     </resultMap>
@@ -44,16 +44,16 @@
         from
         table_basic_nursing
         where
-          id=#{id}
+        id=#{id}
     </select>
 
     <select id="queryList" resultType="java.util.Map">
         select
-          <include refid="basicNursing_colums"></include>
+        <include refid="basicNursing_colums"></include>
         from
         table_basic_nursing
         where
-          1=1
+        1=1
         and  status != -1
         <if test="content != null and content != ''">
             and  content like '%${content}%'

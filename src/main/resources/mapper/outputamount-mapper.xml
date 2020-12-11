@@ -194,4 +194,69 @@
             AND toa.patient_id = #{patientId}
         </if>
     </select>
+
+    <!-- 根据病人id查询病人在某个时间段的出量汇总信息 -->
+    <select id="getOutAmount" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        IFNULL(sum(dosage),0)  AS 'total',
+        IFNULL(sum(CASE WHEN output_type='001' THEN dosage END),0)  AS '001',
+        IFNULL(sum(CASE WHEN output_type='002' THEN dosage END),0)  AS '002',
+        IFNULL(sum(CASE WHEN output_type='003' THEN dosage END),0)  AS '003',
+        IFNULL(sum(CASE WHEN output_type='004' THEN dosage END),0)  AS '004',
+        IFNULL(sum(CASE WHEN output_type='005' THEN dosage END),0)  AS '005',
+        IFNULL(sum(CASE WHEN output_type='006' THEN dosage END),0)  AS '006',
+        IFNULL(sum(CASE WHEN output_type='007' THEN dosage END),0)  AS '007',
+        IFNULL(sum(CASE WHEN output_type='008' THEN dosage END),0)  AS '008',
+        IFNULL(sum(CASE WHEN output_type='009' THEN dosage END),0)  AS '009',
+        IFNULL(sum(CASE WHEN output_type='010' THEN dosage END),0)  AS '010',
+        IFNULL(sum(CASE WHEN output_type='011' THEN dosage END),0)  AS '011',
+        IFNULL(sum(CASE WHEN output_type='012' THEN dosage END),0)  AS '012',
+        IFNULL(sum(CASE WHEN output_type='013' THEN dosage END),0)  AS '013',
+        IFNULL(sum(CASE WHEN output_type='014' THEN dosage END),0)  AS '014',
+        IFNULL(sum(CASE WHEN output_type='015' THEN dosage END),0)  AS '015',
+        IFNULL(sum(CASE WHEN output_type='016' THEN dosage END),0)  AS '016',
+        IFNULL(sum(CASE WHEN output_type='017' THEN dosage END),0)  AS '017',
+        IFNULL(sum(CASE WHEN output_type='018' THEN dosage END),0)  AS '018',
+        IFNULL(sum(CASE WHEN output_type='019' THEN dosage END),0)  AS '019',
+        IFNULL(sum(CASE WHEN output_type='020' THEN dosage END),0)  AS '020',
+        IFNULL(sum(CASE WHEN output_type='021' THEN dosage END),0)  AS '021',
+        IFNULL(sum(CASE WHEN output_type='022' THEN dosage END),0)  AS '022',
+        IFNULL(sum(CASE WHEN output_type='023' THEN dosage END),0)  AS '023',
+        IFNULL(sum(CASE WHEN output_type='024' THEN dosage END),0)  AS '024',
+        IFNULL(sum(CASE WHEN output_type='025' THEN dosage END),0)  AS '025',
+        IFNULL(sum(CASE WHEN output_type='026' THEN dosage END),0)  AS '026',
+        IFNULL(sum(CASE WHEN output_type='027' THEN dosage END),0)  AS '027',
+        IFNULL(sum(CASE WHEN output_type='028' THEN dosage END),0)  AS '028',
+        IFNULL(sum(CASE WHEN output_type='029' THEN dosage END),0)  AS '029',
+        IFNULL(sum(CASE WHEN output_type='030' THEN dosage END),0)  AS '030',
+        IFNULL(sum(CASE WHEN output_type='031' THEN dosage END),0)  AS '031',
+        IFNULL(sum(CASE WHEN output_type='032' THEN dosage END),0)  AS '032',
+        IFNULL(sum(CASE WHEN output_type='033' THEN dosage END),0)  AS '033',
+        IFNULL(sum(CASE WHEN output_type='034' THEN dosage END),0)  AS '034',
+        IFNULL(sum(CASE WHEN output_type='035' THEN dosage END),0)  AS '035',
+        IFNULL(sum(CASE WHEN output_type='036' THEN dosage END),0)  AS '036',
+        IFNULL(sum(CASE WHEN output_type='037' THEN dosage END),0)  AS '037',
+        IFNULL(sum(CASE WHEN output_type='038' THEN dosage END),0)  AS '038',
+        IFNULL(sum(CASE WHEN output_type='039' THEN dosage END),0)  AS '039',
+        IFNULL(sum(CASE WHEN output_type='040' THEN dosage END),0)  AS '040',
+        IFNULL(sum(CASE WHEN output_type='041' THEN dosage END),0)  AS '041',
+        IFNULL(sum(CASE WHEN output_type='042' THEN dosage END),0)  AS '042',
+        IFNULL(sum(CASE WHEN output_type='043' THEN dosage END),0)  AS '043',
+        IFNULL(sum(CASE WHEN output_type='044' THEN dosage END),0)  AS '044',
+        IFNULL(sum(CASE WHEN output_type='045' THEN dosage END),0)  AS '045',
+        IFNULL(sum(CASE WHEN output_type='046' THEN dosage END),0)  AS '046',
+        IFNULL(sum(CASE WHEN output_type='047' THEN dosage END),0)  AS '047',
+        IFNULL(sum(CASE WHEN output_type='048' THEN dosage END),0)  AS '048',
+        IFNULL(sum(CASE WHEN output_type='049' THEN dosage END),0)  AS '049',
+        IFNULL(sum(CASE WHEN output_type='050' THEN dosage END),0)  AS '050',
+        IFNULL(sum(CASE WHEN output_type='051' THEN dosage END),0)  AS '051'
+        FROM
+        table_output_amount
+        WHERE
+        1 = 1
+        AND status != - 1
+        AND status= #{status}
+        AND patient_id = #{patientId}
+        AND date_format(data_time, '%Y-%m-%d %H:%i') BETWEEN #{startTime} AND #{endTime}
+    </select>
 </mapper>

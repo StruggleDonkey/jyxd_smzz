@@ -30,6 +30,12 @@ public class SurgeryNursing implements Serializable {
     private String id;
 
     /**
+     * 维护主键
+     */
+    @Column(name = "maintenance_id")
+    private String maintenanceId;
+
+    /**
      * 住院号
      */
     @Column(name = "visit_id")
@@ -55,6 +61,36 @@ public class SurgeryNursing implements Serializable {
 
     /**
      * 项目code
+     * (记录时间：dataTime
+     * 入院日期：visitDate
+     * 术前诊断：diagnosis
+     * 手术日期：operationDate
+     * 手术名称：operationName
+     * 体温：temperature
+     * 脉搏：pulse
+     * 心率：hr
+     * 呼吸：br
+     * 血压：bp
+     * 术前宣教：presurgeryTeach
+     * 备皮-有：preparedSkin  值为 1
+     * 备皮-无：preparedSkin   值为 2
+     * 膀胱排空-是：bladderEmpty 值为 1
+     * 膀胱排空-否：bladderEmpty 值为 2
+     * 检查化验单齐全-是：inspectionAndAssaySheetCompleted  值为 1
+     * 检查化验单齐全-否：inspectionAndAssaySheetCompleted  值为 2
+     * 心理状态-正常：mentalStatus 值为 1
+     * 心理状态-紧张：mentalStatus  值为 2
+     * 心理状态-焦虑：mentalStatus  值为 3
+     * 静脉通道部位：venousAccessSite
+     * 抗生素皮试：antibioticSkinTest
+     * 患者离开病房时间：leaveTime
+     * 手术期-病房护士签名：leaveNurseSignature
+     * 手术后-患者返回病房时间：backTime
+     * 手术后-病房护士签名：backNurseSignature
+     * 手术后-止血带压迫时间-时长：repressionDuration
+     * 手术后-止血带压迫时间-开始时间：repressBeginTime
+     * 手术后-止血带压迫时间-结束时间：repressEndTime
+     * )
      */
     @Column(name = "code")
     private String code;

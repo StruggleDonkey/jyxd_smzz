@@ -13,6 +13,7 @@
         <result column="handover_begin_time" property="handoverBeginTime" jdbcType="DATE"/>
         <result column="handover_end_time" property="handoverEndTime" jdbcType="DATE"/>
         <result column="send_operator" property="sendOperator" jdbcType="VARCHAR"/>
+        <result column="receive_operator" property="receiveOperator" jdbcType="VARCHAR"/>
         <result column="send_description" property="sendDescription" jdbcType="VARCHAR"/>
         <result column="receive_description" property="receiveDescription" jdbcType="VARCHAR"/>
         <result column="status" property="status" jdbcType="INTEGER"/>
@@ -21,16 +22,16 @@
     </resultMap>
     
     <sql id="handover_colums">id,visit_id,visit_code,patient_id,info_date,shift,handover_time,handover_begin_time,handover_end_time,
-                              send_operator,send_description,receive_description,status,create_time,operator_code</sql>
+                              send_operator,receive_operator,send_description,receive_description,status,create_time,operator_code</sql>
 
     <sql id="handover_propertys">#{id},#{visitId},#{visitCode},#{patientId},#{infoDate},#{shift},#{handoverTime},#{handoverBeginTime},
-                                  #{handoverEndTime},#{sendOperator},#{sendDescription},#{receiveDescription},
+                                  #{handoverEndTime},#{sendOperator},#{receiveOperator},#{sendDescription},#{receiveDescription},
                                    #{status},#{createTime},#{operatorCode}</sql>
 
     <sql id="handover_update">visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},info_date=#{infoDate},shift=#{shift},
                               handover_time=#{handoverTime},handover_begin_time=#{handoverBeginTime},handover_end_time=#{handoverEndTime},
-                              send_operator=#{sendOperator},send_description=#{sendDescription},receive_description=#{receiveDescription},
-                              status=#{status},create_time=#{createTime},operator_code=#{operatorCode}</sql>
+                              send_operator=#{sendOperator},receive_operator=#{receiveOperator},send_description=#{sendDescription},
+                              receive_description=#{receiveDescription},status=#{status},create_time=#{createTime},operator_code=#{operatorCode}</sql>
 
     <insert id="insert">
         insert into

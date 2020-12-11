@@ -84,6 +84,12 @@ public class Handover implements Serializable {
     private String sendOperator;
 
     /**
+     * 接班人
+     */
+    @Column(name = "receive_operator")
+    private String receiveOperator;
+
+    /**
      * 交班备注
      */
     @Column(name = "send_description")

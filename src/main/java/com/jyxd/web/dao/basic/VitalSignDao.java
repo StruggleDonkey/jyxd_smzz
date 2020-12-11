@@ -63,4 +63,25 @@ public interface VitalSignDao {
      * @return
      */
      List<Map<String,Object>> getList(Map<String,Object> map);
+
+    /**
+     * 根据病人id获取某个时间段生命体征最大值
+     * @param map
+     * @return
+     */
+    Map<String,Object> getMaxVitalSign(Map<String,Object> map);
+
+    /**
+     * 根据病人id获取某个时间段生命体征最小值
+     * @param map
+     * @return
+     */
+    Map<String,Object> getMinVitalSign(Map<String,Object> map);
+
+    /**
+     * 根据病人id获取某个时间生命体征值
+     * @param map
+     * @return
+     */
+    Map<String,Object> getNowVitalSign(Map<String,Object> map);
 }

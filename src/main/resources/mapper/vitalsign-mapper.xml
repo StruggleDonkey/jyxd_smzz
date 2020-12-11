@@ -200,4 +200,64 @@
         GROUP BY tvs.data_time
     </select>
 
+    <!-- 根据病人id获取某个时间段生命体征最大值 -->
+    <select id="getMaxVitalSign" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            IFNULL(max(CASE WHEN code='temperature' THEN content END),"")  AS temperature,
+            IFNULL(max(CASE WHEN code='hr' THEN content END),"")  AS hr,
+            IFNULL(max(CASE WHEN code='SpO₂' THEN content END),"")  AS 'SpO₂',
+            IFNULL(max(CASE WHEN code='ibp' THEN content END),"")  AS ibp,
+            IFNULL(max(CASE WHEN code='bp' THEN content END),"")  AS bp,
+            IFNULL(max(CASE WHEN code='cvp' THEN content END),"")  AS cvp,
+            IFNULL(max(CASE WHEN code='cvpmmHg' THEN content END),"")  AS cvpmmHg
+        FROM
+            table_vital_sign
+        WHERE
+            1 = 1
+        AND status !=-1
+        AND status = #{status}
+        AND patient_id = #{patientId}
+        AND date_format(data_time, '%Y-%m-%d %H:%i') BETWEEN #{startTime} AND #{endTime}
+    </select>
+
+    <!-- 根据病人id获取某个时间段生命体征最小值 -->
+    <select id="getMinVitalSign" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            IFNULL(min(CASE WHEN code='temperature' THEN content END),"")  AS temperature,
+            IFNULL(min(CASE WHEN code='hr' THEN content END),"")  AS hr,
+            IFNULL(min(CASE WHEN code='SpO₂' THEN content END),"")  AS 'SpO₂',
+            IFNULL(min(CASE WHEN code='ibp' THEN content END),"")  AS ibp,
+            IFNULL(min(CASE WHEN code='bp' THEN content END),"")  AS bp,
+            IFNULL(min(CASE WHEN code='cvp' THEN content END),"")  AS cvp,
+            IFNULL(min(CASE WHEN code='cvpmmHg' THEN content END),"")  AS cvpmmHg
+        FROM
+            table_vital_sign
+        WHERE
+            1 = 1
+        AND status !=-1
+        AND status = #{status}
+        AND patient_id = #{patientId}
+        AND date_format(data_time, '%Y-%m-%d %H:%i') BETWEEN #{startTime} AND #{endTime}
+    </select>
+
+    <!-- 根据病人id获取某个时间生命体征值 -->
+    <select id="getNowVitalSign" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            IFNULL(min(CASE WHEN code='temperature' THEN content END),"")  AS temperature,
+            IFNULL(min(CASE WHEN code='hr' THEN content END),"")  AS hr,
+            IFNULL(min(CASE WHEN code='SpO₂' THEN content END),"")  AS 'SpO₂',
+            IFNULL(min(CASE WHEN code='ibp' THEN content END),"")  AS ibp,
+            IFNULL(min(CASE WHEN code='bp' THEN content END),"")  AS bp,
+            IFNULL(min(CASE WHEN code='cvp' THEN content END),"")  AS cvp,
+            IFNULL(min(CASE WHEN code='cvpmmHg' THEN content END),"")  AS cvpmmHg
+        FROM
+            table_vital_sign
+        WHERE
+            1 = 1
+        AND status !=-1
+        AND status = #{status}
+        AND patient_id = #{patientId}
+        AND date_format(data_time, '%Y-%m-%d %H:%i') = #{dataTime}
+    </select>
+
 </mapper>

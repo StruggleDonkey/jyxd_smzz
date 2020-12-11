@@ -33,4 +33,41 @@ public class SurgeryNursingMaintainService {
     }
 
     public int queryNum(Map<String,Object> map){return surgeryNursingMaintainDao.queryNum(map);}
+
+    /**
+     * 根据条件查询一条围手术期护理记录表记录
+     * @param map
+     * @return SurgeryNursingMaintain
+     */
+    public SurgeryNursingMaintain getData(Map<String, Object> map){
+        return surgeryNursingMaintainDao.getData(map);
+    }
+
+    /**
+     * 根据 maintenanceId 查询 maintenanceRecordId
+     * @param maintenanceId
+     * @return
+     */
+    public String getMaintenanceRecordId(String maintenanceId){
+        return surgeryNursingMaintainDao.getMaintenanceRecordId(maintenanceId);
+    }
+
+    /**
+     * 根据 病人主键id 查询 围手术期护理记录列表
+     * @param map
+     * @return
+     */
+    public List<Map<String, Object>> getList(Map<String, Object> map){
+        return surgeryNursingMaintainDao.getList(map);
+    }
+
+    /**
+     * 根据 maintenanceRecordId 查询 围手术期护理记录列表
+     * @param maintenanceRecordId
+     * @return
+     */
+    public List<SurgeryNursingMaintain> queryListByMaintenanceRecordId(String maintenanceRecordId){
+        return surgeryNursingMaintainDao.queryListByMaintenanceRecordId(maintenanceRecordId);
+    }
+
 }

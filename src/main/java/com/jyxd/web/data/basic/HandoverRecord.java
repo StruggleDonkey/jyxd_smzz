@@ -30,6 +30,12 @@ public class HandoverRecord implements Serializable {
     private String id;
 
     /**
+     * 交接班主键
+     */
+    @Column(name = "handover_id")
+    private String handoverId;
+
+    /**
      * 住院号
      */
     @Column(name = "visit_id")

@@ -8,12 +8,12 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 围手术期护理记录表
+ * 医嘱执行同步表
  */
 @Entity
-@Table(name = "table_surgery_nursing_maintain")
+@Table(name = "table_med_order_exec_sync")
 @Data
-public class SurgeryNursingMaintain implements Serializable {
+public class MedOrderExecSync implements Serializable {
 
     /**
      * 序列
@@ -28,18 +28,6 @@ public class SurgeryNursingMaintain implements Serializable {
     @GeneratedValue(generator="system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
     private String id;
-
-    /**
-     * 维护主键
-     */
-    @Column(name = "maintenance_id")
-    private String maintenanceId;
-
-    /**
-     * 维护记录主键
-     */
-    @Column(name = "maintenance_record_id")
-    private String maintenanceRecordId;
 
     /**
      * 住院号
@@ -60,33 +48,43 @@ public class SurgeryNursingMaintain implements Serializable {
     private String patientId;
 
     /**
+     * 医嘱主键
+     */
+    @Column(name = "order_no")
+    private String orderNo;
+
+    /**
+     * 计划执行时间
+     */
+    @Column(name = "default_time_point")
+    private Date defaultTimePoint;
+
+    /**
      * 记录时间
      */
     @Column(name = "data_time")
     private Date dataTime;
 
     /**
-     * 项目code
-     * (T(℃)：temperature
-     * HR次/分：hr
-     * R次/分：br
-     * BPmmHg：bp
-     * SpO₂%：spo2
-     * 穿刺点渗血：bleed
-     * 末梢循环：tipCirculation
-     * 静脉置管-名称：veinCatheterName
-     * 静脉置管-护理：veinCatheterNursing
-     * 特殊用药：specialMedication
-     * 病情观察及护理措施：nursingMeasure
-     * 签名：signature
-     * 记录时间: dataTime
-     * )
+     * 入量类型
      */
-    @Column(name = "code")
-    private String code;
+    @Column(name = "order_type")
+    private String orderType;
 
     /**
-     * 内容
+     * 给药途径
+     */
+    @Column(name = "use_mode")
+    private String useMode;
+
+    /**
+     * 责任护士编码
+     */
+    @Column(name = "nurse_code")
+    private String nurseCode;
+
+    /**
+     * 护理记录内容
      */
     @Column(name = "content")
     private String content;
@@ -103,10 +101,5 @@ public class SurgeryNursingMaintain implements Serializable {
     @Column(name = "operator_code")
     private String operatorCode;
 
-    /**
-     * 状态（0：禁用 1：正常 -1：删除）
-     */
-    @Column(name = "status")
-    private int status;
 
 }

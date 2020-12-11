@@ -4,24 +4,27 @@
 
     <resultMap id="surgeryNursingMaintainMap" type="com.jyxd.web.data.basic.SurgeryNursingMaintain">
         <result column="id" property="id" jdbcType="VARCHAR"/>
-        <result column="surgery_nursing_id" property="surgeryNursingId" jdbcType="VARCHAR"/>
+        <result column="maintenance_id" property="maintenanceId" jdbcType="VARCHAR"/>
+        <result column="maintenance_record_id" property="maintenanceRecordId" jdbcType="VARCHAR"/>
         <result column="visit_id" property="visitId" jdbcType="VARCHAR"/>
         <result column="visit_code" property="visitCode" jdbcType="VARCHAR"/>
         <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
-        <result column="data_time" property="dataTime" jdbcType="DATE"/>
+        <result column="data_time" property="dataTime" />
         <result column="code" property="code" jdbcType="VARCHAR"/>
         <result column="content" property="content" jdbcType="VARCHAR"/>
-        <result column="create_time" property="createTime" jdbcType="DATE"/>
+        <result column="create_time" property="createTime" />
         <result column="operator_code" property="operatorCode" jdbcType="VARCHAR"/>
         <result column="status" property="status" jdbcType="INTEGER"/>
     </resultMap>
     
-    <sql id="surgeryNursingMaintain_colums">id,visit_id,visit_code,patient_id,data_time,code,content,create_time,operator_code,status</sql>
+    <sql id="surgeryNursingMaintain_colums">id,maintenance_id,maintenance_record_idvisit_id,visit_code,patient_id,data_time,code,content,create_time,
+                                                operator_code,status</sql>
 
-    <sql id="surgeryNursingMaintain_propertys">#{id},#{visitId},#{visitCode},#{patientId},#{dataTime},#{code},
+    <sql id="surgeryNursingMaintain_propertys">#{id},#{maintenanceId},#{maintenanceRecordId},#{visitId},#{visitCode},#{patientId},#{dataTime},#{code},
                                   #{content},#{createTime},#{operatorCode},#{status}</sql>
 
-    <sql id="surgeryNursingMaintain_update">visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},
+    <sql id="surgeryNursingMaintain_update">maintenance_id=#{maintenanceId},maintenance_record_id=#{maintenanceRecordId},
+                              visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},
                               data_time=#{dataTime},code=#{code},content=#{content},create_time=#{createTime},
                               operator_code=#{operatorCode},status=#{status}</sql>
 
@@ -80,6 +83,85 @@
         <if test="status != null ">
             and  status= #{status}
         </if>
+    </select>
+
+    <select id="getData" resultMap="surgeryNursingMaintainMap" parameterType="java.util.Map">
+        select
+        <include refid="surgeryNursingMaintain_colums"></include>
+        from
+        table_surgery_nursing_maintain
+        where
+        1=1
+        and status != -1
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="patientId != null and patientId != ''">
+            and  patient_id =#{patientId}
+        </if>
+        <if test="maintenanceId != null and maintenanceId != ''">
+            and  maintenance_id =#{maintenanceId}
+        </if>
+        <if test="code != null and code != ''">
+            and  code =#{code}
+        </if>
+        <if test="dataTime != null and dataTime != ''">
+            and  data_time =#{dataTime}
+        </if>
+    </select>
+
+    <select id="getMaintenanceRecordId" resultType="java.lang.String" parameterType="java.lang.String">
+        select
+        max(maintenance_record_id)
+        from
+        table_surgery_nursing_maintain
+        where
+        maintenance_id =#{maintenanceId}
+    </select>
+
+    <select id="getList" resultType="java.util.Map" parameterType="java.util.Map">
+        select
+            IFNULL(tsnm.patient_id,"") AS patient_id,
+            IFNULL(tsnm.maintenance_id,"") AS maintenance_id,
+            IFNULL(tsnm.maintenance_record_id,"") AS maintenance_record_id,
+            date_format(tsnm.data_time, '%Y-%m-%d %H:%i') AS dataTime,
+            IFNULL(max(CASE WHEN tsnm.code='temperature' THEN tsnm.content END),"")  AS 'temperature',
+            IFNULL(max(CASE WHEN tsnm.code='hr' THEN tsnm.content END),"")  AS 'hr',
+            IFNULL(max(CASE WHEN tsnm.code='br' THEN tsnm.content END),"")  AS 'br',
+            IFNULL(max(CASE WHEN tsnm.code='bp' THEN tsnm.content END),"")  AS 'bp',
+            IFNULL(max(CASE WHEN tsnm.code='spo2' THEN tsnm.content END),"")  AS 'spo2',
+            IFNULL(max(CASE WHEN tsnm.code='bleed' THEN tsnm.content END),"")  AS 'bleed',
+            IFNULL(max(CASE WHEN tsnm.code='tipCirculation' THEN tsnm.content END),"")  AS 'tipCirculation',
+            IFNULL(max(CASE WHEN tsnm.code='veinCatheterName' THEN dci.common_item_name END),"")  AS 'veinCatheterName',
+            IFNULL(max(CASE WHEN tsnm.code='veinCatheterNursing' THEN tsnm.content END),"")  AS 'veinCatheterNursing',
+            IFNULL(max(CASE WHEN tsnm.code='specialMedication' THEN tsnm.content END),"")  AS 'specialMedication',
+            IFNULL(max(CASE WHEN tsnm.code='nursingMeasure' THEN tsnm.content END),"")  AS 'nursingMeasure',
+            IFNULL(max(CASE WHEN tsnm.code='signature' THEN ts.user_name END),"")  AS 'signature'
+        from
+        table_surgery_nursing_maintain tsnm left join dict_common_item dci ON dci.common_item_code=tsnm.content AND dci.type='vein_catheter'
+        left join table_user ts on ts.login_name=tsnm.content
+        where
+        1=1
+        and  tsnm.status != -1
+        <if test="patientId != null and patientId != ''">
+            and  tsnm.patient_id =#{patientId}
+        </if>
+        <if test="dataTime != null and dataTime != ''">
+            and  date_format(tsnm..data_time, '%Y-%m-%d %H:%i')=date_format(#{dataTime}, '%Y-%m-%d %H:%i')
+        </if>
+        <if test="status != null ">
+            and  tsnm.status= #{status}
+        </if>
+        group by tsnm.maintenance_record_id
+    </select>
+
+    <select id="queryListByMaintenanceRecordId" resultMap="surgeryNursingMaintainMap" parameterType="java.lang.String">
+        select
+        <include refid="surgeryNursingMaintain_colums"></include>
+        from
+        table_surgery_nursing_maintain
+        where
+        maintenance_record_id=#{maintenance_record_id}
     </select>
 
 </mapper>

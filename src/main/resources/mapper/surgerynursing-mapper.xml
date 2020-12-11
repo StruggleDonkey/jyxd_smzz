@@ -4,23 +4,24 @@
 
     <resultMap id="surgeryNursingMap" type="com.jyxd.web.data.basic.SurgeryNursing">
         <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="maintenance_id" property="maintenanceId" jdbcType="VARCHAR"/>
         <result column="visit_id" property="visitId" jdbcType="VARCHAR"/>
         <result column="visit_code" property="visitCode" jdbcType="VARCHAR"/>
         <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
-        <result column="data_time" property="dataTime" jdbcType="DATE"/>
+        <result column="data_time" property="dataTime" />
         <result column="code" property="code" jdbcType="VARCHAR"/>
         <result column="content" property="content" jdbcType="VARCHAR"/>
-        <result column="create_time" property="createTime" jdbcType="DATE"/>
+        <result column="create_time" property="createTime" />
         <result column="operator_code" property="operatorCode" jdbcType="VARCHAR"/>
         <result column="status" property="status" jdbcType="INTEGER"/>
     </resultMap>
     
-    <sql id="surgeryNursing_colums">id,visit_id,visit_code,patient_id,data_time,code,content,create_time,operator_code,status</sql>
+    <sql id="surgeryNursing_colums">id,maintenance_id,visit_id,visit_code,patient_id,data_time,code,content,create_time,operator_code,status</sql>
 
-    <sql id="surgeryNursing_propertys">#{id},#{visitId},#{visitCode},#{patientId},#{dataTime},#{code},
+    <sql id="surgeryNursing_propertys">#{id},#{maintenanceId},#{visitId},#{visitCode},#{patientId},#{dataTime},#{code},
                                   #{content},#{createTime},#{operatorCode},#{status}</sql>
 
-    <sql id="surgeryNursing_update">visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},
+    <sql id="surgeryNursing_update">maintenance_id=#{maintenanceId},visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},
                               data_time=#{dataTime},code=#{code},content=#{content},create_time=#{createTime},
                               operator_code=#{operatorCode},status=#{status}</sql>
 
@@ -79,6 +80,102 @@
         <if test="status != null ">
             and  status= #{status}
         </if>
+    </select>
+
+    <select id="getList" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        ts.user_name,
+        tnp.maintenance_id,
+        IFNULL(max(CASE WHEN tnp.code='operationDate' THEN tnp.content END),"") AS 'operationDate',
+        IFNULL(max(CASE WHEN tnp.code='operationName' THEN tnp.content END),"") AS 'operationName'
+        FROM
+        table_surgery_nursing tnp
+        LEFT JOIN table_user ts ON ts.login_name = tnp.operator_code
+        WHERE 1=1
+        AND tnp.status!=-1
+        <if test="patientId != null and patientId != ''">
+            and  tnp.patient_id =#{patientId}
+        </if>
+        <if test="status != null ">
+            and  tnp.status= #{status}
+        </if>
+        GROUP BY
+        tnp.maintenance_id
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="getNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        SELECT
+        count(tnp.maintenance_id)
+        FROM
+        table_surgery_nursing tnp
+        LEFT JOIN table_user ts ON ts.login_name = tnp.operator_code
+        WHERE 1=1
+        AND tnp.status!=-1
+        <if test="patientId != null and patientId != ''">
+            and  tnp.patient_id =#{patientId}
+        </if>
+        <if test="status != null ">
+            and  tnp.status= #{status}
+        </if>
+        GROUP BY
+        tnp.maintenance_id
+    </select>
+
+    <select id="queryDataByMaintenanceId" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        IFNULL(tnp.visit_id,"") AS visit_id,
+        IFNULL(tnp.visit_code,"") AS visit_code,
+        IFNULL(tnp.patient_id,"") AS patient_id,
+        IFNULL(tnp.maintenance_id,"") AS maintenance_id,
+        IFNULL(max(CASE WHEN tnp.code='visitDate' THEN tnp.content END),"") AS 'visitDate',
+        IFNULL(max(CASE WHEN tnp.code='diagnosis' THEN tnp.content END),"") AS 'diagnosis',
+        IFNULL(max(CASE WHEN tnp.code='operationDate' THEN tnp.content END),"") AS 'operationDate',
+        IFNULL(max(CASE WHEN tnp.code='operationName' THEN tnp.content END),"") AS 'operationName',
+        IFNULL(max(CASE WHEN tnp.code='temperature' THEN tnp.content END),"") AS 'temperature',
+        IFNULL(max(CASE WHEN tnp.code='pulse' THEN tnp.content END),"") AS 'pulse',
+        IFNULL(max(CASE WHEN tnp.code='hr' THEN tnp.content END),"") AS 'hr',
+        IFNULL(max(CASE WHEN tnp.code='br' THEN tnp.content END),"") AS 'br',
+        IFNULL(max(CASE WHEN tnp.code='bp' THEN tnp.content END),"") AS 'bp',
+        IFNULL(max(CASE WHEN tnp.code='presurgeryTeach' THEN tnp.content END),"") AS 'presurgeryTeach',
+        IFNULL(max(CASE WHEN tnp.code='preparedSkin' and tnp.content='1' THEN '1' WHEN tnp.code='preparedSkin' and tnp.content='2' THEN '2' END),"") AS 'preparedSkin',
+        IFNULL(max(CASE WHEN tnp.code='bladderEmpty' and tnp.content='1' THEN '1' WHEN tnp.code='bladderEmpty' and tnp.content='2' THEN '2' END),"") AS 'bladderEmpty',
+        IFNULL(max(CASE WHEN tnp.code='inspectionAndAssaySheetCompleted' and tnp.content='1' THEN '1' WHEN tnp.code='inspectionAndAssaySheetCompleted' and tnp.content='2' THEN '2' END),"") AS 'inspectionAndAssaySheetCompleted',
+        IFNULL(max(CASE WHEN tnp.code='mentalStatus' and tnp.content='1' THEN '1' WHEN tnp.code='mentalStatus' and tnp.content='2' THEN '2' WHEN tnp.code='mentalStatus' and tnp.content='3' THEN '3' END),"") AS 'mentalStatus',
+        IFNULL(max(CASE WHEN tnp.code='venousAccessSite' THEN tnp.content END),"") AS 'venousAccessSite',
+        IFNULL(max(CASE WHEN tnp.code='antibioticSkinTest' THEN tnp.content END),"") AS 'antibioticSkinTest',
+        IFNULL(max(CASE WHEN tnp.code='leaveTime' THEN tnp.content END),"") AS 'leaveTime',
+        IFNULL(max(CASE WHEN tnp.code='leaveNurseSignature' THEN ts0.user_name END),"") AS 'leaveNurseSignature',
+        IFNULL(max(CASE WHEN tnp.code='backTime' THEN tnp.content END),"") AS 'backTime',
+        IFNULL(max(CASE WHEN tnp.code='backNurseSignature' THEN ts1.user_name END),"") AS 'backNurseSignature',
+        IFNULL(max(CASE WHEN tnp.code='repressionDuration' THEN tnp.content END),"") AS 'repressionDuration',
+        IFNULL(max(CASE WHEN tnp.code='repressBeginTime' THEN tnp.content END),"") AS 'repressBeginTime',
+        IFNULL(max(CASE WHEN tnp.code='repressEndTime' THEN tnp.content END),"") AS 'repressEndTime'
+        FROM
+        table_nursing_plan tnp
+        LEFT JOIN table_user ts0 ON ts0.login_name = tnp.content AND tnp.code='leaveNurseSignature'
+        LEFT JOIN table_user ts1 ON ts1.login_name = tnp.content AND tnp.code='backNurseSignature'
+        WHERE 1=1
+        AND tnp.status!=-1
+        <if test="maintenanceId != null and maintenanceId != ''">
+            AND  tnp.maintenance_id =#{maintenanceId}
+        </if>
+        <if test="status != null ">
+            AND tnp.status=#{status}
+        </if>
+        GROUP BY
+        tnp.maintenance_id
+    </select>
+
+    <select id="queryListByMaintenanceId" resultMap="surgeryNursingMap" parameterType="java.lang.String">
+        select
+        <include refid="surgeryNursing_colums"></include>
+        from
+        table_surgery_nursing
+        where
+        1=1
+        AND maintenance_id =#{maintenanceId}
     </select>
 
 </mapper>

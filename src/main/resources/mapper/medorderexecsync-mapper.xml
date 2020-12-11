@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyxd.web.dao.basic.MedOrderExecSyncDao">
+
+    <resultMap id="medOrderExecSyncMap" type="com.jyxd.web.data.basic.MedOrderExecSync">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="visit_id" property="visitId" jdbcType="VARCHAR"/>
+        <result column="visit_code" property="visitCode" jdbcType="VARCHAR"/>
+        <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
+        <result column="order_no" property="orderNo" jdbcType="VARCHAR"/>
+        <result column="default_time_point" property="defaultTimePoint" jdbcType="DATE"/>
+        <result column="data_time" property="dataTime" jdbcType="DATE"/>
+        <result column="order_type" property="orderType" jdbcType="VARCHAR"/>
+        <result column="use_mode" property="useMode" jdbcType="VARCHAR"/>
+        <result column="nurse_code" property="nurseCode" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="DATE"/>
+        <result column="operator_code" property="operatorCode" jdbcType="VARCHAR"/>
+    </resultMap>
+    
+    <sql id="medOrderExecSync_colums">id,visit_id,visit_code,patient_id,order_no,default_time_point,data_time,order_type,
+                                        use_mode,nurse_code,content,create_time,operator_code</sql>
+
+    <sql id="medOrderExecSync_propertys">#{id},#{visitId},#{visitCode},#{patientId},#{orderNo}, #{defaultTimePoint},
+                                   #{dataTime},#{orderType},#{useMode},#{nurseCode},#{content},#{createTime},#{operatorCode}</sql>
+
+    <sql id="medOrderExecSync_update">visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},
+                                    order_no=#{orderNo},default_time_point=#{defaultTimePoint},
+                                    data_time=#{dataTime},order_type=#{orderType},use_mode=#{useMode},
+                                    nurse_code=#{nurseCode},content=#{content},
+                                    create_time=#{createTime},operator_code=#{operatorCode}</sql>
+
+    <insert id="insert">
+        insert into
+        table_med_order_exec(<include refid="medOrderExecSync_colums"></include>)
+        values (<include refid="medOrderExecSync_propertys"></include>)
+    </insert>
+
+    <update id="update" parameterType="com.jyxd.web.data.basic.MedOrderExecSync" >
+        update
+        table_med_order_exec
+        set <include refid="medOrderExecSync_update"></include>
+        where
+          id=#{id}
+    </update>
+
+    <select id="queryData" resultMap="medOrderExecSyncMap" parameterType="java.lang.String">
+        select
+          <include refid="medOrderExecSync_colums"></include>
+        from
+        table_med_order_exec
+        where
+          id=#{id}
+    </select>
+
+    <select id="queryList" resultMap="medOrderExecSyncMap" parameterType="java.util.Map">
+        select
+          <include refid="medOrderExecSync_colums"></include>
+        from
+        table_med_order_exec
+        where
+          1=1
+        <if test="startTime != null and startTime != ''">
+            and   date_format(default_time_point,'%Y%m%d') between date_format(#{startTime},'%Y%m%d')
+            and date_format(#{endTime},'%Y%m%d')
+        </if>
+        <if test="orderStatus != null and orderStatus != 5">
+            and  order_status= #{orderStatus}
+        </if>
+        <if test="isSync != null and isSync != 5">
+            and  is_sync= #{isSync}
+        </if>
+        <if test="drugType != null and drugType != 5">
+            and  drug_type= #{drugType}
+        </if>
+        <if test="repeatIndicator != null and repeatIndicator != 5">
+            and  repeat_indicator= #{repeatIndicator}
+        </if>
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+          count(id)
+        from
+        table_med_order_exec
+        where
+        1=1
+        <if test="startTime != null and startTime != ''">
+            and   date_format(default_time_point,'%Y%m%d') between date_format(#{startTime},'%Y%m%d')
+            and date_format(#{endTime},'%Y%m%d')
+        </if>
+        <if test="orderStatus != null and orderStatus != 5">
+            and  order_status= #{orderStatus}
+        </if>
+        <if test="isSync != null and isSync != 5">
+            and  is_sync= #{isSync}
+        </if>
+        <if test="drugType != null and drugType != 5">
+            and  drug_type= #{drugType}
+        </if>
+        <if test="repeatIndicator != null and repeatIndicator != 5">
+            and  repeat_indicator= #{repeatIndicator}
+        </if>
+    </select>
+
+    <select id="getList" resultType="java.util.Map" parameterType="java.util.Map">
+        select
+          tmoe.data_time,
+          IFNULL(CASE WHEN tmoe.code='order_type' THEN dcia.common_item_name END,"")  AS order_type,
+          IFNULL(CASE WHEN tmoe.code='use_mode' THEN dcib.common_item_name END,"")  AS use_mode,
+          IFNULL(tmoe.content,"")  AS content,
+          IFNULL(tu.user_name,"") AS signature
+        from
+        table_med_order_exec tmoe
+        LEFT JOIN dict_common_item dcia ON dcia.common_item_code=tmoe.order_type AND dcia.type='intake'
+        LEFT JOIN dict_common_item dcib ON dcib.common_item_code=tmoe.order_type AND dcib.type='use_mode'
+        LEFT JOIN table_user tu ON tu.login_name=tmoe.nurse_code
+        where
+        1=1
+        <if test="orderNo != null and orderNo != ''">
+            and order_no=#{orderNo}
+        </if>
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="getNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+        count(id)
+        from
+        table_med_order_exec
+        where
+        1=1
+        <if test="orderNo != null and orderNo != ''">
+            and order_no=#{orderNo}
+        </if>
+    </select>
+
+</mapper>

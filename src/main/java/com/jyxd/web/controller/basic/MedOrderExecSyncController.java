@@ -1,13 +1,13 @@
 package com.jyxd.web.controller.basic;
 
-import com.jyxd.web.data.basic.Handover;
-import com.jyxd.web.service.basic.HandoverService;
-import com.jyxd.web.service.basic.OutputAmountService;
-import com.jyxd.web.service.basic.VitalSignService;
+import com.jyxd.web.data.basic.MedOrderExecSync;
+import com.jyxd.web.service.basic.MedOrderExecSyncService;
 import com.jyxd.web.util.HttpCode;
+import com.jyxd.web.util.JsonArrayValueProcessor;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,41 +23,35 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping(value = "/handover")
-public class HandoverController {
+@RequestMapping(value = "/medOrderExecSync")
+public class MedOrderExecSyncController {
 
-    private static Logger logger= LoggerFactory.getLogger(HandoverController.class);
-
-    @Autowired
-    private HandoverService handoverService;
+    private static Logger logger= LoggerFactory.getLogger(MedOrderExecSyncController.class);
 
     @Autowired
-    private VitalSignService vitalSignService;
-
-    @Autowired
-    private OutputAmountService outputAmountService;
+    private MedOrderExecSyncService medOrderExecSyncService;
 
     /**
-     * 增加一条交班记录主表记录
+     * 增加一条医嘱执行同步表记录
      * @return
      */
     @RequestMapping(value = "/insert")
     @ResponseBody
-    public String insert(@RequestBody Handover handover){
+    public String insert(@RequestBody MedOrderExecSync medOrderExecSync){
         JSONObject json=new JSONObject();
         json.put("code", HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         json.put("msg","添加失败");
-        handover.setId(UUIDUtil.getUUID());
-        handover.setCreateTime(new Date());
-        handoverService.insert(handover);
+        medOrderExecSync.setId(UUIDUtil.getUUID());
+        medOrderExecSync.setCreateTime(new Date());
+        medOrderExecSyncService.insert(medOrderExecSync);
         json.put("code",HttpCode.OK_CODE.getCode());
         json.put("msg","添加成功");
         return json.toString();
     }
 
     /**
-     * 更新交班记录主表记录状态
+     * 更新医嘱执行同步表记录状态
      * @param map
      * @return
      */
@@ -68,10 +62,10 @@ public class HandoverController {
         json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("msg","更新失败");
         if(map!=null && map.containsKey("id") && map.containsKey("status") ){
-            Handover handover=handoverService.queryData(map.get("id").toString());
-            if(handover!=null){
-                handover.setStatus((int)map.get("status"));
-                handoverService.update(handover);
+            MedOrderExecSync medOrderExecSync=medOrderExecSyncService.queryData(map.get("id").toString());
+            if(medOrderExecSync!=null){
+
+                medOrderExecSyncService.update(medOrderExecSync);
                 json.put("msg","更新成功");
             }else{
                 json.put("msg","更新失败，没有这个对象。");
@@ -83,7 +77,7 @@ public class HandoverController {
     }
 
     /**
-     * 编辑交班记录主表记录单
+     * 编辑医嘱执行同步表记录单
      * @param map
      * @return
      */
@@ -94,10 +88,10 @@ public class HandoverController {
         json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("msg","编辑失败");
         if(map!=null && map.containsKey("id") && map.containsKey("status") && map.containsKey("bedName")){
-            Handover handover=handoverService.queryData(map.get("id").toString());
-            if(handover!=null){
-                handover.setStatus((int)map.get("status"));
-                handoverService.update(handover);
+            MedOrderExecSync medOrderExecSync=medOrderExecSyncService.queryData(map.get("id").toString());
+            if(medOrderExecSync!=null){
+
+                medOrderExecSyncService.update(medOrderExecSync);
                 json.put("msg","编辑成功");
             }else{
                 json.put("msg","编辑失败，没有这个对象。");
@@ -110,7 +104,7 @@ public class HandoverController {
     }
 
     /**
-     * 删除交班记录主表记录
+     * 删除医嘱执行同步表记录
      * @param map
      * @return
      */
@@ -121,10 +115,10 @@ public class HandoverController {
         json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("msg","删除失败");
         if(map.containsKey("id")){
-            Handover handover=handoverService.queryData(map.get("id").toString());
-            if(handover!=null){
-                handover.setStatus(-1);
-                handoverService.update(handover);
+            MedOrderExecSync medOrderExecSync=medOrderExecSyncService.queryData(map.get("id").toString());
+            if(medOrderExecSync!=null){
+
+                medOrderExecSyncService.update(medOrderExecSync);
                 json.put("msg","删除成功");
             }else{
                 json.put("msg","删除失败，没有这个对象。");
@@ -136,7 +130,7 @@ public class HandoverController {
     }
 
     /**
-     * 根据主键id查询交班记录主表记录
+     * 根据主键id查询医嘱执行同步表记录
      * @param map
      * @return
      */
@@ -148,10 +142,10 @@ public class HandoverController {
         json.put("data",new ArrayList<>());
         json.put("msg","暂无数据");
         if(map !=null && map.containsKey("id")){
-            Handover handover=handoverService.queryData(map.get("id").toString());
-            if(handover!=null){
+            MedOrderExecSync medOrderExecSync=medOrderExecSyncService.queryData(map.get("id").toString());
+            if(medOrderExecSync!=null){
                 json.put("msg","查询成功");
-                json.put("data",JSONObject.fromObject(handover));
+                json.put("data",JSONObject.fromObject(medOrderExecSync));
             }
         }
         json.put("code",HttpCode.OK_CODE.getCode());
@@ -159,7 +153,7 @@ public class HandoverController {
     }
 
     /**
-     * 根据条件分页查询交班记录主表记录列表（也可以不分页）
+     * 根据条件分页查询医嘱执行同步表记录列表（也可以不分页）
      * @param map
      * @return
      */
@@ -171,43 +165,45 @@ public class HandoverController {
         json.put("data",new ArrayList<>());
         json.put("msg","暂无数据");
         if(map!=null && map.containsKey("start")){
-            int totalCount =handoverService.queryNum(map);
+            int totalCount =medOrderExecSyncService.queryNum(map);
             map.put("start",((int)map.get("start")-1)*(int)map.get("size"));
             json.put("totalCount",totalCount);
         }
-        List<Handover> list =handoverService.queryList(map);
+        List<MedOrderExecSync> list =medOrderExecSyncService.queryList(map);
         if(list!=null && list.size()>0){
+            JsonConfig jsonConfig=new JsonConfig();
+            jsonConfig.registerJsonValueProcessor(Date.class,new JsonArrayValueProcessor());
             json.put("msg","查询成功");
-            json.put("data",JSONArray.fromObject(list));
+            json.put("data",JSONArray.fromObject(list,jsonConfig));
         }
         json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
     /**
-     * 交接班--新增交班报告--一键生成交班报告
+     * 医嘱处理--医嘱列表--同步记录
      * @param map
      * @return
      */
-    @RequestMapping(value = "/getPatientMessage")
+    @RequestMapping(value = "/getList",method= RequestMethod.POST)
     @ResponseBody
-    public String getPatientMessage(@RequestBody(required=false) Map<String,Object> map){
+    public String getList(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
         json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
         json.put("msg","暂无数据");
-        //某个时间的生命体征信息
-        JSONObject nowJson=vitalSignService.getNowVitalSign(map);
-        json.put("vital",nowJson);
-        //某个时间段的最大生命体征信息
-        JSONObject maxJson=vitalSignService.getMaxVitalSign(map);
-        json.put("maxVital",maxJson);
-        //某个时间段的最小生命体征信息
-        JSONObject minJson=vitalSignService.getMinVitalSign(map);
-        json.put("minVital",minJson);
-        //某个时间段的出量信息汇总
-        JSONObject outJson=outputAmountService.getOutAmount(map);
-        json.put("outPutAmount",outJson);
-        json.put("msg","查询成功");
+        if(map!=null && map.containsKey("start")){
+            int totalCount =medOrderExecSyncService.getNum(map);
+            map.put("start",((int)map.get("start")-1)*(int)map.get("size"));
+            json.put("totalCount",totalCount);
+        }
+        List<Map<String,Object>> list =medOrderExecSyncService.getList(map);
+        if(list!=null && list.size()>0){
+            JsonConfig jsonConfig=new JsonConfig();
+            jsonConfig.registerJsonValueProcessor(Date.class,new JsonArrayValueProcessor());
+            json.put("msg","查询成功");
+            json.put("data",JSONArray.fromObject(list,jsonConfig));
+        }
         json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }

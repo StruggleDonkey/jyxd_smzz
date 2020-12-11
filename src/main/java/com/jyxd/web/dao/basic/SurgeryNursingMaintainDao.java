@@ -43,4 +43,32 @@ public interface SurgeryNursingMaintainDao {
      * @return
      */
     int queryNum(Map<String, Object> map);
+
+    /**
+     * 根据条件查询一条围手术期护理记录表记录
+     * @param map
+     * @return SurgeryNursingMaintain
+     */
+    SurgeryNursingMaintain getData(Map<String, Object> map);
+
+    /**
+     * 根据 maintenanceId 查询 maintenanceRecordId
+     * @param maintenanceId
+     * @return
+     */
+    String getMaintenanceRecordId(String maintenanceId);
+
+    /**
+     * 根据 病人主键id 查询 围手术期护理记录列表
+     * @param map
+     * @return
+     */
+    List<Map<String, Object>> getList(Map<String, Object> map);
+
+    /**
+     * 根据 maintenanceRecordId 查询 围手术期护理记录列表
+     * @param maintenanceRecordId
+     * @return
+     */
+    List<SurgeryNursingMaintain> queryListByMaintenanceRecordId(String maintenanceRecordId);
 }
