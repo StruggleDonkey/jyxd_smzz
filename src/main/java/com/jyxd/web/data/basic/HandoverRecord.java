@@ -79,6 +79,61 @@ public class HandoverRecord implements Serializable {
 
     /**
      * 项目code
+     * (床号：bedName
+     * 姓名：name
+     * 性别（男 女）：sex
+     * 年龄：age
+     * 住院号：visitId
+     * 来源科室：department
+     * 入科时间：visitTime
+     * 手术时间：operationTime
+     * 过敏史：allergies
+     * 诊断：diagnosisName
+     * 生命体征时间：vitalSignTime
+     * 当前体征-体温：temperature
+     * 当前体征-脉搏：pulse
+     * 当前体征-心率：hr
+     * 当前体征-呼吸：br
+     * 当前体征-SpO₂：spo2
+     * 当前体征-有创血压：ibp
+     * 当前体征-无创血压：bp
+     * 当前体征-cvp：cvp
+     * 当前体征-cvp（mmHg₂O）：cvpmmHg
+     * 最大体征-体温：maxtemperature
+     * 最大体征-脉搏：maxpulse
+     * 最大体征-心率：maxhr
+     * 最大体征-呼吸：maxbr
+     * 最大体征-SpO₂：maxspo2
+     * 最大体征-有创血压：maxibp
+     * 最大体征-无创血压：maxbp
+     * 最大体征-cvp：maxcvp
+     * 最大体征-cvp（mmHg₂O）：maxcvpmmHg
+     * 最小体征-体温：mintemperature
+     * 最小体征-脉搏：minpulse
+     * 最小体征-心率：minhr
+     * 最小体征-呼吸：minbr
+     * 最小体征-SpO₂：minspo2
+     * 最小体征-有创血压：minibp
+     * 最小体征-无创血压：minbp
+     * 最小体征-cvp：mincvp
+     * 最小体征-cvp（mmHg₂O）：mincvpmmHg
+     * 总入量：intake
+     * 总出量：output
+     * 人工气道方式-气管插管：tracheaInsert
+     * 人工气道方式-气管切开：tracheaCut
+     * 呼吸机型号：ventilatorModel
+     * 呼吸机模式：breathePattern
+     * 呼吸机插管深度：tubeDepth
+     * 呼吸机吸氧方式：oxygenMethod
+     * 呼吸机流量：oxygenFlow
+     * 静脉置管-CVC：cvcDescription
+     * 静脉置管-PVC：pvcDescription
+     * 静脉置管-PICC：piccDescription
+     * 静脉置管-PORT：portDescription
+     * 静脉置管-留置针：leftNeedleDescription
+     * 动脉置管：artery
+     *
+     * )
      */
     @Column(name = "code")
     private String code;

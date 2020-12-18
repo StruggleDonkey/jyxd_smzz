@@ -44,4 +44,11 @@ public interface InputAllowanceDao {
      */
     int queryNum(Map<String, Object> map);
 
+    /**
+     * 根据医嘱主键查询入量余量列表
+     * @param map
+     * @return
+     */
+     List<InputAllowance> queryListByOrderNo(Map<String,Object> map);
+
 }

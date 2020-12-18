@@ -260,4 +260,18 @@
         AND date_format(data_time, '%Y-%m-%d %H:%i') = #{dataTime}
     </select>
 
+    <!-- 根据病人id获取某个时间人工气道方式 -->
+    <select id="getAirWay" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            IFNULL(max(CASE WHEN code='airWayStyle' THEN content END),"")  AS airWayStyle
+        FROM
+            table_vital_sign
+        WHERE
+            1 = 1
+        AND status !=-1
+        AND status = #{status}
+        AND patient_id = #{patientId}
+        AND date_format(data_time, '%Y-%m-%d %H:%i') BETWEEN #{startTime} AND #{endTime}
+    </select>
+
 </mapper>

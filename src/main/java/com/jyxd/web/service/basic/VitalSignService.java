@@ -103,4 +103,18 @@ public class VitalSignService {
         return jsonObject;
     }
 
+    /**
+     * 根据病人id获取某个时间人工气道方式
+     * @param map
+     * @return
+     */
+    public JSONObject getAirWay(Map<String,Object> map){
+        JSONObject jsonObject=new JSONObject();
+        Map<String,Object> maxMap=vitalSignDao.getAirWay(map);
+        if(maxMap!=null){
+            jsonObject=JSONObject.fromObject(maxMap);
+        }
+        return jsonObject;
+    }
+
 }

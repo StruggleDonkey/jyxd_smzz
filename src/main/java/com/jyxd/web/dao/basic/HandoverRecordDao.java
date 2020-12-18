@@ -44,4 +44,11 @@ public interface HandoverRecordDao {
      */
     int queryNum(Map<String, Object> map);
 
+    /**
+     * 根据交接班主键查询交接班记录列表
+     * @param handoverId
+     * @return
+     */
+     List<HandoverRecord> queryListByHandoverId(String handoverId);
+
 }

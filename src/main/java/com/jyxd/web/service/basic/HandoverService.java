@@ -34,4 +34,19 @@ public class HandoverService {
 
     public int queryNum(Map<String,Object> map){return handoverDao.queryNum(map);}
 
+    /**
+     * 根据主键id查询交接班详情
+     * @param map
+     * @return
+     */
+    public Map<String,Object> printHandover(Map<String,Object> map){
+        return handoverDao.printHandover(map);
+    }
+
+    public List<Map<String,Object>> getList(Map<String,Object> map){
+        return handoverDao.getList(map);
+    }
+
+    public int getNum(Map<String,Object> map){return handoverDao.getNum(map);}
+
 }

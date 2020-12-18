@@ -188,7 +188,7 @@ public class InputAmountController {
         JSONObject json=new JSONObject();
         json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
-        json.put("msg","暂无数据");
+        json.put("msg","新增失败");
         //有id 则编辑  无id 则新增
         if(inputAmount!=null && StringUtils.isNotEmpty(inputAmount.getId())){
             inputAmount.setCreateTime(new Date());
@@ -196,6 +196,7 @@ public class InputAmountController {
             json.put("msg","编辑成功");
         }else{
             inputAmount.setId(UUIDUtil.getUUID());
+            inputAmount.setOrderNo(UUIDUtil.getUUID());//医嘱主键  自定义生成一个医嘱主键 用于新增子医嘱使用
             inputAmount.setCreateTime(new Date());
             inputAmountService.insert(inputAmount);
             json.put("msg","新增成功");
@@ -227,6 +228,26 @@ public class InputAmountController {
             json.put("code",HttpCode.NO_PATIENT_CODE.getCode());
             json.put("msg","请先选择病人");
         }
+        return json.toString();
+    }
+
+    /**
+     * 护理文书--护理单--入量--子医嘱
+     * @param inputAmount
+     * @return
+     */
+    @RequestMapping(value = "/saveSonData",method= RequestMethod.POST)
+    @ResponseBody
+    public String saveSonData(@RequestBody InputAmount inputAmount){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","新增失败");
+        inputAmount.setId(UUIDUtil.getUUID());
+        inputAmount.setCreateTime(new Date());
+        inputAmountService.insert(inputAmount);
+        json.put("msg","新增成功");
+        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 

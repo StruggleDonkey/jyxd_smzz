@@ -84,4 +84,11 @@ public interface VitalSignDao {
      * @return
      */
     Map<String,Object> getNowVitalSign(Map<String,Object> map);
+
+    /**
+     * 根据病人id获取某个时间人工气道方式
+     * @param map
+     * @return
+     */
+    Map<String,Object> getAirWay(Map<String,Object> map);
 }

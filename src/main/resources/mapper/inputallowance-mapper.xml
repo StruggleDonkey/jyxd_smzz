@@ -60,8 +60,8 @@
         where
           1=1
         and  status != -1
-        <if test="content != null and content != ''">
-            and  content like '%${content}%'
+        <if test="orderNo != null and orderNo != ''">
+            and  order_no =#{orderNo}
         </if>
         <if test="status != null ">
             and  status= #{status}
@@ -78,12 +78,22 @@
         where
         1=1
         and  status != -1
-        <if test="content != null and content != ''">
-            and  content like '%${content}%'
+        <if test="orderNo != null and orderNo != ''">
+            and  order_no =#{orderNo}
         </if>
         <if test="status != null ">
             and  status= #{status}
         </if>
+    </select>
+
+    <select id="queryListByOrderNo" resultMap="inputAllowanceMap" parameterType="java.lang.String">
+        select
+        <include refid="inputAllowance_colums"></include>
+        from
+        table_input_allowance
+        where
+        status !=-1
+        order_no=#{orderNo}
     </select>
 
 </mapper>

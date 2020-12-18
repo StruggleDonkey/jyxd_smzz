@@ -90,4 +90,149 @@
         </if>
     </select>
 
+    <!--根据主键id查询交接班详情-->
+    <select id="printHandover" resultType="java.util.Map" parameterType="java.util.Map">
+       SELECT
+	      IFNULL(th.id,"")  AS id,
+	      IFNULL(th.visit_id,"")  AS visit_id,
+	      IFNULL(th.visit_code,"")  AS visit_code,
+	      IFNULL(th.patient_id,"")  AS patient_id,
+	      IFNULL(th.info_date,"")  AS info_date,
+	      th.shift,
+	      IFNULL(th.handover_time,"")  AS handover_time,
+	      IFNULL(th.handover_begin_time,"")  AS handover_begin_time,
+	      IFNULL(th.handover_end_time,"")  AS handover_end_time,
+	      IFNULL(tsa.user_name,"")  AS send_operator,
+	      IFNULL(tsb.user_name,"")  AS receive_operator,
+	      IFNULL(th.send_description,"")  AS send_description,
+	      IFNULL(th.receive_description,"")  AS receive_description,
+	      th.status,
+	      IFNULL(max(CASE WHEN thr.code='bedName' THEN thr.content END),"")  AS bedName,
+	      IFNULL(max(CASE WHEN thr.code='name' THEN thr.content END),"")  AS name,
+	      IFNULL(max(CASE WHEN thr.code='sex' THEN thr.content END),"")  AS sex,
+	      IFNULL(max(CASE WHEN thr.code='age' THEN thr.content END),"")  AS age,
+	      IFNULL(max(CASE WHEN thr.code='department' THEN thr.content END),"")  AS department,
+	      IFNULL(max(CASE WHEN thr.code='visitTime' THEN thr.content END),"")  AS visitTime,
+	      IFNULL(max(CASE WHEN thr.code='operationTime' THEN thr.content END),"")  AS operationTime,
+	      IFNULL(max(CASE WHEN thr.code='allergies' THEN thr.content END),"")  AS allergies,
+	      IFNULL(max(CASE WHEN thr.code='diagnosisName' THEN thr.content END),"")  AS diagnosisName,
+	      IFNULL(max(CASE WHEN thr.code='vitalSignTime' THEN thr.content END),"")  AS vitalSignTime,
+	      IFNULL(max(CASE WHEN thr.code='temperature' THEN thr.content END),"")  AS temperature,
+	      IFNULL(max(CASE WHEN thr.code='pulse' THEN thr.content END),"")  AS pulse,
+	      IFNULL(max(CASE WHEN thr.code='hr' THEN thr.content END),"")  AS hr,
+	      IFNULL(max(CASE WHEN thr.code='br' THEN thr.content END),"")  AS br,
+	      IFNULL(max(CASE WHEN thr.code='spo2' THEN thr.content END),"")  AS 'spo2',
+	      IFNULL(max(CASE WHEN thr.code='ibp' THEN thr.content END),"")  AS ibp,
+	      IFNULL(max(CASE WHEN thr.code='bp' THEN thr.content END),"")  AS bp,
+	      IFNULL(max(CASE WHEN thr.code='cvp' THEN thr.content END),"")  AS cvp,
+	      IFNULL(max(CASE WHEN thr.code='cvpmmHg' THEN thr.content END),"")  AS cvpmmHg,
+	      IFNULL(max(CASE WHEN thr.code='maxtemperature' THEN thr.content END),"")  AS maxtemperature,
+	      IFNULL(max(CASE WHEN thr.code='maxpulse' THEN thr.content END),"")  AS maxpulse,
+	      IFNULL(max(CASE WHEN thr.code='maxhr' THEN thr.content END),"")  AS maxhr,
+	      IFNULL(max(CASE WHEN thr.code='maxbr' THEN thr.content END),"")  AS maxbr,
+          IFNULL(max(CASE WHEN thr.code='maxspo2' THEN thr.content END),"")  AS 'maxspo2',
+	      IFNULL(max(CASE WHEN thr.code='maxibp' THEN thr.content END),"")  AS 'maxibp',
+	      IFNULL(max(CASE WHEN thr.code='maxbp' THEN thr.content END),"")  AS 'maxbp',
+	      IFNULL(max(CASE WHEN thr.code='maxcvp' THEN thr.content END),"")  AS 'maxcvp',
+	      IFNULL(max(CASE WHEN thr.code='maxcvpmmHg' THEN thr.content END),"")  AS 'maxcvpmmHg',
+	      IFNULL(max(CASE WHEN thr.code='mintemperature' THEN thr.content END),"")  AS 'mintemperature',
+	      IFNULL(max(CASE WHEN thr.code='minpulse' THEN thr.content END),"")  AS 'minpulse',
+	      IFNULL(max(CASE WHEN thr.code='minhr' THEN thr.content END),"")  AS 'minhr',
+	      IFNULL(max(CASE WHEN thr.code='minbr' THEN thr.content END),"")  AS 'minbr',
+	      IFNULL(max(CASE WHEN thr.code='minspo2' THEN thr.content END),"")  AS 'minspo2',
+	      IFNULL(max(CASE WHEN thr.code='minibp' THEN thr.content END),"")  AS 'minibp',
+	      IFNULL(max(CASE WHEN thr.code='minbp' THEN thr.content END),"")  AS 'minbp',
+	      IFNULL(max(CASE WHEN thr.code='mincvp' THEN thr.content END),"")  AS 'mincvp',
+	      IFNULL(max(CASE WHEN thr.code='mincvpmmHg' THEN thr.content END),"")  AS 'mincvpmmHg',
+	      IFNULL(max(CASE WHEN thr.code='intake' THEN thr.content END),"")  AS 'intake',
+	      IFNULL(max(CASE WHEN thr.code='output' THEN thr.content END),"")  AS 'output',
+	      IFNULL(max(CASE WHEN thr.code='tracheaInsert' THEN thr.content END),"")  AS 'tracheaInsert',
+	      IFNULL(max(CASE WHEN thr.code='tracheaCut' THEN thr.content END),"")  AS 'tracheaCut',
+	      IFNULL(max(CASE WHEN thr.code='ventilatorModel' THEN thr.content END),"")  AS 'ventilatorModel',
+	      IFNULL(max(CASE WHEN thr.code='breathePattern' THEN thr.content END),"")  AS 'breathePattern',
+	      IFNULL(max(CASE WHEN thr.code='tubeDepth' THEN thr.content END),"")  AS 'tubeDepth',
+	      IFNULL(max(CASE WHEN thr.code='oxygenMethod' THEN thr.content END),"")  AS 'oxygenMethod',
+	      IFNULL(max(CASE WHEN thr.code='oxygenFlow' THEN thr.content END),"")  AS 'oxygenFlow',
+	      IFNULL(max(CASE WHEN thr.code='cvcDescription' THEN thr.content END),"")  AS 'cvcDescription',
+	      IFNULL(max(CASE WHEN thr.code='pvcDescription' THEN thr.content END),"")  AS 'pvcDescription',
+	      IFNULL(max(CASE WHEN thr.code='piccDescription' THEN thr.content END),"")  AS 'piccDescription',
+	      IFNULL(max(CASE WHEN thr.code='portDescription' THEN thr.content END),"")  AS 'portDescription',
+	      IFNULL(max(CASE WHEN thr.code='leftNeedleDescription' THEN thr.content END),"")  AS 'leftNeedleDescription',
+	      IFNULL(max(CASE WHEN thr.code='artery' THEN thr.content END),"")  AS 'artery'
+        FROM
+	    table_handover th
+        LEFT JOIN table_handover_record thr ON thr.handover_id = th.id AND thr.status!=-1
+        LEFT JOIN table_user tsa ON tsa.login_name=th.send_operator
+        LEFT JOIN table_user tsb ON tsb.login_name=th.receive_operator
+        WHERE 1=1
+        AND th.id=#{id}
+        GROUP BY th.id
+    </select>
+
+    <select id="getList" resultType="java.util.Map">
+        SELECT
+            IFNULL(th.id,"")  AS id,
+            IFNULL(th.visit_id,"")  AS visit_id,
+            IFNULL(th.visit_code,"")  AS visit_code,
+            IFNULL(th.patient_id,"")  AS patient_id,
+            IFNULL(th.info_date,"")  AS info_date,
+            th.shift,
+            IFNULL(th.handover_time,"")  AS handover_time,
+            IFNULL(th.handover_begin_time,"")  AS handover_begin_time,
+            IFNULL(th.handover_end_time,"")  AS handover_end_time,
+            IFNULL(tsa.user_name,"")  AS send_operator,
+            IFNULL(tsb.user_name,"")  AS receive_operator,
+            IFNULL(th.send_description,"")  AS send_description,
+            IFNULL(th.receive_description,"")  AS receive_description,
+            th.status
+        FROM
+        table_handover th
+        LEFT JOIN table_user tsa ON tsa.login_name=th.send_operator
+        LEFT JOIN table_user tsb ON tsb.login_name=th.receive_operator
+        WHERE 1=1
+        and th.status !=-1
+        <if test="sendOperator != null and sendOperator != ''">
+            and  th.send_operator =#{sendOperator}
+        </if>
+        <if test="receiveOperator != null and receiveOperator != ''">
+            and  th.receive_operator =#{receiveOperator}
+        </if>
+        <if test="status != null ">
+            and  th.status= #{status}
+        </if>
+        <if test="beginTime != null and beginTime != ''">
+            and  #{beginTime} <![CDATA[ >= ]]> th.handover_begin_time
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and  #{endTime} <![CDATA[ <= ]]> th.handover_end_time
+        </if>
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="getNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+        count(id)
+        from
+        table_handover
+        where
+        1=1
+        and status !=-1
+        <if test="sendOperator != null and sendOperator != ''">
+            and  send_operator =#{sendOperator}
+        </if>
+        <if test="receiveOperator != null and receiveOperator != ''">
+            and  receive_operator =#{receiveOperator}
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="beginTime != null and beginTime != ''">
+            and  #{beginTime} <![CDATA[ >= ]]> handover_begin_time
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and  #{endTime} <![CDATA[ <= ]]> handover_end_time
+        </if>
+    </select>
+
 </mapper>

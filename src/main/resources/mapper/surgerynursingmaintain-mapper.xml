@@ -17,7 +17,7 @@
         <result column="status" property="status" jdbcType="INTEGER"/>
     </resultMap>
     
-    <sql id="surgeryNursingMaintain_colums">id,maintenance_id,maintenance_record_idvisit_id,visit_code,patient_id,data_time,code,content,create_time,
+    <sql id="surgeryNursingMaintain_colums">id,maintenance_id,maintenance_record_id,visit_id,visit_code,patient_id,data_time,code,content,create_time,
                                                 operator_code,status</sql>
 
     <sql id="surgeryNursingMaintain_propertys">#{id},#{maintenanceId},#{maintenanceRecordId},#{visitId},#{visitCode},#{patientId},#{dataTime},#{code},
@@ -147,7 +147,7 @@
             and  tsnm.patient_id =#{patientId}
         </if>
         <if test="dataTime != null and dataTime != ''">
-            and  date_format(tsnm..data_time, '%Y-%m-%d %H:%i')=date_format(#{dataTime}, '%Y-%m-%d %H:%i')
+            and  date_format(tsnm.data_time, '%Y-%m-%d %H:%i')=date_format(#{dataTime}, '%Y-%m-%d %H:%i')
         </if>
         <if test="status != null ">
             and  tsnm.status= #{status}

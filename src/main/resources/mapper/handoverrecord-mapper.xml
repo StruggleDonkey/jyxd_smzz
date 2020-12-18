@@ -86,4 +86,13 @@
         </if>
     </select>
 
+    <select id="queryListByHandoverId" resultMap="handoverRecordMap" parameterType="java.lang.String">
+        select
+        <include refid="handoverRecord_colums"></include>
+        from
+        table_handover_record
+        where
+        handover_id=#{handoverId}
+    </select>
+
 </mapper>

@@ -2,6 +2,7 @@ package com.jyxd.web.service.basic;
 
 import com.jyxd.web.dao.basic.BasicNursingDao;
 import com.jyxd.web.data.basic.BasicNursing;
+import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,5 +70,48 @@ public class BasicNursingService {
     public List<Map<String,Object>> getListByPatientId(Map<String,Object> map){
         return basicNursingDao.getListByPatientId(map);
     }
+
+    /**
+     * 根据病人id查询某个时间段内静脉置管信息
+     * @param map
+     * @return
+     */
+    public JSONArray getVeinDrainage(Map<String,Object> map){
+        JSONArray array=new JSONArray();
+        List<Map<String,Object>> list=basicNursingDao.getVeinDrainage(map);
+        if(list!=null && list.size()>0){
+            array=JSONArray.fromObject(list);
+        }
+        return array;
+    }
+
+    /**
+     * 根据病人id查询某个时间段内动脉置管信息
+     * @param map
+     * @return
+     */
+    public JSONArray getArtery(Map<String,Object> map){
+        JSONArray array=new JSONArray();
+        List<Map<String,Object>> list=basicNursingDao.getArtery(map);
+        if(list!=null && list.size()>0){
+            array=JSONArray.fromObject(list);
+        }
+        return array;
+    }
+
+    /**
+     * 根据病人id查询某个时间段内引流管信息
+     * @param map
+     * @return
+     */
+    public JSONArray getDrainage(Map<String,Object> map){
+        JSONArray array=new JSONArray();
+        List<Map<String,Object>> list=basicNursingDao.getDrainage(map);
+        if(list!=null && list.size()>0){
+            array=JSONArray.fromObject(list);
+        }
+        return array;
+    }
+
 
 }

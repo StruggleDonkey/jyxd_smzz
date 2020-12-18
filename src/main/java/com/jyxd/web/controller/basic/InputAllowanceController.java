@@ -1,11 +1,13 @@
 package com.jyxd.web.controller.basic;
 
 import com.jyxd.web.data.basic.InputAllowance;
+import com.jyxd.web.data.user.User;
 import com.jyxd.web.service.basic.InputAllowanceService;
 import com.jyxd.web.util.HttpCode;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -174,6 +178,68 @@ public class InputAllowanceController {
         }
         json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
+    }
+
+    /**
+     * 护理文书--护理单--入量--录入余量--保存
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/saveData",method= RequestMethod.POST)
+    @ResponseBody
+    public String saveData(@RequestBody(required=false) Map<String,Object> map, HttpSession session){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        try {
+            if(map!=null && map.containsKey("list") && StringUtils.isNotEmpty(map.get("list").toString())){
+                List<InputAllowance> list=inputAllowanceService.queryListByOrderNo(map);
+                if(list!=null && list.size()>0){
+                    for (int i = 0; i <list.size() ; i++) {
+                        list.get(i).setStatus(-1);
+                        inputAllowanceService.update(list.get(i));
+                    }
+                }
+                JSONArray array=JSONArray.fromObject(map.get("list").toString());
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                for (int i = 0; i <array.size() ; i++) {
+                    JSONObject obj=(JSONObject) array.get(i);
+                    InputAllowance inputAllowance=newInputAllowance(map,session);
+                    inputAllowance.setShift(obj.getInt("shift"));
+                    inputAllowance.setDosage(obj.getString("dosage"));
+                    inputAllowance.setAllowanceDosage(obj.getString("allowanceDosage"));
+                    inputAllowance.setDataTime(format.parse(obj.getString("dataTime")));
+                    inputAllowance.setStatus(obj.getInt("status"));
+                    inputAllowanceService.insert(inputAllowance);
+                }
+                json.put("code",HttpCode.OK_CODE.getCode());
+                json.put("msg","成功");
+            }
+        }catch (Exception e){
+            logger.info("护理文书--护理单--入量--录入余量--保存:"+e);
+        }
+        return json.toString();
+    }
+
+    private InputAllowance newInputAllowance(Map<String,Object> map, HttpSession session){
+        InputAllowance inputAllowance=new InputAllowance();
+        try {
+            inputAllowance.setCreateTime(new Date());
+            inputAllowance.setId(UUIDUtil.getUUID());
+            inputAllowance.setVisitId(map.get("visitId").toString());
+            inputAllowance.setVisitCode(map.get("visitCode").toString());
+            inputAllowance.setPatientId(map.get("patientId").toString());
+            User user=(User)session.getAttribute("user");
+            if(user!=null){
+                inputAllowance.setOperatorCode(user.getLoginName());
+            }
+            inputAllowance.setOrderNo(map.get("orderNo").toString());
+            inputAllowance.setOrderType(map.get("orderType").toString());
+        }catch (Exception e){
+            logger.info("newInputAllowance:"+e);
+        }
+        return inputAllowance;
     }
 
 }

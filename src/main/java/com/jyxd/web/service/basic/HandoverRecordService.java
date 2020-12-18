@@ -34,4 +34,12 @@ public class HandoverRecordService {
 
     public int queryNum(Map<String,Object> map){return handoverRecordDao.queryNum(map);}
 
+    /**
+     * 根据交接班主键查询交接班记录列表
+     * @param handoverId
+     * @return
+     */
+    public List<HandoverRecord> queryListByHandoverId(String handoverId){
+        return handoverRecordDao.queryListByHandoverId(handoverId);
+    }
 }

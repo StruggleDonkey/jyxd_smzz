@@ -57,4 +57,11 @@ public interface InputAmountDao {
      * @return
      */
      List<Map<String,Object>> getListByPatientId(Map<String,Object> map);
+
+    /**
+     * 根据病人id查询病人在某个时间段的入量汇总信息
+     * @param map
+     * @return
+     */
+    Map<String,Object> getInAmount(Map<String,Object> map);
 }

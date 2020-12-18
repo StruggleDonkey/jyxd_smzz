@@ -233,4 +233,68 @@
         GROUP BY tsn.data_time
     </select>
 
+    <!-- 根据病人id查询某个时间段内静脉置管信息 -->
+    <select id="getVeinDrainage" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            IFNULL(tsn.patient_id,"") AS patient_id,
+            date_format(tsn.data_time, '%Y-%m-%d') AS date,
+            date_format(tsn.data_time, '%H:%i') AS time,
+            IFNULL(max(CASE WHEN tsn.code='veinDrainageName' THEN dcid.common_item_name END),"")  AS veinDrainageName,
+            IFNULL(max(CASE WHEN tsn.code='veinDrainageDepth' THEN tsn.content END),"") AS veinDrainageDepth,
+            IFNULL(max(CASE WHEN tsn.code='hasVeinNursed' THEN tsn.content END),"") AS hasVeinNursed,
+            IFNULL(max(CASE WHEN tsn.code='isVeinClear' THEN tsn.content END),"") AS isVeinClear,
+            IFNULL(max(CASE WHEN tsn.code='veinRemove' THEN dcie.common_item_name END),"")  AS veinRemove,
+            IFNULL(max(CASE WHEN tsn.code='veinDressingChange' THEN tsn.content END),"") AS veinDressingChange
+        FROM table_basic_nursing tsn
+        LEFT JOIN dict_common_item dcid ON dcid.common_item_code=tsn.content AND dcid.type='vein_catheter'
+        LEFT JOIN dict_common_item dcie ON dcie.common_item_code=tsn.content AND dcie.type='vein_drainage_state'
+        WHERE 1=1
+        AND tsn.status !=- 1
+        AND tsn.status=#{status}
+        AND tsn.patient_id=#{patientId}
+        AND date_format(data_time, '%Y-%m-%d %H:%i') BETWEEN #{startTime} AND #{endTime}
+        GROUP BY tsn.data_time
+    </select>
+
+    <!-- 根据病人id查询某个时间段内动脉置管信息 -->
+    <select id="getArtery" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            IFNULL(tsn.patient_id,"") AS patient_id,
+            date_format(tsn.data_time, '%Y-%m-%d') AS date,
+            date_format(tsn.data_time, '%H:%i') AS time,
+            IFNULL(max(CASE WHEN tsn.code='arteryPosition' THEN dcif.common_item_name END),"")  AS arteryPosition,
+            IFNULL(max(CASE WHEN tsn.code='isArteryClear' THEN tsn.content END),"") AS isArteryClear
+        FROM table_basic_nursing tsn
+        LEFT JOIN dict_common_item dcif ON dcif.common_item_code=tsn.content AND dcif.type='artery'
+        WHERE 1=1
+        AND tsn.status !=- 1
+        AND tsn.status=#{status}
+        AND tsn.patient_id=#{patientId}
+        AND date_format(data_time, '%Y-%m-%d %H:%i') BETWEEN #{startTime} AND #{endTime}
+        GROUP BY tsn.data_time
+    </select>
+
+   <!--  根据病人id查询某个时间段内引流管信息 -->
+    <select id="getDrainage" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            IFNULL(tsn.patient_id,"") AS patient_id,
+            date_format(tsn.data_time, '%Y-%m-%d') AS date,
+            date_format(tsn.data_time, '%H:%i') AS time,
+            IFNULL(max(CASE WHEN tsn.code='drainageName' THEN dcia.common_item_name END),"")  AS drainageName,
+            IFNULL(max(CASE WHEN tsn.code='drainageDepth' THEN tsn.content END),"") AS drainageDepth,
+            IFNULL(max(CASE WHEN tsn.code='hasExtrude' THEN tsn.content END),"") AS hasExtrude,
+            IFNULL(max(CASE WHEN tsn.code='isClear' THEN tsn.content END),"") AS isClear,
+            IFNULL(max(CASE WHEN tsn.code='hasReplaced' THEN dcib.common_item_name END),"")  AS hasReplaced,
+            IFNULL(max(CASE WHEN tsn.code='drainageColor' THEN dcic.common_item_name END),"")  AS drainageColor
+        FROM table_basic_nursing tsn LEFT JOIN dict_common_item dcia ON dcia.common_item_code=tsn.content AND dcia.type='drainage_tube'
+        LEFT JOIN dict_common_item dcib ON dcib.common_item_code=tsn.content AND dcib.type='drainage_state'
+        LEFT JOIN dict_common_item dcic ON dcic.common_item_code=tsn.content AND dcic.type='drainage_color'
+        WHERE 1=1
+        AND tsn.status !=- 1
+        AND tsn.status=#{status}
+        AND tsn.patient_id=#{patientId}
+        AND date_format(data_time, '%Y-%m-%d %H:%i') BETWEEN #{startTime} AND #{endTime}
+        GROUP BY tsn.data_time
+    </select>
+
 </mapper>

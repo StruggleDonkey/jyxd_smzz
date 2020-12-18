@@ -71,4 +71,25 @@ public interface BasicNursingDao {
      * @return
      */
      List<Map<String,Object>> getListByPatientId(Map<String,Object> map);
+
+    /**
+     * 根据病人id查询某个时间段内静脉置管信息
+     * @param map
+     * @return
+     */
+     List<Map<String,Object>> getVeinDrainage(Map<String,Object> map);
+
+    /**
+     * 根据病人id查询某个时间段内动脉置管信息
+     * @param map
+     * @return
+     */
+    List<Map<String,Object>> getArtery(Map<String,Object> map);
+
+    /**
+     * 根据病人id查询某个时间段内引流管信息
+     * @param map
+     * @return
+     */
+    List<Map<String,Object>> getDrainage(Map<String,Object> map);
 }

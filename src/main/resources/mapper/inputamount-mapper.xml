@@ -153,6 +153,24 @@
         AND tia.status != -1
         AND tia.patient_id=#{patientId}
         AND tia.status=#{status}
+        order by tia.order_no
+    </select>
+
+    <!-- 根据病人id查询病人在某个时间段的入量汇总信息 -->
+    <select id="getInAmount" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        IFNULL(sum(dosage),0)  AS 'total',
+        IFNULL(sum(CASE WHEN order_type='001' THEN dosage END),0)  AS '001',
+        IFNULL(sum(CASE WHEN order_type='002' THEN dosage END),0)  AS '002',
+        IFNULL(sum(CASE WHEN order_type='003' THEN dosage END),0)  AS '003'
+        FROM
+        table_input_amount
+        WHERE
+        1 = 1
+        AND status != - 1
+        AND status= #{status}
+        AND patient_id = #{patientId}
+        AND date_format(data_time, '%Y-%m-%d %H:%i') BETWEEN #{startTime} AND #{endTime}
     </select>
 
 </mapper>
