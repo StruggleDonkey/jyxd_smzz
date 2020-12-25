@@ -169,7 +169,7 @@ public class HospitalizedAssessmentController {
             json.put("totalCount",totalCount);
         }
         if(list!=null && list.size()>0){
-            json.put("msg","查询成功");
+            json.put("msg","成功");
             json.put("data",JSONArray.fromObject(list));
         }
         json.put("code",HttpCode.OK_CODE.getCode());
