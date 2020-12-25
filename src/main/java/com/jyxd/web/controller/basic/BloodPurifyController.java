@@ -190,7 +190,7 @@ public class BloodPurifyController {
     public String add(@RequestBody(required=false) Map<String,Object> map,HttpSession session){
         JSONObject json=new JSONObject();
         json.put("code",HttpCode.FAILURE_CODE.getCode());
-        json.put("msg","更新失败");
+        json.put("msg","失败");
         String maintenanceId=UUIDUtil.getUUID();//导管维护主键
         //穿刺部位左：punctureLeft
         if(map!=null && map.containsKey("punctureLeft") && StringUtils.isNotEmpty(map.get("punctureLeft").toString())){
@@ -393,6 +393,7 @@ public class BloodPurifyController {
             bloodPurifyService.insert(bloodPurify);
         }
         json.put("code",HttpCode.OK_CODE.getCode());
+        json.put("msg","成功");
         return json.toString();
     }
 

@@ -43,4 +43,32 @@ public interface HospitalizedAssessmentDao {
      * @return
      */
     int queryNum(Map<String, Object> map);
+
+    /**
+     * 根据记录时间和病人id查询对象列表
+     * @return
+     */
+     List<HospitalizedAssessment> getListByDataTimeAndPatientId(Map<String,Object> map);
+
+    /**
+     * 根据评估主键和病人id查询对象列表
+     * @return
+     */
+     List<HospitalizedAssessment> getListByAssessmentIdAndPatientId(Map<String,Object> map);
+
+    /**
+     * 护理评估--入院护理评估单--历史列表--分页查询列表
+     * @param map
+     * @return
+     */
+     List<Map<String,Object>> getList(Map<String,Object> map);
+
+     int getNum(Map<String,Object> map);
+
+    /**
+     * 根据评估主键查询对象
+     * @param map
+     * @return
+     */
+     Map<String,Object> getDataByAssessmentId(Map<String,Object> map);
 }

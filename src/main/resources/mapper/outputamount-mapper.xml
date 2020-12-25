@@ -259,4 +259,36 @@
         AND patient_id = #{patientId}
         AND date_format(data_time, '%Y-%m-%d %H:%i') BETWEEN #{startTime} AND #{endTime}
     </select>
+
+    <!-- 查询病人某段时间内的出量总数 -->
+    <select id="getOutTotal" resultType="java.lang.String" parameterType="java.util.Map">
+        SELECT
+        IFNULL(SUM(dosage),0)
+        FROM
+        table_output_amount
+        WHERE
+        1 = 1
+        AND status != - 1
+        AND status= #{status}
+        AND patient_id = #{patientId}
+        AND date_format(data_time, '%Y-%m-%d %H:%i:%s') BETWEEN #{startTime} AND #{endTime}
+    </select>
+
+    <!-- 查询病人某段时间内各个出量类型的入量总数 -->
+    <select id="getOutAnalyze" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        IFNULL(SUM(tia.dosage),0) AS dosage,
+        dci.common_item_name AS name
+        FROM
+        table_output_amount tia  LEFT JOIN dict_common_item dci ON dci.common_item_code = tia.output_type AND dci.type='intake'
+        WHERE
+        1 = 1
+        and tia.status!=-1
+        AND (tia.output_type!=NULL || tia.output_type!='')
+        AND (dci.common_item_name !=null || dci.common_item_name !='')
+        AND tia.status= #{status}
+        AND tia.patient_id = #{patientId}
+        AND date_format(tia.data_time, '%Y-%m-%d %H:%i:%s') BETWEEN #{startTime} AND #{endTime}
+        GROUP BY tia.output_type
+    </select>
 </mapper>
