@@ -75,4 +75,22 @@ public class OutputAmountService {
         }
         return jsonObject;
     }
+
+    /**
+     * 查询病人某段时间内的出量总数
+     * @param map
+     * @return
+     */
+    public String getOutTotal(Map<String,Object> map){
+        return outputAmountDao.getOutTotal(map);
+    }
+
+    /**
+     * 查询病人某段时间内各个出量类型的入量总数
+     * @param map
+     * @return
+     */
+    public List<Map<String,Object>> getOutAnalyze(Map<String,Object> map){
+        return outputAmountDao.getOutAnalyze(map);
+    }
 }

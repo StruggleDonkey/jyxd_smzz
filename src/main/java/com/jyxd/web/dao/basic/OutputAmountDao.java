@@ -72,4 +72,17 @@ public interface OutputAmountDao {
      */
     Map<String,Object> getOutAmount(Map<String,Object> map);
 
+    /**
+     * 查询病人某段时间内的出量总数
+     * @param map
+     * @return
+     */
+     String getOutTotal(Map<String,Object> map);
+
+    /**
+     * 查询病人某段时间内各个出量类型的入量总数
+     * @param map
+     * @return
+     */
+     List<Map<String,Object>> getOutAnalyze(Map<String,Object> map);
 }

@@ -8,11 +8,11 @@
         <result column="visit_id" property="visitId" jdbcType="VARCHAR"/>
         <result column="visit_code" property="visitCode" jdbcType="VARCHAR"/>
         <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
-        <result column="data_time" property="dataTime" jdbcType="DATE"/>
+        <result column="data_time" property="dataTime" />
         <result column="shift" property="shift" jdbcType="INTEGER"/>
         <result column="code" property="code" jdbcType="VARCHAR"/>
         <result column="content" property="content" jdbcType="VARCHAR"/>
-        <result column="create_time" property="createTime" jdbcType="DATE"/>
+        <result column="create_time" property="createTime" />
         <result column="operator_code" property="operatorCode" jdbcType="VARCHAR"/>
         <result column="status" property="status" jdbcType="INTEGER"/>
     </resultMap>
@@ -80,5 +80,259 @@
         <if test="status != null ">
             and  status= #{status}
         </if>
+    </select>
+
+    <!-- 根据记录时间和病人id查询对象列表 -->
+    <select id="getListByDataTimeAndPatientId" resultMap="hospitalizedAssessmentMap" parameterType="java.util.Map">
+        select
+        <include refid="hospitalizedAssessment_colums"></include>
+        from
+        table_hospitalized_assessment
+        where
+        1=1
+        and status != -1
+        <if test="patientId != null and patientId != ''">
+            and patient_id=#{patientId}
+        </if>
+        <if test="dataTime != null and dataTime != ''">
+            and date_format(data_time, '%Y-%m-%d %H:%i:%s')=#{dataTime}
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
+
+    <!-- 根据评估主键和病人id查询对象列表 -->
+    <select id="getListByAssessmentIdAndPatientId" resultMap="hospitalizedAssessmentMap" parameterType="java.util.Map">
+        select
+        <include refid="hospitalizedAssessment_colums"></include>
+        from
+        table_hospitalized_assessment
+        where
+        1=1
+        and status != -1
+        <if test="patientId != null and patientId != ''">
+            and patient_id=#{patientId}
+        </if>
+        <if test="assessmentId != null and assessmentId != ''">
+            and assessment_id=#{assessmentId}
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
+
+    <select id="getList" resultType="java.util.Map">
+        SELECT
+        tha.data_time AS data_time,
+        tha.assessment_id AS assessment_id,
+        tu.user_name AS user_name
+        FROM
+        table_hospitalized_assessment tha
+        LEFT JOIN table_user tu ON tu.login_name = tha.operator_code
+        WHERE
+        1 = 1
+        and  status != -1
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="patientId != null and patientId != ''">
+            and patient_id=#{patientId}
+        </if>
+        GROUP BY
+        tha.assessment_id
+        ORDER BY data_time
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="getNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        SELECT
+        count(assessment_id)
+        FROM
+        table_hospitalized_assessment
+        WHERE
+        1 = 1
+        and  status != -1
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="patientId != null and patientId != ''">
+            and patient_id=#{patientId}
+        </if>
+        GROUP BY
+        tha.assessment_id
+    </select>
+
+    <select id="chooseData" resultType="java.util.Map">
+        SELECT
+	        IFNULL(max(CASE WHEN tha.code='nation' THEN dcia.common_item_name END),"")  AS nation,
+	        IFNULL(max(CASE WHEN tha.code='occupation' THEN dcib.common_item_name END),"")  AS occupation,
+	        IFNULL(max(CASE WHEN tha.code='education' THEN dcic.common_item_name END),"")  AS education,
+	        IFNULL(max(CASE WHEN tha.code='maritalStatus' THEN dcid.common_item_name END),"")  AS maritalStatus,
+	        IFNULL(max(CASE WHEN tha.code='contactPerson' THEN tha.content END),"")  AS contactPerson,
+	        IFNULL(max(CASE WHEN tha.code='visitTime' THEN tha.content END),"")  AS visitTime,
+	        IFNULL(max(CASE WHEN tha.code='visitMethod' THEN tha.content END),"")  AS visitMethod,
+	        IFNULL(max(CASE WHEN tha.code='visitMethodOther' THEN tha.content END),"")  AS visitMethodOther,
+	        IFNULL(max(CASE WHEN tha.code='visitDiagnosis' THEN tha.content END),"")  AS visitDiagnosis,
+	        IFNULL(max(CASE WHEN tha.code='pastHistory' THEN tha.content END),"")  AS pastHistory,
+	        IFNULL(max(CASE WHEN tha.code='hypertension' THEN tha.content END),"")  AS hypertension,
+	        IFNULL(max(CASE WHEN tha.code='heartDisease' THEN tha.content END),"")  AS heartDisease,
+	        IFNULL(max(CASE WHEN tha.code='diabetes' THEN tha.content END),"")  AS diabetes,
+	        IFNULL(max(CASE WHEN tha.code='cerebralVascularDisease' THEN tha.content END),"")  AS cerebralVascularDisease,
+	        IFNULL(max(CASE WHEN tha.code='mentalDisease' THEN tha.content END),"")  AS mentalDisease,
+	        IFNULL(max(CASE WHEN tha.code='operationHistory' THEN tha.content END),"")  AS operationHistory,
+	        IFNULL(max(CASE WHEN tha.code='operationHistoryContent' THEN tha.content END),"")  AS operationHistoryContent,
+        	IFNULL(max(CASE WHEN tha.code='pastHistoryOther' THEN tha.content END),"")  AS pastHistoryOther,
+	        IFNULL(max(CASE WHEN tha.code='pastHistoryOtherContent' THEN tha.content END),"")  AS pastHistoryOtherContent,
+        	IFNULL(max(CASE WHEN tha.code='allergyHistory' THEN tha.content END),"")  AS allergyHistory,
+	        IFNULL(max(CASE WHEN tha.code='allergyDrug' THEN tha.content END),"")  AS allergyDrug,
+	        IFNULL(max(CASE WHEN tha.code='allergyFood' THEN tha.content END),"")  AS allergyFood,
+	        IFNULL(max(CASE WHEN tha.code='allergyOther' THEN tha.content END),"")  AS allergyOther,
+	        IFNULL(max(CASE WHEN tha.code='measureTime' THEN tha.content END),"")  AS measureTime,
+	        IFNULL(max(CASE WHEN tha.code='visitT' THEN tha.content END),"")  AS visitT,
+	        IFNULL(max(CASE WHEN tha.code='visitP' THEN tha.content END),"")  AS visitP,
+	        IFNULL(max(CASE WHEN tha.code='visitR' THEN tha.content END),"")  AS visitR,
+	        IFNULL(max(CASE WHEN tha.code='visitBP' THEN tha.content END),"")  AS visitBP,
+	        IFNULL(max(CASE WHEN tha.code='visitWeight' THEN tha.content END),"")  AS visitWeight,
+	        IFNULL(max(CASE WHEN tha.code='mind' THEN tha.content END),"")  AS mind,
+	        IFNULL(max(CASE WHEN tha.code='communicationLanguage' THEN tha.content END),"")  AS communicationLanguage,
+	        IFNULL(max(CASE WHEN tha.code='communicationFont' THEN tha.content END),"")  AS communicationFont,
+	        IFNULL(max(CASE WHEN tha.code='communicationGesture' THEN tha.content END),"")  AS communicationGesture,
+	        IFNULL(max(CASE WHEN tha.code='communicationNo' THEN tha.content END),"")  AS communicationNo,
+	        IFNULL(max(CASE WHEN tha.code='comprehensionAbilityGood' THEN tha.content END),"")  AS comprehensionAbilityGood,
+	        IFNULL(max(CASE WHEN tha.code='comprehensionAbilityCommonly' THEN tha.content END),"")  AS comprehensionAbilityCommonly,
+	        IFNULL(max(CASE WHEN tha.code='comprehensionAbilityBad' THEN tha.content END),"")  AS comprehensionAbilityBad,
+	        IFNULL(max(CASE WHEN tha.code='comprehensionAbilityNo' THEN tha.content END),"")  AS comprehensionAbilityNo,
+	        IFNULL(max(CASE WHEN tha.code='vision' THEN tha.content END),"")  AS vision,
+	        IFNULL(max(CASE WHEN tha.code='visionAbnormal' THEN tha.content END),"")  AS visionAbnormal,
+	        IFNULL(max(CASE WHEN tha.code='hearing' THEN tha.content END),"")  AS hearing,
+	        IFNULL(max(CASE WHEN tha.code='hearingAbnormal' THEN tha.content END),"")  AS hearingAbnormal,
+	        IFNULL(max(CASE WHEN tha.code='falseTooth' THEN tha.content END),"")  AS falseTooth,
+	        IFNULL(max(CASE WHEN tha.code='oralMucosa' THEN tha.content END),"")  AS oralMucosa,
+	        IFNULL(max(CASE WHEN tha.code='oralMucosaOther' THEN tha.content END),"")  AS oralMucosaOther,
+	        IFNULL(max(CASE WHEN tha.code='skinNormal' THEN tha.content END),"")  AS skinNormal,
+	        IFNULL(max(CASE WHEN tha.code='skinEdema' THEN tha.content END),"")  AS skinEdema,
+	        IFNULL(max(CASE WHEN tha.code='skinJaundice' THEN tha.content END),"")  AS skinJaundice,
+	        IFNULL(max(CASE WHEN tha.code='skinPale' THEN tha.content END),"")  AS skinPale,
+	        IFNULL(max(CASE WHEN tha.code='skinCyanosis' THEN tha.content END),"")  AS skinCyanosis,
+	        IFNULL(max(CASE WHEN tha.code='skinRash' THEN tha.content END),"")  AS skinRash,
+	        IFNULL(max(CASE WHEN tha.code='skinEcchymosis' THEN tha.content END),"")  AS skinEcchymosis,
+	        IFNULL(max(CASE WHEN tha.code='skinDamaged' THEN tha.content END),"")  AS skinDamaged,
+	        IFNULL(max(CASE WHEN tha.code='skinOther' THEN tha.content END),"")  AS skinOther,
+	        IFNULL(max(CASE WHEN tha.code='skinOtherContent' THEN tha.content END),"")  AS skinOtherContent,
+	        IFNULL(max(CASE WHEN tha.code='pressureSore' THEN tha.content END),"")  AS pressureSore,
+	        IFNULL(max(CASE WHEN tha.code='pressureSorePosition' THEN tha.content END),"")  AS pressureSorePosition,
+	        IFNULL(max(CASE WHEN tha.code='pressureSoreLevel' THEN tha.content END),"")  AS pressureSoreLevel,
+	        IFNULL(max(CASE WHEN tha.code='pressureSoreRange' THEN tha.content END),"")  AS pressureSoreRange,
+	        IFNULL(max(CASE WHEN tha.code='urineNormal' THEN tha.content END),"")  AS urineNormal,
+	        IFNULL(max(CASE WHEN tha.code='urineIncontinence' THEN tha.content END),"")  AS urineIncontinence,
+	        IFNULL(max(CASE WHEN tha.code='urineFrequent' THEN tha.content END),"")  AS urineFrequent,
+	        IFNULL(max(CASE WHEN tha.code='urineUrgency' THEN tha.content END),"")  AS urineUrgency,
+	        IFNULL(max(CASE WHEN tha.code='urinePain' THEN tha.content END),"")  AS urinePain,
+	        IFNULL(max(CASE WHEN tha.code='urineLittle' THEN tha.content END),"")  AS urineLittle,
+	        IFNULL(max(CASE WHEN tha.code='urineRetention' THEN tha.content END),"")  AS urineRetention,
+	        IFNULL(max(CASE WHEN tha.code='urineBlood' THEN tha.content END),"")  AS urineBlood,
+	        IFNULL(max(CASE WHEN tha.code='urineProtein' THEN tha.content END),"")  AS urineProtein,
+	        IFNULL(max(CASE WHEN tha.code='urineRetentionCatheter' THEN tha.content END),"")  AS urineRetentionCatheter,
+      	    IFNULL(max(CASE WHEN tha.code='urineStoma' THEN tha.content END),"")  AS urineStoma,
+	        IFNULL(max(CASE WHEN tha.code='urineOther' THEN tha.content END),"")  AS urineOther,
+	        IFNULL(max(CASE WHEN tha.code='urineOtherContent' THEN tha.content END),"")  AS urineOtherContent,
+	        IFNULL(max(CASE WHEN tha.code='shitNormal' THEN tha.content END),"")  AS shitNormal,
+	        IFNULL(max(CASE WHEN tha.code='shitIncontinence' THEN tha.content END),"")  AS shitIncontinence,
+	        IFNULL(max(CASE WHEN tha.code='shitConstipation' THEN tha.content END),"")  AS shitConstipation,
+	        IFNULL(max(CASE WHEN tha.code='shitBlood' THEN tha.content END),"")  AS shitBlood,
+	        IFNULL(max(CASE WHEN tha.code='shitDiarrhea' THEN tha.content END),"")  AS shitDiarrhea,
+	        IFNULL(max(CASE WHEN tha.code='shitDiarrheaNum' THEN tha.content END),"")  AS shitDiarrheaNum,
+	        IFNULL(max(CASE WHEN tha.code='shitStoma' THEN tha.content END),"")  AS shitStoma,
+	        IFNULL(max(CASE WHEN tha.code='shitOther' THEN tha.content END),"")  AS shitOther,
+	        IFNULL(max(CASE WHEN tha.code='shitOtherContent' THEN tha.content END),"")  AS shitOtherContent,
+	        IFNULL(max(CASE WHEN tha.code='emotionStable' THEN tha.content END),"")  AS emotionStable,
+	        IFNULL(max(CASE WHEN tha.code='emotionAnxious' THEN tha.content END),"")  AS emotionAnxious,
+	        IFNULL(max(CASE WHEN tha.code='emotionNervous' THEN tha.content END),"")  AS emotionNervous,
+	        IFNULL(max(CASE WHEN tha.code='emotionFear' THEN tha.content END),"")  AS emotionFear,
+	        IFNULL(max(CASE WHEN tha.code='emotionOther' THEN tha.content END),"")  AS emotionOther,
+	        IFNULL(max(CASE WHEN tha.code='emotionOtherContent' THEN tha.content END),"")  AS emotionOtherContent,
+	        IFNULL(max(CASE WHEN tha.code='smoke' THEN tha.content END),"")  AS smoke,
+	        IFNULL(max(CASE WHEN tha.code='smokeContent' THEN tha.content END),"")  AS smokeContent,
+	        IFNULL(max(CASE WHEN tha.code='drink' THEN tha.content END),"")  AS drink,
+	        IFNULL(max(CASE WHEN tha.code='drinkContent' THEN tha.content END),"")  AS drinkContent,
+	        IFNULL(max(CASE WHEN tha.code='dietSalty' THEN tha.content END),"")  AS dietSalty,
+	        IFNULL(max(CASE WHEN tha.code='dietSweet' THEN tha.content END),"")  AS dietSweet,
+	        IFNULL(max(CASE WHEN tha.code='dietPungent' THEN tha.content END),"")  AS dietPungent,
+	        IFNULL(max(CASE WHEN tha.code='dietGreasy' THEN tha.content END),"")  AS dietGreasy,
+	        IFNULL(max(CASE WHEN tha.code='dietLight' THEN tha.content END),"")  AS dietLight,
+        	IFNULL(max(CASE WHEN tha.code='dietOther' THEN tha.content END),"")  AS dietOther,
+	        IFNULL(max(CASE WHEN tha.code='dietOtherContent' THEN tha.content END),"")  AS dietOtherContent,
+	        IFNULL(max(CASE WHEN tha.code='dietAvoid' THEN tha.content END),"")  AS dietAvoid,
+	        IFNULL(max(CASE WHEN tha.code='sleepNormal' THEN tha.content END),"")  AS sleepNormal,
+	        IFNULL(max(CASE WHEN tha.code='sleepLotDream' THEN tha.content END),"")  AS sleepLotDream,
+	        IFNULL(max(CASE WHEN tha.code='sleepToWakeUp' THEN tha.content END),"")  AS sleepToWakeUp,
+	        IFNULL(max(CASE WHEN tha.code='sleepHard' THEN tha.content END),"")  AS sleepHard,
+	        IFNULL(max(CASE WHEN tha.code='sleepHour' THEN tha.content END),"")  AS sleepHour,
+	        IFNULL(max(CASE WHEN tha.code='sleepDrugAssisted' THEN tha.content END),"")  AS sleepDrugAssisted,
+	        IFNULL(max(CASE WHEN tha.code='sleepDrugAssistedContent' THEN tha.content END),"")  AS sleepDrugAssistedContent,
+	        IFNULL(max(CASE WHEN tha.code='scoreTime' THEN tha.content END),"")  AS scoreTime,
+	        IFNULL(max(CASE WHEN tha.code='bradenScore' THEN tha.content END),"")  AS bradenScore,
+	        IFNULL(max(CASE WHEN tha.code='morseScore' THEN tha.content END),"")  AS morseScore,
+	        IFNULL(max(CASE WHEN tha.code='autarDvtScore' THEN tha.content END),"")  AS autarDvtScore,
+	        IFNULL(max(CASE WHEN tha.code='adlScore' THEN tha.content END),"")  AS adlScore,
+	        IFNULL(max(CASE WHEN tha.code='familyAttitude' THEN tha.content END),"")  AS familyAttitude,
+	        IFNULL(max(CASE WHEN tha.code='dietaryStatus' THEN tha.content END),"")  AS dietaryStatus,
+	        IFNULL(max(CASE WHEN tha.code='selfCareAbility' THEN tha.content END),"")  AS selfCareAbility,
+	        IFNULL(max(CASE WHEN tha.code='isolationStatus' THEN dcie.common_item_name END),"")  AS isolationStatus,
+	        IFNULL(max(CASE WHEN tha.code='vomit' THEN tha.content END),"")  AS vomit,
+	        IFNULL(max(CASE WHEN tha.code='developmentalDegree' THEN dcif.common_item_name END),"")  AS developmentalDegree,
+	        IFNULL(max(CASE WHEN tha.code='health' THEN tha.content END),"")  AS health,
+	        IFNULL(max(CASE WHEN tha.code='infectiousDiseases' THEN tha.content END),"")  AS infectiousDiseases,
+	        IFNULL(max(CASE WHEN tha.code='bedsideDoctor' THEN tha.content END),"")  AS bedsideDoctor,
+	        IFNULL(max(CASE WHEN tha.code='responsibleNurse' THEN tha.content END),"")  AS responsibleNurse,
+	        IFNULL(max(CASE WHEN tha.code='wardEnvironment' THEN tha.content END),"")  AS wardEnvironment,
+	        IFNULL(max(CASE WHEN tha.code='wardSystem' THEN tha.content END),"")  AS wardSystem,
+	        IFNULL(max(CASE WHEN tha.code='visitingRegulations' THEN tha.content END),"")  AS visitingRegulations,
+	        IFNULL(max(CASE WHEN tha.code='dietaryArrangement' THEN tha.content END),"")  AS dietaryArrangement,
+	        IFNULL(max(CASE WHEN tha.code='psychologicalCounseling' THEN tha.content END),"")  AS psychologicalCounseling,
+	        IFNULL(max(CASE WHEN tha.code='noGoingOut' THEN tha.content END),"")  AS noGoingOut,
+	        IFNULL(max(CASE WHEN tha.code='wristStrap' THEN tha.content END),"")  AS wristStrap,
+	        IFNULL(max(CASE WHEN tha.code='inHospitalOther' THEN tha.content END),"")  AS inHospitalOther,
+	        IFNULL(max(CASE WHEN tha.code='inHospitalOtherContent' THEN tha.content END),"")  AS inHospitalOtherContent,
+	        IFNULL(max(CASE WHEN tha.code='skinNursing' THEN tha.content END),"")  AS skinNursing,
+	        IFNULL(max(CASE WHEN tha.code='nutritionNursing' THEN tha.content END),"")  AS nutritionNursing,
+	        IFNULL(max(CASE WHEN tha.code='postureNursing' THEN tha.content END),"")  AS postureNursing,
+	        IFNULL(max(CASE WHEN tha.code='mentalNursing' THEN dcig.common_item_name END),"")  AS mentalNursing,
+	        IFNULL(max(CASE WHEN tha.code='dietNursing' THEN dcih.common_item_name END),"")  AS dietNursing,
+	        IFNULL(max(CASE WHEN tha.code='safetyNursing' THEN dcii.common_item_name END),"")  AS safetyNursing,
+	        IFNULL(max(CASE WHEN tha.code='abnormalDescription' THEN tha.content END),"")  AS abnormalDescription,
+	        IFNULL(max(CASE WHEN tha.code='informDoctorTime' THEN tha.content END),"")  AS informDoctorTime,
+	        IFNULL(max(CASE WHEN tha.code='nurseSignature' THEN tua.user_name END),"")  AS nurseSignature,
+	        IFNULL(max(CASE WHEN tha.code='examineNurseSignature' THEN tub.user_name END),"")  AS examineNurseSignature,
+          	IFNULL(max(CASE WHEN tha.code='examineTime' THEN tha.content END),"")  AS examineTime
+        FROM
+	     table_hospitalized_assessment tha
+        LEFT JOIN dict_common_item dcia ON dcia.common_item_code=tha.content AND dcia.type='nation'
+        LEFT JOIN dict_common_item dcib ON dcib.common_item_code=tha.content AND dcib.type='occupation'
+        LEFT JOIN dict_common_item dcic ON dcic.common_item_code=tha.content AND dcic.type='education'
+        LEFT JOIN dict_common_item dcid ON dcid.common_item_code=tha.content AND dcid.type='marital_state'
+        LEFT JOIN dict_common_item dcie ON dcie.common_item_code=tha.content AND dcie.type='isolation_status'
+        LEFT JOIN dict_common_item dcif ON dcif.common_item_code=tha.content AND dcif.type='developmental_degree'
+        LEFT JOIN dict_common_item dcig ON dcig.common_item_code=tha.content AND dcig.type='mental_nursing'
+        LEFT JOIN dict_common_item dcih ON dcih.common_item_code=tha.content AND dcih.type='diet_nursing'
+        LEFT JOIN dict_common_item dcii ON dcii.common_item_code=tha.content AND dcii.type='safety_nursing'
+        LEFT JOIN table_user tua ON tua.login_name=tha.content
+        LEFT JOIN table_user tub ON tub.login_name=tha.content
+        WHERE
+	      1 = 1
+        and status != -1
+        <if test="patientId != null and patientId != ''">
+            and patient_id=#{patientId}
+        </if>
+        <if test="assessmentId != null and assessmentId != ''">
+            and assessment_id=#{assessmentId}
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        GROUP BY
+	      tha.assessment_id
     </select>
 </mapper>

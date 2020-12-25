@@ -173,4 +173,153 @@
         AND date_format(data_time, '%Y-%m-%d %H:%i') BETWEEN #{startTime} AND #{endTime}
     </select>
 
+    <!-- 查询病人某段时间内的入量总数 -->
+    <select id="getInTotal" resultType="java.lang.String" parameterType="java.util.Map">
+        SELECT
+         IFNULL(SUM(dosage),0)
+        FROM
+        table_input_amount
+        WHERE
+        1 = 1
+        AND status != - 1
+        AND status= #{status}
+        AND patient_id = #{patientId}
+        AND date_format(data_time, '%Y-%m-%d %H:%i:%s') BETWEEN #{startTime} AND #{endTime}
+    </select>
+
+    <!-- 查询病人某段时间内各个入量类型的入量总数 -->
+    <select id="getInAnalyze" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+         IFNULL(SUM(tia.dosage),0) as dosage ,
+        dci.common_item_name AS name
+        FROM
+        table_input_amount tia  LEFT JOIN dict_common_item dci ON dci.common_item_code = tia.order_type AND dci.type='intake'
+        WHERE
+        1 = 1
+        and tia.status!=-1
+        AND (tia.order_type!=NULL || tia.order_type!='')
+        AND (dci.common_item_name !=null || dci.common_item_name !='')
+        AND tia.status= #{status}
+        AND tia.patient_id = #{patientId}
+        AND date_format(tia.data_time, '%Y-%m-%d %H:%i:%s') BETWEEN #{startTime} AND #{endTime}
+        GROUP BY tia.order_type
+    </select>
+
+    <!-- 按天查询某段时间内病人出入量列表 -->
+    <select id="getInAndOutAnalyzeByDay" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            ab.data_time,
+            SUM(ab.in_dosage),
+            SUM(ab.out_dosage)
+        FROM
+            (
+                (
+                    SELECT
+                        IFNULL(
+                            date_format(data_time, '%Y-%m-%d'),
+                            ""
+                        ) AS data_time,
+                        IFNULL(SUM(dosage), "") in_dosage,
+                        0 AS out_dosage
+                    FROM
+                        table_input_amount
+                    WHERE
+                        patient_id = #{patientId}
+                    AND status != -1
+                    AND status= #{status}
+                    AND date_format(data_time, '%Y-%m-%d %H:%i:%s') BETWEEN #{startTime} AND #{endTime}
+                    GROUP BY
+                        date_format(data_time, '%Y-%m-%d')
+                )
+                UNION ALL
+                    (
+                        SELECT
+                            IFNULL(
+                                date_format(data_time, '%Y-%m-%d'),
+                                ""
+                            ) AS data_time,
+                            0 in_dosage,
+                            IFNULL(SUM(dosage), "") AS out_dosage
+                        FROM
+                            table_output_amount
+                        WHERE
+                            patient_id = #{patientId}
+                        AND status != -1
+                        AND status= #{status}
+                        AND date_format(data_time, '%Y-%m-%d %H:%i:%s') BETWEEN #{startTime} AND #{endTime}
+                        GROUP BY
+                            date_format(data_time, '%Y-%m-%d')
+                    )
+            ) AS ab
+        GROUP BY
+            ab.data_time
+        ORDER BY
+            ab.data_time
+    </select>
+
+    <!-- 按小时查询某段时间内病人出入量列表 -->
+    <select id="getInAndOutAnalyzeByTime" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        ab.date,
+        ab.time,
+        SUM(ab.in_dosage),
+        SUM(ab.out_dosage)
+        FROM
+            (
+                (
+                    SELECT
+                        IFNULL(
+                            date_format(data_time, '%Y-%m-%d'),
+					""
+                        ) AS date,
+                        IFNULL(
+                            date_format(data_time, '%H'),
+                            ""
+                        ) AS time,
+                        IFNULL(SUM(dosage), "") in_dosage,
+                        0 AS out_dosage
+                    FROM
+                        table_input_amount
+                    WHERE
+                        patient_id = #{patientId}
+                    AND status !=- 1
+                    AND status= #{status}
+                    AND date_format(data_time, '%Y-%m-%d %H:%i:%s') BETWEEN #{startTime} AND #{endTime}
+                    AND (dosage != NULL || dosage != "")
+                    GROUP BY
+                        date_format(data_time, '%Y-%m-%d %H')
+                )
+		UNION ALL
+			(
+				SELECT
+					IFNULL(
+						date_format(data_time, '%Y-%m-%d'),
+						""
+					) AS date,
+					IFNULL(
+						date_format(data_time, '%H'),
+						""
+					) AS time,
+					0 in_dosage,
+					IFNULL(SUM(dosage), "") AS out_dosage
+				FROM
+					table_output_amount
+				WHERE
+					patient_id = #{patientId}
+				AND status !=- 1
+				AND status= #{status}
+                AND date_format(data_time, '%Y-%m-%d %H:%i:%s') BETWEEN #{startTime} AND #{endTime}
+				AND (dosage != NULL || dosage != "")
+				GROUP BY
+					date_format(data_time, '%Y-%m-%d %H')
+                    )
+            ) AS ab
+        GROUP BY
+            ab.date,
+            ab.time
+        ORDER BY
+            ab.date,
+            ab.time
+    </select>
+
 </mapper>

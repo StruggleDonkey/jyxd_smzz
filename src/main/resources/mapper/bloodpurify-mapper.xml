@@ -90,7 +90,7 @@
         IFNULL(max(CASE WHEN code='endTime' THEN content END),"")  AS endTime,
         maintenance_id
         from
-          t_maintenance_blood_purify_info
+        table_blood_purify
         WHERE 1=1
         <if test="status != null ">
             and  status= #{status}
@@ -104,7 +104,7 @@
         SELECT
         count(maintenance_id)
         from
-        t_maintenance_blood_purify_info
+        table_blood_purify
         WHERE 1=1
         <if test="status != null ">
             and  status= #{status}
@@ -122,9 +122,6 @@
         and  status != -1
         <if test="maintenanceId != null and maintenanceId != ''">
             and  maintenance_id =#{maintenanceId}
-        </if>
-        <if test="status != null ">
-            and  status= #{status}
         </if>
     </select>
 
@@ -161,7 +158,7 @@
         IFNULL(max(CASE WHEN code='doctorSignature' THEN content END),"")  AS doctorSignature,
         IFNULL(max(CASE WHEN code='dataTime' THEN content END),"")  AS dataTime
         from
-        t_maintenance_blood_purify_info
+        table_blood_purify
         WHERE 1=1
         <if test="status != null ">
             and  status= #{status}

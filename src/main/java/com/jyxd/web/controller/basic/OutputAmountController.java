@@ -423,4 +423,36 @@ public class OutputAmountController {
         return json.toString();
     }
 
+    /**
+     * 统计分析--出入量--出量分析
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/getOutAnalyze",method= RequestMethod.POST)
+    @ResponseBody
+    public String getOutAnalyze(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        List<Map<String,Object>> list=outputAmountService.getOutAnalyze(map);
+        if(list!=null && list.size()>0){
+            JSONArray jsonArray=new JSONArray();
+            JSONArray jsonArray1=new JSONArray();
+            for (int i = 0; i < list.size() ; i++) {
+                Map<String,Object> jsonObject= list.get(i);
+                jsonArray.add(jsonObject.get("name").toString());
+                JSONObject obj=new JSONObject();
+                obj.put("value",jsonObject.get("dosage").toString());
+                obj.put("name",jsonObject.get("name").toString());
+                jsonArray1.add(obj);
+            }
+            json.put("msg","成功");
+            json.put("legend_data",jsonArray);
+            json.put("series_data",jsonArray1);
+        }
+        json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
 }

@@ -64,4 +64,32 @@ public interface InputAmountDao {
      * @return
      */
     Map<String,Object> getInAmount(Map<String,Object> map);
+
+    /**
+     * 查询病人某段时间内的入量总数
+     * @param map
+     * @return
+     */
+     String getInTotal(Map<String,Object> map);
+
+    /**
+     * 查询病人某段时间内各个入量类型的入量总数
+     * @param map
+     * @return
+     */
+     List<Map<String,Object>> getInAnalyze(Map<String,Object> map);
+
+    /**
+     * 按天查询某段时间内病人出入量列表
+     * @param map
+     * @return
+     */
+    List<Map<String,Object>> getInAndOutAnalyzeByDay(Map<String,Object> map);
+
+    /**
+     * 按小时查询某段时间内病人出入量列表
+     * @param map
+     * @return
+     */
+     List<Map<String,Object>> getInAndOutAnalyzeByTime(Map<String,Object> map);
 }
