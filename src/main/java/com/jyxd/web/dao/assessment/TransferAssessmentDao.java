@@ -43,4 +43,39 @@ public interface TransferAssessmentDao {
      * @return
      */
     int queryNum(Map<String, Object> map);
+
+    /**
+     * 根据评估主键查询对象列表
+     * @param map
+     * @return
+     */
+     List<TransferAssessment> getListByAssessmentIdAndPatientId(Map<String,Object> map);
+
+    /**
+     * 根据记录时间查询对象列表
+     * @param map
+     * @return
+     */
+     List<TransferAssessment> getListByDataTimeAndPatientId(Map<String,Object> map);
+
+    /**
+     * 根据条件分页查询转科交接表记录列表--多表
+     * @param map
+     * @return list
+     */
+    List<Map<String,Object>> getList(Map<String, Object> map);
+
+    /**
+     * 根据条件查询列表总记录数--多表
+     * @param map
+     * @return
+     */
+    int getNum(Map<String, Object> map);
+
+    /**
+     * 护理评估--入院护理评估单--历史列表--选择
+     * @param map
+     * @return
+     */
+     Map<String,Object> getDataByAssessmentId(Map<String,Object> map);
 }

@@ -209,8 +209,8 @@
     <select id="getInAndOutAnalyzeByDay" resultType="java.util.Map" parameterType="java.util.Map">
         SELECT
             ab.data_time,
-            SUM(ab.in_dosage),
-            SUM(ab.out_dosage)
+            IFNULL(SUM(ab.in_dosage),0) AS in_dosage,
+            IFNULL(SUM(ab.out_dosage),0) AS out_dosage
         FROM
             (
                 (
@@ -262,8 +262,8 @@
         SELECT
         ab.date,
         ab.time,
-        SUM(ab.in_dosage),
-        SUM(ab.out_dosage)
+        IFNULL(SUM(ab.in_dosage),0) AS in_dosage,
+        IFNULL(SUM(ab.out_dosage),0) AS out_dosage
         FROM
             (
                 (

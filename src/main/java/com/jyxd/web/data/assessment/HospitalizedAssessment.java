@@ -60,12 +60,6 @@ public class HospitalizedAssessment implements Serializable {
     private Date dataTime;
 
     /**
-     * 班别(0:日班 1:晚班 2:夜班)
-     */
-    @Column(name = "shift")
-    private int shift;
-
-    /**
      * 项目code
      * （联系人及电话：contactPerson
      *  民族：nation  （通用字典）

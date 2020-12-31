@@ -33,4 +33,37 @@ public class TransferAssessmentService {
     }
 
     public int queryNum(Map<String,Object> map){return transferAssessmentDao.queryNum(map);}
+
+    /**
+     * 根据评估主键查询对象列表
+     * @param map
+     * @return
+     */
+    public List<TransferAssessment> getListByAssessmentIdAndPatientId(Map<String,Object> map){
+        return transferAssessmentDao.getListByAssessmentIdAndPatientId(map);
+    }
+
+    /**
+     * 根据记录时间查询对象列表
+     * @param map
+     * @return
+     */
+    public List<TransferAssessment> getListByDataTimeAndPatientId(Map<String,Object> map){
+        return transferAssessmentDao.getListByDataTimeAndPatientId(map);
+    }
+
+    public List<Map<String,Object>> getList(Map<String,Object> map){
+        return transferAssessmentDao.getList(map);
+    }
+
+    public int getNum(Map<String,Object> map){return transferAssessmentDao.getNum(map);}
+
+    /**
+     * 护理评估--入院护理评估单--历史列表--选择
+     * @param map
+     * @return
+     */
+    public Map<String,Object> getDataByAssessmentId(Map<String,Object> map){
+        return transferAssessmentDao.getDataByAssessmentId(map);
+    }
 }

@@ -83,4 +83,147 @@
         </if>
     </select>
 
+    <!--根据评估主键和病人主键查询对象列表 -->
+    <select id="getListByAssessmentIdAndPatientId" resultMap="transferAssessmentMap" parameterType="java.util.Map">
+        select
+        <include refid="transferAssessment_colums"></include>
+        from
+        table_transfer_assessment
+        where
+        1=1
+        and  status != -1
+        <if test="assessmentId != null and assessmentId != ''">
+            and  assessment_id =#{assessmentId}
+        </if>
+        <if test="patientId != null and patientId != ''">
+            and  patient_id =#{patientId}
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
+
+    <!-- 根据时间和病人主键查询对象列表-->
+    <select id="getListByDataTimeAndPatientId" resultMap="transferAssessmentMap" parameterType="java.util.Map">
+        select
+        <include refid="transferAssessment_colums"></include>
+        from
+        table_transfer_assessment
+        where
+        1=1
+        and  status != -1
+        <if test="assessmentId != null and assessmentId != ''">
+            and  assessment_id =#{assessmentId}
+        </if>
+        <if test="dataTime != null and dataTime != ''">
+            and date_format(data_time, '%Y-%m-%d %H:%i:%s')=#{dataTime}
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
+
+    <select id="getList" resultType="java.util.Map">
+        SELECT
+        tra.data_time AS data_time,
+        tra.assessment_id AS assessment_id,
+        tu.user_name AS user_name
+        FROM
+        table_transfer_assessment tra
+        LEFT JOIN table_user tu ON tu.login_name = tra.operator_code
+        WHERE
+        1 = 1
+        and  tra.status != -1
+        <if test="status != null ">
+            and  tra.status= #{status}
+        </if>
+        <if test="patientId != null and patientId != ''">
+            and tra.patient_id=#{patientId}
+        </if>
+        GROUP BY
+        tra..assessment_id
+        ORDER BY data_time
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="getNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        SELECT
+        count(assessment_id)
+        FROM
+        table_transfer_assessment
+        WHERE
+        1 = 1
+        and  status != -1
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="patientId != null and patientId != ''">
+            and patient_id=#{patientId}
+        </if>
+        GROUP BY
+        tha.assessment_id
+    </select>
+
+    <select id="getDataByAssessmentId" resultType="java.util.Map" parameterType="java.util.Map">
+       SELECT
+            IFNULL(max(tra.visit_id),"")  AS visit_id,
+            IFNULL(max(tra.visit_code),"")  AS visit_code,
+            IFNULL(max(tra.patient_id),"")  AS patient_id,
+            IFNULL(max(tra.assessment_id),"")  AS assessment_id,
+            IFNULL(max(CASE WHEN tra.code='sourceDepartment' THEN tra.content END),"")  AS sourceDepartment,
+            IFNULL(max(CASE WHEN tra.code='bedName' THEN tra.content END),"")  AS bedName,
+            IFNULL(max(CASE WHEN tra.code='name' THEN tra.content END),"")  AS name,
+            IFNULL(max(CASE WHEN tra.code='sex' THEN tra.content END),"")  AS sex,
+            IFNULL(max(CASE WHEN tra.code='diagnosisName' THEN tra.content END),"")  AS diagnosisName,
+            IFNULL(max(CASE WHEN tra.code='targetDepartment' THEN tra.content END),"")  AS targetDepartment,
+            IFNULL(max(CASE WHEN tra.code='wristTape' THEN tra.content END),"")  AS wristTape,
+            IFNULL(max(CASE WHEN tra.code='syncTime' THEN tra.content END),"")  AS syncTime,
+            IFNULL(max(CASE WHEN tra.code='t' THEN tra.content END),"")  AS t,
+            IFNULL(max(CASE WHEN tra.code='p' THEN tra.content END),"")  AS p,
+            IFNULL(max(CASE WHEN tra.code='r' THEN tra.content END),"")  AS r,
+            IFNULL(max(CASE WHEN tra.code='bp' THEN tra.content END),"")  AS bp,
+            IFNULL(max(CASE WHEN tra.code='spo2' THEN tra.content END),"")  AS 'spo2',
+            IFNULL(max(CASE WHEN tra.code='consciousness' THEN tra.content END),"")  AS consciousness,
+            IFNULL(max(CASE WHEN tra.code='otherConsciousness' THEN tra.content END),"")  AS otherConsciousness,
+            IFNULL(max(CASE WHEN tra.code='infusionPunctureType' THEN tra.content END),"")  AS infusionPunctureType,
+            IFNULL(max(CASE WHEN tra.code='infustionClear' THEN tra.content END),"")  AS infustionClear,
+            IFNULL(max(CASE WHEN tra.code='isInfustioning' THEN tra.content END),"")  AS isInfustioning,
+            IFNULL(max(CASE WHEN tra.code='infustionPathNum' THEN tra.content END),"")  AS infustionPathNum,
+            IFNULL(max(CASE WHEN tra.code='infustionDrug' THEN tra.content END),"")  AS infustionDrug,
+            IFNULL(max(CASE WHEN tra.code='infustionLeftOver' THEN tra.content END),"")  AS infustionLeftOver,
+            IFNULL(max(CASE WHEN tra.code='skinComplete' THEN tra.content END),"")  AS skinComplete,
+            IFNULL(max(CASE WHEN tra.code='skinOtherDescription' THEN tra.content END),"")  AS skinOtherDescription,
+            IFNULL(max(CASE WHEN tra.code='hasArtificialAirway' THEN tra.content END),"")  AS hasArtificialAirway,
+            IFNULL(max(CASE WHEN tra.code='artificialAirwayType' THEN tra.content END),"")  AS artificialAirwayType,
+            IFNULL(max(CASE WHEN tra.code='hasDrainageTube' THEN tra.content END),"")  AS hasDrainageTube,
+            IFNULL(max(CASE WHEN tra.code='drainageTubeList' THEN tra.content END),"")  AS drainageTubeList,
+            IFNULL(max(CASE WHEN tra.code='otherDrainageTube' THEN tra.content END),"")  AS otherDrainageTube,
+            IFNULL(max(CASE WHEN tra.code='hasMedicalRecord' THEN tra.content END),"")  AS hasMedicalRecord,
+            IFNULL(max(CASE WHEN tra.code='hasSpecialThing' THEN tra.content END),"")  AS hasSpecialThing,
+            IFNULL(max(CASE WHEN tra.code='specialThing' THEN tra.content END),"")  AS specialThing,
+            IFNULL(max(CASE WHEN tra.code='specialTransfer' THEN tra.content END),"")  AS specialTransfer,
+            IFNULL(max(CASE WHEN tra.code='transferNurseSignature' THEN tua.user_name END),"")  AS transferNurseSignature,
+            IFNULL(max(CASE WHEN tra.code='transferTime' THEN tra.content END),"")  AS transferTime,
+            IFNULL(max(CASE WHEN tra.code='inNurseSignature' THEN tub.user_name END),"")  AS inNurseSignature,
+            IFNULL(max(CASE WHEN tra.code='inTime' THEN tra.content END),"")  AS inTime
+       FROM table_transfer_assessment tra
+       LEFT JOIN table_user tua ON tua.login_name=tra.content
+       LEFT JOIN table_user tub ON tub.login_name=tra.content
+       WHERE
+        1 = 1
+       and tra.status != -1
+        <if test="patientId != null and patientId != ''">
+            and tra.patient_id=#{patientId}
+        </if>
+        <if test="assessmentId != null and assessmentId != ''">
+            and tra.assessment_id=#{assessmentId}
+        </if>
+        <if test="status != null ">
+            and tra.status= #{status}
+        </if>
+        GROUP BY
+        tra.assessment_id
+    </select>
+
 </mapper>

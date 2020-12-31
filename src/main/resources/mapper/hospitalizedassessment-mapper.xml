@@ -9,7 +9,6 @@
         <result column="visit_code" property="visitCode" jdbcType="VARCHAR"/>
         <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
         <result column="data_time" property="dataTime" />
-        <result column="shift" property="shift" jdbcType="INTEGER"/>
         <result column="code" property="code" jdbcType="VARCHAR"/>
         <result column="content" property="content" jdbcType="VARCHAR"/>
         <result column="create_time" property="createTime" />
@@ -17,13 +16,13 @@
         <result column="status" property="status" jdbcType="INTEGER"/>
     </resultMap>
     
-    <sql id="hospitalizedAssessment_colums">id,assessment_id,visit_id,visit_code,patient_id,data_time,shift,code,content,create_time,operator_code,status</sql>
+    <sql id="hospitalizedAssessment_colums">id,assessment_id,visit_id,visit_code,patient_id,data_time,code,content,create_time,operator_code,status</sql>
 
-    <sql id="hospitalizedAssessment_propertys">#{id},#{assessmentId},#{visitId},#{visitCode},,#{patientId},#{dataTime},#{shift},#{code},
-                                  #{content},#{createTime},#{createTime},#{operatorCode},#{status}</sql>
+    <sql id="hospitalizedAssessment_propertys">#{id},#{assessmentId},#{visitId},#{visitCode},#{patientId},#{dataTime},#{code},
+                                  #{content},#{createTime},#{operatorCode},#{status}</sql>
 
     <sql id="hospitalizedAssessment_update">assessment_id=#{assessmentId},visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},
-                              data_time=#{dataTime},shift=#{shift},code=#{code},content=#{content},create_time=#{createTime},
+                              data_time=#{dataTime},code=#{code},content=#{content},create_time=#{createTime},
                               operator_code=#{operatorCode},status=#{status}</sql>
 
     <insert id="insert">
@@ -132,12 +131,12 @@
         LEFT JOIN table_user tu ON tu.login_name = tha.operator_code
         WHERE
         1 = 1
-        and  status != -1
+        and  tha.status != -1
         <if test="status != null ">
-            and  status= #{status}
+            and  tha.status= #{status}
         </if>
         <if test="patientId != null and patientId != ''">
-            and patient_id=#{patientId}
+            and tha.patient_id=#{patientId}
         </if>
         GROUP BY
         tha.assessment_id
@@ -164,7 +163,7 @@
         tha.assessment_id
     </select>
 
-    <select id="chooseData" resultType="java.util.Map">
+    <select id="getDataByAssessmentId" resultType="java.util.Map">
         SELECT
 	        IFNULL(max(CASE WHEN tha.code='nation' THEN dcia.common_item_name END),"")  AS nation,
 	        IFNULL(max(CASE WHEN tha.code='occupation' THEN dcib.common_item_name END),"")  AS occupation,
@@ -322,15 +321,15 @@
         LEFT JOIN table_user tub ON tub.login_name=tha.content
         WHERE
 	      1 = 1
-        and status != -1
+        and tha.status != -1
         <if test="patientId != null and patientId != ''">
-            and patient_id=#{patientId}
+            and tha.patient_id=#{patientId}
         </if>
         <if test="assessmentId != null and assessmentId != ''">
-            and assessment_id=#{assessmentId}
+            and tha.assessment_id=#{assessmentId}
         </if>
         <if test="status != null ">
-            and  status= #{status}
+            and  tha.status= #{status}
         </if>
         GROUP BY
 	      tha.assessment_id
