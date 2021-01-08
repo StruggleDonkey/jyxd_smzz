@@ -109,7 +109,7 @@ public class IcuLog implements Serializable {
     private String synValue;
 
     /**
-     * 状态（0：禁用 1：正常 -1：删除）
+     * 状态（0：进行中 1：已完成 -1：删除）
      */
     @Column(name = "status")
     private int status;

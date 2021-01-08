@@ -436,7 +436,7 @@ public class PatientScoreController {
                        jsonObject.put("signature","");//签名
                        jsonObject.put("mortalityRate","");//预计病死率
                        jsonObject.put("patientScoreId",patientScore.getId());//病人评分主键id
-                       jsonObject.put("date",times.substring(0,9));//日期 2020-11-16
+                       jsonObject.put("date",times.substring(0,10));//日期 2020-11-16
                        jsonObject.put("time",times.substring(11,16));//时间 14:42
                        jsonObject.put("score",patientScore.getScore());//总分
                        if(StringUtils.isNotEmpty(patientScore.getNursingStep())){

@@ -19,8 +19,8 @@
     
     <sql id="transferAssessment_colums">id,assessment_id,visit_id,visit_code,patient_id,data_time,shift,code,content,create_time,operator_code,status</sql>
 
-    <sql id="transferAssessment_propertys">#{id},#{assessmentId},#{visitId},#{visitCode},,#{patientId},#{dataTime},#{shift},#{code},
-                                  #{content},#{createTime},#{createTime},#{operatorCode},#{status}</sql>
+    <sql id="transferAssessment_propertys">#{id},#{assessmentId},#{visitId},#{visitCode},#{patientId},#{dataTime},#{shift},#{code},
+                                  #{content},#{createTime},#{operatorCode},#{status}</sql>
 
     <sql id="transferAssessment_update">assessment_id=#{assessmentId},visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},
                               data_time=#{dataTime},shift=#{shift},code=#{code},content=#{content},create_time=#{createTime},
@@ -125,7 +125,7 @@
 
     <select id="getList" resultType="java.util.Map">
         SELECT
-        tra.data_time AS data_time,
+        date_format(tra.data_time, '%Y-%m-%d %H:%i:%s') AS data_time,
         tra.assessment_id AS assessment_id,
         tu.user_name AS user_name
         FROM
@@ -141,8 +141,8 @@
             and tra.patient_id=#{patientId}
         </if>
         GROUP BY
-        tra..assessment_id
-        ORDER BY data_time
+        tra.assessment_id
+        ORDER BY tra.data_time
         <if test="start != null ">limit #{start},</if>
         <if test="size != null ">#{size}</if>
     </select>

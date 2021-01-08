@@ -34,4 +34,19 @@ public class IcuLogService {
 
     public int queryNum(Map<String,Object> map){return icuLogDao.queryNum(map);}
 
+    public List<Map<String,Object>> getList(Map<String,Object> map){
+        return icuLogDao.getList(map);
+    }
+
+    public int getNum(Map<String,Object> map){return icuLogDao.getNum(map);}
+
+    /**
+     * 病人管理-患者日志-日志列表-编辑回显-根据主键id查询对象详情
+     * @param map
+     * @return
+     */
+    public Map<String,Object> getEditData(Map<String,Object> map){
+        return icuLogDao.getEditData(map);
+    }
+
 }

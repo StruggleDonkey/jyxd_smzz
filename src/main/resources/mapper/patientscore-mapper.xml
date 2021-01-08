@@ -149,14 +149,14 @@
             IFNULL(psi.item_id, "") AS item_id,
             IFNULL(psi.parent_id, "") AS parent_id,
             IFNULL(psi.patient_id, "") AS patient_id,
-            IFNULL(b. NAME, "") AS NAME,
+            IFNULL(b.name, "") AS name,
             IFNULL(b.score_item_name, "") AS score_item_name,
             IFNULL(psi.type, "") AS type,
             IFNULL(psi.patient_score_id, "") AS patient_score_id
         FROM
             (
                 SELECT
-                    a.*, dsi.score_item_name AS NAME
+                    a.*, dsi.score_item_name AS name
                 FROM
                     (
                         SELECT

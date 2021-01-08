@@ -213,1004 +213,1004 @@ public class NursingPlanController {
         json.put("data",new ArrayList<>());
         json.put("msg","保存失败");
         String assessmentId=UUIDUtil.getUUID();
-        if(map!=null && map.containsKey("startDate-0") && StringUtils.isNotEmpty(map.get("startDate-0").toString())){
+        if(map!=null && map.containsKey("startDate_0") && StringUtils.isNotEmpty(map.get("startDate_0").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startDate-0");
-            nursingPlan.setContent(map.get("startDate-0").toString());
+            nursingPlan.setCode("startDate_0");
+            nursingPlan.setContent(map.get("startDate_0").toString());
             nursingPlanService.insert(nursingPlan);
         }
-        if(map!=null && map.containsKey("startDate-1") && StringUtils.isNotEmpty(map.get("startDate-1").toString())){
+        if(map!=null && map.containsKey("startDate_1") && StringUtils.isNotEmpty(map.get("startDate_1").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startDate-1");
-            nursingPlan.setContent(map.get("startDate-1").toString());
+            nursingPlan.setCode("startDate_1");
+            nursingPlan.setContent(map.get("startDate_1").toString());
             nursingPlanService.insert(nursingPlan);
         }
-        if(map!=null && map.containsKey("startDate-2") && StringUtils.isNotEmpty(map.get("startDate-2").toString())){
+        if(map!=null && map.containsKey("startDate_2") && StringUtils.isNotEmpty(map.get("startDate_2").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startDate-2");
-            nursingPlan.setContent(map.get("startDate-2").toString());
+            nursingPlan.setCode("startDate_2");
+            nursingPlan.setContent(map.get("startDate_2").toString());
             nursingPlanService.insert(nursingPlan);
         }
-        if(map!=null && map.containsKey("startDate-3") && StringUtils.isNotEmpty(map.get("startDate-3").toString())){
+        if(map!=null && map.containsKey("startDate_3") && StringUtils.isNotEmpty(map.get("startDate_3").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startDate-3");
-            nursingPlan.setContent(map.get("startDate-3").toString());
+            nursingPlan.setCode("startDate_3");
+            nursingPlan.setContent(map.get("startDate_3").toString());
             nursingPlanService.insert(nursingPlan);
         }
-        if(map!=null && map.containsKey("startDate-4") && StringUtils.isNotEmpty(map.get("startDate-4").toString())){
+        if(map!=null && map.containsKey("startDate_4") && StringUtils.isNotEmpty(map.get("startDate_4").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startDate-4");
-            nursingPlan.setContent(map.get("startDate-4").toString());
+            nursingPlan.setCode("startDate_4");
+            nursingPlan.setContent(map.get("startDate_4").toString());
             nursingPlanService.insert(nursingPlan);
         }
-        if(map!=null && map.containsKey("startDate-5") && StringUtils.isNotEmpty(map.get("startDate-5").toString())){
+        if(map!=null && map.containsKey("startDate_5") && StringUtils.isNotEmpty(map.get("startDate_5").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startDate-5");
-            nursingPlan.setContent(map.get("startDate-5").toString());
+            nursingPlan.setCode("startDate_5");
+            nursingPlan.setContent(map.get("startDate_5").toString());
             nursingPlanService.insert(nursingPlan);
         }
-        if(map!=null && map.containsKey("startDate-6") && StringUtils.isNotEmpty(map.get("startDate-6").toString())){
+        if(map!=null && map.containsKey("startDate_6") && StringUtils.isNotEmpty(map.get("startDate_6").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startDate-6");
-            nursingPlan.setContent(map.get("startDate-6").toString());
+            nursingPlan.setCode("startDate_6");
+            nursingPlan.setContent(map.get("startDate_6").toString());
             nursingPlanService.insert(nursingPlan);
         }
-        if(map!=null && map.containsKey("startDate-7") && StringUtils.isNotEmpty(map.get("startDate-7").toString())){
+        if(map!=null && map.containsKey("startDate_7") && StringUtils.isNotEmpty(map.get("startDate_7").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startDate-7");
-            nursingPlan.setContent(map.get("startDate-7").toString());
+            nursingPlan.setCode("startDate_7");
+            nursingPlan.setContent(map.get("startDate_7").toString());
             nursingPlanService.insert(nursingPlan);
         }
-        if(map!=null && map.containsKey("startDate-8") && StringUtils.isNotEmpty(map.get("startDate-8").toString())){
+        if(map!=null && map.containsKey("startDate_8") && StringUtils.isNotEmpty(map.get("startDate_8").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startDate-8");
-            nursingPlan.setContent(map.get("startDate-8").toString());
+            nursingPlan.setCode("startDate_8");
+            nursingPlan.setContent(map.get("startDate_8").toString());
             nursingPlanService.insert(nursingPlan);
         }
 
-        if(map!=null && map.containsKey("startDate-9") && StringUtils.isNotEmpty(map.get("startDate-9").toString())){
+        if(map!=null && map.containsKey("startDate_9") && StringUtils.isNotEmpty(map.get("startDate_9").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startDate-9");
-            nursingPlan.setContent(map.get("startDate-9").toString());
+            nursingPlan.setCode("startDate_9");
+            nursingPlan.setContent(map.get("startDate_9").toString());
             nursingPlanService.insert(nursingPlan);
         }
-        if(map!=null && map.containsKey("startDate-10") && StringUtils.isNotEmpty(map.get("startDate-10").toString())){
+        if(map!=null && map.containsKey("startDate_10") && StringUtils.isNotEmpty(map.get("startDate_10").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startDate-10");
-            nursingPlan.setContent(map.get("startDate-10").toString());
+            nursingPlan.setCode("startDate_10");
+            nursingPlan.setContent(map.get("startDate_10").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startDate-11") && StringUtils.isNotEmpty(map.get("startDate-11").toString())){
+        }if(map!=null && map.containsKey("startDate_11") && StringUtils.isNotEmpty(map.get("startDate_11").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startDate-11");
-            nursingPlan.setContent(map.get("startDate-11").toString());
+            nursingPlan.setCode("startDate_11");
+            nursingPlan.setContent(map.get("startDate_11").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startDate-12") && StringUtils.isNotEmpty(map.get("startDate-12").toString())){
+        }if(map!=null && map.containsKey("startDate_12") && StringUtils.isNotEmpty(map.get("startDate_12").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startDate-12");
-            nursingPlan.setContent(map.get("startDate-12").toString());
+            nursingPlan.setCode("startDate_12");
+            nursingPlan.setContent(map.get("startDate_12").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startDate-13") && StringUtils.isNotEmpty(map.get("startDate-13").toString())){
+        }if(map!=null && map.containsKey("startDate_13") && StringUtils.isNotEmpty(map.get("startDate_13").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startDate-13");
-            nursingPlan.setContent(map.get("startDate-13").toString());
+            nursingPlan.setCode("startDate_13");
+            nursingPlan.setContent(map.get("startDate_13").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startDate-14") && StringUtils.isNotEmpty(map.get("startDate-14").toString())){
+        }if(map!=null && map.containsKey("startDate_14") && StringUtils.isNotEmpty(map.get("startDate_14").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startDate-14");
-            nursingPlan.setContent(map.get("startDate-14").toString());
+            nursingPlan.setCode("startDate_14");
+            nursingPlan.setContent(map.get("startDate_14").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startDate-15") && StringUtils.isNotEmpty(map.get("startDate-15").toString())){
+        }if(map!=null && map.containsKey("startDate_15") && StringUtils.isNotEmpty(map.get("startDate_15").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startDate-15");
-            nursingPlan.setContent(map.get("startDate-15").toString());
+            nursingPlan.setCode("startDate_15");
+            nursingPlan.setContent(map.get("startDate_15").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startDate-16") && StringUtils.isNotEmpty(map.get("startDate-16").toString())){
+        }if(map!=null && map.containsKey("startDate_16") && StringUtils.isNotEmpty(map.get("startDate_16").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startDate-16");
-            nursingPlan.setContent(map.get("startDate-16").toString());
+            nursingPlan.setCode("startDate_16");
+            nursingPlan.setContent(map.get("startDate_16").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startDate-17") && StringUtils.isNotEmpty(map.get("startDate-17").toString())){
+        }if(map!=null && map.containsKey("startDate_17") && StringUtils.isNotEmpty(map.get("startDate_17").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startDate-17");
-            nursingPlan.setContent(map.get("startDate-17").toString());
+            nursingPlan.setCode("startDate_17");
+            nursingPlan.setContent(map.get("startDate_17").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startDate-18") && StringUtils.isNotEmpty(map.get("startDate-18").toString())){
+        }if(map!=null && map.containsKey("startDate_18") && StringUtils.isNotEmpty(map.get("startDate_18").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startDate-18");
-            nursingPlan.setContent(map.get("startDate-18").toString());
+            nursingPlan.setCode("startDate_18");
+            nursingPlan.setContent(map.get("startDate_18").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startDate-19") && StringUtils.isNotEmpty(map.get("startDate-19").toString())){
+        }if(map!=null && map.containsKey("startDate_19") && StringUtils.isNotEmpty(map.get("startDate_19").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startDate-19");
-            nursingPlan.setContent(map.get("startDate-19").toString());
+            nursingPlan.setCode("startDate_19");
+            nursingPlan.setContent(map.get("startDate_19").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startDate-20") && StringUtils.isNotEmpty(map.get("startDate-20").toString())){
+        }if(map!=null && map.containsKey("startDate_20") && StringUtils.isNotEmpty(map.get("startDate_20").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startDate-20");
-            nursingPlan.setContent(map.get("startDate-20").toString());
+            nursingPlan.setCode("startDate_20");
+            nursingPlan.setContent(map.get("startDate_20").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startDate-21") && StringUtils.isNotEmpty(map.get("startDate-21").toString())){
+        }if(map!=null && map.containsKey("startDate_21") && StringUtils.isNotEmpty(map.get("startDate_21").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startDate-21");
-            nursingPlan.setContent(map.get("startDate-21").toString());
+            nursingPlan.setCode("startDate_21");
+            nursingPlan.setContent(map.get("startDate_21").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startDate-22") && StringUtils.isNotEmpty(map.get("startDate-22").toString())){
+        }if(map!=null && map.containsKey("startDate_22") && StringUtils.isNotEmpty(map.get("startDate_22").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startDate-22");
-            nursingPlan.setContent(map.get("startDate-22").toString());
+            nursingPlan.setCode("startDate_22");
+            nursingPlan.setContent(map.get("startDate_22").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startDate-23") && StringUtils.isNotEmpty(map.get("startDate-23").toString())){
+        }if(map!=null && map.containsKey("startDate_23") && StringUtils.isNotEmpty(map.get("startDate_23").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startDate-23");
-            nursingPlan.setContent(map.get("startDate-23").toString());
+            nursingPlan.setCode("startDate_23");
+            nursingPlan.setContent(map.get("startDate_23").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startDate-24") && StringUtils.isNotEmpty(map.get("startDate-24").toString())){
+        }if(map!=null && map.containsKey("startDate_24") && StringUtils.isNotEmpty(map.get("startDate_24").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startDate-24");
-            nursingPlan.setContent(map.get("startDate-24").toString());
+            nursingPlan.setCode("startDate_24");
+            nursingPlan.setContent(map.get("startDate_24").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startDate-25") && StringUtils.isNotEmpty(map.get("startDate-25").toString())){
+        }if(map!=null && map.containsKey("startDate_25") && StringUtils.isNotEmpty(map.get("startDate_25").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startDate-25");
-            nursingPlan.setContent(map.get("startDate-25").toString());
+            nursingPlan.setCode("startDate_25");
+            nursingPlan.setContent(map.get("startDate_25").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startDate-26") && StringUtils.isNotEmpty(map.get("startDate-26").toString())){
+        }if(map!=null && map.containsKey("startDate_26") && StringUtils.isNotEmpty(map.get("startDate_26").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startDate-26");
-            nursingPlan.setContent(map.get("startDate-26").toString());
+            nursingPlan.setCode("startDate_26");
+            nursingPlan.setContent(map.get("startDate_26").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startDate-27") && StringUtils.isNotEmpty(map.get("startDate-27").toString())){
+        }if(map!=null && map.containsKey("startDate_27") && StringUtils.isNotEmpty(map.get("startDate_27").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startDate-27");
-            nursingPlan.setContent(map.get("startDate-27").toString());
-            nursingPlanService.insert(nursingPlan);
-        }
-        if(map!=null && map.containsKey("startTime-0") && StringUtils.isNotEmpty(map.get("startTime-0").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startTime-0");
-            nursingPlan.setContent(map.get("startTime-0").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startTime-1") && StringUtils.isNotEmpty(map.get("startTime-1").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startTime-1");
-            nursingPlan.setContent(map.get("startTime-1").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startTime-2") && StringUtils.isNotEmpty(map.get("startTime-2").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startTime-2");
-            nursingPlan.setContent(map.get("startTime-2").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startTime-3") && StringUtils.isNotEmpty(map.get("startTime-3").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startTime-3");
-            nursingPlan.setContent(map.get("startTime-3").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startTime-4") && StringUtils.isNotEmpty(map.get("startTime-4").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startTime-4");
-            nursingPlan.setContent(map.get("startTime-4").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startTime-5") && StringUtils.isNotEmpty(map.get("startTime-5").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startTime-5");
-            nursingPlan.setContent(map.get("startTime-5").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startTime-6") && StringUtils.isNotEmpty(map.get("startTime-6").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startTime-6");
-            nursingPlan.setContent(map.get("startTime-6").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startTime-7") && StringUtils.isNotEmpty(map.get("startTime-7").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startTime-7");
-            nursingPlan.setContent(map.get("startTime-7").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startTime-8") && StringUtils.isNotEmpty(map.get("startTime-8").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startTime-8");
-            nursingPlan.setContent(map.get("startTime-8").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startTime-9") && StringUtils.isNotEmpty(map.get("startTime-9").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startTime-9");
-            nursingPlan.setContent(map.get("startTime-9").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startTime-10") && StringUtils.isNotEmpty(map.get("startTime-10").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startTime-10");
-            nursingPlan.setContent(map.get("startTime-10").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startTime-11") && StringUtils.isNotEmpty(map.get("startTime-11").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startTime-11");
-            nursingPlan.setContent(map.get("startTime-11").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startTime-12") && StringUtils.isNotEmpty(map.get("startTime-12").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startTime-12");
-            nursingPlan.setContent(map.get("startTime-12").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startTime-13") && StringUtils.isNotEmpty(map.get("startTime-13").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startTime-13");
-            nursingPlan.setContent(map.get("startTime-13").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startTime-14") && StringUtils.isNotEmpty(map.get("startTime-14").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startTime-14");
-            nursingPlan.setContent(map.get("startTime-14").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startTime-15") && StringUtils.isNotEmpty(map.get("startTime-15").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startTime-15");
-            nursingPlan.setContent(map.get("startTime-15").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startTime-16") && StringUtils.isNotEmpty(map.get("startTime-16").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startTime-16");
-            nursingPlan.setContent(map.get("startTime-16").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startTime-17") && StringUtils.isNotEmpty(map.get("startTime-17").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startTime-17");
-            nursingPlan.setContent(map.get("startTime-17").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startTime-18") && StringUtils.isNotEmpty(map.get("startTime-18").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startTime-18");
-            nursingPlan.setContent(map.get("startTime-18").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startTime-19") && StringUtils.isNotEmpty(map.get("startTime-19").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startTime-19");
-            nursingPlan.setContent(map.get("startTime-19").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startTime-20") && StringUtils.isNotEmpty(map.get("startTime-20").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startTime-20");
-            nursingPlan.setContent(map.get("startTime-20").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startTime-21") && StringUtils.isNotEmpty(map.get("startTime-21").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startTime-21");
-            nursingPlan.setContent(map.get("startTime-21").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startTime-22") && StringUtils.isNotEmpty(map.get("startTime-22").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startTime-22");
-            nursingPlan.setContent(map.get("startTime-22").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startTime-23") && StringUtils.isNotEmpty(map.get("startTime-23").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startTime-23");
-            nursingPlan.setContent(map.get("startTime-23").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startTime-24") && StringUtils.isNotEmpty(map.get("startTime-24").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startTime-24");
-            nursingPlan.setContent(map.get("startTime-24").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startTime-25") && StringUtils.isNotEmpty(map.get("startTime-25").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startTime-25");
-            nursingPlan.setContent(map.get("startTime-25").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startTime-26") && StringUtils.isNotEmpty(map.get("startTime-26").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startTime-26");
-            nursingPlan.setContent(map.get("startTime-26").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("startTime-27") && StringUtils.isNotEmpty(map.get("startTime-27").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("startTime-27");
-            nursingPlan.setContent(map.get("startTime-27").toString());
+            nursingPlan.setCode("startDate_27");
+            nursingPlan.setContent(map.get("startDate_27").toString());
             nursingPlanService.insert(nursingPlan);
         }
-        if(map!=null && map.containsKey("plan-0-0") && StringUtils.isNotEmpty(map.get("plan-0-0").toString())){
+        if(map!=null && map.containsKey("startTime_0") && StringUtils.isNotEmpty(map.get("startTime_0").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-0-0");
-            nursingPlan.setContent(map.get("plan-0-0").toString());
+            nursingPlan.setCode("startTime_0");
+            nursingPlan.setContent(map.get("startTime_0").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-1-0") && StringUtils.isNotEmpty(map.get("plan-1-0").toString())){
+        }if(map!=null && map.containsKey("startTime_1") && StringUtils.isNotEmpty(map.get("startTime_1").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-1-0");
-            nursingPlan.setContent(map.get("plan-1-0").toString());
+            nursingPlan.setCode("startTime_1");
+            nursingPlan.setContent(map.get("startTime_1").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-2-0") && StringUtils.isNotEmpty(map.get("plan-2-0").toString())){
+        }if(map!=null && map.containsKey("startTime_2") && StringUtils.isNotEmpty(map.get("startTime_2").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-2-0");
-            nursingPlan.setContent(map.get("plan-2-0").toString());
+            nursingPlan.setCode("startTime_2");
+            nursingPlan.setContent(map.get("startTime_2").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-3-0") && StringUtils.isNotEmpty(map.get("plan-3-0").toString())){
+        }if(map!=null && map.containsKey("startTime_3") && StringUtils.isNotEmpty(map.get("startTime_3").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-3-0");
-            nursingPlan.setContent(map.get("plan-3-0").toString());
+            nursingPlan.setCode("startTime_3");
+            nursingPlan.setContent(map.get("startTime_3").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-4-0") && StringUtils.isNotEmpty(map.get("plan-4-0").toString())){
+        }if(map!=null && map.containsKey("startTime_4") && StringUtils.isNotEmpty(map.get("startTime_4").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-4-0");
-            nursingPlan.setContent(map.get("plan-4-0").toString());
+            nursingPlan.setCode("startTime_4");
+            nursingPlan.setContent(map.get("startTime_4").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-5-0") && StringUtils.isNotEmpty(map.get("plan-5-0").toString())){
+        }if(map!=null && map.containsKey("startTime_5") && StringUtils.isNotEmpty(map.get("startTime_5").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-5-0");
-            nursingPlan.setContent(map.get("plan-5-0").toString());
+            nursingPlan.setCode("startTime_5");
+            nursingPlan.setContent(map.get("startTime_5").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-6-0") && StringUtils.isNotEmpty(map.get("plan-6-0").toString())){
+        }if(map!=null && map.containsKey("startTime_6") && StringUtils.isNotEmpty(map.get("startTime_6").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-6-0");
-            nursingPlan.setContent(map.get("plan-6-0").toString());
+            nursingPlan.setCode("startTime_6");
+            nursingPlan.setContent(map.get("startTime_6").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-7-0") && StringUtils.isNotEmpty(map.get("plan-7-0").toString())){
+        }if(map!=null && map.containsKey("startTime_7") && StringUtils.isNotEmpty(map.get("startTime_7").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-7-0");
-            nursingPlan.setContent(map.get("plan-7-0").toString());
+            nursingPlan.setCode("startTime_7");
+            nursingPlan.setContent(map.get("startTime_7").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-7-1") && StringUtils.isNotEmpty(map.get("plan-7-1").toString())){
+        }if(map!=null && map.containsKey("startTime_8") && StringUtils.isNotEmpty(map.get("startTime_8").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-7-1");
-            nursingPlan.setContent(map.get("plan-7-1").toString());
+            nursingPlan.setCode("startTime_8");
+            nursingPlan.setContent(map.get("startTime_8").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-8-0") && StringUtils.isNotEmpty(map.get("plan-8-0").toString())){
+        }if(map!=null && map.containsKey("startTime_9") && StringUtils.isNotEmpty(map.get("startTime_9").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-8-0");
-            nursingPlan.setContent(map.get("plan-8-0").toString());
+            nursingPlan.setCode("startTime_9");
+            nursingPlan.setContent(map.get("startTime_9").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-9-0") && StringUtils.isNotEmpty(map.get("plan-9-0").toString())){
+        }if(map!=null && map.containsKey("startTime_10") && StringUtils.isNotEmpty(map.get("startTime_10").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-9-0");
-            nursingPlan.setContent(map.get("plan-9-0").toString());
+            nursingPlan.setCode("startTime_10");
+            nursingPlan.setContent(map.get("startTime_10").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-10-0") && StringUtils.isNotEmpty(map.get("plan-10-0").toString())){
+        }if(map!=null && map.containsKey("startTime_11") && StringUtils.isNotEmpty(map.get("startTime_11").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-10-0");
-            nursingPlan.setContent(map.get("plan-10-0").toString());
+            nursingPlan.setCode("startTime_11");
+            nursingPlan.setContent(map.get("startTime_11").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-11-0") && StringUtils.isNotEmpty(map.get("plan-11-0").toString())){
+        }if(map!=null && map.containsKey("startTime_12") && StringUtils.isNotEmpty(map.get("startTime_12").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-11-0");
-            nursingPlan.setContent(map.get("plan-11-0").toString());
+            nursingPlan.setCode("startTime_12");
+            nursingPlan.setContent(map.get("startTime_12").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-11-1") && StringUtils.isNotEmpty(map.get("plan-11-1").toString())){
+        }if(map!=null && map.containsKey("startTime_13") && StringUtils.isNotEmpty(map.get("startTime_13").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-11-1");
-            nursingPlan.setContent(map.get("plan-11-1").toString());
+            nursingPlan.setCode("startTime_13");
+            nursingPlan.setContent(map.get("startTime_13").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-11-2") && StringUtils.isNotEmpty(map.get("plan-11-2").toString())){
+        }if(map!=null && map.containsKey("startTime_14") && StringUtils.isNotEmpty(map.get("startTime_14").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-11-2");
-            nursingPlan.setContent(map.get("plan-11-2").toString());
+            nursingPlan.setCode("startTime_14");
+            nursingPlan.setContent(map.get("startTime_14").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-12-0") && StringUtils.isNotEmpty(map.get("plan-12-0").toString())){
+        }if(map!=null && map.containsKey("startTime_15") && StringUtils.isNotEmpty(map.get("startTime_15").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-12-0");
-            nursingPlan.setContent(map.get("plan-12-0").toString());
+            nursingPlan.setCode("startTime_15");
+            nursingPlan.setContent(map.get("startTime_15").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-12-1") && StringUtils.isNotEmpty(map.get("plan-12-1").toString())){
+        }if(map!=null && map.containsKey("startTime_16") && StringUtils.isNotEmpty(map.get("startTime_16").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-12-1");
-            nursingPlan.setContent(map.get("plan-12-1").toString());
+            nursingPlan.setCode("startTime_16");
+            nursingPlan.setContent(map.get("startTime_16").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-12-2") && StringUtils.isNotEmpty(map.get("plan-12-2").toString())){
+        }if(map!=null && map.containsKey("startTime_17") && StringUtils.isNotEmpty(map.get("startTime_17").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-12-2");
-            nursingPlan.setContent(map.get("plan-12-2").toString());
+            nursingPlan.setCode("startTime_17");
+            nursingPlan.setContent(map.get("startTime_17").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-13-0") && StringUtils.isNotEmpty(map.get("plan-13-0").toString())){
+        }if(map!=null && map.containsKey("startTime_18") && StringUtils.isNotEmpty(map.get("startTime_18").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-13-0");
-            nursingPlan.setContent(map.get("plan-13-0").toString());
+            nursingPlan.setCode("startTime_18");
+            nursingPlan.setContent(map.get("startTime_18").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-14-0") && StringUtils.isNotEmpty(map.get("plan-14-0").toString())){
+        }if(map!=null && map.containsKey("startTime_19") && StringUtils.isNotEmpty(map.get("startTime_19").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-14-0");
-            nursingPlan.setContent(map.get("plan-14-0").toString());
+            nursingPlan.setCode("startTime_19");
+            nursingPlan.setContent(map.get("startTime_19").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-15-0") && StringUtils.isNotEmpty(map.get("plan-15-0").toString())){
+        }if(map!=null && map.containsKey("startTime_20") && StringUtils.isNotEmpty(map.get("startTime_20").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-15-0");
-            nursingPlan.setContent(map.get("plan-15-0").toString());
+            nursingPlan.setCode("startTime_20");
+            nursingPlan.setContent(map.get("startTime_20").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-16-0") && StringUtils.isNotEmpty(map.get("plan-16-0").toString())){
+        }if(map!=null && map.containsKey("startTime_21") && StringUtils.isNotEmpty(map.get("startTime_21").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-16-0");
-            nursingPlan.setContent(map.get("plan-16-0").toString());
+            nursingPlan.setCode("startTime_21");
+            nursingPlan.setContent(map.get("startTime_21").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-17-0") && StringUtils.isNotEmpty(map.get("plan-17-0").toString())){
+        }if(map!=null && map.containsKey("startTime_22") && StringUtils.isNotEmpty(map.get("startTime_22").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-17-0");
-            nursingPlan.setContent(map.get("plan-17-0").toString());
+            nursingPlan.setCode("startTime_22");
+            nursingPlan.setContent(map.get("startTime_22").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-17-1") && StringUtils.isNotEmpty(map.get("plan-17-1").toString())){
+        }if(map!=null && map.containsKey("startTime_23") && StringUtils.isNotEmpty(map.get("startTime_23").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-17-1");
-            nursingPlan.setContent(map.get("plan-17-1").toString());
+            nursingPlan.setCode("startTime_23");
+            nursingPlan.setContent(map.get("startTime_23").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-17-2") && StringUtils.isNotEmpty(map.get("plan-17-2").toString())){
+        }if(map!=null && map.containsKey("startTime_24") && StringUtils.isNotEmpty(map.get("startTime_24").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-17-2");
-            nursingPlan.setContent(map.get("plan-17-2").toString());
+            nursingPlan.setCode("startTime_24");
+            nursingPlan.setContent(map.get("startTime_24").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-17-3") && StringUtils.isNotEmpty(map.get("plan-17-3").toString())){
+        }if(map!=null && map.containsKey("startTime_25") && StringUtils.isNotEmpty(map.get("startTime_25").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-17-3");
-            nursingPlan.setContent(map.get("plan-17-3").toString());
+            nursingPlan.setCode("startTime_25");
+            nursingPlan.setContent(map.get("startTime_25").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-17-4") && StringUtils.isNotEmpty(map.get("plan-17-4").toString())){
+        }if(map!=null && map.containsKey("startTime_26") && StringUtils.isNotEmpty(map.get("startTime_26").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-17-4");
-            nursingPlan.setContent(map.get("plan-17-4").toString());
+            nursingPlan.setCode("startTime_26");
+            nursingPlan.setContent(map.get("startTime_26").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-18-0") && StringUtils.isNotEmpty(map.get("plan-18-0").toString())){
+        }if(map!=null && map.containsKey("startTime_27") && StringUtils.isNotEmpty(map.get("startTime_27").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-18-0");
-            nursingPlan.setContent(map.get("plan-18-0").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-18-1") && StringUtils.isNotEmpty(map.get("plan-18-1").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-18-1");
-            nursingPlan.setContent(map.get("plan-18-1").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-18-2") && StringUtils.isNotEmpty(map.get("plan-18-2").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-18-2");
-            nursingPlan.setContent(map.get("plan-18-2").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-18-3") && StringUtils.isNotEmpty(map.get("plan-18-3").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-18-3");
-            nursingPlan.setContent(map.get("plan-18-3").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-18-4") && StringUtils.isNotEmpty(map.get("plan-18-4").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-18-4");
-            nursingPlan.setContent(map.get("plan-18-4").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-18-5") && StringUtils.isNotEmpty(map.get("plan-18-5").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-18-5");
-            nursingPlan.setContent(map.get("plan-18-5").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-18-6") && StringUtils.isNotEmpty(map.get("plan-18-6").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-18-6");
-            nursingPlan.setContent(map.get("plan-18-6").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-19-0") && StringUtils.isNotEmpty(map.get("plan-19-0").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-19-0");
-            nursingPlan.setContent(map.get("plan-19-0").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-19-1") && StringUtils.isNotEmpty(map.get("plan-19-1").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-19-1");
-            nursingPlan.setContent(map.get("plan-19-1").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-19-2") && StringUtils.isNotEmpty(map.get("plan-19-2").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-19-2");
-            nursingPlan.setContent(map.get("plan-19-2").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-19-3") && StringUtils.isNotEmpty(map.get("plan-19-3").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-19-3");
-            nursingPlan.setContent(map.get("plan-19-3").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-20-0") && StringUtils.isNotEmpty(map.get("plan-20-0").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-20-0");
-            nursingPlan.setContent(map.get("plan-20-0").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-20-1") && StringUtils.isNotEmpty(map.get("plan-20-1").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-20-1");
-            nursingPlan.setContent(map.get("plan-20-1").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-21-0") && StringUtils.isNotEmpty(map.get("plan-21-0").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-21-0");
-            nursingPlan.setContent(map.get("plan-21-0").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-21-1") && StringUtils.isNotEmpty(map.get("plan-21-1").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-21-1");
-            nursingPlan.setContent(map.get("plan-21-1").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-21-2") && StringUtils.isNotEmpty(map.get("plan-21-2").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-21-2");
-            nursingPlan.setContent(map.get("plan-21-2").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-21-3") && StringUtils.isNotEmpty(map.get("plan-21-3").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-21-3");
-            nursingPlan.setContent(map.get("plan-21-3").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-21-4") && StringUtils.isNotEmpty(map.get("plan-21-4").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-21-4");
-            nursingPlan.setContent(map.get("plan-21-4").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-22-0") && StringUtils.isNotEmpty(map.get("plan-22-0").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-22-0");
-            nursingPlan.setContent(map.get("plan-22-0").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-23-0") && StringUtils.isNotEmpty(map.get("plan-23-0").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-23-0");
-            nursingPlan.setContent(map.get("plan-23-0").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-24-0") && StringUtils.isNotEmpty(map.get("plan-24-0").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-24-0");
-            nursingPlan.setContent(map.get("plan-24-0").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-24-1") && StringUtils.isNotEmpty(map.get("plan-24-1").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-24-1");
-            nursingPlan.setContent(map.get("plan-24-1").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-25-0") && StringUtils.isNotEmpty(map.get("plan-25-0").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-25-0");
-            nursingPlan.setContent(map.get("plan-25-0").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-26-0") && StringUtils.isNotEmpty(map.get("plan-26-0").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-26-0");
-            nursingPlan.setContent(map.get("plan-26-0").toString());
-            nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("plan-27-0") && StringUtils.isNotEmpty(map.get("plan-27-0").toString())){
-            NursingPlan nursingPlan=newNursingPlan(map,session);
-            nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("plan-27-0");
-            nursingPlan.setContent(map.get("plan-27-0").toString());
+            nursingPlan.setCode("startTime_27");
+            nursingPlan.setContent(map.get("startTime_27").toString());
             nursingPlanService.insert(nursingPlan);
         }
-        if(map!=null && map.containsKey("signature-0") && StringUtils.isNotEmpty(map.get("signature-0").toString())){
+        if(map!=null && map.containsKey("plan_0_0") && StringUtils.isNotEmpty(map.get("plan_0_0").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("signature-0");
-            nursingPlan.setContent(map.get("signature-0").toString());
+            nursingPlan.setCode("plan_0_0");
+            nursingPlan.setContent(map.get("plan_0_0").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("signature-1") && StringUtils.isNotEmpty(map.get("signature-1").toString())){
+        }if(map!=null && map.containsKey("plan_1_0") && StringUtils.isNotEmpty(map.get("plan_1_0").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("signature-1");
-            nursingPlan.setContent(map.get("signature-1").toString());
+            nursingPlan.setCode("plan_1_0");
+            nursingPlan.setContent(map.get("plan_1_0").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("signature-2") && StringUtils.isNotEmpty(map.get("signature-2").toString())){
+        }if(map!=null && map.containsKey("plan_2_0") && StringUtils.isNotEmpty(map.get("plan_2_0").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("signature-2");
-            nursingPlan.setContent(map.get("signature-2").toString());
+            nursingPlan.setCode("plan_2_0");
+            nursingPlan.setContent(map.get("plan_2_0").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("signature-3") && StringUtils.isNotEmpty(map.get("signature-3").toString())){
+        }if(map!=null && map.containsKey("plan_3_0") && StringUtils.isNotEmpty(map.get("plan_3_0").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("signature-3");
-            nursingPlan.setContent(map.get("signature-3").toString());
+            nursingPlan.setCode("plan_3_0");
+            nursingPlan.setContent(map.get("plan_3_0").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("signature-4") && StringUtils.isNotEmpty(map.get("signature-4").toString())){
+        }if(map!=null && map.containsKey("plan_4_0") && StringUtils.isNotEmpty(map.get("plan_4_0").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("signature-4");
-            nursingPlan.setContent(map.get("signature-4").toString());
+            nursingPlan.setCode("plan_4_0");
+            nursingPlan.setContent(map.get("plan_4_0").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("signature-5") && StringUtils.isNotEmpty(map.get("signature-5").toString())){
+        }if(map!=null && map.containsKey("plan_5_0") && StringUtils.isNotEmpty(map.get("plan_5_0").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("signature-5");
-            nursingPlan.setContent(map.get("signature-5").toString());
+            nursingPlan.setCode("plan_5_0");
+            nursingPlan.setContent(map.get("plan_5_0").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("signature-6") && StringUtils.isNotEmpty(map.get("signature-6").toString())){
+        }if(map!=null && map.containsKey("plan_6_0") && StringUtils.isNotEmpty(map.get("plan_6_0").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("signature-6");
-            nursingPlan.setContent(map.get("signature-6").toString());
+            nursingPlan.setCode("plan_6_0");
+            nursingPlan.setContent(map.get("plan_6_0").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("signature-7") && StringUtils.isNotEmpty(map.get("signature-7").toString())){
+        }if(map!=null && map.containsKey("plan_7_0") && StringUtils.isNotEmpty(map.get("plan_7_0").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("signature-7");
-            nursingPlan.setContent(map.get("signature-7").toString());
+            nursingPlan.setCode("plan_7_0");
+            nursingPlan.setContent(map.get("plan_7_0").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("signature-8") && StringUtils.isNotEmpty(map.get("signature-8").toString())){
+        }if(map!=null && map.containsKey("plan_7_1") && StringUtils.isNotEmpty(map.get("plan_7_1").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("signature-8");
-            nursingPlan.setContent(map.get("signature-8").toString());
+            nursingPlan.setCode("plan_7_1");
+            nursingPlan.setContent(map.get("plan_7_1").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("signature-9") && StringUtils.isNotEmpty(map.get("signature-9").toString())){
+        }if(map!=null && map.containsKey("plan_8_0") && StringUtils.isNotEmpty(map.get("plan_8_0").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("signature-9");
-            nursingPlan.setContent(map.get("signature-9").toString());
+            nursingPlan.setCode("plan_8_0");
+            nursingPlan.setContent(map.get("plan_8_0").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("signature-10") && StringUtils.isNotEmpty(map.get("signature-10").toString())){
+        }if(map!=null && map.containsKey("plan_9_0") && StringUtils.isNotEmpty(map.get("plan_9_0").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("signature-10");
-            nursingPlan.setContent(map.get("signature-10").toString());
+            nursingPlan.setCode("plan_9_0");
+            nursingPlan.setContent(map.get("plan_9_0").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("signature-11") && StringUtils.isNotEmpty(map.get("signature-11").toString())){
+        }if(map!=null && map.containsKey("plan_10_0") && StringUtils.isNotEmpty(map.get("plan_10_0").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("signature-11");
-            nursingPlan.setContent(map.get("signature-11").toString());
+            nursingPlan.setCode("plan_10_0");
+            nursingPlan.setContent(map.get("plan_10_0").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("signature-12") && StringUtils.isNotEmpty(map.get("signature-12").toString())){
+        }if(map!=null && map.containsKey("plan_11_0") && StringUtils.isNotEmpty(map.get("plan_11_0").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("signature-12");
-            nursingPlan.setContent(map.get("signature-12").toString());
+            nursingPlan.setCode("plan_11_0");
+            nursingPlan.setContent(map.get("plan_11_0").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("signature-13") && StringUtils.isNotEmpty(map.get("signature-13").toString())){
+        }if(map!=null && map.containsKey("plan_11_1") && StringUtils.isNotEmpty(map.get("plan_11_1").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("signature-13");
-            nursingPlan.setContent(map.get("signature-13").toString());
+            nursingPlan.setCode("plan_11_1");
+            nursingPlan.setContent(map.get("plan_11_1").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("signature-14") && StringUtils.isNotEmpty(map.get("signature-14").toString())){
+        }if(map!=null && map.containsKey("plan_11_2") && StringUtils.isNotEmpty(map.get("plan_11_2").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("signature-14");
-            nursingPlan.setContent(map.get("signature-14").toString());
+            nursingPlan.setCode("plan_11_2");
+            nursingPlan.setContent(map.get("plan_11_2").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("signature-15") && StringUtils.isNotEmpty(map.get("signature-15").toString())){
+        }if(map!=null && map.containsKey("plan_12_0") && StringUtils.isNotEmpty(map.get("plan_12_0").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("signature-15");
-            nursingPlan.setContent(map.get("signature-15").toString());
+            nursingPlan.setCode("plan_12_0");
+            nursingPlan.setContent(map.get("plan_12_0").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("signature-16") && StringUtils.isNotEmpty(map.get("signature-16").toString())){
+        }if(map!=null && map.containsKey("plan_12_1") && StringUtils.isNotEmpty(map.get("plan_12_1").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("signature-16");
-            nursingPlan.setContent(map.get("signature-16").toString());
+            nursingPlan.setCode("plan_12_1");
+            nursingPlan.setContent(map.get("plan_12_1").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("signature-17") && StringUtils.isNotEmpty(map.get("signature-17").toString())){
+        }if(map!=null && map.containsKey("plan_12_2") && StringUtils.isNotEmpty(map.get("plan_12_2").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("signature-17");
-            nursingPlan.setContent(map.get("signature-17").toString());
+            nursingPlan.setCode("plan_12_2");
+            nursingPlan.setContent(map.get("plan_12_2").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("signature-18") && StringUtils.isNotEmpty(map.get("signature-18").toString())){
+        }if(map!=null && map.containsKey("plan_13_0") && StringUtils.isNotEmpty(map.get("plan_13_0").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("signature-18");
-            nursingPlan.setContent(map.get("signature-18").toString());
+            nursingPlan.setCode("plan_13_0");
+            nursingPlan.setContent(map.get("plan_13_0").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("signature-19") && StringUtils.isNotEmpty(map.get("signature-19").toString())){
+        }if(map!=null && map.containsKey("plan_14_0") && StringUtils.isNotEmpty(map.get("plan_14_0").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("signature-19");
-            nursingPlan.setContent(map.get("signature-19").toString());
+            nursingPlan.setCode("plan_14_0");
+            nursingPlan.setContent(map.get("plan_14_0").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("signature-20") && StringUtils.isNotEmpty(map.get("signature-20").toString())){
+        }if(map!=null && map.containsKey("plan_15_0") && StringUtils.isNotEmpty(map.get("plan_15_0").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("signature-20");
-            nursingPlan.setContent(map.get("signature-20").toString());
+            nursingPlan.setCode("plan_15_0");
+            nursingPlan.setContent(map.get("plan_15_0").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("signature-21") && StringUtils.isNotEmpty(map.get("signature-21").toString())){
+        }if(map!=null && map.containsKey("plan_16_0") && StringUtils.isNotEmpty(map.get("plan_16_0").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("signature-21");
-            nursingPlan.setContent(map.get("signature-21").toString());
+            nursingPlan.setCode("plan_16_0");
+            nursingPlan.setContent(map.get("plan_16_0").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("signature-22") && StringUtils.isNotEmpty(map.get("signature-22").toString())){
+        }if(map!=null && map.containsKey("plan_17_0") && StringUtils.isNotEmpty(map.get("plan_17_0").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("signature-22");
-            nursingPlan.setContent(map.get("signature-22").toString());
+            nursingPlan.setCode("plan_17_0");
+            nursingPlan.setContent(map.get("plan_17_0").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("signature-23") && StringUtils.isNotEmpty(map.get("signature-23").toString())){
+        }if(map!=null && map.containsKey("plan_17_1") && StringUtils.isNotEmpty(map.get("plan_17_1").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("signature-23");
-            nursingPlan.setContent(map.get("signature-23").toString());
+            nursingPlan.setCode("plan_17_1");
+            nursingPlan.setContent(map.get("plan_17_1").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("signature-24") && StringUtils.isNotEmpty(map.get("signature-24").toString())){
+        }if(map!=null && map.containsKey("plan_17_2") && StringUtils.isNotEmpty(map.get("plan_17_2").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("signature-24");
-            nursingPlan.setContent(map.get("signature-24").toString());
+            nursingPlan.setCode("plan_17_2");
+            nursingPlan.setContent(map.get("plan_17_2").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("signature-25") && StringUtils.isNotEmpty(map.get("signature-25").toString())){
+        }if(map!=null && map.containsKey("plan_17_3") && StringUtils.isNotEmpty(map.get("plan_17_3").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("signature-25");
-            nursingPlan.setContent(map.get("signature-25").toString());
+            nursingPlan.setCode("plan_17_3");
+            nursingPlan.setContent(map.get("plan_17_3").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("signature-26") && StringUtils.isNotEmpty(map.get("signature-26").toString())){
+        }if(map!=null && map.containsKey("plan_17_4") && StringUtils.isNotEmpty(map.get("plan_17_4").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("signature-26");
-            nursingPlan.setContent(map.get("signature-26").toString());
+            nursingPlan.setCode("plan_17_4");
+            nursingPlan.setContent(map.get("plan_17_4").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("signature-27") && StringUtils.isNotEmpty(map.get("signature-27").toString())){
+        }if(map!=null && map.containsKey("plan_18_0") && StringUtils.isNotEmpty(map.get("plan_18_0").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("signature-27");
-            nursingPlan.setContent(map.get("signature-27").toString());
+            nursingPlan.setCode("plan_18_0");
+            nursingPlan.setContent(map.get("plan_18_0").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("plan_18_1") && StringUtils.isNotEmpty(map.get("plan_18_1").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("plan_18_1");
+            nursingPlan.setContent(map.get("plan_18_1").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("plan_18_2") && StringUtils.isNotEmpty(map.get("plan_18_2").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("plan_18_2");
+            nursingPlan.setContent(map.get("plan_18_2").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("plan_18_3") && StringUtils.isNotEmpty(map.get("plan_18_3").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("plan_18_3");
+            nursingPlan.setContent(map.get("plan_18_3").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("plan_18_4") && StringUtils.isNotEmpty(map.get("plan_18_4").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("plan_18_4");
+            nursingPlan.setContent(map.get("plan_18_4").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("plan_18_5") && StringUtils.isNotEmpty(map.get("plan_18_5").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("plan_18_5");
+            nursingPlan.setContent(map.get("plan_18_5").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("plan_18_6") && StringUtils.isNotEmpty(map.get("plan_18_6").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("plan_18_6");
+            nursingPlan.setContent(map.get("plan_18_6").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("plan_19_0") && StringUtils.isNotEmpty(map.get("plan_19_0").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("plan_19_0");
+            nursingPlan.setContent(map.get("plan_19_0").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("plan_19_1") && StringUtils.isNotEmpty(map.get("plan_19_1").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("plan_19_1");
+            nursingPlan.setContent(map.get("plan_19_1").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("plan_19_2") && StringUtils.isNotEmpty(map.get("plan_19_2").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("plan_19_2");
+            nursingPlan.setContent(map.get("plan_19_2").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("plan_19_3") && StringUtils.isNotEmpty(map.get("plan_19_3").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("plan_19_3");
+            nursingPlan.setContent(map.get("plan_19_3").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("plan_20_0") && StringUtils.isNotEmpty(map.get("plan_20_0").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("plan_20_0");
+            nursingPlan.setContent(map.get("plan_20_0").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("plan_20_1") && StringUtils.isNotEmpty(map.get("plan_20_1").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("plan_20_1");
+            nursingPlan.setContent(map.get("plan_20_1").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("plan_21_0") && StringUtils.isNotEmpty(map.get("plan_21_0").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("plan_21_0");
+            nursingPlan.setContent(map.get("plan_21_0").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("plan_21_1") && StringUtils.isNotEmpty(map.get("plan_21_1").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("plan_21_1");
+            nursingPlan.setContent(map.get("plan_21_1").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("plan_21_2") && StringUtils.isNotEmpty(map.get("plan_21_2").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("plan_21_2");
+            nursingPlan.setContent(map.get("plan_21_2").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("plan_21_3") && StringUtils.isNotEmpty(map.get("plan_21_3").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("plan_21_3");
+            nursingPlan.setContent(map.get("plan_21_3").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("plan_21_4") && StringUtils.isNotEmpty(map.get("plan_21_4").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("plan_21_4");
+            nursingPlan.setContent(map.get("plan_21_4").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("plan_22_0") && StringUtils.isNotEmpty(map.get("plan_22_0").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("plan_22_0");
+            nursingPlan.setContent(map.get("plan_22_0").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("plan_23_0") && StringUtils.isNotEmpty(map.get("plan_23_0").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("plan_23_0");
+            nursingPlan.setContent(map.get("plan_23_0").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("plan_24_0") && StringUtils.isNotEmpty(map.get("plan_24_0").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("plan_24_0");
+            nursingPlan.setContent(map.get("plan_24_0").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("plan_24_1") && StringUtils.isNotEmpty(map.get("plan_24_1").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("plan_24_1");
+            nursingPlan.setContent(map.get("plan_24_1").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("plan_25_0") && StringUtils.isNotEmpty(map.get("plan_25_0").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("plan_25_0");
+            nursingPlan.setContent(map.get("plan_25_0").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("plan_26_0") && StringUtils.isNotEmpty(map.get("plan_26_0").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("plan_26_0");
+            nursingPlan.setContent(map.get("plan_26_0").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("plan_27_0") && StringUtils.isNotEmpty(map.get("plan_27_0").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("plan_27_0");
+            nursingPlan.setContent(map.get("plan_27_0").toString());
             nursingPlanService.insert(nursingPlan);
         }
-        if(map!=null && map.containsKey("stopDate-0") && StringUtils.isNotEmpty(map.get("stopDate-0").toString())){
+        if(map!=null && map.containsKey("signature_0") && StringUtils.isNotEmpty(map.get("signature_0").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("stopDate-0");
-            nursingPlan.setContent(map.get("stopDate-0").toString());
+            nursingPlan.setCode("signature_0");
+            nursingPlan.setContent(map.get("signature_0").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("stopDate-1") && StringUtils.isNotEmpty(map.get("stopDate-1").toString())){
+        }if(map!=null && map.containsKey("signature_1") && StringUtils.isNotEmpty(map.get("signature_1").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("stopDate-1");
-            nursingPlan.setContent(map.get("stopDate-1").toString());
+            nursingPlan.setCode("signature_1");
+            nursingPlan.setContent(map.get("signature_1").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("stopDate-2") && StringUtils.isNotEmpty(map.get("stopDate-2").toString())){
+        }if(map!=null && map.containsKey("signature_2") && StringUtils.isNotEmpty(map.get("signature_2").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("stopDate-2");
-            nursingPlan.setContent(map.get("stopDate-2").toString());
+            nursingPlan.setCode("signature_2");
+            nursingPlan.setContent(map.get("signature_2").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("stopDate-3") && StringUtils.isNotEmpty(map.get("stopDate-3").toString())){
+        }if(map!=null && map.containsKey("signature_3") && StringUtils.isNotEmpty(map.get("signature_3").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("stopDate-3");
-            nursingPlan.setContent(map.get("stopDate-3").toString());
+            nursingPlan.setCode("signature_3");
+            nursingPlan.setContent(map.get("signature_3").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("stopDate-4") && StringUtils.isNotEmpty(map.get("stopDate-4").toString())){
+        }if(map!=null && map.containsKey("signature_4") && StringUtils.isNotEmpty(map.get("signature_4").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("stopDate-4");
-            nursingPlan.setContent(map.get("stopDate-4").toString());
+            nursingPlan.setCode("signature_4");
+            nursingPlan.setContent(map.get("signature_4").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("stopDate-5") && StringUtils.isNotEmpty(map.get("stopDate-5").toString())){
+        }if(map!=null && map.containsKey("signature_5") && StringUtils.isNotEmpty(map.get("signature_5").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("stopDate-5");
-            nursingPlan.setContent(map.get("stopDate-5").toString());
+            nursingPlan.setCode("signature_5");
+            nursingPlan.setContent(map.get("signature_5").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("stopDate-6") && StringUtils.isNotEmpty(map.get("stopDate-6").toString())){
+        }if(map!=null && map.containsKey("signature_6") && StringUtils.isNotEmpty(map.get("signature_6").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("stopDate-6");
-            nursingPlan.setContent(map.get("stopDate-6").toString());
+            nursingPlan.setCode("signature_6");
+            nursingPlan.setContent(map.get("signature_6").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("stopDate-7") && StringUtils.isNotEmpty(map.get("stopDate-7").toString())){
+        }if(map!=null && map.containsKey("signature_7") && StringUtils.isNotEmpty(map.get("signature_7").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("stopDate-7");
-            nursingPlan.setContent(map.get("stopDate-7").toString());
+            nursingPlan.setCode("signature_7");
+            nursingPlan.setContent(map.get("signature_7").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("stopDate-8") && StringUtils.isNotEmpty(map.get("stopDate-8").toString())){
+        }if(map!=null && map.containsKey("signature_8") && StringUtils.isNotEmpty(map.get("signature_8").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("stopDate-8");
-            nursingPlan.setContent(map.get("stopDate-8").toString());
+            nursingPlan.setCode("signature_8");
+            nursingPlan.setContent(map.get("signature_8").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("stopDate-9") && StringUtils.isNotEmpty(map.get("stopDate-9").toString())){
+        }if(map!=null && map.containsKey("signature_9") && StringUtils.isNotEmpty(map.get("signature_9").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("stopDate-9");
-            nursingPlan.setContent(map.get("stopDate-9").toString());
+            nursingPlan.setCode("signature_9");
+            nursingPlan.setContent(map.get("signature_9").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("stopDate-10") && StringUtils.isNotEmpty(map.get("stopDate-10").toString())){
+        }if(map!=null && map.containsKey("signature_10") && StringUtils.isNotEmpty(map.get("signature_10").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("stopDate-10");
-            nursingPlan.setContent(map.get("stopDate-10").toString());
+            nursingPlan.setCode("signature_10");
+            nursingPlan.setContent(map.get("signature_10").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("stopDate-11") && StringUtils.isNotEmpty(map.get("stopDate-11").toString())){
+        }if(map!=null && map.containsKey("signature_11") && StringUtils.isNotEmpty(map.get("signature_11").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("stopDate-11");
-            nursingPlan.setContent(map.get("stopDate-11").toString());
+            nursingPlan.setCode("signature_11");
+            nursingPlan.setContent(map.get("signature_11").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("stopDate-12") && StringUtils.isNotEmpty(map.get("stopDate-12").toString())){
+        }if(map!=null && map.containsKey("signature_12") && StringUtils.isNotEmpty(map.get("signature_12").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("stopDate-12");
-            nursingPlan.setContent(map.get("stopDate-12").toString());
+            nursingPlan.setCode("signature_12");
+            nursingPlan.setContent(map.get("signature_12").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("stopDate-13") && StringUtils.isNotEmpty(map.get("stopDate-13").toString())){
+        }if(map!=null && map.containsKey("signature_13") && StringUtils.isNotEmpty(map.get("signature_13").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("stopDate-13");
-            nursingPlan.setContent(map.get("stopDate-13").toString());
+            nursingPlan.setCode("signature_13");
+            nursingPlan.setContent(map.get("signature_13").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("signature-14") && StringUtils.isNotEmpty(map.get("signature-14").toString())){
+        }if(map!=null && map.containsKey("signature_14") && StringUtils.isNotEmpty(map.get("signature_14").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("stopDate-14");
-            nursingPlan.setContent(map.get("stopDate-14").toString());
+            nursingPlan.setCode("signature_14");
+            nursingPlan.setContent(map.get("signature_14").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("stopDate-15") && StringUtils.isNotEmpty(map.get("stopDate-15").toString())){
+        }if(map!=null && map.containsKey("signature_15") && StringUtils.isNotEmpty(map.get("signature_15").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("stopDate-15");
-            nursingPlan.setContent(map.get("stopDate-15").toString());
+            nursingPlan.setCode("signature_15");
+            nursingPlan.setContent(map.get("signature_15").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("stopDate-16") && StringUtils.isNotEmpty(map.get("stopDate-16").toString())){
+        }if(map!=null && map.containsKey("signature_16") && StringUtils.isNotEmpty(map.get("signature_16").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("stopDate-16");
-            nursingPlan.setContent(map.get("stopDate-16").toString());
+            nursingPlan.setCode("signature_16");
+            nursingPlan.setContent(map.get("signature_16").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("stopDate-17") && StringUtils.isNotEmpty(map.get("stopDate-17").toString())){
+        }if(map!=null && map.containsKey("signature_17") && StringUtils.isNotEmpty(map.get("signature_17").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("stopDate-17");
-            nursingPlan.setContent(map.get("stopDate-17").toString());
+            nursingPlan.setCode("signature_17");
+            nursingPlan.setContent(map.get("signature_17").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("stopDate-18") && StringUtils.isNotEmpty(map.get("stopDate-18").toString())){
+        }if(map!=null && map.containsKey("signature_18") && StringUtils.isNotEmpty(map.get("signature_18").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("stopDate-18");
-            nursingPlan.setContent(map.get("stopDate-18").toString());
+            nursingPlan.setCode("signature_18");
+            nursingPlan.setContent(map.get("signature_18").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("stopDate-19") && StringUtils.isNotEmpty(map.get("stopDate-19").toString())){
+        }if(map!=null && map.containsKey("signature_19") && StringUtils.isNotEmpty(map.get("signature_19").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("stopDate-19");
-            nursingPlan.setContent(map.get("stopDate-19").toString());
+            nursingPlan.setCode("signature_19");
+            nursingPlan.setContent(map.get("signature_19").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("stopDate-20") && StringUtils.isNotEmpty(map.get("stopDate-20").toString())){
+        }if(map!=null && map.containsKey("signature_20") && StringUtils.isNotEmpty(map.get("signature_20").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("stopDate-20");
-            nursingPlan.setContent(map.get("stopDate-20").toString());
+            nursingPlan.setCode("signature_20");
+            nursingPlan.setContent(map.get("signature_20").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("stopDate-21") && StringUtils.isNotEmpty(map.get("stopDate-21").toString())){
+        }if(map!=null && map.containsKey("signature_21") && StringUtils.isNotEmpty(map.get("signature_21").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("stopDate-21");
-            nursingPlan.setContent(map.get("stopDate-21").toString());
+            nursingPlan.setCode("signature_21");
+            nursingPlan.setContent(map.get("signature_21").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("stopDate-22") && StringUtils.isNotEmpty(map.get("stopDate-22").toString())){
+        }if(map!=null && map.containsKey("signature_22") && StringUtils.isNotEmpty(map.get("signature_22").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("stopDate-22");
-            nursingPlan.setContent(map.get("stopDate-22").toString());
+            nursingPlan.setCode("signature_22");
+            nursingPlan.setContent(map.get("signature_22").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("stopDate-23") && StringUtils.isNotEmpty(map.get("stopDate-23").toString())){
+        }if(map!=null && map.containsKey("signature_23") && StringUtils.isNotEmpty(map.get("signature_23").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("stopDate-23");
-            nursingPlan.setContent(map.get("stopDate-23").toString());
+            nursingPlan.setCode("signature_23");
+            nursingPlan.setContent(map.get("signature_23").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("stopDate-24") && StringUtils.isNotEmpty(map.get("stopDate-24").toString())){
+        }if(map!=null && map.containsKey("signature_24") && StringUtils.isNotEmpty(map.get("signature_24").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("stopDate-24");
-            nursingPlan.setContent(map.get("stopDate-24").toString());
+            nursingPlan.setCode("signature_24");
+            nursingPlan.setContent(map.get("signature_24").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("stopDate-25") && StringUtils.isNotEmpty(map.get("stopDate-25").toString())){
+        }if(map!=null && map.containsKey("signature_25") && StringUtils.isNotEmpty(map.get("signature_25").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("stopDate-25");
-            nursingPlan.setContent(map.get("stopDate-25").toString());
+            nursingPlan.setCode("signature_25");
+            nursingPlan.setContent(map.get("signature_25").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("stopDate-26") && StringUtils.isNotEmpty(map.get("stopDate-26").toString())){
+        }if(map!=null && map.containsKey("signature_26") && StringUtils.isNotEmpty(map.get("signature_26").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("stopDate-26");
-            nursingPlan.setContent(map.get("stopDate-26").toString());
+            nursingPlan.setCode("signature_26");
+            nursingPlan.setContent(map.get("signature_26").toString());
             nursingPlanService.insert(nursingPlan);
-        }if(map!=null && map.containsKey("stopDate-27") && StringUtils.isNotEmpty(map.get("stopDate-27").toString())){
+        }if(map!=null && map.containsKey("signature_27") && StringUtils.isNotEmpty(map.get("signature_27").toString())){
             NursingPlan nursingPlan=newNursingPlan(map,session);
             nursingPlan.setAssessmentId(assessmentId);
-            nursingPlan.setCode("stopDate-27");
-            nursingPlan.setContent(map.get("stopDate-27").toString());
+            nursingPlan.setCode("signature_27");
+            nursingPlan.setContent(map.get("signature_27").toString());
+            nursingPlanService.insert(nursingPlan);
+        }
+        if(map!=null && map.containsKey("stopDate_0") && StringUtils.isNotEmpty(map.get("stopDate_0").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("stopDate_0");
+            nursingPlan.setContent(map.get("stopDate_0").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("stopDate_1") && StringUtils.isNotEmpty(map.get("stopDate_1").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("stopDate_1");
+            nursingPlan.setContent(map.get("stopDate_1").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("stopDate_2") && StringUtils.isNotEmpty(map.get("stopDate_2").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("stopDate_2");
+            nursingPlan.setContent(map.get("stopDate_2").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("stopDate_3") && StringUtils.isNotEmpty(map.get("stopDate_3").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("stopDate_3");
+            nursingPlan.setContent(map.get("stopDate_3").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("stopDate_4") && StringUtils.isNotEmpty(map.get("stopDate_4").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("stopDate_4");
+            nursingPlan.setContent(map.get("stopDate_4").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("stopDate_5") && StringUtils.isNotEmpty(map.get("stopDate_5").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("stopDate_5");
+            nursingPlan.setContent(map.get("stopDate_5").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("stopDate_6") && StringUtils.isNotEmpty(map.get("stopDate_6").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("stopDate_6");
+            nursingPlan.setContent(map.get("stopDate_6").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("stopDate_7") && StringUtils.isNotEmpty(map.get("stopDate_7").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("stopDate_7");
+            nursingPlan.setContent(map.get("stopDate_7").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("stopDate_8") && StringUtils.isNotEmpty(map.get("stopDate_8").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("stopDate_8");
+            nursingPlan.setContent(map.get("stopDate_8").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("stopDate_9") && StringUtils.isNotEmpty(map.get("stopDate_9").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("stopDate_9");
+            nursingPlan.setContent(map.get("stopDate_9").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("stopDate_10") && StringUtils.isNotEmpty(map.get("stopDate_10").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("stopDate_10");
+            nursingPlan.setContent(map.get("stopDate_10").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("stopDate_11") && StringUtils.isNotEmpty(map.get("stopDate_11").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("stopDate_11");
+            nursingPlan.setContent(map.get("stopDate_11").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("stopDate_12") && StringUtils.isNotEmpty(map.get("stopDate_12").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("stopDate_12");
+            nursingPlan.setContent(map.get("stopDate_12").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("stopDate_13") && StringUtils.isNotEmpty(map.get("stopDate_13").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("stopDate_13");
+            nursingPlan.setContent(map.get("stopDate_13").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("signature_14") && StringUtils.isNotEmpty(map.get("signature_14").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("stopDate_14");
+            nursingPlan.setContent(map.get("stopDate_14").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("stopDate_15") && StringUtils.isNotEmpty(map.get("stopDate_15").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("stopDate_15");
+            nursingPlan.setContent(map.get("stopDate_15").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("stopDate_16") && StringUtils.isNotEmpty(map.get("stopDate_16").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("stopDate_16");
+            nursingPlan.setContent(map.get("stopDate_16").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("stopDate_17") && StringUtils.isNotEmpty(map.get("stopDate_17").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("stopDate_17");
+            nursingPlan.setContent(map.get("stopDate_17").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("stopDate_18") && StringUtils.isNotEmpty(map.get("stopDate_18").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("stopDate_18");
+            nursingPlan.setContent(map.get("stopDate_18").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("stopDate_19") && StringUtils.isNotEmpty(map.get("stopDate_19").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("stopDate_19");
+            nursingPlan.setContent(map.get("stopDate_19").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("stopDate_20") && StringUtils.isNotEmpty(map.get("stopDate_20").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("stopDate_20");
+            nursingPlan.setContent(map.get("stopDate_20").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("stopDate_21") && StringUtils.isNotEmpty(map.get("stopDate_21").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("stopDate_21");
+            nursingPlan.setContent(map.get("stopDate_21").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("stopDate_22") && StringUtils.isNotEmpty(map.get("stopDate_22").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("stopDate_22");
+            nursingPlan.setContent(map.get("stopDate_22").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("stopDate_23") && StringUtils.isNotEmpty(map.get("stopDate_23").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("stopDate_23");
+            nursingPlan.setContent(map.get("stopDate_23").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("stopDate_24") && StringUtils.isNotEmpty(map.get("stopDate_24").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("stopDate_24");
+            nursingPlan.setContent(map.get("stopDate_24").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("stopDate_25") && StringUtils.isNotEmpty(map.get("stopDate_25").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("stopDate_25");
+            nursingPlan.setContent(map.get("stopDate_25").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("stopDate_26") && StringUtils.isNotEmpty(map.get("stopDate_26").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("stopDate_26");
+            nursingPlan.setContent(map.get("stopDate_26").toString());
+            nursingPlanService.insert(nursingPlan);
+        }if(map!=null && map.containsKey("stopDate_27") && StringUtils.isNotEmpty(map.get("stopDate_27").toString())){
+            NursingPlan nursingPlan=newNursingPlan(map,session);
+            nursingPlan.setAssessmentId(assessmentId);
+            nursingPlan.setCode("stopDate_27");
+            nursingPlan.setContent(map.get("stopDate_27").toString());
             nursingPlanService.insert(nursingPlan);
         }
         json.put("msg","保存成功");

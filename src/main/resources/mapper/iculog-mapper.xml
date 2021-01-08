@@ -73,4 +73,80 @@
         1=1
     </select>
 
+    <select id="getList" resultType="java.util.Map">
+        SELECT
+        IFNULL(lil.id,"") AS id,
+        IFNULL(lil.happen_time,"") AS happen_time,
+        IFNULL(lil.finish_time,"") AS finish_time,
+        IFNULL(lil.happen_content,"") AS happen_content,
+        lil.status,
+        IFNULL(dilti.icu_log_template_item_name,"") AS icu_log_template_item_name,
+        IFNULL(dilti.log_form,"") AS log_form,
+        IFNULL(tu.user_name,"") AS user_name
+        FROM
+        l_icu_log lil
+        LEFT JOIN dict_icu_log_template_item dilti ON lil.item_id = dilti.id
+        LEFT JOIN table_user tu ON tu.login_name=lil.happen_operator_code
+        WHERE 1=1
+        and status !=-1
+        <if test="patientId != null and patientId != ''">
+            and  lil.patient_id =#{patientId}
+        </if>
+        <if test="beginHappenTime != null and beginHappenTime != ''">
+            AND date_format(lil.happen_time, '%Y-%m-%d') BETWEEN #{beginHappenTime} AND #{endHappenTime}
+        </if>
+        <if test="beginFinishTime != null and beginFinishTime != ''">
+            AND date_format(lil.finish_time, '%Y-%m-%d') BETWEEN #{beginFinishTime} AND #{endFinishTime}
+        </if>
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="getNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+          count(id)
+        from
+        l_icu_log
+        where
+        1=1
+        and status !=-1
+        <if test="patientId != null and patientId != ''">
+            and  lil.patient_id =#{patientId}
+        </if>
+        <if test="beginHappenTime != null and beginHappenTime != ''">
+            AND date_format(lil.happen_time, '%Y-%m-%d') BETWEEN #{beginHappenTime} AND #{endHappenTime}
+        </if>
+        <if test="beginFinishTime != null and beginFinishTime != ''">
+            AND date_format(lil.finish_time, '%Y-%m-%d') BETWEEN #{beginFinishTime} AND #{endFinishTime}
+        </if>
+    </select>
+
+    <select id="getEditData" resultType="java.util.Map">
+        SELECT
+        IFNULL(lil.id,"") AS id,
+        IFNULL(lil.log_type,"") AS log_type,
+        IFNULL(dilti.icu_log_template_id,"") AS icu_log_template_id,
+        IFNULL(dilti.id,"") AS icu_log_template_item_id,
+        IFNULL(dilti.syn_value_select,"") AS syn_value_select,
+        IFNULL(dilti.syn_value,"") AS syn_value,
+        IFNULL(dilt.template_name,"") AS template_name,
+        IFNULL(lil.happen_time,"") AS happen_time,
+        IFNULL(lil.finish_time,"") AS finish_time,
+        IFNULL(lil.happen_content,"") AS happen_content,
+        lil.status,
+        IFNULL(dilti.icu_log_template_item_name,"") AS icu_log_template_item_name,
+        IFNULL(dilti.log_form,"") AS log_form,
+        IFNULL(tu.user_name,"") AS user_name
+        FROM
+        l_icu_log lil
+        LEFT JOIN dict_icu_log_template_item dilti ON lil.item_id = dilti.id
+        LEFT JOIN dict_icu_log_template dilt ON dilt.id=dilti.icu_log_template_id
+        LEFT JOIN table_user tu ON tu.login_name=lil.happen_operator_code
+        WHERE 1=1
+        and status !=-1
+        <if test="id != null and id != ''">
+            AND id=#{id}
+        </if>
+    </select>
+
 </mapper>

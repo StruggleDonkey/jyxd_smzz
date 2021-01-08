@@ -1,12 +1,17 @@
 package com.jyxd.web.controller.dictionary;
 
+import com.jyxd.web.data.dictionary.IcuLogTemplateDictionary;
 import com.jyxd.web.data.dictionary.IcuLogTemplateItemDictionary;
 import com.jyxd.web.data.user.User;
+import com.jyxd.web.service.dictionary.IcuLogTemplateDictionaryService;
 import com.jyxd.web.service.dictionary.IcuLogTemplateItemDictionaryService;
 import com.jyxd.web.util.HttpCode;
+import com.jyxd.web.util.JsonArrayValueProcessor;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +35,9 @@ public class IcuLogTemplateItemDictionaryController {
 
     @Autowired
     private IcuLogTemplateItemDictionaryService icuLogTemplateItemDictionaryService;
+
+    @Autowired
+    private IcuLogTemplateDictionaryService icuLogTemplateDictionaryService;
 
     /**
      * 增加一条ICU日志模板表记录
@@ -191,4 +199,89 @@ public class IcuLogTemplateItemDictionaryController {
         json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
+
+    /**
+     * 病人管理-患者日志-新增日志-事件类型
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/getEventType",method= RequestMethod.POST)
+    @ResponseBody
+    public String getEventType(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        List<IcuLogTemplateDictionary> list=icuLogTemplateDictionaryService.queryList(map);
+        JSONArray array=new JSONArray();
+        if(list!=null && list.size()>0){
+            for (int i = 0; i < list.size(); i++) {
+                JSONObject object=new JSONObject();
+                object.put("value",list.get(i).getId());//id
+                object.put("label",list.get(i).getTemplateName());//模板名称
+                JSONArray jsonArray=new JSONArray();
+                List<Map<String,Object>> itemList=icuLogTemplateItemDictionaryService.getList(map);
+                if(itemList!=null && itemList.size()>0){
+                    for (int j = 0; j < itemList.size(); j++) {
+                        JSONObject obj=new JSONObject();
+                        obj.put("value",itemList.get(j).get("id").toString());//id
+                        obj.put("label",itemList.get(j).get("icu_log_template_item_name").toString());//模板名称
+                        jsonArray.add(obj);
+                    }
+                }
+                object.put("children", jsonArray);
+                array.add(object);
+            }
+            json.put("msg","成功");
+        }
+        json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
+    /**
+     * 病人管理-患者日志-新增日志-根据事件类型id查询事件类型详情
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/getEventTypeDetails",method= RequestMethod.POST)
+    @ResponseBody
+    public String getEventTypeDetails(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("select",new ArrayList<>());
+        json.put("msg","暂无数据");
+        IcuLogTemplateItemDictionary icuLogTemplateItemDictionary=icuLogTemplateItemDictionaryService.queryData(map.get("id").toString());
+        if(icuLogTemplateItemDictionary!=null){
+            JsonConfig jsonConfig=new JsonConfig();
+            jsonConfig.registerJsonValueProcessor(Date.class,new JsonArrayValueProcessor());
+            json.put("data",JSONObject.fromObject(icuLogTemplateItemDictionary,jsonConfig));
+            if(StringUtils.isNotEmpty(icuLogTemplateItemDictionary.getSynValueSelect())){
+                //同步数据类型值列表 分割  转成所需数组  //"001|A&@&双上肢002|B&@&双下肢003|C&@&四肢004|D&@&左上肢005|E&@&右上肢006|F&@&左下肢007|G&@&右下肢008|H&@&胸部"
+                JSONArray array=new JSONArray();
+                String[] str=icuLogTemplateItemDictionary.getSynValueSelect().split("\\|");
+                for (int i = 0; i < str.length; i++) {
+                    if(i>0 && i<str.length-1){
+                        JSONObject obj=new JSONObject();
+                        obj.put("code",str[i].substring(0,1));
+                        obj.put("value",str[i-1].substring(str[i-1].length()-3,str[i-1].length()));
+                        obj.put("name",str[i].substring(4,str[i].length()-3));
+                        array.add(obj);
+                    }
+                    if(i==str.length-1){
+                        JSONObject obj=new JSONObject();
+                        obj.put("code",str[i].substring(0,1));
+                        obj.put("value",str[i-1].substring(str[i-1].length()-3,str[i-1].length()));
+                        obj.put("name",str[i].substring(4,str[i].length()));
+                        array.add(obj);
+                    }
+                }
+                json.put("select",array);
+            }
+            json.put("msg","成功");
+        }
+        json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
 }

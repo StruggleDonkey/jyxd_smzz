@@ -71,4 +71,16 @@
             and  status= #{status}
         </if>
     </select>
+
+    <select id="queryAllList" resultMap="icuLogTemplateDictionaryMap" parameterType="java.util.Map">
+        select
+        <include refid="icuLogTemplateDictionary_colums"></include>
+        from
+        dict_icu_log_template
+        where
+        1=1
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
 </mapper>

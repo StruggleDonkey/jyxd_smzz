@@ -43,4 +43,11 @@ public interface IcuLogTemplateDictionaryDao {
      * @return
      */
     int queryNum(Map<String, Object> map);
+
+    /**
+     * 根据条件查询ICU日志模板类型表记录列表
+     * @param map
+     * @return list
+     */
+     List<IcuLogTemplateDictionary> queryAllList(Map<String,Object> map);
 }

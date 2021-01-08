@@ -123,7 +123,7 @@
 
     <select id="getList" resultType="java.util.Map">
         SELECT
-        tha.data_time AS data_time,
+        date_format(tha.data_time, '%Y-%m-%d %H:%i:%s') AS data_time,
         tha.assessment_id AS assessment_id,
         tu.user_name AS user_name
         FROM
