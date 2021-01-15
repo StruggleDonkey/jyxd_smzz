@@ -128,6 +128,9 @@
         <if test="loginName !=null and loginName != ''">
             and  login_name=#{loginName}
         </if>
+        <if test="workNumber !=null and workNumber != ''">
+            and  work_number=#{workNumber}
+        </if>
         <if test="password !=null and password != ''">
             and  password=#{password}
         </if>
