@@ -4,6 +4,7 @@ import com.jyxd.web.dao.dictionary.DepartmentDictionaryDao;
 import com.jyxd.web.dao.patient.PatientDao;
 import com.jyxd.web.data.dictionary.DepartmentDictionary;
 import com.jyxd.web.data.patient.Patient;
+import com.jyxd.web.mapper.PatientTestDao;
 import com.jyxd.web.util.FileUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -25,6 +26,9 @@ public class PatientService {
 
     @Autowired
     private PatientDao patientDao;
+
+    @Autowired
+    private PatientTestDao patientTestDao;
 
     @Autowired
     private DepartmentDictionaryDao departmentDictionaryDao;
@@ -208,4 +212,13 @@ public class PatientService {
     public List<Map<String,Object>> getNumByExitTypeMonth(Map<String,Object> map){
         return patientDao.getNumByExitTypeMonth(map);
     }
+
+    /**
+     * 模拟查询视图
+     * @return
+     */
+    public List<Map<String,Object>> queryListTest(Map<String,Object> map){
+        return patientTestDao.queryListTest(map);
+    }
+
 }

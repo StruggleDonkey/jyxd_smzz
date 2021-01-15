@@ -7,6 +7,7 @@ import com.jyxd.web.util.HttpCode;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,14 +89,16 @@ public class TemplateItemDictionaryController {
         json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("msg","编辑失败");
         if(map!=null && map.containsKey("id") && map.containsKey("status") && map.containsKey("templateItemName") && map.containsKey("templateId")
-                && map.containsKey("spell") && map.containsKey("content") && map.containsKey("status")&& map.containsKey("sortNum")){
+                && map.containsKey("spell") && map.containsKey("content") && map.containsKey("sortNum")){
             TemplateItemDictionary templateItemDictionary=templateItemDictionaryService.queryData(map.get("id").toString());
             if(templateItemDictionary!=null){
                 templateItemDictionary.setStatus((int)map.get("status"));
                 templateItemDictionary.setTemplateItemName(map.get("templateItemName").toString());
                 templateItemDictionary.setStatus((int)map.get("status"));
                 templateItemDictionary.setSpell(map.get("spell").toString());
-                templateItemDictionary.setContent(map.get("content").toString());
+                if(StringUtils.isNotEmpty(map.get("content").toString())){
+                    templateItemDictionary.setContent(map.get("content").toString());
+                }
                 templateItemDictionary.setTemplateId(map.get("templateId").toString());
                 User user=(User)session.getAttribute("user");
                 if(user!=null){

@@ -769,4 +769,27 @@ public class PatientController {
         }
         return json.toString();
     }
+
+    /**
+     * 模拟查询视图
+     * @return
+     */
+    @RequestMapping(value = "/queryListTest",method= RequestMethod.POST)
+    @ResponseBody
+    public String queryListTest(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        List<Map<String,Object>> list=patientService.queryListTest(map);
+        System.out.println("------模拟查询视图-------开始---------");
+        if(list!=null && list.size()>0){
+            System.out.println("list:"+list.toString());
+            json.put("data",JSONArray.fromObject(list));
+            json.put("code",HttpCode.OK_CODE.getCode());
+            json.put("msg","查询成功");
+        }
+        System.out.println("------模拟查询视图-------结束--------");
+        return json.toString();
+    }
 }
