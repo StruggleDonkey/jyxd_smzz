@@ -89,4 +89,16 @@
         </if>
     </select>
 
+    <select id="queryDataByTypeCode" resultMap="roleMap" parameterType="java.util.Map">
+        select
+        <include refid="role_colums"></include>
+        from
+        table_role
+        where
+        status != -1
+        <if test="userTypeCode != null and userTypeCode != ''">
+            and  user_type_code =#{userTypeCode}
+        </if>
+    </select>
+
 </mapper>

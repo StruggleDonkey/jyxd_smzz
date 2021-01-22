@@ -76,7 +76,7 @@
         </if>
         <if test="type != null and type != ''">
             and  type = #{type}
-            and (parent_id = "" || parent_id=null)
+            and (parent_id = "" || parent_id=null || parent_id IS NULL)
         </if>
         <if test="status != null ">
             and  status= #{status}
@@ -98,7 +98,7 @@
         </if>
         <if test="type != null and type != ''">
             and  type = #{type}
-            and (parent_id = "" || parent_id=null)
+            and (parent_id = "" || parent_id=null || parent_id IS NULL)
         </if>
         <if test="status != null ">
             and  status= #{status}
@@ -121,8 +121,8 @@
         IFNULL(score_item_max, "") AS score_item_max,
         IFNULL(description, "") AS description,
         sort_num,
-        STATUS,
-        MODE,
+        status,
+        mode,
         IFNULL(by_count, "") AS by_count,
         IFNULL(hide_title, "") AS hide_title,
         IFNULL(create_time, "") AS create_time,

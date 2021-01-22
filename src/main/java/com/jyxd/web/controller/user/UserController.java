@@ -516,4 +516,114 @@ public class UserController {
         }
         return json.toString();
     }
+
+    /**
+     * 从his系统获取并更新用户数据
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/updateUserByHis",method= RequestMethod.POST)
+    @ResponseBody
+    public String updateUserByHis(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","失败");
+        try {
+            //查询本地数据库字典数据
+            List<User> list=userService.queryUserList(map);
+            //从his数据库视图中查询科室字典数据
+            List<Map<String,Object>> hisList=userService.getUserByHis(map);
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            if(hisList!=null && hisList.size()>0){
+                if(list!=null && list.size()>0){
+                    //如果数据库有数据则需要和his中获取的数据做比较再更新
+
+                    ArrayList arrayList= new ArrayList();
+                    for (int i = 0; i <list.size(); i++) {
+                        arrayList.add(list.get(i).getWorkNumber());//工号唯一性
+                    }
+
+                    ArrayList arrayHisList= new ArrayList();
+                    for (int i = 0; i < hisList.size(); i++) {
+                        arrayHisList.add(hisList.get(i).get("user_id").toString());//工号唯一性
+                    }
+
+                    for (int i = 0; i <list.size(); i++) {
+                        if(!arrayHisList.contains(list.get(i).getWorkNumber())){
+                            //如果his系统中数据 里 没有本地数据 则删除本地数据
+                            list.get(i).setStatus(-1);
+                            userService.update(list.get(i));
+                        }
+                    }
+
+                    for (int i = 0; i <hisList.size(); i++) {
+                        if(!arrayList.contains(hisList.get(i).get("user_id").toString())){
+                            //如果本地数据不包含 his系统数据 则新增数据
+                            User user=new User();
+                            user.setStatus(1);
+                            user.setId(UUIDUtil.getUUID());
+                            user.setUserName(hisList.get(i).get("user_name").toString());
+                            user.setSimplicity(hisList.get(i).get("user_name").toString());
+                            user.setLoginName(hisList.get(i).get("user_name").toString());
+                            user.setPassword(hisList.get(i).get("password").toString());
+                            user.setCreateTime(new Date());
+                            user.setIsShedual(1);//是否参与排班（0：不参与 1：参与）
+                            user.setUserTypeCode(hisList.get(i).get("user_type_code").toString());
+                            user.setWorkNumber(hisList.get(i).get("user_id").toString());
+                            user.setSex((int)hisList.get(i).get("sex"));
+                            if(StringUtils.isNotEmpty(hisList.get(i).get("enter_time").toString())){
+                                user.setEnterTime(format.parse(hisList.get(i).get("enter_time").toString()));
+                            }
+                            if(StringUtils.isNotEmpty(hisList.get(i).get("exit_time").toString())){
+                                user.setExitTime(format.parse(hisList.get(i).get("exit_time").toString()));
+                            }
+                            Map<String,Object> map1=new HashMap<>();
+                            map1.put("userTypeCode",hisList.get(i).get("user_type_code").toString());
+                            Role role=roleService.queryDataByTypeCode(map1);
+                            if(role!=null){
+                                user.setRoleId(role.getId());
+                            }
+                            userService.insert(user);
+                        }
+                    }
+                }else{
+                    //直接将his获取的数据添加到本地数据库
+                    for (int i = 0; i < hisList.size(); i++) {
+                        User user=new User();
+                        user.setStatus(1);
+                        user.setId(UUIDUtil.getUUID());
+                        user.setUserName(hisList.get(i).get("user_name").toString());
+                        user.setSimplicity(hisList.get(i).get("user_name").toString());
+                        user.setLoginName(hisList.get(i).get("user_name").toString());
+                        user.setPassword(hisList.get(i).get("password").toString());
+                        user.setCreateTime(new Date());
+                        user.setIsShedual(1);//是否参与排班（0：不参与 1：参与）
+                        user.setUserTypeCode(hisList.get(i).get("user_type_code").toString());
+                        user.setWorkNumber(hisList.get(i).get("user_id").toString());
+                        user.setSex((int)hisList.get(i).get("sex"));
+                        if(StringUtils.isNotEmpty(hisList.get(i).get("enter_time").toString())){
+                            user.setEnterTime(format.parse(hisList.get(i).get("enter_time").toString()));
+                        }
+                        if(StringUtils.isNotEmpty(hisList.get(i).get("exit_time").toString())){
+                            user.setExitTime(format.parse(hisList.get(i).get("exit_time").toString()));
+                        }
+                        Map<String,Object> map1=new HashMap<>();
+                        map1.put("userTypeCode",hisList.get(i).get("user_type_code").toString());
+                        Role role=roleService.queryDataByTypeCode(map1);
+                        if(role!=null){
+                            user.setRoleId(role.getId());
+                        }
+                        userService.insert(user);
+                    }
+                }
+                json.put("code",HttpCode.OK_CODE.getCode());
+                json.put("msg","成功");
+            }
+        }catch (Exception e){
+            logger.info("updateUserByHis:"+e);
+        }
+        return json.toString();
+    }
+
 }

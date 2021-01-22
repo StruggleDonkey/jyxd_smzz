@@ -6,4 +6,24 @@
         SELECT * from v_patient
     </select>
 
+    <select id="getDepartmentByHis" resultType="java.util.Map">
+        SELECT * from v_icu_dic_department
+    </select>
+
+    <select id="getWardByHis" resultType="java.util.Map">
+        SELECT * from v_icu_dic_ward
+    </select>
+
+    <select id="getBedByHis" resultType="java.util.Map">
+        SELECT * from v_icu_dic_bed
+    </select>
+
+    <select id="getUserByHis" resultType="java.util.Map">
+        SELECT * from v_icu_user
+    </select>
+
+    <select id="getPatientByHis" resultType="java.util.Map">
+        SELECT * from v_icu_patient
+    </select>
+
 </mapper>

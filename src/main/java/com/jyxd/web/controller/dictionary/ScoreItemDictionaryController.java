@@ -6,6 +6,7 @@ import com.jyxd.web.util.HttpCode;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,17 +82,26 @@ public class ScoreItemDictionaryController {
         if(map.containsKey("id") && map.containsKey("status")){
             ScoreItemDictionary scoreItemDictionary=scoreItemDictionaryService.queryData(map.get("id").toString());
             if(scoreItemDictionary!=null){
+                if(StringUtils.isNotEmpty(map.get("scoreItemName").toString())){
+                    scoreItemDictionary.setScoreItemName(map.get("scoreItemName").toString());
+                }
                 scoreItemDictionary.setMode((int)map.get("mode"));
                 scoreItemDictionary.setByCount((int)map.get("byCount"));
                 scoreItemDictionary.setHideTitle((int)map.get("hideTitle"));
                 scoreItemDictionary.setShowMode((int)map.get("showMode"));
                 scoreItemDictionary.setForceHorizon((int)map.get("forceHorizon"));
-                scoreItemDictionary.setGroupExclusionNum(map.get("groupExclusionNum").toString());
+                if(StringUtils.isNotEmpty(map.get("groupExclusionNum").toString())){
+                    scoreItemDictionary.setGroupExclusionNum(map.get("groupExclusionNum").toString());
+                }
                 //scoreItemDictionary.setFastColumnName(map.get("fastColumnName").toString());
-                scoreItemDictionary.setGroupNum(map.get("groupNum").toString());
-                String calculateNum=map.get("calculateNum").toString();
-                System.out.println(Double.valueOf(calculateNum).doubleValue());
-                scoreItemDictionary.setCalculateNum(Double.valueOf(calculateNum).doubleValue());
+                if(StringUtils.isNotEmpty(map.get("groupNum").toString())){
+                    scoreItemDictionary.setGroupNum(map.get("groupNum").toString());
+                }
+                if(StringUtils.isNotEmpty(map.get("calculateNum").toString())){
+                    String calculateNum=map.get("calculateNum").toString();
+                    System.out.println(Double.valueOf(calculateNum).doubleValue());
+                    scoreItemDictionary.setCalculateNum(Double.valueOf(calculateNum).doubleValue());
+                }
                 scoreItemDictionary.setCalculateRule(map.get("calculateRule").toString());
                 scoreItemDictionary.setSortNum((int)map.get("sortNum"));
                 scoreItemDictionary.setDescription(map.get("description").toString());

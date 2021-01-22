@@ -129,4 +129,10 @@ public interface PatientDao {
      * @return
      */
     List<Map<String, Object>> getNumByExitTypeMonth(Map<String, Object> map);
+
+    /**
+     * 查询所有病人信息 stats!=-1
+     * @return
+     */
+     List<Patient> queryPatientList(Map<String,Object> map);
 }

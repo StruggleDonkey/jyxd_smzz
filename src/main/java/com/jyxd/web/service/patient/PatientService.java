@@ -20,7 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Service
+@Service("patientService")
 @Transactional
 public class PatientService {
 
@@ -219,6 +219,22 @@ public class PatientService {
      */
     public List<Map<String,Object>> queryListTest(Map<String,Object> map){
         return patientTestDao.queryListTest(map);
+    }
+
+    /**
+     * 查询所有病人信息 stats!=-1
+     * @return
+     */
+    public List<Patient> queryPatientList(Map<String,Object> map){
+        return patientDao.queryPatientList(map);
+    }
+
+    /**
+     * 从his系统视图查询所有病人信息
+     * @return
+     */
+    public List<Map<String,Object>> getPatientByHis(Map<String,Object> map){
+        return patientTestDao.getPatientByHis(map);
     }
 
 }

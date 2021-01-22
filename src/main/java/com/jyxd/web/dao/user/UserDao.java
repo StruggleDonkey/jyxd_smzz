@@ -85,4 +85,11 @@ public interface UserDao {
      * @return
      */
     User queryDataByLoginName(Map<String,Object> map);
+
+    /**
+     * 查询所有用户 status！=-1
+     * @param map
+     * @return
+     */
+     List<User> queryUserList(Map<String,Object> map);
 }

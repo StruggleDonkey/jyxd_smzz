@@ -191,6 +191,9 @@
         LEFT JOIN table_user tsb ON tsb.login_name=th.receive_operator
         WHERE 1=1
         and th.status !=-1
+        <if test="patientId != null and patientId != ''">
+            and  th.patient_id =#{patientId}
+        </if>
         <if test="sendOperator != null and sendOperator != ''">
             and  th.send_operator =#{sendOperator}
         </if>
@@ -218,6 +221,9 @@
         where
         1=1
         and status !=-1
+        <if test="patientId != null and patientId != ''">
+            and patient_id =#{patientId}
+        </if>
         <if test="sendOperator != null and sendOperator != ''">
             and  send_operator =#{sendOperator}
         </if>

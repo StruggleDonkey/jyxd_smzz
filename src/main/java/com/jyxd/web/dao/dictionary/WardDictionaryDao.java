@@ -50,4 +50,11 @@ public interface WardDictionaryDao {
      * @return
      */
     WardDictionary queryDataByCode(Map<String, Object> map);
+
+    /**
+     * 查询所有的字典数据 stats!=-1
+     * @param map
+     * @return
+     */
+     List<WardDictionary> queryWardList(Map<String,Object> map);
 }

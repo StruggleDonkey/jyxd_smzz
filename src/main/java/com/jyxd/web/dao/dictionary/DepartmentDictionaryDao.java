@@ -52,6 +52,13 @@ public interface DepartmentDictionaryDao {
     List<DepartmentDictionary> queryDataList(Map<String, Object> map);
 
     /**
+     * 查询所有的字典数据 stats!=-1
+     * @param map
+     * @return
+     */
+     List<DepartmentDictionary> queryDepartmentList(Map<String,Object> map);
+
+    /**
      * 根据code查询科室字典对象
      * @param map
      * @return

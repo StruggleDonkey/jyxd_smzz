@@ -6,6 +6,7 @@ import com.jyxd.web.util.HttpCode;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -180,6 +181,78 @@ public class BedDictionaryController {
             json.put("msg","查询成功");
         }
         json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
+    /**
+     * 从his系统获取并更新床位字典数据
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/updateWardByHis",method= RequestMethod.POST)
+    @ResponseBody
+    public String updateWardByHis(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","失败");
+
+        //查询本地数据库字典数据
+        List<BedDictionary> list=bedDictionaryService.queryBedList(map);
+        //从his数据库视图中查询科室字典数据
+        List<Map<String,Object>> hisList=bedDictionaryService.getBedByHis(map);
+        if(hisList!=null && hisList.size()>0){
+            if(list!=null && list.size()>0){
+                //如果数据库有数据则需要和his中获取的数据做比较再更新
+
+                ArrayList arrayList= new ArrayList();
+                for (int i = 0; i <list.size(); i++) {
+                    arrayList.add(list.get(i).getBedCode());
+                }
+
+                ArrayList arrayHisList= new ArrayList();
+                for (int i = 0; i < hisList.size(); i++) {
+                    arrayHisList.add(hisList.get(i).get("bed_code").toString());
+                }
+
+                for (int i = 0; i <list.size(); i++) {
+                    if(!arrayHisList.contains(list.get(i).getBedCode())){
+                        //如果his系统中数据 里 没有本地数据 则删除本地数据
+                        list.get(i).setStatus(-1);
+                        bedDictionaryService.update(list.get(i));
+                    }
+                }
+
+                for (int i = 0; i <hisList.size(); i++) {
+                    if(!arrayList.contains(hisList.get(i).get("bed_code").toString())){
+                        //如果本地数据不包含 his系统数据 则新增数据
+                        BedDictionary bedDictionary=new BedDictionary();
+                        bedDictionary.setStatus(1);
+                        bedDictionary.setId(UUIDUtil.getUUID());
+                        bedDictionary.setBedName(hisList.get(i).get("bed_name").toString());
+                        bedDictionary.setBedCode(hisList.get(i).get("bed_code").toString());
+                        bedDictionaryService.insert(bedDictionary);
+                    }
+                }
+
+            }else{
+                //直接将his获取的数据添加到本地数据库
+                for (int i = 0; i < hisList.size(); i++) {
+                    BedDictionary bedDictionary=new BedDictionary();
+                    bedDictionary.setStatus(1);
+                    bedDictionary.setId(UUIDUtil.getUUID());
+                    if(StringUtils.isNotEmpty(hisList.get(i).get("bed_code").toString())){
+                        bedDictionary.setBedCode(hisList.get(i).get("bed_code").toString());
+                    }
+                    if(StringUtils.isNotEmpty(hisList.get(i).get("bed_name").toString())){
+                        bedDictionary.setBedName(hisList.get(i).get("bed_name").toString());
+                    }
+                    bedDictionaryService.insert(bedDictionary);
+                }
+            }
+            json.put("code",HttpCode.OK_CODE.getCode());
+            json.put("msg","成功");
+        }
         return json.toString();
     }
 

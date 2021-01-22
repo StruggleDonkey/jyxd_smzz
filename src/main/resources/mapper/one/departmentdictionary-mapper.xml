@@ -102,4 +102,14 @@
             and  id =#{id}
         </if>
     </select>
+
+    <select id="queryDepartmentList" resultMap="departmentDictionaryMap">
+        select
+        <include refid="departmentDictionary_colums"></include>
+        from
+        dict_department
+        where
+        1=1
+        and  status != -1
+    </select>
 </mapper>

@@ -58,4 +58,11 @@ public interface BedDictionaryDao {
      */
     BedDictionary queryDataByBedCode(Map<String,Object> map);
 
+    /**
+     * 查询所有的字典数据 stats!=-1
+     * @param map
+     * @return
+     */
+     List<BedDictionary> queryBedList(Map<String,Object> map);
+
 }

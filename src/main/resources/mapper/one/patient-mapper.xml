@@ -643,4 +643,14 @@
         GROUP BY exitTab.mon
         order by exitTab.mon+0
     </select>
+
+    <select id="queryPatientList" resultMap="patientMap" parameterType="java.util.Map">
+        select
+        <include refid="patient_colums"></include>
+        from
+        p_patient
+        where
+        status !=-1
+    </select>
+
 </mapper>

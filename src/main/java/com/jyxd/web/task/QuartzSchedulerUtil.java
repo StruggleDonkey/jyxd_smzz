@@ -38,6 +38,7 @@ public class QuartzSchedulerUtil {
         //startJob1(scheduler);测试
         //startJob2(scheduler);测试
         startJob3(scheduler);
+        //startJob4(scheduler);//从his同步病人信息
         scheduler.start();
     }
 
@@ -255,6 +256,38 @@ public class QuartzSchedulerUtil {
             return;
         }
         CronTrigger cronTrigger = TriggerBuilder.newTrigger().withIdentity("testJob", "testJob")
+                .withSchedule(cronScheduleBuilder).build();
+        scheduler.scheduleJob(jobDetail, cronTrigger);
+    }
+
+    // his同步病人信息定时任务
+    private void startJob4(Scheduler scheduler) throws SchedulerException {
+        JobDetail jobDetail = JobBuilder.newJob(PatientJob.class).withIdentity("patientJob", "patientJob").build();
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("0 0/5 * * * ? ");//每5分钟一次
+        Map<String,Object> map=new HashMap<>();
+        map.put("jobName","patientJob");
+        map.put("jobGroup","patientJob");
+        QuartzTask quartzTask =quartzTaskService.queryDataByNameAndGroup(map);
+        if(quartzTask==null){
+            //如果为空 说明数据库中没有这个任务 需要添加
+            QuartzTask data=new QuartzTask();
+            data.setId(UUIDUtil.getUUID());
+            data.setCreateTime(new Date());
+            data.setCron("0 0/5 * * * ? ");//每5分钟一次
+            data.setDescription("his同步病人信息任务");
+            data.setJobGroup("patientJob");
+            data.setJobName("patientJob");
+            data.setStatus(1);
+            data.setTaskName("patientJob");
+            data.setType("系统任务");
+            quartzTaskService.insert(data);
+        }else if(quartzTask.getStatus()==1){
+            //转态 1: 正常执行
+            cronScheduleBuilder = CronScheduleBuilder.cronSchedule(quartzTask.getCron());
+        }else{
+            return;
+        }
+        CronTrigger cronTrigger = TriggerBuilder.newTrigger().withIdentity("patientJob", "patientJob")
                 .withSchedule(cronScheduleBuilder).build();
         scheduler.scheduleJob(jobDetail, cronTrigger);
     }

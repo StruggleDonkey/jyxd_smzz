@@ -2,6 +2,7 @@ package com.jyxd.web.service.user;
 
 import com.jyxd.web.dao.user.UserDao;
 import com.jyxd.web.data.user.User;
+import com.jyxd.web.mapper.PatientTestDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,9 @@ public class UserService {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private PatientTestDao patientTestDao;
 
     public boolean insert(User user){
         return userDao.insert(user);
@@ -69,6 +73,24 @@ public class UserService {
      */
     public User queryDataByLoginName(Map<String,Object> map){
         return userDao.queryDataByLoginName(map);
+    }
+
+    /**
+     * 查询所有用户 status！=-1
+     * @param map
+     * @return
+     */
+    public List<User> queryUserList(Map<String,Object> map){
+        return userDao.queryUserList(map);
+    }
+
+    /**
+     * 从his数据库视图中查询职工信息数据
+     * @param map
+     * @return list
+     */
+    public List<Map<String, Object>> getUserByHis(Map<String, Object> map){
+        return patientTestDao.getUserByHis(map);
     }
 
 }

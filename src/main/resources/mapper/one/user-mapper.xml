@@ -225,4 +225,13 @@
             and  login_name =#{loginName}
         </if>
     </select>
+
+    <select id="queryUserList" resultMap="userMap" parameterType="java.util.Map">
+        select
+        <include refid="user_colums"></include>
+        from
+        table_user
+        where
+        status!=-1
+    </select>
 </mapper>

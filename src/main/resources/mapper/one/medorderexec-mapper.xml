@@ -111,6 +111,9 @@
         <if test="repeatIndicator != null and repeatIndicator != 5">
             and  repeat_indicator= #{repeatIndicator}
         </if>
+        <if test="patientId != null and patientId !=''">
+            and  patient_id= #{patientId}
+        </if>
         ORDER BY order_no,remark DESC
         <if test="start != null ">limit #{start},</if>
         <if test="size != null ">#{size}</if>
@@ -141,6 +144,9 @@
         </if>
         <if test="repeatIndicator != null and repeatIndicator != 5">
             and  repeat_indicator= #{repeatIndicator}
+        </if>
+        <if test="patientId != null and patientId !=''">
+            and  patient_id= #{patientId}
         </if>
     </select>
 

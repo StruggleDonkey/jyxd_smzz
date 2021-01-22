@@ -50,4 +50,11 @@ public interface RoleDao {
      * @return
      */
     int queryNum(Map<String, Object> map);
+
+    /**
+     * 根据类型编码查询对象
+     * @param map
+     * @return
+     */
+    Role queryDataByTypeCode(Map<String, Object> map);
 }

@@ -38,4 +38,8 @@ public class RoleService {
 
     public int queryNum(Map<String,Object> map){return roleDao.queryNum(map);}
 
+    public Role queryDataByTypeCode(Map<String,Object> map){
+        return roleDao.queryDataByTypeCode(map);
+    }
+
 }
