@@ -39,6 +39,9 @@ public class QuartzSchedulerUtil {
         //startJob2(scheduler);测试
         startJob3(scheduler);
         //startJob4(scheduler);//从his同步病人信息
+        //startJob5(scheduler);//从his同步病人转移信息
+        //startJob6(scheduler);//从his同步手术信息
+        //startJob6(scheduler);//从his同步医嘱执行信息
         scheduler.start();
     }
 
@@ -263,7 +266,7 @@ public class QuartzSchedulerUtil {
     // his同步病人信息定时任务
     private void startJob4(Scheduler scheduler) throws SchedulerException {
         JobDetail jobDetail = JobBuilder.newJob(PatientJob.class).withIdentity("patientJob", "patientJob").build();
-        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("0 0/5 * * * ? ");//每5分钟一次
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("0d 0/5 * * * ? ");//每5分钟一次
         Map<String,Object> map=new HashMap<>();
         map.put("jobName","patientJob");
         map.put("jobGroup","patientJob");
@@ -288,6 +291,102 @@ public class QuartzSchedulerUtil {
             return;
         }
         CronTrigger cronTrigger = TriggerBuilder.newTrigger().withIdentity("patientJob", "patientJob")
+                .withSchedule(cronScheduleBuilder).build();
+        scheduler.scheduleJob(jobDetail, cronTrigger);
+    }
+
+    // his同步病人转移信息定时任务
+    private void startJob5(Scheduler scheduler) throws SchedulerException {
+        JobDetail jobDetail = JobBuilder.newJob(PatientJob.class).withIdentity("transferJob", "transferJob").build();
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("0 0/5 * * * ? ");//每5分钟一次
+        Map<String,Object> map=new HashMap<>();
+        map.put("jobName","transferJob");
+        map.put("jobGroup","transferJob");
+        QuartzTask quartzTask =quartzTaskService.queryDataByNameAndGroup(map);
+        if(quartzTask==null){
+            //如果为空 说明数据库中没有这个任务 需要添加
+            QuartzTask data=new QuartzTask();
+            data.setId(UUIDUtil.getUUID());
+            data.setCreateTime(new Date());
+            data.setCron("0 0/5 * * * ? ");//每5分钟一次
+            data.setDescription("his同步病人转移信息任务");
+            data.setJobGroup("transferJob");
+            data.setJobName("transferJob");
+            data.setStatus(1);
+            data.setTaskName("transferJob");
+            data.setType("系统任务");
+            quartzTaskService.insert(data);
+        }else if(quartzTask.getStatus()==1){
+            //转态 1: 正常执行
+            cronScheduleBuilder = CronScheduleBuilder.cronSchedule(quartzTask.getCron());
+        }else{
+            return;
+        }
+        CronTrigger cronTrigger = TriggerBuilder.newTrigger().withIdentity("transferJob", "transferJob")
+                .withSchedule(cronScheduleBuilder).build();
+        scheduler.scheduleJob(jobDetail, cronTrigger);
+    }
+
+    // his同步手术信息定时任务
+    private void startJob6(Scheduler scheduler) throws SchedulerException {
+        JobDetail jobDetail = JobBuilder.newJob(PatientJob.class).withIdentity("operationJob", "operationJob").build();
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("0 0/5 * * * ? ");//每5分钟一次
+        Map<String,Object> map=new HashMap<>();
+        map.put("jobName","operationJob");
+        map.put("jobGroup","operationJob");
+        QuartzTask quartzTask =quartzTaskService.queryDataByNameAndGroup(map);
+        if(quartzTask==null){
+            //如果为空 说明数据库中没有这个任务 需要添加
+            QuartzTask data=new QuartzTask();
+            data.setId(UUIDUtil.getUUID());
+            data.setCreateTime(new Date());
+            data.setCron("0 0/5 * * * ? ");//每5分钟一次
+            data.setDescription("his同步手术信息任务");
+            data.setJobGroup("operationJob");
+            data.setJobName("operationJob");
+            data.setStatus(1);
+            data.setTaskName("operationJob");
+            data.setType("系统任务");
+            quartzTaskService.insert(data);
+        }else if(quartzTask.getStatus()==1){
+            //转态 1: 正常执行
+            cronScheduleBuilder = CronScheduleBuilder.cronSchedule(quartzTask.getCron());
+        }else{
+            return;
+        }
+        CronTrigger cronTrigger = TriggerBuilder.newTrigger().withIdentity("operationJob", "operationJob")
+                .withSchedule(cronScheduleBuilder).build();
+        scheduler.scheduleJob(jobDetail, cronTrigger);
+    }
+
+    // his同步医嘱执行信息定时任务
+    private void startJob7(Scheduler scheduler) throws SchedulerException {
+        JobDetail jobDetail = JobBuilder.newJob(PatientJob.class).withIdentity("medOrderJob", "medOrderJob").build();
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("0 0/5 * * * ? ");//每5分钟一次
+        Map<String,Object> map=new HashMap<>();
+        map.put("jobName","medOrderJob");
+        map.put("jobGroup","medOrderJob");
+        QuartzTask quartzTask =quartzTaskService.queryDataByNameAndGroup(map);
+        if(quartzTask==null){
+            //如果为空 说明数据库中没有这个任务 需要添加
+            QuartzTask data=new QuartzTask();
+            data.setId(UUIDUtil.getUUID());
+            data.setCreateTime(new Date());
+            data.setCron("0 0/5 * * * ? ");//每5分钟一次
+            data.setDescription("his同步医嘱执行信息任务");
+            data.setJobGroup("medOrderJob");
+            data.setJobName("medOrderJob");
+            data.setStatus(1);
+            data.setTaskName("medOrderJob");
+            data.setType("系统任务");
+            quartzTaskService.insert(data);
+        }else if(quartzTask.getStatus()==1){
+            //转态 1: 正常执行
+            cronScheduleBuilder = CronScheduleBuilder.cronSchedule(quartzTask.getCron());
+        }else{
+            return;
+        }
+        CronTrigger cronTrigger = TriggerBuilder.newTrigger().withIdentity("medOrderJob", "medOrderJob")
                 .withSchedule(cronScheduleBuilder).build();
         scheduler.scheduleJob(jobDetail, cronTrigger);
     }

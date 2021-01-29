@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 
-@Service
+@Service("departmentDictionaryService")
 @Transactional
 public class DepartmentDictionaryService {
 
@@ -65,4 +65,12 @@ public class DepartmentDictionaryService {
         return patientTestDao.getDepartmentByHis(map);
     }
 
+    /**
+     * 查询科室字典bean类列表
+     * @param map
+     * @return list
+     */
+    public List<DepartmentDictionary> queryDataList(Map<String, Object> map){
+        return departmentDictionaryDao.queryDataList(map);
+    }
 }

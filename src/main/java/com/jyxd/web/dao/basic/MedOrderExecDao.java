@@ -43,4 +43,11 @@ public interface MedOrderExecDao {
      * @return
      */
     int queryNum(Map<String, Object> map);
+
+    /**
+     * 查询所有医嘱对象列表
+     * @param map
+     * @return
+     */
+      List<MedOrderExec> queryMedOrderExecList(Map<String,Object> map);
 }

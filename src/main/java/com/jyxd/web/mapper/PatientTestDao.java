@@ -49,4 +49,57 @@ public interface PatientTestDao {
      */
      List<Map<String, Object>> getPatientByHis(Map<String,Object> map);
 
+    /**
+     * 从his系统视图查询所有病人转移信息
+     * @return
+     */
+    List<Map<String, Object>> getTransferByHis(Map<String,Object> map);
+
+    /**
+     * 从his系统视图查询所有手术信息
+     * @return
+     */
+    List<Map<String, Object>> getOperationByHis(Map<String,Object> map);
+
+    /**
+     * 从his系统视图查询所有医嘱执行信息
+     * @return
+     */
+    List<Map<String, Object>> getMedOrderExecByHis(Map<String,Object> map);
+
+    /**
+     * 从his系统视图查询用药分类字典
+     * @return
+     */
+    List<Map<String, Object>> getDrugTypeByHis(Map<String,Object> map);
+
+    /**
+     * 从his系统视图查询补液类型字典
+     * @return
+     */
+    List<Map<String, Object>> getOrderAttrByHis(Map<String,Object> map);
+
+    /**
+     * 从his系统视图查询 给药途径字典
+     * @return
+     */
+    List<Map<String, Object>> getUseModeByHis(Map<String,Object> map);
+
+    /**
+     * 从his系统视图查询 病情
+     * @return
+     */
+    List<Map<String, Object>> getIllnessStateByHis(Map<String,Object> map);
+
+    /**
+     * 从his系统视图查询 护理级别
+     * @return
+     */
+    List<Map<String, Object>> getNursingLevelByHis(Map<String,Object> map);
+
+    /**
+     * 从his系统视图查询 婚姻状况
+     * @return
+     */
+    List<Map<String, Object>> getMaritalStateByHis(Map<String,Object> map);
 }

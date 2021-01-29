@@ -150,4 +150,11 @@
         </if>
     </select>
 
+    <select id="queryMedOrderExecList" resultMap="medOrderExecMap">
+        select
+        <include refid="medOrderExec_colums"></include>
+        from
+        table_med_order_exec
+    </select>
+
 </mapper>

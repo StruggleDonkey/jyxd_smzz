@@ -6,24 +6,74 @@
         SELECT * from v_patient
     </select>
 
+    <!--从his数据库视图中查询科室字典数据-->
     <select id="getDepartmentByHis" resultType="java.util.Map">
         SELECT * from v_icu_dic_department
     </select>
 
+    <!--从his数据库视图中查询病区字典数据-->
     <select id="getWardByHis" resultType="java.util.Map">
         SELECT * from v_icu_dic_ward
     </select>
 
+    <!--从his数据库视图中查询床位字典数据-->
     <select id="getBedByHis" resultType="java.util.Map">
         SELECT * from v_icu_dic_bed
     </select>
 
+    <!--从his数据库视图中查询职工信息数据-->
     <select id="getUserByHis" resultType="java.util.Map">
         SELECT * from v_icu_user
     </select>
 
+    <!--从his系统视图查询所有病人信息-->
     <select id="getPatientByHis" resultType="java.util.Map">
         SELECT * from v_icu_patient
+    </select>
+
+    <!--从his系统视图查询所有病人转移信息-->
+    <select id="getTransferByHis" resultType="java.util.Map">
+        SELECT * from v_icu_transfer
+    </select>
+
+    <!--从his系统视图查询所有手术信息-->
+    <select id="getOperationByHis" resultType="java.util.Map">
+        SELECT * from v_icu_operation
+    </select>
+
+    <!--从his系统视图查询所有医嘱执行信息-->
+    <select id="getMedOrderExecByHis" resultType="java.util.Map">
+        SELECT * from v_icu_med_order
+    </select>
+
+    <!--从his系统视图查询用药分类字典-->
+    <select id="getDrugTypeByHis" resultType="java.util.Map">
+        SELECT * from v_icu_drug_type
+    </select>
+
+    <!--从his系统视图查询补液类型字典-->
+    <select id="getOrderAttrByHis" resultType="java.util.Map">
+        SELECT * from v_icu_order_attr
+    </select>
+
+    <!--从his系统视图查询 给药途径字典-->
+    <select id="getUseModeByHis" resultType="java.util.Map">
+        SELECT * from v_icu_use_mode
+    </select>
+
+    <!--从his系统视图查询 病情-->
+    <select id="getIllnessStateByHis" resultType="java.util.Map">
+        SELECT * from v_icu_illness_state
+    </select>
+
+    <!--从his系统视图查询 护理级别-->
+    <select id="getNursingLevelByHis" resultType="java.util.Map">
+        SELECT * from v_icu_nursing_level
+    </select>
+
+    <!--从his系统视图查询 婚姻状况-->
+    <select id="getMaritalStateByHis" resultType="java.util.Map">
+        SELECT * from v_icu_dic_marital_state
     </select>
 
 </mapper>

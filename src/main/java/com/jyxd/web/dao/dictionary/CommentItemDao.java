@@ -71,4 +71,10 @@ public interface CommentItemDao {
      * @return
      */
      String getNamesByType(Map<String,Object> map);
+
+    /**
+     * 根据type查询对象列表
+     * @return
+     */
+     List<CommenItemDictionary> queryDataListByType(Map<String,Object> map);
 }

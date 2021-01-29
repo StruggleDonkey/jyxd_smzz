@@ -653,4 +653,41 @@
         status !=-1
     </select>
 
+    <select id="getPatientByConditions" resultMap="patientMap" parameterType="java.util.Map">
+        select
+        <include refid="patient_colums"></include>
+        from
+        p_patient
+        where
+        1=1
+        and status != -1
+        <if test="flag != null">
+            and flag=#{flag}
+        </if>
+        <if test="exitType != null and exitType != ''">
+            and  exit_type = #{exitType}
+        </if>
+        <if test="visitId != null and visitId != ''">
+            and  visit_id =#{visitId}
+        </if>
+        <if test="visitCode != null and visitCode != ''">
+            and  visit_code =#{visitCode}
+        </if>
+        <if test="departmentCode != null and departmentCode != ''">
+            and  department_code =#{departmentCode}
+        </if>
+        <if test="toDepartmentCode != null and toDepartmentCode != ''">
+            and  to_department_code =#{toDepartmentCode}
+        </if>
+        <if test="bedCode != null and bedCode != ''">
+            and  bed_code =#{bedCode}
+        </if>
+        <if test="enterTime != null and enterTime != ''">
+            date_format(enter_time,'%Y-%m-%d %H:%i:%s') =#{enterTime}
+        </if>
+        <if test="exitTime != null and exitTime != ''">
+            date_format(exit_time,'%Y-%m-%d %H:%i:%s') =#{exitTime}
+        </if>
+    </select>
+
 </mapper>

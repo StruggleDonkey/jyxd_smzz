@@ -200,14 +200,23 @@
         <if test="receiveOperator != null and receiveOperator != ''">
             and  th.receive_operator =#{receiveOperator}
         </if>
-        <if test="status != null ">
+        <if test="status != null and status==0">
             and  th.status= #{status}
         </if>
+        <if test="status != null and status==1">
+            and  th.status= #{status}
+        </if>
+        <if test="status != null and status==2">
+            and  th.status= #{status}
+        </if>
+        <if test="status != null and status==3">
+            and  (th.status=1 or th.status=2)
+        </if>
         <if test="beginTime != null and beginTime != ''">
-            and  #{beginTime} <![CDATA[ >= ]]> th.handover_begin_time
+            and  #{beginTime} <![CDATA[ >= ]]> date_format(th.handover_begin_time,'%Y-%m-%d %H:%i:%s')
         </if>
         <if test="endTime != null and endTime != ''">
-            and  #{endTime} <![CDATA[ <= ]]> th.handover_end_time
+            and  #{endTime} <![CDATA[ <= ]]> date_format(th.handover_end_time,'%Y-%m-%d %H:%i:%s')
         </if>
         <if test="start != null ">limit #{start},</if>
         <if test="size != null ">#{size}</if>
@@ -230,14 +239,23 @@
         <if test="receiveOperator != null and receiveOperator != ''">
             and  receive_operator =#{receiveOperator}
         </if>
-        <if test="status != null ">
-            and  status= #{status}
+        <if test="status != null and status==0">
+            and  th.status= #{status}
+        </if>
+        <if test="status != null and status==1">
+            and  th.status= #{status}
+        </if>
+        <if test="status != null and status==2">
+            and  th.status= #{status}
+        </if>
+        <if test="status != null and status==3">
+            and  (th.status=1 or th.status=2)
         </if>
         <if test="beginTime != null and beginTime != ''">
-            and  #{beginTime} <![CDATA[ >= ]]> handover_begin_time
+            and  #{beginTime} <![CDATA[ >= ]]> date_format(handover_begin_time,'%Y-%m-%d %H:%i:%s')
         </if>
         <if test="endTime != null and endTime != ''">
-            and  #{endTime} <![CDATA[ <= ]]> handover_end_time
+            and  #{endTime} <![CDATA[ <= ]]> date_format(handover_end_time,'%Y-%m-%d %H:%i:%s')
         </if>
     </select>
 

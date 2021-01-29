@@ -61,7 +61,6 @@ public class PatientJob implements Job {
             PatientService patientService = (PatientService) cxt.getBean("patientService");
             BedArrangeService bedArrangeService = (BedArrangeService) cxt.getBean("bedArrangeService");
             Map<String,Object> map2=new HashMap<>();//床位安排查询所需参数
-            System.out.println("111111111111111111111");
             try {
                 //查询本地数据库字典数据
                 Map<String,Object> map=new HashMap<>();
@@ -69,22 +68,17 @@ public class PatientJob implements Job {
                 //从his数据库视图中查询科室字典数据
                 List<Map<String,Object>> hisList=patientService.getPatientByHis(map);
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                System.out.println("2222222222222222222222");
                 if(hisList!=null && hisList.size()>0){
-                    System.out.println("333333333333333333333");
                     if(list!=null && list.size()>0){
-                        System.out.println("4444444444444444444444");
                         //如果数据库有数据则需要和his中获取的数据做比较再更新
 
                         ArrayList arrayList= new ArrayList();
                         for (int i = 0; i <list.size(); i++) {
-                            System.out.println(list.size()+"-----"+i+"-----"+list.get(i).toString());
                             arrayList.add(list.get(i).getVisitCode());//本次住院号唯一性
                         }
 
                         ArrayList arrayHisList= new ArrayList();
                         for (int i = 0; i < hisList.size(); i++) {
-                            System.out.println(hisList.size()+"-----"+i+"-----"+hisList.get(i).toString());
                             if(hisList.get(i).containsKey("visit_code") && StringUtils.isNotEmpty(hisList.get(i).get("visit_code").toString())){
                                 arrayHisList.add(hisList.get(i).get("visit_code").toString());//本次住院号唯一性
                             }
@@ -97,11 +91,9 @@ public class PatientJob implements Job {
                                 patientService.update(list.get(i));
                             }
                         }
-                        System.out.println("555555555555555555555");
                         for (int i = 0; i <hisList.size(); i++) {
                             if(hisList.get(i).containsKey("visit_code") && !arrayList.contains(hisList.get(i).get("visit_code").toString())){
                                 //如果本地数据不包含 his系统数据 则新增数据
-                                System.out.println("6666666666666666");
                                 Patient patient=new Patient();
                                 patient.setStatus(1);
                                 patient.setId(UUIDUtil.getUUID());
@@ -223,16 +215,12 @@ public class PatientJob implements Job {
                                 }
                                 patient.setFlag(1);//在院标志（0：出科；1：在科）
                                 patient.setExitType("");//出科方式 (出院、转科、死亡、放弃、转院)
-                                System.out.println(hisList.size()+"----"+i+"----"+patient.toString());
                                 patientService.insert(patient);
-                                System.out.println("====="+i+1+"=====");
                             }
                         }
                     }else{
                         //直接将his获取的数据添加到本地数据库
-                        System.out.println("777777777777777777777777777");
                         for (int i = 0; i < hisList.size(); i++) {
-                            System.out.println("88888888888888888888888888888888888888888");
                             Patient patient=new Patient();
                             patient.setStatus(1);
                             patient.setId(UUIDUtil.getUUID());
@@ -354,7 +342,6 @@ public class PatientJob implements Job {
                             }
                             patient.setFlag(1);//在院标志（0：出科；1：在科）
                             patient.setExitType("");//出科方式 (出院、转科、死亡、放弃、转院)
-                            System.out.println("----"+i+"----"+patient.toString());
                             patientService.insert(patient);
                         }
                     }

@@ -43,4 +43,11 @@ public interface OperationDao {
      * @return
      */
     int queryNum(Map<String, Object> map);
+
+    /**
+     * 查询所有手术信息 status!=-1
+     * @param map
+     * @return
+     */
+     List<Operation> queryOperationList(Map<String,Object> map);
 }

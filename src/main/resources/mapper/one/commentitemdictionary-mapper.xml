@@ -169,4 +169,16 @@
         AND type = #{type}
     </select>
 
+    <select id="queryDataListByType" resultMap="commentItemDictionaryMap" parameterType="java.util.Map">
+        select
+        <include refid="commentItemDictionary_colums"></include>
+        from
+        dict_common_item
+        where
+        status !=-1
+        <if test="type != null and type != ''">
+            and  type = #{type}
+        </if>
+    </select>
+
 </mapper>

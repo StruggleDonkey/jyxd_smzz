@@ -135,4 +135,11 @@ public interface PatientDao {
      * @return
      */
      List<Patient> queryPatientList(Map<String,Object> map);
+
+    /**
+     * 根据条件查询病人对象
+     * @param map
+     * @return
+     */
+    Patient getPatientByConditions(Map<String,Object> map);
 }

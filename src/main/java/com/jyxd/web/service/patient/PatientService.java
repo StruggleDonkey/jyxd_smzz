@@ -237,4 +237,21 @@ public class PatientService {
         return patientTestDao.getPatientByHis(map);
     }
 
+    /**
+     * 根据条件查询病人对象
+     * @param map
+     * @return
+     */
+    public Patient getPatientByConditions(Map<String,Object> map){
+        return patientDao.getPatientByConditions(map);
+    }
+
+    /**
+     * 从his系统视图查询所有病人转移信息
+     * @return
+     */
+    public List<Map<String, Object>> getTransferByHis(Map<String,Object> map){
+        return patientTestDao.getTransferByHis(map);
+    }
+
 }

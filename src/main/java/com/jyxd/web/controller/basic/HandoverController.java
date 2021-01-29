@@ -271,7 +271,7 @@ public class HandoverController {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             handover.setHandoverBeginTime(format.parse(map.get("beginTime").toString()));
             handover.setHandoverEndTime(format.parse(map.get("endTime").toString()));
-            SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
             handover.setInfoDate(formatDate.parse(map.get("infoDate").toString()));
             handoverService.insert(handover);
 
@@ -854,7 +854,7 @@ public class HandoverController {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             handover.setHandoverBeginTime(format.parse(map.get("beginTime").toString()));
             handover.setHandoverEndTime(format.parse(map.get("endTime").toString()));
-            SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
             handover.setInfoDate(formatDate.parse(map.get("infoDate").toString()));
             handoverService.update(handover);
 

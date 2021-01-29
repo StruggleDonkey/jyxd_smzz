@@ -82,4 +82,13 @@
         </if>
     </select>
 
+    <select id="queryOperationList" resultMap="operationMap" >
+        select
+        <include refid="operation_colums"></include>
+        from
+        table_operation
+        where
+        status !=-1
+    </select>
+
 </mapper>
