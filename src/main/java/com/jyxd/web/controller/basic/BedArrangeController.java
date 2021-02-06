@@ -19,10 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "/bedArrange")
@@ -218,8 +215,11 @@ public class BedArrangeController {
         json.put("data",new ArrayList<>());
         json.put("msg","选择失败");
         //选择病人
-        if(map.containsKey("patientId") && map.containsKey("bedCode")){
-            BedArrange bedArrange=bedArrangeService.queryDataByCode(map);
+        if(map.containsKey("patientId") && map.containsKey("bedCode") && StringUtils.isNotEmpty(map.get("patientId").toString())
+                && StringUtils.isNotEmpty(map.get("bedCode").toString())){
+            Map<String,Object> map1=new HashMap<>();
+            map1.put("bedCode",map.get("bedCode").toString());
+            BedArrange bedArrange=bedArrangeService.queryDataByCode(map1);
             if(bedArrange!=null){
                 bedArrange.setPatientId(map.get("patientId").toString());
                 bedArrangeService.update(bedArrange);
@@ -230,16 +230,22 @@ public class BedArrangeController {
                 data.setId(UUIDUtil.getUUID());
                 bedArrangeService.insert(data);
             }
+
             Patient patient=patientService.queryData(map.get("patientId").toString());
             if(patient!=null){
                 patient.setFlag(1);//入科
                 patient.setBedCode(map.get("bedCode").toString());
                 patientService.update(patient);
             }
+            json.put("msg","选择成功");
+            json.put("code",HttpCode.OK_CODE.getCode());
         }
         //选择监护仪
-        if(map.containsKey("monitorCode") && map.containsKey("bedCode")){
-            BedArrange bedArrange=bedArrangeService.queryDataByCode(map);
+        if(map.containsKey("monitorCode") && map.containsKey("bedCode") && StringUtils.isNotEmpty(map.get("monitorCode").toString())
+                && StringUtils.isNotEmpty(map.get("bedCode").toString()) ){
+            Map<String,Object> map1=new HashMap<>();
+            map1.put("bedCode",map.get("bedCode").toString());
+            BedArrange bedArrange=bedArrangeService.queryDataByCode(map1);
             if(bedArrange!=null){
                 bedArrange.setMonitorCode(map.get("monitorCode").toString());
                 bedArrangeService.update(bedArrange);
@@ -250,9 +256,9 @@ public class BedArrangeController {
                 data.setId(UUIDUtil.getUUID());
                 bedArrangeService.insert(data);
             }
+            json.put("msg","选择成功");
+            json.put("code",HttpCode.OK_CODE.getCode());
         }
-        json.put("msg","选择成功");
-        json.put("code",HttpCode.OK_CODE.getCode());
         return json.toString();
     }
 
@@ -268,7 +274,8 @@ public class BedArrangeController {
         json.put("data",new ArrayList<>());
         json.put("msg","还原失败");
         //选择病人
-        if(map.containsKey("patientId") && map.containsKey("bedCode")){
+        if(map.containsKey("patientId") && map.containsKey("bedCode") && StringUtils.isNotEmpty(map.get("bedCode").toString())
+                && StringUtils.isNotEmpty(map.get("patientId").toString())){
             BedArrange bedArrange=bedArrangeService.queryDataByCode(map);
             if(bedArrange!=null){
                 bedArrange.setPatientId("");
@@ -279,17 +286,22 @@ public class BedArrangeController {
                 patient.setBedCode("");
                 patientService.update(patient);
             }
+            json.put("msg","还原成功");
+            json.put("code",HttpCode.OK_CODE.getCode());json.put("msg","还原成功");
+            json.put("code",HttpCode.OK_CODE.getCode());
         }
         //选择监护仪
-        if(map.containsKey("monitorCode") && map.containsKey("bedCode")){
+        if(map.containsKey("monitorCode") && map.containsKey("bedCode") && StringUtils.isNotEmpty(map.get("bedCode").toString())
+                && StringUtils.isNotEmpty(map.get("monitorCode").toString())){
             BedArrange bedArrange=bedArrangeService.queryDataByCode(map);
             if(bedArrange!=null){
                 bedArrange.setMonitorCode("");
                 bedArrangeService.update(bedArrange);
             }
+            json.put("msg","还原成功");
+            json.put("code",HttpCode.OK_CODE.getCode());
         }
-        json.put("msg","还原成功");
-        json.put("code",HttpCode.OK_CODE.getCode());
+
         return json.toString();
     }
 

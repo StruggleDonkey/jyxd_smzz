@@ -88,7 +88,7 @@
        AND
             monitor_code NOT IN (
                 SELECT
-                    monitor_code
+                    IFNULL(monitor_code,"")
                 FROM
                     table_bed_arrange
             )

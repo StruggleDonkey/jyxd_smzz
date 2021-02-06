@@ -444,7 +444,8 @@
         IFNULL(p.exit_type,"") as exit_type,
         IFNULL(d.department_name,"") as department_name,
         IFNULL(c.department_name,"") as department_name,
-        IFNULL(p.bed_code,"") as bed_code,
+        IFNULL(p.bed_code,"") as bedCode,
+        IFNULL(db.bed_code,"") as bed_code,
         IFNULL(p.visit_time,"") as visit_time,
         CASE
         WHEN(p.unplanned=0)
@@ -462,7 +463,8 @@
         IFNULL(p.allergies,"") as allergies,
         IFNULL(p.positive,"") as positive,
         IFNULL(to_days(now()) - to_days(p.enter_time),"") as department_days,
-        IFNULL(to_days(now()) - to_days(p.operation_time),"") as operation_days
+        IFNULL(to_days(now()) - to_days(p.operation_time),"") as operation_days,
+        IFNULL(tba.monitor_code,"") as monitor_code
         FROM
         dict_bed db
 		LEFT JOIN p_patient p ON db.bed_code=p.bed_code and p.flag =1 and  p.status != -1
@@ -470,6 +472,7 @@
         LEFT JOIN dict_department c ON p.to_department_code = c.department_code
         LEFT JOIN table_user u ON p.doctor_code = u.work_number
         LEFT JOIN table_user tu ON p.nurse_code = tu.work_number
+        LEFT JOIN table_bed_arrange tba ON tba.bed_code=db.bed_code
         where
         1=1
         and db.status=1
