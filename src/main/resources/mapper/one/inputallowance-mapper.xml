@@ -38,7 +38,7 @@
     <update id="update" parameterType="com.jyxd.web.data.basic.InputAllowance" >
         update
         table_input_allowance
-        set <include refid="inputAllowance_colums"></include>
+        set <include refid="inputAllowance_update"></include>
         where
           id=#{id}
     </update>
@@ -66,6 +66,7 @@
         <if test="status != null ">
             and  status= #{status}
         </if>
+        ORDER BY allowance_dosage * 1 DESC
         <if test="start != null ">limit #{start},</if>
         <if test="size != null ">#{size}</if>
     </select>
@@ -93,6 +94,7 @@
         table_input_allowance
         where
         status !=-1
+        and
         order_no=#{orderNo}
     </select>
 

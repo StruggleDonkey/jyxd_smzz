@@ -1,6 +1,8 @@
 package com.jyxd.web.controller.patient;
 
+import com.jyxd.web.data.basic.CommonSetting;
 import com.jyxd.web.data.patient.Patient;
+import com.jyxd.web.service.basic.CommonSettingService;
 import com.jyxd.web.service.patient.PatientService;
 import com.jyxd.web.util.*;
 import net.sf.json.JSONArray;
@@ -28,6 +30,9 @@ public class PatientController {
 
     @Autowired
     private PatientService patientService;
+
+    @Autowired
+    private CommonSettingService commonSettingService;
 
     /**
      * 增加一条病人表记录
@@ -790,6 +795,31 @@ public class PatientController {
             json.put("msg","查询成功");
         }
         System.out.println("------模拟查询视图-------结束--------");
+        return json.toString();
+    }
+
+    /**
+     * 病人管理--首页--查询病人监护仪及采集频率
+     * @return
+     */
+    @RequestMapping(value = "/queryPatientMonitor",method= RequestMethod.POST)
+    @ResponseBody
+    public String queryPatientMonitor(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        Map<String,Object> m=patientService.queryPatientMonitor(map);
+        if(m!=null){
+            m.put("frequency","60min/次");//默认频率60min/次
+            CommonSetting commonSetting=commonSettingService.getCommonSettingByType(map);
+            if(commonSetting!=null){
+                m.put("frequency",commonSetting.getSettingContent());
+            }
+            json.put("data",JSONObject.fromObject(m));
+            json.put("code",HttpCode.OK_CODE.getCode());
+            json.put("msg","查询成功");
+        }
         return json.toString();
     }
 }

@@ -693,4 +693,16 @@
         </if>
     </select>
 
+    <!-- 病人管理-首页-查询病人监护仪及采集频率-->
+    <select id="queryPatientMonitor" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            dm.monitor_name
+        FROM
+            p_patient pp
+        LEFT JOIN table_bed_arrange tba ON pp.bed_code = tba.bed_code
+        LEFT JOIN dict_monitor dm ON tba.monitor_code=dm.monitor_code
+        WHERE
+            pp.id = #{patientId}
+    </select>
+
 </mapper>

@@ -50,4 +50,11 @@ public interface MonitorDictionaryDao {
      * @return list
      */
     List<MonitorDictionary> getNoBedMonitorList(Map<String, Object> map);
+
+    /**
+     * 查询已分配的监护仪
+     * @param
+     * @return
+     */
+     List<MonitorDictionary> getBedMonitorList();
 }

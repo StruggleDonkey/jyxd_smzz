@@ -142,4 +142,11 @@ public interface PatientDao {
      * @return
      */
     Patient getPatientByConditions(Map<String,Object> map);
+
+    /**
+     * 病人管理--首页--查询病人监护仪及采集频率
+     * @param map
+     * @return
+     */
+     Map<String, Object> queryPatientMonitor(Map<String,Object> map);
 }

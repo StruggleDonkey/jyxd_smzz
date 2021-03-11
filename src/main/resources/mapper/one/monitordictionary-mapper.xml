@@ -92,6 +92,24 @@
                 FROM
                     table_bed_arrange
             )
+       ORDER BY monitor_code
+    </select>
+
+    <select id="getBedMonitorList" resultMap="monitorDictionaryMap" >
+       SELECT
+            *
+       FROM
+            dict_monitor
+       WHERE
+            status != -1
+       AND
+            monitor_code IN (
+                SELECT
+                    IFNULL(monitor_code,"")
+                FROM
+                    table_bed_arrange
+            )
+       ORDER BY monitor_code
     </select>
 
 </mapper>

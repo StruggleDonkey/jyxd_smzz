@@ -254,4 +254,12 @@ public class PatientService {
         return patientTestDao.getTransferByHis(map);
     }
 
+    /**
+     * 病人管理--首页--查询病人监护仪及采集频率
+     * @param map
+     * @return
+     */
+    public Map<String, Object> queryPatientMonitor(Map<String,Object> map){
+        return patientDao.queryPatientMonitor(map);
+    }
 }

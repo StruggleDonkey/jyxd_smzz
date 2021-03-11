@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyxd.web.dao.basic.MonitorDao">
+
+    <resultMap id="monitorMap" type="com.jyxd.web.data.basic.Monitor">
+        <result column="id" property="id" jdbcType="INTEGER"/>
+        <result column="bplow" property="bplow" jdbcType="VARCHAR"/>
+        <result column="bphight" property="bphight" jdbcType="VARCHAR"/>
+        <result column="bis" property="bis" jdbcType="VARCHAR"/>
+        <result column="ficotwo" property="ficotwo" jdbcType="VARCHAR"/>
+        <result column="etcotwo" property="etcotwo" jdbcType="VARCHAR"/>
+        <result column="resp" property="resp" jdbcType="VARCHAR"/>
+        <result column="temp" property="temp" jdbcType="VARCHAR"/>
+        <result column="spotwo" property="spotwo" jdbcType="VARCHAR"/>
+        <result column="pulse" property="pulse" jdbcType="VARCHAR"/>
+        <result column="hr" property="hr" jdbcType="VARCHAR"/>
+        <result column="cvp" property="cvp" jdbcType="VARCHAR"/>
+        <result column="artm" property="artm" jdbcType="VARCHAR"/>
+        <result column="artd" property="artd" jdbcType="VARCHAR"/>
+        <result column="arts" property="arts" jdbcType="VARCHAR"/>
+        <result column="nibpm" property="nibpm" jdbcType="VARCHAR"/>
+        <result column="nibpd" property="nibpd" jdbcType="VARCHAR"/>
+        <result column="nibps" property="nibps" jdbcType="VARCHAR"/>
+        <result column="monitorcode" property="monitorcode" jdbcType="VARCHAR"/>
+        <result column="creattime" property="creattime" jdbcType="DATE"/>
+    </resultMap>
+    
+    <sql id="monitor_colums">id,bplow,bphight,bis,ficotwo,etcotwo,resp,temp,spotwo,pulse,hr,cvp,artm,artd,arts,nibpm,nibpd,nibps,monitorcode,creattime</sql>
+
+    <sql id="monitor_propertys">#{id},#{bplow},#{bphight},#{bis},#{ficotwo},#{etcotwo},#{resp},#{temp},#{spotwo},#{pulse},
+                                  #{hr},#{cvp},#{artm},#{artd},#{arts},#{nibpm},#{nibpd},#{nibps},#{monitorcode},#{creattime}</sql>
+
+    <sql id="monitor_update">bplow=#{bplow},bphight=#{bphight},bis=#{bis},ficotwo=#{ficotwo},etcotwo=#{etcotwo},resp=#{resp},temp=#{temp},spotwo=#{spotwo},
+                              pulse=#{pulse},hr=#{hr},cvp=#{cvp},artm=#{artm},artd=#{artd},arts=#{arts},nibpm=#{nibpm},nibpd=#{nibpd},nibps=#{nibps},
+                              monitorcode=#{monitorcode},creattime=#{creattime}</sql>
+
+    <insert id="insert">
+        <selectKey keyProperty="id" resultType="int">
+            select @@IDENTITY
+        </selectKey>
+        insert into
+        table_monitor(<include refid="monitor_colums"></include>)
+        values (<include refid="monitor_propertys"></include>)
+    </insert>
+
+    <update id="update" parameterType="com.jyxd.web.data.basic.Monitor" >
+        update
+        table_monitor
+        set <include refid="monitor_update"></include>
+        where
+          id=#{id}
+    </update>
+
+    <select id="queryData" resultMap="monitorMap" parameterType="java.lang.String">
+        select
+          <include refid="monitor_colums"></include>
+        from
+        table_monitor
+        where
+          id=#{id}
+    </select>
+
+    <select id="queryList" resultMap="monitorMap">
+        select
+          <include refid="monitor_colums"></include>
+        from
+        table_monitor
+        where
+          1=1
+        <if test="creattime != null and creattime != ''">
+            date_format(
+            creattime,
+            '%Y%m%d %H%i%S'
+            ) = date_format(
+            #{creattime},
+            '%Y%m%d %H%i%S'
+            )
+        </if>
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+          count(id)
+        from
+        table_monitor
+        where
+        1=1
+        <if test="creattime != null and creattime != ''">
+            date_format(
+            creattime,
+            '%Y%m%d %H%i%S'
+            ) = date_format(
+            #{creattime},
+            '%Y%m%d %H%i%S'
+            )
+        </if>
+    </select>
+
+</mapper>

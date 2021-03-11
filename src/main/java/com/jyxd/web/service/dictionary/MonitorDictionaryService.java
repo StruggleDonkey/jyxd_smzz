@@ -42,4 +42,13 @@ public class MonitorDictionaryService {
     public List<MonitorDictionary> getNoBedMonitorList(Map<String,Object> map){
         return monitorDictionaryDao.getNoBedMonitorList(map);
     }
+
+    /**
+     * 查询已分配的监护仪
+     * @param
+     * @return
+     */
+    public List<MonitorDictionary> getBedMonitorList(){
+        return monitorDictionaryDao.getBedMonitorList();
+    }
 }
