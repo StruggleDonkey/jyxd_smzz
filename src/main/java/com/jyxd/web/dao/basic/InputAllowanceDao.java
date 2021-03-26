@@ -51,4 +51,11 @@ public interface InputAllowanceDao {
      */
      List<InputAllowance> queryListByOrderNo(Map<String,Object> map);
 
+    /**
+     * 根据医嘱主键查询余量 从大到小排序
+     * @param map
+     * @return
+     */
+     List<String> getAllowanceDosageByOrderNo(Map<String,Object> map);
+
 }

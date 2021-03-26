@@ -16,18 +16,20 @@
         <result column="create_time" property="createTime" jdbcType="DATE"/>
         <result column="operator_code" property="operatorCode" jdbcType="VARCHAR"/>
         <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="is_continue" property="isContinue" jdbcType="VARCHAR"/>
+        <result column="the_total" property="theTotal" jdbcType="INTEGER"/>
     </resultMap>
     
     <sql id="inputAllowance_colums">id,visit_id,visit_code,patient_id,order_type,order_no,shift,data_time,dosage,
-                                    allowance_dosage,create_time,operator_code,status</sql>
+                                    allowance_dosage,create_time,operator_code,status,is_continue,the_total</sql>
 
     <sql id="inputAllowance_propertys">#{id},#{visitId},#{visitCode},#{patientId},#{orderType},#{orderNo},#{shift},#{dataTime},
-                                  #{dosage},#{allowanceDosage},#{createTime},#{operatorCode},#{status}</sql>
+                                  #{dosage},#{allowanceDosage},#{createTime},#{operatorCode},#{status},#{isContinue},#{theTotal}</sql>
 
     <sql id="inputAllowance_update">visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},
                               order_type=#{orderType},order_no=#{orderNo},shift=#{shift},data_time=#{dataTime},
-                              dosage=#{dosage},allowance_dosage=#{allowanceDosage},
-                              create_time=#{createTime},operator_code=#{operatorCode},status=#{status}</sql>
+                              dosage=#{dosage},allowance_dosage=#{allowanceDosage},create_time=#{createTime},
+                              operator_code=#{operatorCode},status=#{status},is_continue=#{isContinue},the_total=#{theTotal}</sql>
 
     <insert id="insert">
         insert into
@@ -96,6 +98,17 @@
         status !=-1
         and
         order_no=#{orderNo}
+    </select>
+
+    <select id="getAllowanceDosageByOrderNo" resultType="java.lang.String" parameterType="java.util.Map">
+        SELECT
+            allowance_dosage
+        FROM
+            table_input_allowance
+        WHERE
+            order_no = #{orderNo}
+        ORDER BY
+            allowance_dosage DESC
     </select>
 
 </mapper>

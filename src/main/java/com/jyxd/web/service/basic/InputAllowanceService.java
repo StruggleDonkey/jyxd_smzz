@@ -42,4 +42,13 @@ public class InputAllowanceService {
     public List<InputAllowance> queryListByOrderNo(Map<String,Object> map){
         return inputAllowanceDao.queryListByOrderNo(map);
     }
+
+    /**
+     * 根据医嘱主键查询余量 从大到小排序
+     * @param map
+     * @return
+     */
+    public List<String> getAllowanceDosageByOrderNo(Map<String,Object> map){
+        return inputAllowanceDao.getAllowanceDosageByOrderNo(map);
+    }
 }

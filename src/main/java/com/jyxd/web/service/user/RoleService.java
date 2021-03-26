@@ -42,4 +42,13 @@ public class RoleService {
         return roleDao.queryDataByTypeCode(map);
     }
 
+    public List<Map<String,Object>> getList(Map<String,Object> map){
+        return roleDao.getList(map);
+    }
+
+    public int getNum(Map<String,Object> map){return roleDao.getNum(map);}
+
+    public Map<String,Object> getRoleDetails(Map<String,Object> map){
+        return roleDao.getRoleDetails(map);
+    }
 }

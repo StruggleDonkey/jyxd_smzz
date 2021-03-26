@@ -8,6 +8,7 @@ import com.jyxd.web.util.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -423,7 +424,7 @@ public class PatientController {
     }
 
     /**
-     * 查询待分配或已出科的病人列表（是否分配床位）
+     * 查询待分配的病人列表（是否分配床位）
      * @return
      */
     @RequestMapping(value = "/getNoBedPatientList",method= RequestMethod.POST)
@@ -434,6 +435,26 @@ public class PatientController {
         json.put("data",new ArrayList<>());
         json.put("msg","暂无数据");
         List<Patient> list=patientService.getNoBedPatientList(map);
+        if(list!=null && list.size()>0){
+            json.put("data",JSONArray.fromObject(list));
+            json.put("msg","查询成功");
+        }
+        json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
+    /**
+     * 查询已出科的病人列表
+     * @return
+     */
+    @RequestMapping(value = "/getOutPatientList",method= RequestMethod.POST)
+    @ResponseBody
+    public String getOutPatientList(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        List<Patient> list=patientService.getOutPatientList(map);
         if(list!=null && list.size()>0){
             json.put("data",JSONArray.fromObject(list));
             json.put("msg","查询成功");
@@ -813,7 +834,7 @@ public class PatientController {
         if(m!=null){
             m.put("frequency","60min/次");//默认频率60min/次
             CommonSetting commonSetting=commonSettingService.getCommonSettingByType(map);
-            if(commonSetting!=null){
+            if(commonSetting!=null && StringUtils.isNotEmpty(commonSetting.getSettingContent())){
                 m.put("frequency",commonSetting.getSettingContent());
             }
             json.put("data",JSONObject.fromObject(m));

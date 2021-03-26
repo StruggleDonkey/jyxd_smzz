@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyxd.web.dao.basic.InOutIcuRecordDao">
+
+    <resultMap id="inOutIcuRecordMap" type="com.jyxd.web.data.basic.InOutIcuRecord">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="visit_id" property="visitId" jdbcType="VARCHAR"/>
+        <result column="visit_code" property="visitCode" jdbcType="VARCHAR"/>
+        <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
+        <result column="in_time" property="inTime" jdbcType="DATE"/>
+        <result column="out_time" property="outTime" jdbcType="DATE"/>
+        <result column="in_code" property="inCode" jdbcType="VARCHAR"/>
+        <result column="out_code" property="outCode" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="DATE"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="operate_code" property="operateCode" jdbcType="VARCHAR"/>
+    </resultMap>
+    
+    <sql id="inOutIcuRecord_colums">id,visit_id,visit_code,patient_id,in_time,out_time,in_code,out_code,create_time,status,operate_code</sql>
+    <sql id="inOutIcuRecord_propertys">#{id},#{visitId},#{visitCode},#{patientId},#{inTime},#{outTime},#{inCode},#{outCode},#{createTime},#{status},#{operateCode}</sql>
+    <sql id="inOutIcuRecord_update">visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},in_time=#{inTime},out_time=#{outTime},
+                                    in_code=#{inCode},out_code=#{outCode},create_time=#{createTime},status=#{status},operate_code=#{operateCode}</sql>
+
+    <insert id="insert">
+        insert into
+        table_in_out_icu_record(<include refid="inOutIcuRecord_colums"></include>)
+        values (<include refid="inOutIcuRecord_propertys"></include>)
+    </insert>
+
+    <update id="update" parameterType="com.jyxd.web.data.basic.InOutIcuRecord" >
+        update table_in_out_icu_record
+        set <include refid="inOutIcuRecord_update"></include>
+        where
+          id=#{id}
+    </update>
+
+    <select id="queryData" resultMap="inOutIcuRecordMap" parameterType="java.lang.String">
+        select
+          <include refid="inOutIcuRecord_colums"></include>
+        from
+        table_in_out_icu_record
+        where
+          id=#{id}
+    </select>
+
+    <select id="queryList" resultType="java.util.Map">
+        select
+          <include refid="inOutIcuRecord_colums"></include>
+        from
+        table_in_out_icu_record
+        where
+          1=1
+        and  status != -1
+        <if test="visitId != null and visitId != ''">
+            and  visit_id = #{visitId}
+        </if>
+        <if test="inCode != null and inCode != ''">
+            and  in_code = #{inCode}
+        </if>
+        <if test="outCode != null and outCode != ''">
+            and  out_code = #{outCode}
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="start != null">limit #{start},</if>
+        <if test="size != null">#{size}</if>
+    </select>
+
+    <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+            count(id)
+        from
+        table_in_out_icu_record
+        where
+        1=1
+        and  status != -1
+        <if test="visitId != null and visitId != ''">
+            and  visit_id = #{visitId}
+        </if>
+        <if test="inCode != null and inCode != ''">
+            and  in_code = #{inCode}
+        </if>
+        <if test="outCode != null and outCode != ''">
+            and  out_code = #{outCode}
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
+
+    <select id="getList" resultMap="inOutIcuRecordMap" parameterType="java.util.Map">
+        select
+        <include refid="inOutIcuRecord_colums"></include>
+        from
+        table_in_out_icu_record
+        where
+        1=1
+        and  status != -1
+        <if test="visitId != null and visitId != ''">
+            and  visit_id = #{visitId}
+        </if>
+        <if test="patientId != null and patientId != ''">
+            and  patient_id = #{patientId}
+        </if>
+        <if test="inCode != null and inCode != ''">
+            and  in_code = #{inCode}
+        </if>
+        <if test="outCode != null and outCode != ''">
+            and  out_code = #{outCode}
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="start != null">limit #{start},</if>
+        <if test="size != null">#{size}</if>
+    </select>
+
+</mapper>

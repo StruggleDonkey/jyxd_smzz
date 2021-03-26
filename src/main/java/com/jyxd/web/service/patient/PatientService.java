@@ -155,12 +155,21 @@ public class PatientService {
     }
 
     /**
-     * 查询待分配或已出科的病人列表（是否分配床位）
+     * 查询待分配的病人列表（是否分配床位）
      * @param map
      * @return
      */
     public List<Patient> getNoBedPatientList(Map<String,Object> map){
         return patientDao.getNoBedPatientList(map);
+    }
+
+    /**
+     * 查询已出科的病人列表
+     * @param map
+     * @return
+     */
+    public List<Patient> getOutPatientList(Map<String,Object> map){
+        return patientDao.getOutPatientList(map);
     }
 
     /**

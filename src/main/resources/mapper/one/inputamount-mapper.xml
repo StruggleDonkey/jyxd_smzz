@@ -99,6 +99,21 @@
         </if>
     </select>
 
+    <select id="getNumByPatientId" resultType="java.lang.Integer" parameterType="java.util.Map">
+        SELECT
+            count(tia.id)
+        FROM
+            table_input_amount tia
+        LEFT JOIN dict_common_item dci ON dci.common_item_code = tia.order_type AND dci.type='intake'
+        LEFT JOIN table_user tua ON tua.login_name = tia.operator_code
+        LEFT JOIN dict_common_item dcia ON dcia.common_item_code = tia.use_mode AND dcia.type='use_mode'
+        LEFT JOIN table_user tub ON tub.login_name = tia.check_signature
+        WHERE 1=1
+        AND tia.status != -1
+        AND tia.patient_id=#{patientId}
+        AND tia.status=#{status}
+    </select>
+
     <select id="queryDataByTime" resultMap="inputAmountMap" parameterType="java.lang.String">
         select
         <include refid="inputAmount_colums"></include>
@@ -154,6 +169,8 @@
         AND tia.patient_id=#{patientId}
         AND tia.status=#{status}
         order by tia.order_no
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
     </select>
 
     <!-- 根据病人id查询病人在某个时间段的入量汇总信息 -->
@@ -320,6 +337,26 @@
         ORDER BY
             ab.date,
             ab.time
+    </select>
+
+    <!-- 护理文书-护理单文书-入量-核对签名-根据入量主键id查询出入量详情 -->
+    <select id="getDataDetailsById" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            IFNULL(date_format(tia.data_time, '%Y-%m-%d'),"") AS in_date,
+            IFNULL(date_format(tia.data_time, '%H:%i'),"") AS in_time,
+            IFNULL(tia.order_name,"") AS order_name,
+            IFNULL(tia.order_no,"") AS order_no,
+            IFNULL(tia.dosage,"") AS dosage,
+            IFNULL(dci.common_item_name,"") AS use_mode,
+            IFNULL(tia.remark,"") AS remark,
+            IFNULL(ts.user_name,"") AS signature
+        FROM
+            table_input_amount tia
+        LEFT JOIN table_user ts ON ts.login_name=tia.operator_code
+        LEFT JOIN dict_common_item dci ON dci.type='use_mode' AND dci.common_item_code=tia.use_mode
+        WHERE
+         1=1
+        AND tia.id=#{id}
     </select>
 
 </mapper>

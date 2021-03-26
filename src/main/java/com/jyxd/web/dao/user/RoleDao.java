@@ -57,4 +57,15 @@ public interface RoleDao {
      * @return
      */
     Role queryDataByTypeCode(Map<String, Object> map);
+
+     List<Map<String,Object>> getList(Map<String,Object> map);
+
+     int getNum(Map<String,Object> map);
+
+    /**
+     * 根据id查询角色详情
+     * @param map
+     * @return
+     */
+     Map<String,Object> getRoleDetails(Map<String,Object> map);
 }

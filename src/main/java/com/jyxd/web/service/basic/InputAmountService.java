@@ -35,6 +35,8 @@ public class InputAmountService {
 
     public int queryNum(Map<String,Object> map){return inputAmountDao.queryNum(map);}
 
+    public int getNumByPatientId(Map<String,Object> map){return inputAmountDao.getNumByPatientId(map);}
+
     /**
      * 根据时间查询入量对象
      * @param map
@@ -102,4 +104,14 @@ public class InputAmountService {
     public List<Map<String,Object>> getInAndOutAnalyzeByTime(Map<String,Object> map){
         return inputAmountDao.getInAndOutAnalyzeByTime(map);
     }
+
+    /**
+     * 护理文书-护理单文书-入量-核对签名-根据入量主键id查询出入量详情
+     * @param map
+     * @return
+     */
+    public Map<String,Object> getDataDetailsById(Map<String,Object> map){
+        return inputAmountDao.getDataDetailsById(map);
+    }
+
 }

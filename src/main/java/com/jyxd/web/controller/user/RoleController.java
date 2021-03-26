@@ -222,4 +222,126 @@ public class RoleController {
         return json.toString();
     }
 
+    /**
+     * 根据条件分页查询角色表列表（也可以不分页）-多表
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/getList",method= RequestMethod.POST)
+    @ResponseBody
+    public String getList(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        if(map!=null && map.containsKey("start")){
+            int totalCount =roleService.getNum(map);
+            map.put("start",((int)map.get("start")-1)*(int)map.get("size"));
+            json.put("totalCount",totalCount);
+        }
+        List<Map<String,Object>> list =roleService.getList(map);
+        if(list!=null && list.size()>0){
+            JsonConfig jsonConfig=new JsonConfig();
+            jsonConfig.registerJsonValueProcessor(Timestamp.class,new JsonArrayValueProcessor());
+            JSONArray array=JSONArray.fromObject(list,jsonConfig);
+            Map<String,Object> accessMap=new HashMap<>();
+            for (int i = 0; i <array.size() ; i++) {
+                JSONObject obj=(JSONObject) array.get(i);
+                accessMap.put("roleId",obj.getString("id"));
+                List<Access> accessList=accessService.queryList(accessMap);
+                if(accessList!=null && accessList.size()>0){
+                    JSONArray accessArray=JSONArray.fromObject(accessList);
+                    obj.put("menuCodes",accessArray);
+                }
+            }
+            json.put("data",array);
+            json.put("msg","查询成功");
+        }
+        json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
+    /**
+     *  系统设置-角色管理-编辑-查询角色详细信息
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/getRoleDetails",method= RequestMethod.POST)
+    @ResponseBody
+    public String getRoleDetails(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        if(map!=null && map.containsKey("id")){
+            Map<String,Object> m=roleService.getRoleDetails(map);
+            if(m!=null){
+                Map<String,Object> hashMap=new HashMap<>();
+                hashMap.put("roleId",m.get("id").toString());
+                List<Access> list=accessService.getList(hashMap);
+                JSONArray jsonArray=new JSONArray();
+                if(list!=null && list.size()>0){
+                    for (int i = 0; i < list.size(); i++) {
+                        jsonArray.add(list.get(i).getMenuCode());
+                    }
+                }
+                m.put("menu",jsonArray);
+                json.put("data",JSONArray.fromObject(m));
+                json.put("msg","查询成功");
+                json.put("code",HttpCode.OK_CODE.getCode());
+            }
+        }
+        return json.toString();
+    }
+
+    /**
+     *  系统设置-角色管理-编辑-保存
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/editRole",method= RequestMethod.POST)
+    @ResponseBody
+    public String editRole(@RequestBody(required=false) Map<String,Object> map,HttpSession session){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","失败");
+        if(map!=null && map.containsKey("id") && map.containsKey("userTypeCode") && map.containsKey("roleName") && map.containsKey("status") && map.containsKey("menuCodes")){
+            Role role=roleService.queryData(map.get("id").toString());
+            User user=(User)session.getAttribute("user");
+            role.setStatus((int)map.get("status"));
+            role.setRoleName(map.get("roleName").toString());
+            role.setUserTypeCode(map.get("userTypeCode").toString());
+            roleService.update(role);
+            JSONArray menuCodesArray=JSONArray.fromObject(map.get("menuCodes").toString());
+            //查询已有的权限 并删除
+            Map<String,Object> hashMap=new HashMap<>();
+            hashMap.put("roleId",role.getId());
+            List<Access> accessesList=accessService.getList(hashMap);
+            if(accessesList!=null && accessesList.size()>0){
+                for (int i = 0; i <accessesList.size(); i++) {
+                    accessesList.get(i).setStatus(-1);
+                    accessService.update(accessesList.get(i));
+                }
+            }
+            //重新添加权限
+            for(int i=0;i<menuCodesArray.size();i++){
+                JSONObject obj=(JSONObject) menuCodesArray.get(i);
+                Access access=new Access();
+                access.setId(UUIDUtil.getUUID());
+                access.setStatus(1);
+                access.setRoleId(role.getId());
+                access.setMenuCode(obj.getString("menuCode"));
+                access.setType(obj.getInt("type"));
+                if(user!=null){
+                    access.setOperateCode(user.getLoginName());
+                }
+                accessService.insert(access);
+            }
+            json.put("code",HttpCode.OK_CODE.getCode());
+            json.put("msg","成功");
+        }
+        return json.toString();
+    }
+
 }

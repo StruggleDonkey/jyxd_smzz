@@ -46,7 +46,7 @@
           1=1
         and  status != -1
         <if test="dicTemplateName != null and dicTemplateName != ''">
-            and  dic_template_name like '%${dicTemplateName}%'
+            and  dict_template_name like '%${dicTemplateName}%'
         </if>
         <if test="status != null ">
             and  status= #{status}
@@ -64,7 +64,7 @@
         1=1
         and  status != -1
         <if test="dicTemplateName != null and dicTemplateName != ''">
-            and  dic_template_name like '%${dicTemplateName}%'
+            and  dict_template_name like '%${dicTemplateName}%'
         </if>
         <if test="status != null ">
             and  status= #{status}

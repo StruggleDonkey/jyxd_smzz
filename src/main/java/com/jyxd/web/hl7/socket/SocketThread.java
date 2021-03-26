@@ -77,6 +77,7 @@ public class SocketThread extends Thread {
                 byte[] resp = new byte[size];
                 is.read(resp);
                 String response = new String(resp, "utf-8");
+                System.out.println("++++++++++++++++++++++"+response);
                 Map<String,Object> map=Hl7Util.toHl7(response.trim().replace("<CR>","\r"));//打印数据
                 if(map!=null){
 
@@ -92,7 +93,8 @@ public class SocketThread extends Thread {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.info("---------未连接到监护仪--------");
+                logger.info(""+e);
                 try {
                     socket.close();
                     is.close();

@@ -1,6 +1,7 @@
 package com.jyxd.web.controller.basic;
 
 import com.jyxd.web.data.basic.InputAmount;
+import com.jyxd.web.service.basic.InputAllowanceService;
 import com.jyxd.web.service.basic.InputAmountService;
 import com.jyxd.web.service.basic.OutputAmountService;
 import com.jyxd.web.util.HttpCode;
@@ -31,6 +32,9 @@ public class InputAmountController {
 
     @Autowired
     private OutputAmountService outputAmountService;
+
+    @Autowired
+    private InputAllowanceService inputAllowanceService;
 
     /**
      * 增加一条入量表记录
@@ -220,8 +224,23 @@ public class InputAmountController {
         json.put("data",new ArrayList<>());
         json.put("msg","暂无数据");
         if(map!=null && map.containsKey("patientId")){
+            if(map.containsKey("start")){
+                int totalCount =inputAmountService.getNumByPatientId(map);
+                map.put("start",((int)map.get("start")-1)*(int)map.get("size"));
+                json.put("totalCount",totalCount);
+            }
             List<Map<String,Object>> list=inputAmountService.getListByPatientId(map);
             if(list!=null && list.size()>0){
+                for (int i = 0; i <list.size() ; i++) {
+                    list.get(i).put("allowance_dosage","");//余量
+                    if(StringUtils.isNotEmpty(list.get(i).get("order_no").toString())){
+                        map.put("orderNo",list.get(i).get("order_no").toString());
+                        List<String> str=inputAllowanceService.getAllowanceDosageByOrderNo(map);
+                        if(str!=null && str.size()>0){
+                            list.get(i).put("allowance_dosage",StringUtils.join(str,'/'));//StringUtils.join(list,'/') list遍历成字符串拼接 /
+                        }
+                    }
+                }
                 json.put("data",JSONArray.fromObject(list));
                 json.put("code",HttpCode.OK_CODE.getCode());
                 json.put("msg","查询成功");
@@ -489,6 +508,59 @@ public class InputAmountController {
         }
 
         json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
+    /**
+     * 护理文书-护理单文书-入量-核对签名-根据入量主键id查询出入量详情
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/getDataDetailsById",method= RequestMethod.POST)
+    @ResponseBody
+    public String getDataDetailsById(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        Map<String,Object> obj=inputAmountService.getDataDetailsById(map);
+        obj.put("allowance_dosage","");
+        if(obj!=null){
+            if(StringUtils.isNotEmpty(obj.get("order_no").toString())){
+                map.put("orderNo",obj.get("order_no").toString());
+                List<String> list=inputAllowanceService.getAllowanceDosageByOrderNo(map);
+                if(list!=null && list.size()>0){
+                    obj.put("allowance_dosage",StringUtils.join(list,'/'));//StringUtils.join(list,'/') list遍历成字符串拼接 /
+                }
+            }
+            json.put("data",JSONArray.fromObject(obj));
+            json.put("code",HttpCode.OK_CODE.getCode());
+            json.put("msg","查询成功");
+        }
+        return json.toString();
+    }
+
+    /**
+     * 护理文书-护理单文书-入量-核对签名-保存核对签名
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/saveCheckSignature",method= RequestMethod.POST)
+    @ResponseBody
+    public String saveCheckSignature(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","失败");
+        if(map!=null && map.containsKey("id") && map.containsKey("checkSignature") && StringUtils.isNotEmpty(map.get("id").toString())){
+            InputAmount inputAmount=inputAmountService.queryData(map.get("id").toString());
+            if(inputAmount!=null){
+                inputAmount.setCheckSignature(map.get("checkSignature").toString());
+                inputAmountService.update(inputAmount);
+                json.put("code",HttpCode.OK_CODE.getCode());
+                json.put("msg","成功");
+            }
+        }
         return json.toString();
     }
 

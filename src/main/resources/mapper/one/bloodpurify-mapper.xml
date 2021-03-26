@@ -95,6 +95,12 @@
         <if test="status != null ">
             and  status= #{status}
         </if>
+        <if test="visitId != null and visitId != ''">
+            and  visit_id = #{visitId}
+        </if>
+        <if test="patientId != null and patientId != ''">
+            and  patient_id = #{patientId}
+        </if>
         GROUP BY maintenance_id
         <if test="start != null ">limit #{start},</if>
         <if test="size != null ">#{size}</if>
@@ -108,6 +114,12 @@
         WHERE 1=1
         <if test="status != null ">
             and  status= #{status}
+        </if>
+        <if test="visitId != null and visitId != ''">
+            and  visit_id = #{visitId}
+        </if>
+        <if test="patientId != null and patientId != ''">
+            and  patient_id = #{patientId}
         </if>
         GROUP BY maintenance_id
     </select>

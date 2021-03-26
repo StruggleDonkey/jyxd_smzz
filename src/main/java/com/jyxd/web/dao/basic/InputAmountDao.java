@@ -44,6 +44,8 @@ public interface InputAmountDao {
      */
     int queryNum(Map<String, Object> map);
 
+    int getNumByPatientId(Map<String,Object> map);
+
     /**
      * 根据时间查询入量对象
      * @param map
@@ -92,4 +94,11 @@ public interface InputAmountDao {
      * @return
      */
      List<Map<String,Object>> getInAndOutAnalyzeByTime(Map<String,Object> map);
+
+    /**
+     * 护理文书-护理单文书-入量-核对签名-根据入量主键id查询出入量详情
+     * @param map
+     * @return
+     */
+     Map<String,Object> getDataDetailsById(Map<String,Object> map);
 }

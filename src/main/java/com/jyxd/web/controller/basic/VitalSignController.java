@@ -252,6 +252,7 @@ public class VitalSignController {
     public String getList(@RequestBody(required=false) Map<String,Object> map){
         JSONObject json=new JSONObject();
         json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
         json.put("msg","暂无数据");
         try {
             if(map.containsKey("patientId") && StringUtils.isNotEmpty(map.get("patientId").toString())){
@@ -283,6 +284,7 @@ public class VitalSignController {
         JSONObject json=new JSONObject();
         json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("msg","删除失败");
+        json.put("data",new ArrayList<>());
         try {
             List<VitalSign> list=vitalSignService.queryListByTime(map);
             if(list!=null && list.size()>0){

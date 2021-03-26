@@ -33,6 +33,7 @@ public class TransferAssessmentController {
     @Autowired
     private TransferAssessmentService transferAssessmentService;
 
+
     /**
      * 增加一条转科交接表记录
      * @return
@@ -234,6 +235,23 @@ public class TransferAssessmentController {
                transferAssessment.setCode("sourceDepartment");
                transferAssessment.setContent(map.get("sourceDepartment").toString());
                transferAssessmentService.insert(transferAssessment);
+
+               //添加病人出入科记录表
+               /*Map<String,Object> m=new HashMap<>();
+               if(map.containsKey("patientId") && StringUtils.isNotEmpty(map.get("patientId").toString())){
+                   m.put("patientId",map.get("patientId").toString());
+               }
+
+               inOutIcuRecordService.geList(m);
+               if(map.containsKey("visitId") && StringUtils.isNotEmpty(map.get("visitId").toString())){
+                   transferAssessment.setVisitId(map.get("visitId").toString());
+               }
+               if(map.containsKey("visitCode") && StringUtils.isNotEmpty(map.get("visitCode").toString())){
+                   transferAssessment.setVisitCode(map.get("visitCode").toString());
+               }
+               if(map.containsKey("patientId") && StringUtils.isNotEmpty(map.get("patientId").toString())){
+                   transferAssessment.setPatientId(map.get("patientId").toString());
+               }*/
            }
 
            //床号：bedName

@@ -8,12 +8,12 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 入量余量表
+ * 病人出入科记录表
  */
 @Entity
-@Table(name = "table_input_allowance")
+@Table(name = "table_in_out_icu_record")
 @Data
-public class InputAllowance implements Serializable {
+public class InOutIcuRecord implements Serializable {
 
     /**
      * 序列
@@ -48,40 +48,28 @@ public class InputAllowance implements Serializable {
     private String patientId;
 
     /**
-     * 入量类型
+     * 入科时间
      */
-    @Column(name = "order_type")
-    private String orderType;
+    @Column(name = "in_time")
+    private Date inTime;
 
     /**
-     * 医嘱主键
+     * 出科时间
      */
-    @Column(name = "order_no")
-    private String orderNo;
+    @Column(name = "out_time")
+    private Date outTime;
 
     /**
-     * 班别(0:日班 1:晚班 2:夜班)
+     * 入科科室code
      */
-    @Column(name = "shift")
-    private int shift;
+    @Column(name = "in_code")
+    private String inCode;
 
     /**
-     * 记录时间
+     * 出科科室code
      */
-    @Column(name = "data_time")
-    private Date dataTime;
-
-    /**
-     * 使用剂量
-     */
-    @Column(name = "dosage")
-    private String dosage;
-
-    /**
-     * 剩余剂量
-     */
-    @Column(name = "allowance_dosage")
-    private String allowanceDosage;
+    @Column(name = "out_code")
+    private String outCode;
 
     /**
      * 创建时间
@@ -100,17 +88,5 @@ public class InputAllowance implements Serializable {
      */
     @Column(name = "status")
     private int status;
-
-    /**
-     * 前端判断余量是否继续使用 0：关闭 1：开
-     */
-    @Column(name = "is_continue")
-    private String isContinue;
-
-    /**
-     * 前端展示 录入余量时的总量
-     */
-    @Column(name = "the_total")
-    private int theTotal;
 
 }

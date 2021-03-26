@@ -101,4 +101,74 @@
         </if>
     </select>
 
+    <select id="getList" resultType="java.util.Map">
+        SELECT
+            IFNULL(tr.id, "") AS id,
+            IFNULL(tr.user_type_code, "") AS user_type_code,
+            tr.data_valid,
+            tr.status,
+            IFNULL(tr.create_time, "") AS createTime,
+            IFNULL(tr.role_name, "") AS role_name,
+            IFNULL(tut.user_type_name, "") AS user_type_name,
+            IFNULL(tr.user_type_code, "") AS user_type_code
+        FROM
+        table_role tr
+        LEFT JOIN table_user_type tut ON tut.user_type_code = tr.user_type_code
+        WHERE
+        tr.status !=- 1
+        AND tut.status !=- 1
+        <if test="roleName != null and roleName != ''">
+            and  tr.role_name like '%${roleName}%'
+        </if>
+        <if test="userTypeCode != null and userTypeCode != ''">
+            and  tr.user_type_code =#{userTypeCode}
+        </if>
+        <if test="status != null ">
+            and  tr.status= #{status}
+        </if>
+        GROUP BY
+        tr.id
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="getNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        SELECT
+        count(tr.id)
+        FROM
+        table_role tr
+        LEFT JOIN table_user_type tut ON tut.user_type_code = tr.user_type_code
+        WHERE
+        tr.status !=- 1
+        AND tut.status !=- 1
+        <if test="roleName != null and roleName != ''">
+            and  tr.role_name like '%${roleName}%'
+        </if>
+        <if test="userTypeCode != null and userTypeCode != ''">
+            and  tr.user_type_code =#{userTypeCode}
+        </if>
+        <if test="status != null ">
+            and  tr.status= #{status}
+        </if>
+    </select>
+
+    <select id="getRoleDetails" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            IFNULL(tr.id, "") AS id,
+            IFNULL(tr.user_type_code, "") AS user_type_code,
+            tr.data_valid,
+            tr.status,
+            IFNULL(tr.create_time, "") AS createTime,
+            IFNULL(tr.role_name, "") AS role_name,
+            IFNULL(tut.user_type_name, "") AS user_type_name,
+            IFNULL(tr.user_type_code, "") AS user_type_code
+        FROM
+        table_role tr
+        LEFT JOIN table_user_type tut ON tut.user_type_code = tr.user_type_code
+        WHERE
+        tr.status !=- 1
+        AND tut.status !=- 1
+        AND tr.id=#{id}
+    </select>
+
 </mapper>

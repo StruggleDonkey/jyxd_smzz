@@ -162,6 +162,12 @@
         </dependency>
         <!-- hl7 用到的jar包 结束-->
 
+        <!-- webservice xml 对接jar   开始-->
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-xml-provider</artifactId>
+        </dependency>
+        <!-- webservice xml 对接jar   结束-->
     </dependencies>
 
     <build>

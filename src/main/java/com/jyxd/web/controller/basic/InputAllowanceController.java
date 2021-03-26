@@ -216,6 +216,8 @@ public class InputAllowanceController {
                     inputAllowance.setAllowanceDosage(obj.getString("allowanceDosage"));
                     inputAllowance.setDataTime(format.parse(obj.getString("dataTime")));
                     inputAllowance.setStatus(obj.getInt("status"));
+                    inputAllowance.setIsContinue(obj.getString("isContinue"));
+                    inputAllowance.setTheTotal(obj.getInt("theTotal"));
                     inputAllowanceService.insert(inputAllowance);
                 }
                 json.put("code",HttpCode.OK_CODE.getCode());

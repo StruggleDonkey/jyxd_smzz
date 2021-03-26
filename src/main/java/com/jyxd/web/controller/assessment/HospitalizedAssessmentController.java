@@ -271,7 +271,12 @@ public class HospitalizedAssessmentController {
                 hospitalizedAssessmentService.insert(hospitalizedAssessment);
             }
             //入院诊断：visitDiagnosis
-            if(map.containsKey("visitDiagnosis") && StringUtils.isNotEmpty(map.get("visitDiagnosis").toString()))
+            if(map.containsKey("visitDiagnosis") && StringUtils.isNotEmpty(map.get("visitDiagnosis").toString())){
+                HospitalizedAssessment hospitalizedAssessment=newHospitalizedAssessment(map,operatorCode,assessmentId,createTime,dataTime);
+                hospitalizedAssessment.setCode("visitDiagnosis");
+                hospitalizedAssessment.setContent(map.get("visitDiagnosis").toString());
+                hospitalizedAssessmentService.insert(hospitalizedAssessment);
+            }
             //入院方式：visitMethod  （1:步行 2：轮椅 3：平车 4：其他）
             if(map.containsKey("visitMethod") && StringUtils.isNotEmpty(map.get("visitMethod").toString())){
                 HospitalizedAssessment hospitalizedAssessment=newHospitalizedAssessment(map,operatorCode,assessmentId,createTime,dataTime);

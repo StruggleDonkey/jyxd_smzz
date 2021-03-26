@@ -199,8 +199,8 @@
             IFNULL(p.is_septic_shock,"") as is_septic_shock,
             IFNULL(d.department_name,"") as inName,
             IFNULL(c.department_name,"") as outName,
-            IFNULL(u.login_name,"") as docterName,
-            IFNULL(tu.login_name,"") as nurseName
+            IFNULL(u.user_name,"") as docterName,
+            IFNULL(tu.user_name,"") as nurseName
         FROM
           p_patient p
         LEFT JOIN dict_department d ON p.department_code = d.department_code
@@ -486,6 +486,25 @@
         p_patient
         where
         1=1
+        and status != -1
+        <if test="flag != null and flag == 1">
+            and flag=#{flag}
+            and (
+            bed_code is null OR bed_code="")
+        </if>
+        <if test="flag != null and flag == 0">
+            and flag=#{flag}
+        </if>
+    </select>
+
+    <!--查询最近七天出科的病人列表-->
+    <select id="getOutPatientList" resultMap="patientMap" parameterType="java.util.Map">
+        select
+        <include refid="patient_colums"></include>
+        from
+        p_patient
+        where
+        DATE_SUB(CURDATE(), INTERVAL 7 DAY) <![CDATA[ <= ]]> exit_time
         and status != -1
         <if test="flag != null and flag == 1">
             and flag=#{flag}

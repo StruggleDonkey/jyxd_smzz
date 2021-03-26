@@ -23,7 +23,10 @@ public class Hl7Util {
         try {
             PipeParser pipeParser = new PipeParser();
             Message message = pipeParser.parse(msg);
+
+
             Terser terser = new Terser(message);
+            System.out.println("terser-------------------------------------:"+terser.toString());
             String sex=terser.get("/.PID-8");//性别
             System.out.println("性别:"+sex);
             String obx0=terser.get("/.OBX(0)-5");//obx
