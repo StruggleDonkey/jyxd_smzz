@@ -76,11 +76,12 @@ public class SocketThread extends Thread {
                 }
                 byte[] resp = new byte[size];
                 is.read(resp);
+                logger.info("---------------------------");
                 String response = new String(resp, "utf-8");
-                System.out.println("++++++++++++++++++++++"+response);
+                logger.info("++++++++++++++++++++++"+response);
+                logger.info("---------------------------");
                 Map<String,Object> map=Hl7Util.toHl7(response.trim().replace("<CR>","\r"));//打印数据
                 if(map!=null){
-
                     Monitor monitor=new Monitor();
                     monitor.setArtd(map.get("obx0").toString());
                     monitor.setArtm(map.get("obx1").toString());
@@ -94,7 +95,7 @@ public class SocketThread extends Thread {
 
             } catch (Exception e) {
                 logger.info("---------未连接到监护仪--------");
-                logger.info(""+e);
+                logger.info("`````````````````````"+e);
                 try {
                     socket.close();
                     is.close();

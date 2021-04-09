@@ -130,7 +130,7 @@ public class HandoverRecord implements Serializable {
      * 静脉置管-PVC：pvcDescription
      * 静脉置管-PICC：piccDescription
      * 静脉置管-PORT：portDescription
-     * 静脉置管-留置针：leftNeedleDescription
+     * 静脉置管-留·置针：leftNeedleDescription
      * 动脉置管：artery
      *
      * )

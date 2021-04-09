@@ -474,6 +474,68 @@ public class NursingRecordController {
     }
 
     /**
+     * 护理文书--护理单--护理记录--保存一条护理记录
+     * @return
+     */
+    @RequestMapping(value = "/saveData")
+    @ResponseBody
+    public String saveData(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code", HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","失败");
+        try {
+            if(map.containsKey("id") && StringUtils.isNotEmpty(map.get("id").toString())){
+                //编辑
+                NursingRecord data=nursingRecordService.queryData(map.get("id").toString());
+                if(map.containsKey("operatorCode") && StringUtils.isNotEmpty(map.get("operatorCode").toString())){
+                    data.setOperatorCode(map.get("operatorCode").toString());
+                }
+                if(map.containsKey("content") && StringUtils.isNotEmpty(map.get("content").toString())){
+                    data.setContent(map.get("content").toString());
+                }
+                data.setCode(map.get("code").toString());//固定为 nursingRecordContent
+                data.setVisitId(map.get("visitId").toString());
+                data.setVisitCode(map.get("visitCode").toString());
+                data.setPatientId(map.get("patientId").toString());
+                if(map.containsKey("dataTime") && StringUtils.isNotEmpty(map.get("dataTime").toString())){
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    data.setDataTime(sdf.parse(map.get("dataTime").toString()));
+                }
+                nursingRecordService.update(data);
+                json.put("code",HttpCode.OK_CODE.getCode());
+                json.put("msg","成功");
+            }else {
+                //新增
+                NursingRecord nursingRecord=new NursingRecord();
+                nursingRecord.setId(UUIDUtil.getUUID());
+                nursingRecord.setCreateTime(new Date());
+                nursingRecord.setStatus(1);
+                if(map.containsKey("operatorCode") && StringUtils.isNotEmpty(map.get("operatorCode").toString())){
+                    nursingRecord.setOperatorCode(map.get("operatorCode").toString());
+                }
+                if(map.containsKey("content") && StringUtils.isNotEmpty(map.get("content").toString())){
+                    nursingRecord.setContent(map.get("content").toString());
+                }
+                nursingRecord.setCode(map.get("code").toString());//固定为 nursingRecordContent
+                nursingRecord.setVisitId(map.get("visitId").toString());
+                nursingRecord.setVisitCode(map.get("visitCode").toString());
+                nursingRecord.setPatientId(map.get("patientId").toString());
+                if(map.containsKey("dataTime") && StringUtils.isNotEmpty(map.get("dataTime").toString())){
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    nursingRecord.setDataTime(sdf.parse(map.get("dataTime").toString()));
+                }
+                nursingRecordService.insert(nursingRecord);
+                json.put("code",HttpCode.OK_CODE.getCode());
+                json.put("msg","成功");
+            }
+        }catch (Exception e){
+            logger.info("护理文书--护理单--护理记录--保存一条护理记录:"+e);
+        }
+        return json.toString();
+    }
+
+    /**
      * 护理文书--护理单--护理记录--查询护理记录列表
      * @return code=score status=1
      */

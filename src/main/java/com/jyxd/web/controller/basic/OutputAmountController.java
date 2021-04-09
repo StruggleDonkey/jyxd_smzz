@@ -394,6 +394,103 @@ public class OutputAmountController {
     }
 
     /**
+     * 护理文书--护理单--出量--保存一条出量记录
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/saveData",method= RequestMethod.POST)
+    @ResponseBody
+    public String saveData(@RequestBody(required=false) Map<String,Object> map,HttpSession session){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","失败");
+        try {
+            if(map.containsKey("id") && StringUtils.isNotEmpty(map.get("id").toString())){
+                //编辑
+                OutputAmount data=outputAmountService.queryData(map.get("id").toString());
+                if(data!=null){
+                    data.setVisitId(map.get("visitId").toString());
+                    data.setVisitCode(map.get("visitCode").toString());
+                    data.setPatientId(map.get("patientId").toString());
+                    data.setStatus(1);
+                    if(map.containsKey("dataTime") && StringUtils.isNotEmpty(map.get("dataTime").toString())){
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        data.setDataTime(sdf.parse(map.get("dataTime").toString()));
+                    }
+                    if(map.containsKey("outputName") && StringUtils.isNotEmpty(map.get("outputName").toString())){
+                        data.setOutputName(map.get("outputName").toString());
+                    }
+                    if(map.containsKey("dosage") && StringUtils.isNotEmpty(map.get("dosage").toString())){
+                        data.setDosage(map.get("dosage").toString());
+                    }
+                    if(map.containsKey("checkSignature") && StringUtils.isNotEmpty(map.get("checkSignature").toString())){
+                        data.setCheckSignature(map.get("checkSignature").toString());
+                    }
+                    if(map.containsKey("dosageUnits") && StringUtils.isNotEmpty(map.get("dosageUnits").toString())){
+                        data.setDosageUnits(map.get("dosageUnits").toString());
+                    }
+                    if(map.containsKey("outputType") && StringUtils.isNotEmpty(map.get("outputType").toString())){
+                        data.setOutputType(map.get("outputType").toString());
+                    }
+                    if(map.containsKey("speed") && StringUtils.isNotEmpty(map.get("speed").toString())){
+                        data.setSpeed(map.get("speed").toString());
+                    }
+                    User user=(User)session.getAttribute("user");
+                    if(user!=null){
+                        data.setOperatorCode(user.getLoginName());
+                    }
+                    outputAmountService.update(data);
+                    json.put("code",HttpCode.OK_CODE.getCode());
+                    json.put("msg","编辑成功");
+                }
+            }else {
+                //新增
+                OutputAmount outputAmount=new OutputAmount();
+                outputAmount.setId(UUIDUtil.getUUID());
+                outputAmount.setCreateTime(new Date());
+                outputAmount.setVisitId(map.get("visitId").toString());
+                outputAmount.setVisitCode(map.get("visitCode").toString());
+                outputAmount.setPatientId(map.get("patientId").toString());
+                outputAmount.setStatus(1);
+                if(map.containsKey("dataTime") && StringUtils.isNotEmpty(map.get("dataTime").toString())){
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    outputAmount.setDataTime(sdf.parse(map.get("dataTime").toString()));
+                }
+                if(map.containsKey("outputName") && StringUtils.isNotEmpty(map.get("outputName").toString())){
+                    outputAmount.setOutputName(map.get("outputName").toString());
+                }
+                if(map.containsKey("dosage") && StringUtils.isNotEmpty(map.get("dosage").toString())){
+                    outputAmount.setDosage(map.get("dosage").toString());
+                }
+                if(map.containsKey("checkSignature") && StringUtils.isNotEmpty(map.get("checkSignature").toString())){
+                    outputAmount.setCheckSignature(map.get("checkSignature").toString());
+                }
+                if(map.containsKey("dosageUnits") && StringUtils.isNotEmpty(map.get("dosageUnits").toString())){
+                    outputAmount.setDosageUnits(map.get("dosageUnits").toString());
+                }
+                if(map.containsKey("outputType") && StringUtils.isNotEmpty(map.get("outputType").toString())){
+                    outputAmount.setOutputType(map.get("outputType").toString());
+                }
+                if(map.containsKey("speed") && StringUtils.isNotEmpty(map.get("speed").toString())){
+                    outputAmount.setSpeed(map.get("speed").toString());
+                }
+                User user=(User)session.getAttribute("user");
+                if(user!=null){
+                    outputAmount.setOperatorCode(user.getLoginName());
+                }
+                outputAmountService.insert(outputAmount);
+                json.put("code",HttpCode.OK_CODE.getCode());
+                json.put("msg","新增成功");
+            }
+
+        }catch (Exception e){
+            logger.info("护理文书--护理单--出量--保存一条出量记录:"+e);
+        }
+        return json.toString();
+    }
+
+    /**
      * 护理文书--护理单--出量--查询病人出量列表
      * @param map
      * @return

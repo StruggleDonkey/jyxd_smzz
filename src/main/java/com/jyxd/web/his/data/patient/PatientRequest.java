@@ -164,7 +164,7 @@ public class PatientRequest {
         @JacksonXmlProperty(localName = "PATRelationAddressDesc")
         private String PATRelationAddressDesc ;//患者联系人地址
         @JacksonXmlProperty(localName = "PATRelationHouseNum")
-        private String PATRelationHouseNum ;//患者联系人地址-门牌号码
+        private String PATRelationHouseNum ;//患者联系人地址z-门牌号码
         @JacksonXmlProperty(localName = "PATRelationVillage")
         private String PATRelationVillage ;//患者联系人地址-村（街、路、弄等）
         @JacksonXmlProperty(localName = "PATRelationCountryside")

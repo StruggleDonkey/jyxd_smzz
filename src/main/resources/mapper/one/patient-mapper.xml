@@ -724,4 +724,19 @@
             pp.id = #{patientId}
     </select>
 
+    <!--根据患者主索引号查询最近的一条病人记录-->
+    <select id="getPatientByVisitId" resultMap="patientMap" parameterType="java.lang.String">
+        select
+        <include refid="patient_colums"></include>
+        from
+        p_patient
+        where
+        1=1
+        and status != -1
+        and visit_id =#{visitId}
+        ORDER BY
+        create_time DESC
+        LIMIT 1
+    </select>
+
 </mapper>

@@ -271,4 +271,13 @@ public class PatientService {
     public Map<String, Object> queryPatientMonitor(Map<String,Object> map){
         return patientDao.queryPatientMonitor(map);
     }
+
+    /**
+     * 根据患者主索引号查询最近的一条病人记录
+     * @param visitId
+     * @return
+     */
+    public Patient getPatientByVisitId(String visitId){
+        return patientDao.getPatientByVisitId(visitId);
+    }
 }
