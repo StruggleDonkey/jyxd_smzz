@@ -355,4 +355,32 @@ public class MedOrderExecController {
         return json.toString();
     }
 
+    /**
+     * 根据条件分页查询医嘱执行表记录列表（也可以不分页）
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/getList",method= RequestMethod.POST)
+    @ResponseBody
+    public String getList(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        if(map!=null && map.containsKey("start")){
+            int totalCount =medOrderExecService.getNum(map);
+            map.put("start",((int)map.get("start")-1)*(int)map.get("size"));
+            json.put("totalCount",totalCount);
+        }
+        List<Map<String,Object>> list =medOrderExecService.getList(map);
+        if(list!=null && list.size()>0){
+            JsonConfig jsonConfig=new JsonConfig();
+            jsonConfig.registerJsonValueProcessor(Date.class,new JsonArrayValueProcessor());
+            json.put("msg","查询成功");
+            json.put("data",JSONArray.fromObject(list,jsonConfig));
+        }
+        json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
 }

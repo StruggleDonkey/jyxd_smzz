@@ -50,4 +50,8 @@ public interface MedOrderExecDao {
      * @return
      */
       List<MedOrderExec> queryMedOrderExecList(Map<String,Object> map);
+
+     List<Map<String, Object>> getList(Map<String,Object> map);
+
+     int getNum(Map<String,Object> map);
 }

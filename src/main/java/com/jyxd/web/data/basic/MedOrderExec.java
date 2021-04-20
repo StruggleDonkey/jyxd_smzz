@@ -164,7 +164,7 @@ public class MedOrderExec implements Serializable {
     /**
      * 责任护士编码
      */
-    @Column(name = "nurse_code")
+        @Column(name = "nurse_code")
     private String nurseCode;
 
     /**

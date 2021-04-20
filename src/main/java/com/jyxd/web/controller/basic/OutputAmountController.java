@@ -552,4 +552,34 @@ public class OutputAmountController {
         return json.toString();
     }
 
+    /**
+     * 护理文书--护理单--出量--查询病人出量列表(新版 为了打印可以和出入量一起打印)
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/getNewPatientOutputList",method= RequestMethod.POST)
+    @ResponseBody
+    public String getNewPatientOutputList(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("data",new ArrayList<>());
+        json.put("msg","暂无数据");
+        try {
+            if(map.containsKey("patientId") && StringUtils.isNotEmpty(map.get("patientId").toString())){
+                List<Map<String,Object>> list=outputAmountService.getNewPatientOutputList(map);
+                if(list!=null && list.size()>0){
+                    json.put("data",JSONArray.fromObject(list));
+                    json.put("code",HttpCode.OK_CODE.getCode());
+                    json.put("msg","查询成功");
+                }
+            }else{
+                json.put("code",HttpCode.NO_PATIENT_CODE.getCode());
+                json.put("msg","请先选择病人");
+            }
+        }catch (Exception e){
+            logger.info("护理文书--护理单--出量--查询病人出量列表(新版 为了打印可以和出入量一起打印):"+e);
+        }
+        return json.toString();
+    }
+
 }

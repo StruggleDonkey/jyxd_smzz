@@ -32,13 +32,13 @@
 
     <insert id="insert">
         insert into
-        table_med_order_exec(<include refid="medOrderExecSync_colums"></include>)
+        table_med_order_exec_sync(<include refid="medOrderExecSync_colums"></include>)
         values (<include refid="medOrderExecSync_propertys"></include>)
     </insert>
 
     <update id="update" parameterType="com.jyxd.web.data.basic.MedOrderExecSync" >
         update
-        table_med_order_exec
+        table_med_order_exec_sync
         set <include refid="medOrderExecSync_update"></include>
         where
           id=#{id}
@@ -48,7 +48,7 @@
         select
           <include refid="medOrderExecSync_colums"></include>
         from
-        table_med_order_exec
+        table_med_order_exec_sync
         where
           id=#{id}
     </select>
@@ -57,7 +57,7 @@
         select
           <include refid="medOrderExecSync_colums"></include>
         from
-        table_med_order_exec
+        table_med_order_exec_sync
         where
           1=1
         <if test="startTime != null and startTime != ''">
@@ -84,7 +84,7 @@
         select
           count(id)
         from
-        table_med_order_exec
+        table_med_order_exec_sync
         where
         1=1
         <if test="startTime != null and startTime != ''">
@@ -113,7 +113,7 @@
           IFNULL(tmoe.content,"")  AS content,
           IFNULL(tu.user_name,"") AS signature
         from
-        table_med_order_exec tmoe
+        table_med_order_exec_sync tmoe
         LEFT JOIN dict_common_item dcia ON dcia.common_item_code=tmoe.order_type AND dcia.type='intake'
         LEFT JOIN dict_common_item dcib ON dcib.common_item_code=tmoe.order_type AND dcib.type='use_mode'
         LEFT JOIN table_user tu ON tu.login_name=tmoe.nurse_code
@@ -130,7 +130,7 @@
         select
         count(id)
         from
-        table_med_order_exec
+        table_med_order_exec_sync
         where
         1=1
         <if test="orderNo != null and orderNo != ''">

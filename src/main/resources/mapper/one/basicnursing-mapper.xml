@@ -230,6 +230,7 @@
         AND tsn.status !=- 1
         AND tsn.status=#{status}
         AND tsn.patient_id=#{patientId}
+        AND date_format(tsn.data_time, '%Y-%m-%d')=#{dataTime}
         GROUP BY tsn.data_time
     </select>
 

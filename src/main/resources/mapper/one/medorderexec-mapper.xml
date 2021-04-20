@@ -59,7 +59,7 @@
                                     repeat_indicator=#{repeatIndicator},use_mode=#{useMode},class_type=#{classType},
                                     frequency=#{frequency},perform_speed=#{performSpeed},speed_units=#{speedUnits},
                                     nurse_code=#{nurseCode},order_status=#{orderStatus},remark=#{remark},
-                                    create_time=#{createTime},update_time=#{updateTime},is_sync=#{isSync}
+                                    create_time=#{createTime},update_time=#{updateTime},is_sync=#{isSync},
                                     order_exec_num=#{orderExecNum},sync_num=#{syncNum},recent_sync_time=#{recentSyncTime}</sql>
 
     <insert id="insert">
@@ -155,6 +155,106 @@
         <include refid="medOrderExec_colums"></include>
         from
         table_med_order_exec
+    </select>
+
+    <select id="getList" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            tmoc.id AS id,
+            IFNULL(tmoc.visit_id,"") AS visitId,
+            IFNULL(tmoc.visit_code,"") AS visitCode,
+            IFNULL(tmoc.patient_id,"") AS patientId,
+            IFNULL(tmoc.order_code,"") AS orderCode,
+            IFNULL(tmoc.order_no,"") AS orderNo,
+            IFNULL(tmoc.order_sub_no,"") AS orderSubNo,
+            IFNULL(tmoc.order_name,"") AS orderName,
+            IFNULL(tmoc.specs,"") AS specs,
+            tmoc.drug_type AS drugType,
+            IFNULL(tmoc.order_attr,"") AS orderAttr,
+            IFNULL(date_format(tmoc.default_time_point, '%Y-%m-%d %H:%i:%s'),"") AS defaultTimePoint,
+            IFNULL(dcia.common_item_name,"") AS useMode,
+            IFNULL(date_format(tmoc.start_time_point, '%Y-%m-%d %H:%i:%s'),"") AS startTimePoint,
+            IFNULL(date_format(tmoc.complete_time_point, '%Y-%m-%d %H:%i:%s'),"") AS completeTimePoint,
+            IFNULL(tmoc.dosage,"") AS dosage,
+            IFNULL(tmoc.dosage_units,"") AS dosageUnits,
+            IFNULL(tmoc.all_dosage,"") AS allDosage,
+            tmoc.repeat_indicator AS repeatIndicator,
+            IFNULL(tmoc.class_type,"") AS classType,
+            IFNULL(tmoc.frequency,"") AS frequency,
+            IFNULL(tmoc.perform_speed,"") AS performSpeed,
+            IFNULL(tmoc.speed_units,"") AS speedUnits,
+            IFNULL(ts.user_name,"") AS nurseCode,
+            tmoc.order_status AS orderStatus,
+            IFNULL(tmoc.remark,"") AS remark,
+            IFNULL(date_format(tmoc.create_time, '%Y-%m-%d %H:%i:%s'),"") AS createTime,
+            IFNULL(date_format(tmoc.update_time, '%Y-%m-%d %H:%i:%s'),"") AS updateTime,
+            tmoc.is_sync AS isSync,
+            tmoc.order_exec_num AS orderExecNum,
+            tmoc.sync_num AS syncNum,
+            IFNULL(date_format(tmoc.recent_sync_time, '%Y-%m-%d %H:%i:%s'),"") AS recentSyncTime
+        FROM
+        table_med_order_exec tmoc
+        LEFT JOIN dict_common_item dcia ON dcia.common_item_code = tmoc.use_mode AND dcia.type='use_mode'
+        LEFT JOIN table_user ts ON ts.login_name=tmoc.nurse_code
+        where
+        1=1
+        <if test="startTime != null and startTime != ''">
+            and   date_format(tmoc.default_time_point,'%Y%m%d') between date_format(#{startTime},'%Y%m%d')
+            and date_format(#{endTime},'%Y%m%d')
+        </if>
+        <if test="orderNo != null and orderNo != ''">
+            and tmoc.order_no = #{orderNo}
+        </if>
+        <if test="orderStatus != null and orderStatus != 5">
+            and  tmoc.order_status= #{orderStatus}
+        </if>
+        <if test="isSync != null and isSync != 5">
+            and  tmoc.is_sync= #{isSync}
+        </if>
+        <if test="drugType != null and drugType != 5">
+            and  tmoc.drug_type= #{drugType}
+        </if>
+        <if test="repeatIndicator != null and repeatIndicator != 5">
+            and  tmoc.repeat_indicator= #{repeatIndicator}
+        </if>
+        <if test="patientId != null and patientId !=''">
+            and  tmoc.patient_id= #{patientId}
+        </if>
+        ORDER BY tmoc.order_no,tmoc.remark DESC
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="getNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        SELECT
+          count(tmoc.id)
+        FROM
+        table_med_order_exec tmoc
+        LEFT JOIN dict_common_item dcia ON dcia.common_item_code = tmoc.use_mode AND dcia.type='use_mode'
+        LEFT JOIN table_user ts ON ts.login_name=tmoc.nurse_code
+        where
+        1=1
+        <if test="startTime != null and startTime != ''">
+            and   date_format(tmoc.default_time_point,'%Y%m%d') between date_format(#{startTime},'%Y%m%d')
+            and date_format(#{endTime},'%Y%m%d')
+        </if>
+        <if test="orderNo != null and orderNo != ''">
+            and tmoc.order_no = #{orderNo}
+        </if>
+        <if test="orderStatus != null and orderStatus != 5">
+            and  tmoc.order_status= #{orderStatus}
+        </if>
+        <if test="isSync != null and isSync != 5">
+            and  tmoc.is_sync= #{isSync}
+        </if>
+        <if test="drugType != null and drugType != 5">
+            and  tmoc.drug_type= #{drugType}
+        </if>
+        <if test="repeatIndicator != null and repeatIndicator != 5">
+            and  tmoc.repeat_indicator= #{repeatIndicator}
+        </if>
+        <if test="patientId != null and patientId !=''">
+            and  tmoc.patient_id= #{patientId}
+        </if>
     </select>
 
 </mapper>

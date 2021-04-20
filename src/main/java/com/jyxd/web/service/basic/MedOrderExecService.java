@@ -54,4 +54,10 @@ public class MedOrderExecService {
     public List<Map<String, Object>> getMedOrderExecByHis(Map<String,Object> map){
         return patientTestDao.getMedOrderExecByHis(map);
     }
+
+    public List<Map<String, Object>> getList(Map<String,Object> map){
+        return medOrderExecDao.getList(map);
+    }
+
+    public int getNum(Map<String,Object> map){return medOrderExecDao.getNum(map);}
 }

@@ -2,17 +2,30 @@ package com.jyxd.web.his.controller;
 
 
 import com.jyxd.web.data.basic.MedOrderExec;
+import com.jyxd.web.data.dictionary.BedDictionary;
+import com.jyxd.web.data.dictionary.DepartmentDictionary;
+import com.jyxd.web.data.dictionary.WardDictionary;
 import com.jyxd.web.data.patient.Patient;
+import com.jyxd.web.data.user.User;
 import com.jyxd.web.his.data.commmon.BodyData;
 import com.jyxd.web.his.data.commmon.CommonResponse;
 import com.jyxd.web.his.data.commmon.HeaderData;
 import com.jyxd.web.his.data.department.ChangeDepartmentRequest;
+import com.jyxd.web.his.data.dictionary.ReceiveBedRequest;
+import com.jyxd.web.his.data.dictionary.ReceiveDepartmentRequest;
+import com.jyxd.web.his.data.dictionary.ReceiveUserRequest;
+import com.jyxd.web.his.data.dictionary.ReceiveWardRequest;
 import com.jyxd.web.his.data.medOrderExec.AddOrdersRtRequest;
 import com.jyxd.web.his.data.patient.CancelHospitallRequest;
 import com.jyxd.web.his.data.patient.InHospitalRequest;
 import com.jyxd.web.his.data.patient.PatientRequest;
 import com.jyxd.web.service.basic.MedOrderExecService;
+import com.jyxd.web.service.dictionary.BedDictionaryService;
+import com.jyxd.web.service.dictionary.DepartmentDictionaryService;
+import com.jyxd.web.service.dictionary.WardDictionaryService;
 import com.jyxd.web.service.patient.PatientService;
+import com.jyxd.web.service.user.UserService;
+import com.jyxd.web.util.MD5Util;
 import com.jyxd.web.util.UUIDUtil;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -40,6 +53,18 @@ public class HisController {
 
     @Autowired
     private MedOrderExecService medOrderExecService;
+
+    @Autowired
+    private BedDictionaryService bedDictionaryService;
+
+    @Autowired
+    private WardDictionaryService wardDictionaryService;
+
+    @Autowired
+    private DepartmentDictionaryService departmentDictionaryService;
+
+    @Autowired
+    private UserService userService;
 
     /**
      * 患者基本信息接收
@@ -324,10 +349,70 @@ public class HisController {
                 medOrderExec.setPatientId(patient.getId());
                 medOrderExec.setCreateTime(new Date());
 
+                AddOrdersRtRequest.OEORIInfoList oeoriInfoList=addOrdersRt.getOEORIInfoList();
+                AddOrdersRtRequest.OEORIInfo oeoriInfo=oeoriInfoList.getOEORIInfo();
 
+                medOrderExec.setOrderName(oeoriInfo.getOEORIARCItmMastDesc());//医嘱项目描述
+                medOrderExec.setSpecs(oeoriInfo.getOEORISpecification());//医嘱规格
+                switch (oeoriInfo.getOEORIClass()){//医嘱类别代码 检查类 西药类 中药类
+                    case "检查类":
+                        medOrderExec.setDrugType(0);//是否为药嘱（0：否  1：是）
+                     break;
+                    case "西药类":
+                        medOrderExec.setDrugType(1);//是否为药嘱（0：否  1：是）
+                        break;
+                    case "中药类":
+                        medOrderExec.setDrugType(1);//是否为药嘱（0：否  1：是）
+                        break;
+                }
+                medOrderExec.setOrderAttr(oeoriInfo.getOEORIDoseFormsDesc());//剂型描述 补液类型（如：晶体液、胶体液等）
+                String defaultStart=sdfd.format(oeoriInfo.getOEORIRequireExecDate());//要求执行日期 YYYY-MM-DD
+                String defaultEnd=sdft.format(oeoriInfo.getOEORIRequireExecTime());//要求执行时间 hh:mm:ss
+                medOrderExec.setDefaultTimePoint(sdf.parse(defaultStart+" "+defaultEnd));//计划执行时间
+                String completeStart=sdfd.format(oeoriInfo.getOEORIStopDate());//医嘱停止日期 YYYY-MM-DD
+                String completeEnd=sdft.format(oeoriInfo.getOEORIStopTime());//医嘱停止时间 hh:mm:ss
+                medOrderExec.setCompleteTimePoint(sdf.parse(completeStart+""+completeEnd));//执行完成时间
+                if(StringUtils.isNotEmpty(oeoriInfo.getOEORIDoseQty())){
+                    medOrderExec.setDosage(oeoriInfo.getOEORIDoseQty());//单次剂量
+                }
+                if(StringUtils.isNotEmpty(oeoriInfo.getOEORIDoseUnitDesc())){
+                    medOrderExec.setDosageUnits(oeoriInfo.getOEORIDoseUnitDesc());//单次剂量单位描述
+                }
+                medOrderExec.setAllDosage(oeoriInfo.getOEORIOrderQty());//医嘱数量
+                switch (oeoriInfo.getOEORIPriorityDesc()){//医嘱类型描述 长期、临时、自备长期、自备临时、出院带药
+                    case "长期":
+                        medOrderExec.setRepeatIndicator(1);//医嘱类型，0：临时医嘱；1：长期医嘱
+                        break;
+                    case "临时":
+                        medOrderExec.setRepeatIndicator(0);//医嘱类型，0：临时医嘱；1：长期医嘱
+                        break;
+                    case "自备长期":
+                        medOrderExec.setRepeatIndicator(1);//医嘱类型，0：临时医嘱；1：长期医嘱
+                        break;
+                    case "自备临时":
+                        medOrderExec.setRepeatIndicator(0);//医嘱类型，0：临时医嘱；1：长期医嘱
+                        break;
+                    case "出院带药":
+                        medOrderExec.setRepeatIndicator(1);//医嘱类型，0：临时医嘱；1：长期医嘱
+                         break;
 
-
-
+                }
+                if(StringUtils.isNotEmpty(oeoriInfo.getOEORIInstrCode())){
+                    medOrderExec.setUseMode(oeoriInfo.getOEORIInstrCode());//用药途径代码
+                }
+                medOrderExec.setClassType(oeoriInfo.getOEORIClass());//医嘱类别代码 检查类 西药类 中药类
+                medOrderExec.setFrequency(oeoriInfo.getOEORIFreqDesc());//频次描述
+                medOrderExec.setPerformSpeed("");//流速
+                medOrderExec.setOrderStatus(Integer.valueOf(oeoriInfo.getOEORIStatusCode()));//医嘱状态代码  执行状态，0：未执行；1：执行中；2：执行完毕；3：交班
+                if(StringUtils.isNotEmpty(oeoriInfo.getOEORIRemarks())){
+                    medOrderExec.setRemark(oeoriInfo.getOEORIRemarks());//医嘱备注信息
+                }
+                medOrderExec.setUpdateTime(new Date());//记录最后修改时间
+                medOrderExec.setIsSync(0);//是否已同步到护理单，0：未同步；1：已同步；
+                medOrderExec.setOrderExecNum(1);//医嘱每天执行次数 默认1
+                medOrderExec.setSyncNum(1);//剩余同步次数 默认1
+                //medOrderExec.setRecentSyncTime();//最新同步时间
+                medOrderExecService.insert(medOrderExec);
             }
 
             HeaderData h=new HeaderData();
@@ -344,6 +429,249 @@ public class HisController {
             logger.info("--------------------------------------------------------------------");
             logger.info("action==============================================:"+action);
             logger.info("addOrdersRtRequest=======================================:"+addOrdersRtRequest.toString());
+            logger.info("--------------------------------------------------------------------");
+            logger.info("--------------------------------------------------------------------");
+        }catch (Exception e){
+            logger.error("+++++++++++++++接受his接口异常+++++++++++++++++"+e);
+        }
+        return commonResponse;
+    }
+
+    /**
+     * 接收床位字典信息
+     * @param action
+     * @param receiveBedRequest
+     * @return
+     */
+    @PostMapping(value = "/receiveBed", consumes = { MediaType.APPLICATION_XML_VALUE }, produces = MediaType.APPLICATION_XML_VALUE)
+    @ResponseBody
+    public CommonResponse receiveBed(@RequestBody String action, @RequestBody ReceiveBedRequest receiveBedRequest){
+        CommonResponse commonResponse=new CommonResponse();
+        try {
+            if(receiveBedRequest!=null){
+                ReceiveBedRequest.CT_Bed ct_bed=receiveBedRequest.getBody().getCT_BedList().getCT_Bed();
+                BedDictionary bedDictionary=new BedDictionary();
+                bedDictionary.setId(UUIDUtil.getUUID());
+                switch (ct_bed.getCTB_Status()){//1启用0停用-1删除
+                    case "1":
+                        bedDictionary.setStatus(1);
+                        break;
+                    case "0":
+                        bedDictionary.setStatus(0);
+                        break;
+                    case "-1":
+                        bedDictionary.setStatus(-1);
+                        break;
+                }
+                bedDictionary.setBedCode(ct_bed.getCTB_Code());//床位代码
+                if(StringUtils.isNotEmpty(ct_bed.getCTB_Desc())){
+                    bedDictionary.setBedName(ct_bed.getCTB_Desc());//床位描述
+                }
+                bedDictionaryService.insert(bedDictionary);
+            }
+
+            HeaderData h=new HeaderData();
+            h.setMessageID("1111");
+            h.setSourceSystem("测试");
+            commonResponse.setHeader(h);
+            BodyData b=new BodyData();
+            b.setResultCode("0");
+            b.setResultContent("成功");
+            commonResponse.setBody(b);
+
+
+            logger.info("--------------------------------------------------------------------");
+            logger.info("--------------------------------------------------------------------");
+            logger.info("action==============================================:"+action);
+            logger.info("receiveBedRequest=======================================:"+receiveBedRequest.toString());
+            logger.info("--------------------------------------------------------------------");
+            logger.info("--------------------------------------------------------------------");
+        }catch (Exception e){
+            logger.error("+++++++++++++++接受his接口异常+++++++++++++++++"+e);
+        }
+        return commonResponse;
+    }
+
+    /**
+     * 接收病区字典信息
+     * @param action
+     * @param receiveWardRequest
+     * @return
+     */
+    @PostMapping(value = "/receiveWard", consumes = { MediaType.APPLICATION_XML_VALUE }, produces = MediaType.APPLICATION_XML_VALUE)
+    @ResponseBody
+    public CommonResponse receiveWard(@RequestBody String action, @RequestBody ReceiveWardRequest receiveWardRequest){
+        CommonResponse commonResponse=new CommonResponse();
+        try {
+            if(receiveWardRequest!=null){
+                ReceiveWardRequest.CT_Ward ct_ward=receiveWardRequest.getBody().getCT_WardList().getCT_Ward();
+                WardDictionary wardDictionary=new WardDictionary();
+                wardDictionary.setId(UUIDUtil.getUUID());
+                wardDictionary.setStatus(1);
+                wardDictionary.setWardCode(ct_ward.getCTW_Code());
+                wardDictionary.setWardName(ct_ward.getCTW_Desc());
+                switch (ct_ward.getCTW_Status()){//1启用0停用-1删除
+                    case "1":
+                        wardDictionary.setStatus(1);
+                        break;
+                    case "0":
+                        wardDictionary.setStatus(0);
+                        break;
+                    case "-1":
+                        wardDictionary.setStatus(-1);
+                        break;
+                }
+                wardDictionaryService.insert(wardDictionary);
+            }
+
+            HeaderData h=new HeaderData();
+            h.setMessageID("1111");
+            h.setSourceSystem("测试");
+            commonResponse.setHeader(h);
+            BodyData b=new BodyData();
+            b.setResultCode("0");
+            b.setResultContent("成功");
+            commonResponse.setBody(b);
+
+
+            logger.info("--------------------------------------------------------------------");
+            logger.info("--------------------------------------------------------------------");
+            logger.info("action==============================================:"+action);
+            logger.info("receiveWardRequest=======================================:"+receiveWardRequest.toString());
+            logger.info("--------------------------------------------------------------------");
+            logger.info("--------------------------------------------------------------------");
+        }catch (Exception e){
+            logger.error("+++++++++++++++接受his接口异常+++++++++++++++++"+e);
+        }
+        return commonResponse;
+    }
+
+    /**
+     * 接收科室字典信息
+     * @param action
+     * @param receiveDepartmentRequest
+     * @return
+     */
+    @PostMapping(value = "/receiveDepartment", consumes = { MediaType.APPLICATION_XML_VALUE }, produces = MediaType.APPLICATION_XML_VALUE)
+    @ResponseBody
+    public CommonResponse receiveDepartment(@RequestBody String action, @RequestBody ReceiveDepartmentRequest receiveDepartmentRequest){
+        CommonResponse commonResponse=new CommonResponse();
+        try {
+            if(receiveDepartmentRequest!=null){
+                ReceiveDepartmentRequest.CT_Dept ct_dept=receiveDepartmentRequest.getBody().getCT_DeptList().getCT_Dept();
+                DepartmentDictionary departmentDictionary=new DepartmentDictionary();
+                departmentDictionary.setId(UUIDUtil.getUUID());
+                departmentDictionary.setDepartmentCode(ct_dept.getCTD_Code());
+                departmentDictionary.setDepartmentName(ct_dept.getCTD_Desc());
+                switch (ct_dept.getCTD_Status()){//1启用0停用-1删除
+                    case "1":
+                        departmentDictionary.setStatus(1);
+                        break;
+                    case "0":
+                        departmentDictionary.setStatus(0);
+                        break;
+                    case "-1":
+                        departmentDictionary.setStatus(-1);
+                        break;
+                }
+                departmentDictionaryService.insert(departmentDictionary);
+            }
+
+            HeaderData h=new HeaderData();
+            h.setMessageID("1111");
+            h.setSourceSystem("测试");
+            commonResponse.setHeader(h);
+            BodyData b=new BodyData();
+            b.setResultCode("0");
+            b.setResultContent("成功");
+            commonResponse.setBody(b);
+
+
+            logger.info("--------------------------------------------------------------------");
+            logger.info("--------------------------------------------------------------------");
+            logger.info("action==============================================:"+action);
+            logger.info("receiveDepartmentRequest=======================================:"+receiveDepartmentRequest.toString());
+            logger.info("--------------------------------------------------------------------");
+            logger.info("--------------------------------------------------------------------");
+        }catch (Exception e){
+            logger.error("+++++++++++++++接受his接口异常+++++++++++++++++"+e);
+        }
+        return commonResponse;
+    }
+
+    /**
+     * 接收医护人员字典信息
+     * @param action
+     * @param receiveUserRequest
+     * @return
+     */
+    @PostMapping(value = "/receiveUser", consumes = { MediaType.APPLICATION_XML_VALUE }, produces = MediaType.APPLICATION_XML_VALUE)
+    @ResponseBody
+    public CommonResponse receiveUser(@RequestBody String action, @RequestBody ReceiveUserRequest receiveUserRequest){
+        CommonResponse commonResponse=new CommonResponse();
+        try {
+            if(receiveUserRequest!=null){
+                ReceiveUserRequest.CT_CareProv ct_careProv=receiveUserRequest.getBody().getCT_CareProvList().getCT_CareProv();
+                User user=new User();
+                user.setId(UUIDUtil.getUUID());
+                user.setCreateTime(new Date());
+                user.setUserName(ct_careProv.getCTCP_Desc());//职工姓名
+                user.setLoginName(ct_careProv.getCTCP_Desc());//职工姓名
+                if(StringUtils.isNotEmpty(ct_careProv.getCTCP_SexCode()) && "1".equals(ct_careProv.getCTCP_SexCode())){//1 男  2女
+                    user.setSex(1);
+                }else {
+                    user.setSex(0);
+                }
+                SimpleDateFormat sdfd = new SimpleDateFormat("yyyy-MM-dd");
+                if(ct_careProv.getCTCP_StartDate()!=null){
+                    user.setEnterTime(ct_careProv.getCTCP_StartDate());//有效开始日期
+                }
+                if(ct_careProv.getCTCP_EndDate()!=null){
+                    user.setExitTime(ct_careProv.getCTCP_EndDate());//有效结束日期
+                }
+                switch (ct_careProv.getCTCP_Status()){//1启用0停用-1删除
+                    case "1":
+                        user.setStatus(1);
+                        break;
+                    case "0":
+                        user.setStatus(0);
+                        break;
+                    case "-1":
+                        user.setStatus(-1);
+                        break;
+                }
+                if(StringUtils.isNotEmpty(ct_careProv.getCTCP_PassWord())){
+                   user.setPassword( MD5Util.string2MD5(ct_careProv.getCTCP_PassWord()));
+                }else {
+                    user.setPassword("e10adc3949ba59abbe56e057f20f883e");//123456
+                }
+                user.setWorkNumber(ct_careProv.getCTCP_Code());//职工代码
+                if(StringUtils.isNotEmpty(ct_careProv.getCTCP_Name())){
+                    user.setSimplicity(ct_careProv.getCTCP_Name());//姓名
+                }
+                if(StringUtils.isNotEmpty(ct_careProv.getCTCP_StaffType()) && "NURSE".equals(ct_careProv.getCTCP_StaffType())){
+                    user.setIsShedual(1);//是否参与排班（0：不参与 1：参与）
+                }else {
+                    user.setIsShedual(0);//是否参与排班（0：不参与 1：参与）
+                }
+                userService.insert(user);
+
+            }
+
+            HeaderData h=new HeaderData();
+            h.setMessageID("1111");
+            h.setSourceSystem("测试");
+            commonResponse.setHeader(h);
+            BodyData b=new BodyData();
+            b.setResultCode("0");
+            b.setResultContent("成功");
+            commonResponse.setBody(b);
+
+
+            logger.info("--------------------------------------------------------------------");
+            logger.info("--------------------------------------------------------------------");
+            logger.info("action==============================================:"+action);
+            logger.info("receiveUserRequest=======================================:"+receiveUserRequest.toString());
             logger.info("--------------------------------------------------------------------");
             logger.info("--------------------------------------------------------------------");
         }catch (Exception e){

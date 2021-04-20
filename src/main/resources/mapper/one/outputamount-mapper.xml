@@ -193,6 +193,9 @@
         <if test="patientId != null and patientId != ''">
             AND toa.patient_id = #{patientId}
         </if>
+        <if test="dataTime != null and dataTime != ''">
+            AND date_format(toa.data_time, '%Y-%m-%d')=#{dataTime}
+        </if>
     </select>
 
     <!-- 根据病人id查询病人在某个时间段的出量汇总信息 -->
@@ -290,5 +293,33 @@
         AND tia.patient_id = #{patientId}
         AND date_format(tia.data_time, '%Y-%m-%d %H:%i:%s') BETWEEN #{startTime} AND #{endTime}
         GROUP BY tia.output_type
+    </select>
+
+    <select id="getNewPatientOutputList" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        IFNULL(toa.id, "") AS out_id,
+        IFNULL(
+        date_format(toa.data_time, '%Y-%m-%d'),
+        ""
+        ) AS out_date,
+        IFNULL(
+        date_format(toa.data_time, '%H:%i'),
+        ""
+        ) AS out_time,
+        IFNULL(sp.sys_key, "") AS out_type,
+        IFNULL(toa.dosage, "") AS out_dosage,
+        IFNULL(tu.user_name, "") AS out_name
+        FROM
+        table_output_amount toa
+        LEFT JOIN table_user tu ON tu.login_name = toa.check_signature
+        LEFT JOIN sys_properties sp ON sp.sys_value = toa.output_type
+        WHERE
+        toa.status != - 1
+        <if test="status != null ">
+            and toa.status= #{status}
+        </if>
+        <if test="patientId != null and patientId != ''">
+            AND toa.patient_id = #{patientId}
+        </if>
     </select>
 </mapper>

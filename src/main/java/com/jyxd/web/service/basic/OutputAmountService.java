@@ -93,4 +93,13 @@ public class OutputAmountService {
     public List<Map<String,Object>> getOutAnalyze(Map<String,Object> map){
         return outputAmountDao.getOutAnalyze(map);
     }
+
+    /**
+     * 护理文书--护理单--出量--查询病人出量列表(新版 为了打印可以和出入量一起打印)
+     * @param map
+     * @return
+     */
+    public List<Map<String,Object>> getNewPatientOutputList(Map<String,Object> map){
+        return outputAmountDao.getNewPatientOutputList(map);
+    }
 }

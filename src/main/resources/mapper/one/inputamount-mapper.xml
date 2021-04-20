@@ -168,6 +168,7 @@
         AND tia.status != -1
         AND tia.patient_id=#{patientId}
         AND tia.status=#{status}
+        AND date_format(tia.data_time, '%Y-%m-%d')=#{dataTime}
         order by tia.order_no
         <if test="start != null ">limit #{start},</if>
         <if test="size != null ">#{size}</if>
