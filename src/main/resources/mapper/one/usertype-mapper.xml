@@ -44,6 +44,7 @@
         where
           1=1
         and  status != -1
+        and user_type_code!='admin'
         <if test="userTypeName != null and userTypeName != ''">
             and  user_type_name like '%${userTypeName}%'
         </if>
@@ -74,7 +75,8 @@
         table_user_type
         where
         1=1
-        and  status != -1
+        and status != -1
+        and user_type_code!='admin'
         <if test="userTypeName != null and userTypeName != ''">
             and  user_type_name like '%${userTypeName}%'
         </if>

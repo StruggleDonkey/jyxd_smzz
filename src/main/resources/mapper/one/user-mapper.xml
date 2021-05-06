@@ -94,6 +94,8 @@
         tu.status !=- 1
         AND tr.status !=- 1
         AND tut.status !=- 1
+        and tu.user_type_code !='admin'
+        and tu.role_id !='admin'
         <if test="workNumber != null and workNumber != ''">
             and  tu.work_number =#{workNumber}
         </if>
@@ -163,6 +165,8 @@
         tu.status !=- 1
         AND tr.status !=- 1
         AND tut.status !=- 1
+        and tu.user_type_code !='admin'
+        and tu.role_id !='admin'
         <if test="workNumber != null and workNumber != ''">
             and  tu.work_number =#{workNumber}
         </if>

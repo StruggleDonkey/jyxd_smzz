@@ -117,6 +117,8 @@
         WHERE
         tr.status !=- 1
         AND tut.status !=- 1
+        and tr.user_type_code !='admin'
+        and tr.id !='admin'
         <if test="roleName != null and roleName != ''">
             and  tr.role_name like '%${roleName}%'
         </if>
@@ -141,6 +143,8 @@
         WHERE
         tr.status !=- 1
         AND tut.status !=- 1
+        and tr.user_type_code !='admin'
+        and tr.id !='admin'
         <if test="roleName != null and roleName != ''">
             and  tr.role_name like '%${roleName}%'
         </if>

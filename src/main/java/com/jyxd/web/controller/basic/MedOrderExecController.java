@@ -216,6 +216,7 @@ public class MedOrderExecController {
             //根据医嘱主键查询医嘱列表
             List<MedOrderExec> list=medOrderExecService.queryList(map);
             if(list!=null && list.size()>0){
+                System.out.println(list.toString());
                 for (int i = 0; i <list.size() ; i++) {
                     MedOrderExec medOrderExec=list.get(i);
 
