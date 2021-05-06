@@ -9,7 +9,7 @@ import java.util.Date;
  */
 public class CompareTimeUtil {
 
-    /** 比较两个字符串时间大小 */
+    /** 比较两个字符串时间大小  */
     public static int compareTwoTime(String time1, String time2) {
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
