@@ -71,65 +71,7 @@ public class PatientScoreController {
         json.put("data",new ArrayList<>());
         json.put("msg","添加失败");
         try {
-            PatientScore patientScore=new PatientScore();
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            patientScore.setId(UUIDUtil.getUUID());
-            patientScore.setCreateTime(new Date());
-            patientScore.setScoreTime(format.parse(map.get("scoreTime").toString()));
-            patientScore.setScore((int)map.get("score"));
-            patientScore.setStatus(1);
-            User user=(User) session.getAttribute("user");
-            if(user!=null){
-                patientScore.setOperatorCode(user.getLoginName());
-            }
-            patientScore.setSignature(map.get("signature").toString());
-            patientScore.setVisitId(map.get("visitId").toString());
-            patientScore.setVisitCode(map.get("visitCode").toString());
-            patientScore.setType(map.get("type").toString());
-            patientScore.setPatientId(map.get("patientId").toString());
-            if(StringUtils.isNotEmpty(map.get("reportTime").toString())){
-                patientScore.setReportTime(format.parse(map.get("reportTime").toString()));
-            }
-            if(StringUtils.isNotEmpty(map.get("assessmentTime").toString())){
-                patientScore.setAssessmentTime(format.parse(map.get("assessmentTime").toString()));
-            }
-            if(StringUtils.isNotEmpty(map.get("nursingStep").toString())){
-                patientScore.setNursingStep(map.get("nursingStep").toString());
-            }
-            if(StringUtils.isNotEmpty(map.get("otherStep").toString())){
-                patientScore.setOtherStep(map.get("otherStep").toString());
-            }
-            if(StringUtils.isNotEmpty(map.get("mortalityRate").toString())){
-                patientScore.setMortalityRate(map.get("mortalityRate").toString());
-            }
-            if(StringUtils.isNotEmpty(map.get("extendColumn").toString())){
-                patientScore.setExtendColumn(map.get("extendColumn").toString());
-            }
-            if(StringUtils.isNotEmpty(map.get("scoreKnowledgeId").toString())){
-                patientScore.setScoreKnowledgeId(map.get("scoreKnowledgeId").toString());
-            }
-            patientScoreService.insert(patientScore);
-            //新增病人评分明细记录
-            if(map.get("list")!=null){
-                JSONArray array=JSONArray.fromObject(map.get("list").toString());
-                for (int i = 0; i < array.size(); i++) {
-                    JSONObject jsonObject=(JSONObject) array.get(i);
-                    PatientScoreItem patientScoreItem=new PatientScoreItem();
-                    patientScoreItem.setId(UUIDUtil.getUUID());
-                    patientScoreItem.setCreateTime(new Date());
-                    patientScoreItem.setVisitId(map.get("visitId").toString());
-                    patientScoreItem.setVisitCode(map.get("visitCode").toString());
-                    patientScoreItem.setType(map.get("type").toString());
-                    patientScoreItem.setPatientId(map.get("patientId").toString());
-                    patientScoreItem.setScoreTime(format.parse(map.get("scoreTime").toString()));
-                    patientScoreItem.setPatientScoreId(patientScore.getId());
-                    patientScoreItem.setParentId(jsonObject.getString("parentId"));
-                    patientScoreItem.setItemId(jsonObject.getString("itemId"));
-                    patientScoreItem.setContent(jsonObject.getString("content"));
-                    patientScoreItem.setExtraContent(jsonObject.getString("extraContent"));
-                    patientScoreItemService.insert(patientScoreItem);
-                }
-            }
+            patientScoreItemService.insertPatientScore(map,(User) session.getAttribute("user"));
             json.put("code",HttpCode.OK_CODE.getCode());
             json.put("msg","添加成功");
         }catch (Exception e){

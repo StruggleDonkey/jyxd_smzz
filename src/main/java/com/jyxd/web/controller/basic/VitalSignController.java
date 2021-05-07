@@ -1,7 +1,9 @@
 package com.jyxd.web.controller.basic;
 
 import com.jyxd.web.data.basic.VitalSign;
+import com.jyxd.web.data.user.User;
 import com.jyxd.web.service.basic.VitalSignService;
+import com.jyxd.web.service.patient.PatientScoreItemService;
 import com.jyxd.web.util.HttpCode;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
@@ -11,12 +13,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -28,6 +32,8 @@ public class VitalSignController {
 
     @Autowired
     private VitalSignService vitalSignService;
+    @Autowired
+    private PatientScoreItemService patientScoreItemService;
 
     /**
      * 增加一条生命体征表记录
@@ -311,7 +317,7 @@ public class VitalSignController {
      */
     @RequestMapping(value = "/saveData")
     @ResponseBody
-    public String saveData(@RequestBody VitalSign vitalSign, HttpSession session){
+    public String saveData(@RequestBody VitalSign vitalSign,@RequestBody(required = false) Map<String,Object> glasgowMap, HttpSession session){
         JSONObject json=new JSONObject();
         json.put("code", HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
@@ -324,6 +330,13 @@ public class VitalSignController {
                 map.put("dataTime",format.format(vitalSign.getDataTime()));
                 map.put("code",vitalSign.getCode());
                 map.put("patientId",vitalSign.getPatientId());
+                if (StringUtils.equals(vitalSign.getCode(),"glasgow")){
+                    if (CollectionUtils.isEmpty(map)){
+                        json.put("msg","添加glasgow评分失败，评分数据不能为空");
+                        return json.toString();
+                    }
+                    saveGlasgow(glasgowMap,(User)session.getAttribute("user"));
+                }
                 //首先根据时间和code 和 病人主键id查询对象 是否已经有数据 如果有则编辑
                 VitalSign data=vitalSignService.queryDataByTimeAndCode(map);
                 if(data!=null){
@@ -351,4 +364,13 @@ public class VitalSignController {
         return json.toString();
     }
 
+    /**
+     * 新增glasgow评分
+     * @param map
+     * @param user
+     * @throws ParseException
+     */
+    private void saveGlasgow(Map<String,Object> map,User user) throws ParseException {
+        patientScoreItemService.insertPatientScore(map,user);
+    }
 }

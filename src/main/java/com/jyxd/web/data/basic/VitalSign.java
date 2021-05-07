@@ -93,6 +93,7 @@ public class VitalSign implements Serializable {
      *  吸氧-L/分：inhaleOxygenConcentration
      *  吸氧-氧浓度：inhaleOxygenConcentration2
      *  签名：signature）
+     *  glasgow昏迷评分：glasgow
      */
     @Column(name = "code")
     private String code;

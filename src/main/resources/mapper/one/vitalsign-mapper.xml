@@ -173,6 +173,7 @@
             IFNULL(max(CASE WHEN tvs.code='epap' THEN tvs.content END),"") AS epap,
             IFNULL(max(CASE WHEN tvs.code='bpm' THEN tvs.content END),"") AS bpm,
             IFNULL(max(CASE WHEN tvs.code='ie' THEN tvs.content END),"") AS ie,
+            IFNULL(max(CASE WHEN tvs.code='glasgow' THEN tvs.content END),"") AS glasgow,
             IFNULL(max(CASE WHEN tvs.code='breathSoundLeft' THEN dcii.common_item_name END),"") AS breathSoundLeft,
             IFNULL(max(CASE WHEN tvs.code='breathSoundRight' THEN dcij.common_item_name END),"") AS breathSoundRight,
             IFNULL(max(CASE WHEN tvs.code='inhaleOxygenStyle' THEN dcik.common_item_name END),"") AS inhaleOxygenStyle,
