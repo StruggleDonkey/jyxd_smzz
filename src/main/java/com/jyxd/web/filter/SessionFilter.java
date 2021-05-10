@@ -18,7 +18,7 @@ public class SessionFilter implements Filter {
 
     //不需要登录就可以访问的路径(比如:注册登录等)
     String[] includeUrls = new String[]{"/login","/user/login","/download/plugin","/user/logout","/getHisMessage","/getHisPatientMessage",
-            "/patientRegistry","/hip"};
+            "/patientRegistry","/hip","/cxfServlet/webservice","/jyxd/hisService"};
 
 
     @Override
@@ -38,12 +38,12 @@ public class SessionFilter implements Filter {
         //((HttpServletResponse)servletResponse).setHeader("Access-Control-Allow-Origin", "*");
         response.setContentType("text/html;charset=utf-8");
 
-        System.out.println("filter url:"+uri);
         //是否需要过滤
         boolean needFilter = isNeedFilter(uri);
 
 
         if (!needFilter) { //不需要过滤直接传给下一个过滤器
+       //if (true) { //不需要过滤直接传给下一个过滤器
             filterChain.doFilter(servletRequest, servletResponse);
         } else { //需要过滤器
             // session中包含user对象,则是登录状态

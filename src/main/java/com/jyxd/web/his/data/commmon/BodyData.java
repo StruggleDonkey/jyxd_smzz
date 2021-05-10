@@ -1,12 +1,21 @@
 package com.jyxd.web.his.data.commmon;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import lombok.Data;
 
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
+//防止重复序列化
+@Data
 public class BodyData {
 
-    public String ResultCode;//响应码 0：成功 -1:失败
-
-    public String ResultContent;//响应信息
+    @JsonProperty("ResultCode")
+    @JsonIgnore
+    private String ResultCode;//响应码 0：成功 -1:失败
+    @JsonIgnore
+    private String ResultContent;//响应信息
 
     public BodyData() {
     }
@@ -16,21 +25,4 @@ public class BodyData {
         ResultContent = resultContent;
     }
 
-    @JacksonXmlProperty(localName = "ResultCode")
-    public String getResultCode() {
-        return ResultCode;
-    }
-
-    public void setResultCode(String resultCode) {
-        ResultCode = resultCode;
-    }
-
-    @JacksonXmlProperty(localName = "ResultContent")
-    public String getResultContent() {
-        return ResultContent;
-    }
-
-    public void setResultContent(String resultContent) {
-        ResultContent = resultContent;
-    }
 }
