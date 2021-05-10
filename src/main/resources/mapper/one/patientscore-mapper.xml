@@ -253,4 +253,31 @@
         <if test="size != null ">#{size}</if>
     </select>
 
+    <select id="queryDateByTimeAndTypeAndPatientId" resultMap="patientScoreMap" parameterType="java.util.Map">
+        select
+        <include refid="patientScore_colums"></include>
+        from
+        p_patient_score
+        where
+        1=1
+        and  status != -1
+        <if test="scoreTime != null and scoreTime != ''">
+            AND date_format(
+            score_time,
+            '%Y-%m-%d %H:%i:%s'
+            ) = date_format(
+            #{scoreTime},
+            '%Y-%m-%d %H:%i:%s'
+            )
+        </if>
+        <if test="type != null and type != ''">
+            and  type =#{type}
+        </if>
+        <if test="patientId != null and patientId != ''">
+            and patient_id=#{patientId}
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
 </mapper>

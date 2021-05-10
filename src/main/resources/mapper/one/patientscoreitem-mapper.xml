@@ -130,4 +130,9 @@
         delete from p_patient_score_item
         where id =#{id}
     </delete>
+
+    <delete id="deleteDtaByPatientScoreId" parameterType="java.lang.String">
+        delete from p_patient_score_item
+        where patient_score_id =#{patientScoreId}
+    </delete>
 </mapper>

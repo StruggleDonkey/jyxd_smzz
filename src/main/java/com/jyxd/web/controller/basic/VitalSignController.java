@@ -317,7 +317,7 @@ public class VitalSignController {
      */
     @RequestMapping(value = "/saveData")
     @ResponseBody
-    public String saveData(@RequestBody VitalSign vitalSign,@RequestBody(required = false) Map<String,Object> glasgowMap, HttpSession session){
+    public String saveData(@RequestBody VitalSign vitalSign, HttpSession session){
         JSONObject json=new JSONObject();
         json.put("code", HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
@@ -330,18 +330,19 @@ public class VitalSignController {
                 map.put("dataTime",format.format(vitalSign.getDataTime()));
                 map.put("code",vitalSign.getCode());
                 map.put("patientId",vitalSign.getPatientId());
-                if (StringUtils.equals(vitalSign.getCode(),"glasgow")){
-                    if (CollectionUtils.isEmpty(map)){
-                        json.put("msg","添加glasgow评分失败，评分数据不能为空");
-                        return json.toString();
-                    }
-                    saveGlasgow(glasgowMap,(User)session.getAttribute("user"));
-                }
+
                 //首先根据时间和code 和 病人主键id查询对象 是否已经有数据 如果有则编辑
                 VitalSign data=vitalSignService.queryDataByTimeAndCode(map);
                 if(data!=null){
                     data.setContent(vitalSign.getContent());
                     data.setUpdateTime(new Date());
+                    if (StringUtils.equals(vitalSign.getCode(),"glasgow")){
+                        if (CollectionUtils.isEmpty(vitalSign.getGlasgowMap())){
+                            json.put("msg","添加glasgow评分失败，评分数据不能为空");
+                            return json.toString();
+                        }
+                        saveGlasgow(vitalSign.getGlasgowMap(),(User)session.getAttribute("user"));
+                    }
                     vitalSignService.update(data);
                     json.put("code",HttpCode.OK_CODE.getCode());
                     json.put("msg","添加成功");
@@ -350,6 +351,13 @@ public class VitalSignController {
                     vitalSign.setCreateTime(new Date());
                     vitalSign.setUpdateTime(new Date());
                     vitalSign.setStatus(1);
+                    if (StringUtils.equals(vitalSign.getCode(),"glasgow")){
+                        if (CollectionUtils.isEmpty(vitalSign.getGlasgowMap())){
+                            json.put("msg","添加glasgow评分失败，评分数据不能为空");
+                            return json.toString();
+                        }
+                        saveGlasgow(vitalSign.getGlasgowMap(),(User)session.getAttribute("user"));
+                    }
                     vitalSignService.insert(vitalSign);
                     json.put("code",HttpCode.OK_CODE.getCode());
                     json.put("msg","添加成功");
@@ -360,6 +368,7 @@ public class VitalSignController {
             }
         }catch (Exception e){
             logger.info(":"+e);
+            e.printStackTrace();
         }
         return json.toString();
     }

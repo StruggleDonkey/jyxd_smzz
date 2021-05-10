@@ -139,4 +139,9 @@ public class InputAmount implements Serializable {
     @Column(name = "check_signature")
     private String checkSignature;
 
+    /**
+     * 病情记录
+     */
+    @Column(name = "pathography")
+    private String pathography;
 }

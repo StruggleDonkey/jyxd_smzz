@@ -15,9 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Transactional
@@ -89,44 +87,17 @@ public class PatientScoreItemService {
      * @throws ParseException
      */
     public void insertPatientScore(Map<String,Object> map,User user) throws ParseException {
-        PatientScore patientScore=new PatientScore();
+        //PatientScore patientScore=new PatientScore();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        patientScore.setId(UUIDUtil.getUUID());
-        patientScore.setCreateTime(new Date());
-        patientScore.setScoreTime(format.parse(map.get("scoreTime").toString()));
-        patientScore.setScore((int)map.get("score"));
-        patientScore.setStatus(1);
-       // User user=(User) session.getAttribute("user");
-        if(user!=null){
-            patientScore.setOperatorCode(user.getLoginName());
+        PatientScore patientScore = patientScoreDao.queryDateByTimeAndTypeAndPatientId(map);
+        if (Objects.nonNull(patientScore)){
+            patientScoreDao.update(assignmentData(patientScore,map,user));
+            patientScoreItemDao.deleteDtaByPatientScoreId(patientScore.getId());
+        }else {
+            patientScore = new PatientScore();
+            patientScore.setId(UUIDUtil.getUUID());
+            patientScoreDao.insert(assignmentData(patientScore,map,user));
         }
-        patientScore.setSignature(map.get("signature").toString());
-        patientScore.setVisitId(map.get("visitId").toString());
-        patientScore.setVisitCode(map.get("visitCode").toString());
-        patientScore.setType(map.get("type").toString());
-        patientScore.setPatientId(map.get("patientId").toString());
-        if(StringUtils.isNotEmpty(map.get("reportTime").toString())){
-            patientScore.setReportTime(format.parse(map.get("reportTime").toString()));
-        }
-        if(StringUtils.isNotEmpty(map.get("assessmentTime").toString())){
-            patientScore.setAssessmentTime(format.parse(map.get("assessmentTime").toString()));
-        }
-        if(StringUtils.isNotEmpty(map.get("nursingStep").toString())){
-            patientScore.setNursingStep(map.get("nursingStep").toString());
-        }
-        if(StringUtils.isNotEmpty(map.get("otherStep").toString())){
-            patientScore.setOtherStep(map.get("otherStep").toString());
-        }
-        if(StringUtils.isNotEmpty(map.get("mortalityRate").toString())){
-            patientScore.setMortalityRate(map.get("mortalityRate").toString());
-        }
-        if(StringUtils.isNotEmpty(map.get("extendColumn").toString())){
-            patientScore.setExtendColumn(map.get("extendColumn").toString());
-        }
-        if(StringUtils.isNotEmpty(map.get("scoreKnowledgeId").toString())){
-            patientScore.setScoreKnowledgeId(map.get("scoreKnowledgeId").toString());
-        }
-        patientScoreDao.insert(patientScore);
         //新增病人评分明细记录
         if(map.get("list")!=null){
             JSONArray array=JSONArray.fromObject(map.get("list").toString());
@@ -148,5 +119,52 @@ public class PatientScoreItemService {
                 insert(patientScoreItem);
             }
         }
+    }
+
+    /**
+     * 赋值修改或者新增的数据
+     * @param patientScore
+     * @param map
+     * @param user
+     * @return
+     * @throws ParseException
+     */
+    private PatientScore assignmentData(PatientScore patientScore,Map<String,Object> map,User user) throws ParseException {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        patientScore.setCreateTime(new Date());
+        patientScore.setScoreTime(format.parse(map.get("scoreTime").toString()));
+        patientScore.setScore((int)map.get("score"));
+        patientScore.setStatus(1);
+        // User user=(User) session.getAttribute("user");
+        if(user!=null){
+            patientScore.setOperatorCode(user.getLoginName());
+        }
+        patientScore.setSignature(map.get("signature").toString());
+        patientScore.setVisitId(map.get("visitId").toString());
+        patientScore.setVisitCode(map.get("visitCode").toString());
+        patientScore.setType(map.get("type").toString());
+        patientScore.setPatientId(map.get("patientId").toString());
+        if(map.containsKey("reportTime") && StringUtils.isNotEmpty(map.get("reportTime").toString())){
+            patientScore.setReportTime(format.parse(map.get("reportTime").toString()));
+        }
+        if(map.containsKey("assessmentTime") && StringUtils.isNotEmpty(map.get("assessmentTime").toString())){
+            patientScore.setAssessmentTime(format.parse(map.get("assessmentTime").toString()));
+        }
+        if(map.containsKey("nursingStep") && StringUtils.isNotEmpty(map.get("nursingStep").toString())){
+            patientScore.setNursingStep(map.get("nursingStep").toString());
+        }
+        if(map.containsKey("otherStep") && StringUtils.isNotEmpty(map.get("otherStep").toString())){
+            patientScore.setOtherStep(map.get("otherStep").toString());
+        }
+        if(map.containsKey("mortalityRate") && StringUtils.isNotEmpty(map.get("mortalityRate").toString())){
+            patientScore.setMortalityRate(map.get("mortalityRate").toString());
+        }
+        if(map.containsKey("extendColumn") && StringUtils.isNotEmpty(map.get("extendColumn").toString())){
+            patientScore.setExtendColumn(map.get("extendColumn").toString());
+        }
+        if(map.containsKey("scoreKnowledgeId") && StringUtils.isNotEmpty(map.get("scoreKnowledgeId").toString())){
+            patientScore.setScoreKnowledgeId(map.get("scoreKnowledgeId").toString());
+        }
+        return patientScore;
     }
 }

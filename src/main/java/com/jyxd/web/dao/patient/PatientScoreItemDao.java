@@ -71,4 +71,11 @@ public interface PatientScoreItemDao {
      * @return
      */
      boolean deleteData(String id);
+
+    /**
+     * 根据评分主键id删除病人评分明细表
+     * @param patientScoreId
+     * @return
+     */
+     boolean deleteDtaByPatientScoreId(String patientScoreId);
 }

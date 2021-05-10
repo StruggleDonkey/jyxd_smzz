@@ -214,7 +214,6 @@ public class OutputAmountController {
                     }
                     if(map.containsKey("checkSignature") && StringUtils.isNotEmpty(map.get("checkSignature").toString())){
                         outputAmount.setCheckSignature(map.get("checkSignature").toString());
-                        outputAmount.setCheckSignature(map.get("checkSignature").toString());
                     }
                     if(map.containsKey("dosageUnits") && StringUtils.isNotEmpty(map.get("dosageUnits").toString())){
                         outputAmount.setDosageUnits(map.get("dosageUnits").toString());

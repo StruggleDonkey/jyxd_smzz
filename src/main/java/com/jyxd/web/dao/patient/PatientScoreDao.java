@@ -85,4 +85,11 @@ public interface PatientScoreDao {
      * @return
      */
      List<Map<String,Object>> getPatientScoreAndLevel(Map<String,Object> map);
+
+    /**
+     * 根据时间类型患者id查询一条时间
+     * @param map
+     * @return
+     */
+     PatientScore queryDateByTimeAndTypeAndPatientId(Map<String,Object> map);
 }

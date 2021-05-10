@@ -3,10 +3,12 @@ package com.jyxd.web.data.basic;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * 生命体征表
@@ -127,4 +129,7 @@ public class VitalSign implements Serializable {
      */
     @Column(name = "update_time")
     private Date updateTime;
+
+    @Transient
+    private Map<String,Object> glasgowMap;
 }
