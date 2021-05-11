@@ -2,27 +2,39 @@ package com.jyxd.web.his.data.commmon;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
-@JacksonXmlRootElement(localName ="Response")
+import javax.xml.bind.annotation.XmlElement;
+
+@JacksonXmlRootElement(localName = "Response")
 public class CommonResponse {
 
-    private HeaderData Header;
+    private HeaderData header;
 
-    private BodyData Body;
+    private BodyData body;
 
+    public CommonResponse() {
+    }
+
+    public CommonResponse(HeaderData header, BodyData body) {
+        this.header = header;
+        this.body = body;
+    }
+
+    @XmlElement(name = "Header")
     public HeaderData getHeader() {
-        return Header;
+        return header;
     }
 
     public void setHeader(HeaderData header) {
-        Header = header;
+        this.header = header;
     }
 
+    @XmlElement(name = "Body")
     public BodyData getBody() {
-        return Body;
+        return body;
     }
 
     public void setBody(BodyData body) {
-        Body = body;
+        this.body = body;
     }
 
 }

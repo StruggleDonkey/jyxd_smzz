@@ -10,11 +10,12 @@ import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.jws.WebService;
+import java.text.ParseException;
 
 @WebService(targetNamespace = "http://xsdebservice.betaone.com/")
 public interface HisWebService {
 
     @WebResult(name = "Response")
     @WebMethod(operationName = "patientRegistry")
-    CommonResponse patientRegistry(@WebParam(name = "action") String action, @WebParam(name = "patientRegistryRt") PatientRegistryRt patientRegistryRt);
+    CommonResponse hisService(@WebParam(name = "action") String action, @WebParam(name = "hisRequestXml") String hisRequestXml) throws ParseException;
 }

@@ -3,41 +3,42 @@ package com.jyxd.web.his.data.commmon;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import lombok.Data;
+
+import javax.xml.bind.annotation.XmlElement;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
 //防止重复序列化
 public class HeaderData {
 
+    private String sourceSystem;//消息来源
 
-    public String SourceSystem;//消息来源
-
-    public String MessageID;//消息ID
+    private String messageID;//消息ID
 
 
     public HeaderData() {
     }
 
     public HeaderData(String sourceSystem, String messageID) {
-        SourceSystem = sourceSystem;
-        MessageID = messageID;
+        this.sourceSystem = sourceSystem;
+        this.messageID = messageID;
     }
 
-    @JacksonXmlProperty(localName = "SourceSystem")
+    @XmlElement(name = "SourceSystem")
     public String getSourceSystem() {
-        return SourceSystem;
+        return sourceSystem;
     }
 
     public void setSourceSystem(String sourceSystem) {
-        SourceSystem = sourceSystem;
+        this.sourceSystem = sourceSystem;
     }
 
-    @JacksonXmlProperty(localName = "MessageID")
+    @XmlElement(name = "MessageID")
     public String getMessageID() {
-        return MessageID;
+        return messageID;
     }
 
     public void setMessageID(String messageID) {
-        MessageID = messageID;
+        this.messageID = messageID;
     }
-
 }
