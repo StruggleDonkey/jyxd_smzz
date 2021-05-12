@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyxd.web.dao.basic.CustomFieldDao">
+
+    <resultMap id="customFieldMap" type="com.jyxd.web.data.basic.CustomField">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="filed_name" property="filedName" jdbcType="VARCHAR"/>
+        <result column="filed_code" property="filedCode" jdbcType="VARCHAR"/>
+        <result column="associated_table" property="associatedTable" jdbcType="VARCHAR"/>
+        <result column="operator_code" property="operatorCode" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="DATE"/>
+    </resultMap>
+    
+    <sql id="customField_colums">id,filed_name,filed_code,associated_table,operator_code,status,create_time</sql>
+
+    <sql id="customField_propertys">#{id},#{filedName},#{filedCode},#{associatedTable},#{operatorCode},#{status},#{createTime}</sql>
+
+    <sql id="customField_update">filed_name=#{filedName},filed_code=#{filedCode},associated_table=#{associatedTable},operator_code=#{operatorCode},
+                              status=#{status},create_time=#{createTime}</sql>
+
+    <insert id="insert">
+        insert into
+        table_custom_field(<include refid="customField_colums"></include>)
+        values (<include refid="customField_propertys"></include>)
+    </insert>
+
+    <update id="update" parameterType="com.jyxd.web.data.basic.CustomField" >
+        update
+        table_custom_field
+        set <include refid="customField_update"></include>
+        where
+          id=#{id}
+    </update>
+
+    <select id="queryData" resultMap="customFieldMap" parameterType="java.lang.String">
+        select
+          <include refid="customField_colums"></include>
+        from
+        table_custom_field
+        where
+          id=#{id}
+    </select>
+
+    <select id="queryList" resultMap="customFieldMap">
+        select
+          <include refid="customField_colums"></include>
+        from
+        table_custom_field
+        where
+          1=1
+        and  status != -1
+        <if test="associatedTable != null and associatedTable != ''">
+            and   associated_table= #{associatedTable}
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+          count(id)
+        from
+        table_custom_field
+        where
+        1=1
+        and  status != -1
+        <if test="associatedTable != null and associatedTable != ''">
+            and   associated_table= #{associatedTable}
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
+
+</mapper>

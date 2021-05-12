@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyxd.web.dao.basic.InOutAmountDao">
+
+    <resultMap id="inOutAmountMap" type="com.jyxd.web.data.basic.InOutAmount">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="visit_id" property="visitId" jdbcType="VARCHAR"/>
+        <result column="visit_code" property="visitCode" jdbcType="VARCHAR"/>
+        <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
+        <result column="data_time" property="dataTime" jdbcType="DATE"/>
+        <result column="order_code" property="orderCode" jdbcType="VARCHAR"/>
+        <result column="order_no" property="orderNo" jdbcType="VARCHAR"/>
+        <result column="order_sub_no" property="orderSubNo" jdbcType="VARCHAR"/>
+        <result column="order_name" property="orderName" jdbcType="VARCHAR"/>
+        <result column="dosage" property="dosage" jdbcType="VARCHAR"/>
+        <result column="allowance_dosage" property="allowanceDosage" jdbcType="VARCHAR"/>
+        <result column="piss" property="piss" jdbcType="VARCHAR"/>
+        <result column="faces" property="faces" jdbcType="VARCHAR"/>
+        <result column="drainage" property="drainage" jdbcType="VARCHAR"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="signature" property="signature" jdbcType="VARCHAR"/>
+        <result column="check_signature" property="checkSignature" jdbcType="VARCHAR"/>
+        <result column="illness_records" property="illnessRecords" jdbcType="VARCHAR"/>
+        <result column="balance" property="balance" jdbcType="VARCHAR"/>
+        <result column="operator_code" property="operatorCode" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="type" property="type" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="DATE"/>
+    </resultMap>
+    
+    <sql id="inOutAmount_colums">id,visit_id,visit_code,patient_id,data_time,order_code,order_no,order_sub_no,order_name,dosage,allowance_dosage,
+                                   piss,faces,drainage,remark,signature,check_signature,illness_records,balance,operator_code,status,type,create_time</sql>
+
+    <sql id="inOutAmount_propertys">#{id},#{visitId},#{visitCode},#{patientId},#{dataTime},#{orderCode},#{orderNo},
+                                    #{orderSubNo},#{orderName},#{dosage},#{allowanceDosage},#{piss},#{faces},#{drainage},#{remark},
+                                       #{signature},#{checkSignature},#{illnessRecords},#{balance},#{operatorCode},#{status},#{type},#{createTime}</sql>
+
+    <sql id="inOutAmount_update">visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},data_time=#{dataTime},order_code=#{orderCode},
+                              order_no=#{orderNo},order_sub_no=#{orderSubNo},order_name=#{orderName},dosage=#{dosage},allowance_dosage=#{allowanceDosage},
+                              piss=#{piss},faces=#{faces},drainage=#{drainage},remark=#{remark},signature=#{signature},check_signature=#{checkSignature},
+                              illness_records=#{illnessRecords},balance=#{balance},operator_code=#{operatorCode},status=#{status},type=#{type},create_time=#{createTime}</sql>
+
+    <insert id="insert">
+        insert into
+        table_in_out_amount(<include refid="inOutAmount_colums"></include>)
+        values (<include refid="inOutAmount_propertys"></include>)
+    </insert>
+
+    <update id="update" parameterType="com.jyxd.web.data.basic.InOutAmount" >
+        update
+        table_in_out_amount
+        set <include refid="inOutAmount_update"></include>
+        where
+          id=#{id}
+    </update>
+
+    <select id="queryData" resultMap="inOutAmountMap" parameterType="java.lang.String">
+        select
+          <include refid="inOutAmount_colums"></include>
+        from
+        table_in_out_amount
+        where
+          id=#{id}
+    </select>
+
+    <select id="queryList" resultMap="inOutAmountMap">
+        select
+          <include refid="inOutAmount_colums"></include>
+        from
+        table_in_out_amount
+        where
+          1=1
+        and  status != -1
+        <if test="associatedTable != null and associatedTable != ''">
+            and   associated_table= #{associatedTable}
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+          count(id)
+        from
+        table_in_out_amount
+        where
+        1=1
+        and  status != -1
+        <if test="associatedTable != null and associatedTable != ''">
+            and   associated_table= #{associatedTable}
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
+
+    <select id="getInOutAmountList" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        IFNULL(tioa.id,"") as id,
+        IFNULL(tioa.visit_id,"") as visit_id,
+        IFNULL(tioa.visit_code,"") as visit_code,
+        IFNULL(tioa.patient_id,"") as patient_id,
+        IFNULL(tioa.order_code,"") as order_code,
+        IFNULL(tioa.order_no,"") as order_no,
+        IFNULL(tioa.order_sub_no,"") as order_sub_no,
+        IFNULL(tioa.order_name,"") as order_name,
+        IFNULL(tioa.dosage,"") as dosage,
+        IFNULL(tioa.allowance_dosage,"") as allowance_dosage,
+        IFNULL(tioa.piss,"") as piss,
+        IFNULL(tioa.faces,"") as faces,
+        IFNULL(tioa.drainage,"") as drainage,
+        IFNULL(tioa.remark,"") as remark,
+        IFNULL(tioa.illness_records,"") as illness_records,
+        IFNULL(tioa.balance,"") as balance,
+        IFNULL(date_format(tioa.data_time, '%Y-%m-%d'),"") as data_date,
+        IFNULL(date_format(tioa.data_time, '%H:%i'),"") as data_time,
+        IFNULL(date_format(tioa.create_time, '%Y-%m-%d %H:%i:%s'),"") as create_time,
+        IFNULL(tua.user_name,"") as operator_code,
+        IFNULL(tub.user_name,"") as signature,
+        IFNULL(tuc.user_name,"") as check_signature,
+        tioa.status as status,
+        tioa.type as type,
+        <foreach collection="list" item="customField" index="index" open="" separator="," close="">
+            IFNULL(tuc.${customField.filedCode},"") as #{customField.filedName}
+        </foreach>
+        FROM
+        table_in_out_amount tioa
+        LEFT JOIN table_user tua ON tua.login_name=tioa.operator_code
+        LEFT JOIN table_user tub ON tub.login_name=tioa.signature
+        LEFT JOIN table_user tuc ON tuc.login_name=tioa.check_signature
+        LEFT JOIN table_custom_content tco ON tco.patient_id=toa.patient_id
+        AND date_format(toa.data_time, '%Y-%m-%d %H:%i:%s')=date_format(tco.data_time, '%Y-%m-%d %H:%i:%s')
+        AND tco.associated_table='table_in_out_amount'
+        WHERE 1=1
+        AND tioa.status!=-1
+        <if test="status != null ">
+            AND tioa.status= #{status}
+        </if>
+        <if test="patientId != null and patientId != ''">
+            AND tioa.patient_id = #{patientId}
+        </if>
+        <if test="dataTime != null and dataTime != ''">
+            AND date_format(tioa.data_time, '%Y-%m-%d')=#{dataTime}
+        </if>
+        order by tioa.data_time,tioa.type
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="getInOutAmountNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        SELECT
+        count(tioa.id)
+        FROM
+        table_in_out_amount tioa
+        LEFT JOIN table_user tua ON tua.login_name=tioa.operator_code
+        LEFT JOIN table_user tub ON tub.login_name=tioa.signature
+        LEFT JOIN table_user tuc ON tuc.login_name=tioa.check_signature
+        LEFT JOIN table_custom_content tco ON tco.patient_id=toa.patient_id
+        AND date_format(toa.data_time, '%Y-%m-%d %H:%i:%s')=date_format(tco.data_time, '%Y-%m-%d %H:%i:%s')
+        AND tco.associated_table='table_in_out_amount'
+        WHERE 1=1
+        AND tioa.status!=-1
+        <if test="status != null ">
+            AND tioa.status= #{status}
+        </if>
+        <if test="patientId != null and patientId != ''">
+            AND tioa.patient_id = #{patientId}
+        </if>
+        <if test="dataTime != null and dataTime != ''">
+            AND date_format(tioa.data_time, '%Y-%m-%d')=#{dataTime}
+        </if>
+    </select>
+
+</mapper>

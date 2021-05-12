@@ -360,4 +360,26 @@
         AND tia.id=#{id}
     </select>
 
+    <select id="getInAndOutList" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        IFNULL(toa.visit_id,"") as visit_id,
+        IFNULL(toa.visit_code,"") as visit_code,
+        IFNULL(toa.patient_id,"") as patient_id,
+        IFNULL(toa.piss,"") as piss,
+        IFNULL(toa.faces,"") as faces,
+        IFNULL(toa.drainage,"") as drainage,
+        IFNULL(date_format(toa.data_time, '%Y-%m-%d %H:%i:%s'),"") as data_time,
+        <foreach collection="list" item="customField" index="index" open="" separator="," close="">
+            IFNULL(tuc.${customField.filedCode},"") as #{customField.filedName}
+        </foreach>
+
+        FROM
+        table_output_amount toa
+        LEFT JOIN table_custom_content tco ON tco.patient_id=toa.patient_id AND date_format(toa.data_time, '%Y-%m-%d %H:%i:%s')=date_format(tco.data_time, '%Y-%m-%d %H:%i:%s')
+        left join table_custom_content tuc on tuc.patient_id=toa.patient_id AND date_format(toa.data_time, '%Y-%m-%d %H:%i:%s')=date_format(tuc.data_time, '%Y-%m-%d %H:%i:%s')
+        WHERE
+        toa.patient_id = '5aec44cbd0df4a089d16c6eb54f753d5'
+
+    </select>
+
 </mapper>

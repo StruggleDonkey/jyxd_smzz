@@ -9,12 +9,12 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 入量表
+ * 出入量表（二表合一）
  */
 @Entity
-@Table(name = "table_input_amount")
+@Table(name = "table_in_out_amount")
 @Data
-public class InputAmount implements Serializable {
+public class InOutAmount implements Serializable {
 
     /**
      * 序列
@@ -56,12 +56,6 @@ public class InputAmount implements Serializable {
     private Date dataTime;
 
     /**
-     * 入量类型
-     */
-    @Column(name = "order_type")
-    private String orderType;
-
-    /**
      * 医嘱编码（同步时使用）
      */
     @Column(name = "order_code")
@@ -80,58 +74,46 @@ public class InputAmount implements Serializable {
     private String orderSubNo;
 
     /**
-     * 医嘱名称
+     * 入量-药物内容
      */
     @Column(name = "order_name")
     private String orderName;
 
     /**
-     * 剂量
+     * 入量-实入量
      */
     @Column(name = "dosage")
     private String dosage;
 
     /**
-     * 单位
+     * 入量-余量
      */
-    @Column(name = "dosage_units")
-    private String dosageUnits;
+    @Column(name = "allowance_dosage")
+    private String allowanceDosage;
 
     /**
-     * 速度
+     * 出量-尿
      */
-    @Column(name = "speed")
-    private String speed;
+    @Column(name = "piss")
+    private String piss;
 
     /**
-     * 创建时间
+     * 出量-排泄物（便）
      */
-    @Column(name = "create_time")
-    private Date createTime;
+    @Column(name = "faces")
+    private String feces;
 
     /**
-     * 操作人code
+     * 出量-引流量
      */
-    @Column(name = "operator_code")
-    private String operatorCode;
-
-    /**
-     * 状态（0：禁用 1：正常 -1：删除）
-     */
-    @Column(name = "status")
-    private int status;
+    @Column(name = "drainage")
+    private String drainage;
 
     /**
      * 医嘱嘱托
      */
     @Column(name = "remark")
     private String remark;
-
-    /**
-     * 给药途径
-     */
-    @Column(name = "use_mode")
-    private String useMode;
 
     /**
      * 核对人签名（）
@@ -157,4 +139,27 @@ public class InputAmount implements Serializable {
     @Column(name = "balance")
     private String balance;
 
+    /**
+     * 创建时间
+     */
+    @Column(name = "create_time")
+    private Date createTime;
+
+    /**
+     * 操作人code
+     */
+    @Column(name = "operator_code")
+    private String operatorCode;
+
+    /**
+     * 状态（0：禁用 1：正常 -1：删除）
+     */
+    @Column(name = "status")
+    private int status;
+
+    /**
+     * 类型（1：主医嘱同步数据  2：子医嘱同步数据）
+     */
+    @Column(name = "type")
+    private int type;
 }
