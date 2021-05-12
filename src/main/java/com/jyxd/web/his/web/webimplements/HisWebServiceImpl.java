@@ -141,15 +141,15 @@ public class HisWebServiceImpl implements HisWebService {
             logger.error("该患者不存在系统，医嘱接收失败");
             return false;
         }
-        List<Object> oeoriInfoMapList = castList(ordersRtMap.get("OEORIInfoList"), Object.class);
+        List<Object> oEORIInfoMapList = castList(ordersRtMap.get("OEORIInfoList"), Object.class);
         AtomicBoolean isSaveData = new AtomicBoolean(false);
-        oeoriInfoMapList.forEach(oeoriInfo -> {
+        oEORIInfoMapList.forEach(oEORIInfo -> {
             switch (updateOrAdd) {
                 case "add":
-                    isSaveData.set(saveMedOrderExec(ordersRtMap, oeoriInfo, patient.getId()));
+                    isSaveData.set(saveMedOrderExec(ordersRtMap, oEORIInfo, patient.getId()));
                     break;
                 case "update":
-                    isSaveData.set(updateOrderData(oeoriInfo));
+                    isSaveData.set(updateOrderData(oEORIInfo));
                     break;
                 default:
                     break;
@@ -161,19 +161,19 @@ public class HisWebServiceImpl implements HisWebService {
     /**
      * 跟新医嘱信息到数据库
      *
-     * @param oeoriInfo
+     * @param oEORIInfo
      * @return
      */
-    private boolean updateOrderData(Object oeoriInfo) {
-        Map<String, Object> oeoriInfoMap = (Map) JSON.parse(String.valueOf(oeoriInfo));
-        MedOrderExec medOrderExec = medOrderExecService.queryDataByOrderCode(String.valueOf(oeoriInfoMap.get("OEORIOrderItemID")));
+    private boolean updateOrderData(Object oEORIInfo) {
+        Map<String, Object> oEORIInfoMap = (Map) JSON.parse(String.valueOf(oEORIInfo));
+        MedOrderExec medOrderExec = medOrderExecService.queryDataByOrderCode(String.valueOf(oEORIInfoMap.get("OEORIOrderItemID")));
         if (Objects.isNull(medOrderExec)) {
             logger.error("医嘱不存在，修改失败");
             return false;
         }
-        medOrderExec.setOrderStatus(Integer.valueOf(String.valueOf(oeoriInfoMap.get("OEORIStatusCode"))));//医嘱状态代码  执行状态，0：未执行；1：执行中；2：执行完毕；3：交班
+        medOrderExec.setOrderStatus(Integer.valueOf(String.valueOf(oEORIInfoMap.get("OEORIStatusCode"))));//医嘱状态代码  执行状态，0：未执行；1：执行中；2：执行完毕；3：交班
         //TODO 父医嘱ID目前不是特别确定
-        medOrderExec.setOrderSubNo(String.valueOf(oeoriInfoMap.get("OEORIParentOrderID")));
+        medOrderExec.setOrderSubNo(String.valueOf(oEORIInfoMap.get("OEORIParentOrderID")));
         return medOrderExecService.update(medOrderExec);
     }
 
@@ -192,13 +192,13 @@ public class HisWebServiceImpl implements HisWebService {
      * 保存医嘱信息到数据库
      *
      * @param addOrdersRtMap
-     * @param oeoriInfo
+     * @param oEORIInfo
      * @param patientId
      * @return
      */
-    private boolean saveMedOrderExec(Map addOrdersRtMap, Object oeoriInfo, String patientId) {
+    private boolean saveMedOrderExec(Map addOrdersRtMap, Object oEORIInfo, String patientId) {
         try {
-            Map<String, Object> oeoriInfoMap = (Map) JSON.parse(String.valueOf(oeoriInfo));
+            Map<String, Object> oEORIInfoMap = (Map) JSON.parse(String.valueOf(oEORIInfo));
             MedOrderExec medOrderExec = new MedOrderExec();
             medOrderExec.setId(UUIDUtil.getUUID());
             medOrderExec.setVisitId(String.valueOf(addOrdersRtMap.get("PATPatientID")));//addOrdersRt
@@ -207,13 +207,13 @@ public class HisWebServiceImpl implements HisWebService {
             medOrderExec.setCreateTime(new Date());
 
             //TODO 医嘱id目前不是特别确定
-            medOrderExec.setOrderCode(String.valueOf(oeoriInfoMap.get("OEORIOrderItemID")));
-            medOrderExec.setOrderNo(String.valueOf(oeoriInfoMap.get("OEORIOEORIDR")));
-            medOrderExec.setOrderSubNo(String.valueOf(oeoriInfoMap.get("OEORIParentOrderID")));
+            medOrderExec.setOrderCode(String.valueOf(oEORIInfoMap.get("OEORIOrderItemID")));
+            medOrderExec.setOrderNo(String.valueOf(oEORIInfoMap.get("OEORIOEORIDR")));
+            medOrderExec.setOrderSubNo(String.valueOf(oEORIInfoMap.get("OEORIParentOrderID")));
 
-            medOrderExec.setOrderName(String.valueOf(oeoriInfoMap.get("OEORIARCItmMastDesc")));//医嘱项目描述
-            medOrderExec.setSpecs(String.valueOf(oeoriInfoMap.get("OEORISpecification")));//医嘱规格
-            switch (String.valueOf(oeoriInfoMap.get("OEORIClass"))) {//医嘱类别代码 检查类 西药类 中药类
+            medOrderExec.setOrderName(String.valueOf(oEORIInfoMap.get("OEORIARCItmMastDesc")));//医嘱项目描述
+            medOrderExec.setSpecs(String.valueOf(oEORIInfoMap.get("OEORISpecification")));//医嘱规格
+            switch (String.valueOf(oEORIInfoMap.get("OEORIClass"))) {//医嘱类别代码 检查类 西药类 中药类
                 case "检查类":
                     medOrderExec.setDrugType(0);//是否为药嘱（0：否  1：是）
                     break;
@@ -222,19 +222,19 @@ public class HisWebServiceImpl implements HisWebService {
                     medOrderExec.setDrugType(1);//是否为药嘱（0：否  1：是）
                     break;
             }
-            medOrderExec.setOrderAttr(String.valueOf(oeoriInfoMap.get("OEORIDoseFormsDesc")));//剂型描述 补液类型（如：晶体液、胶体液等）
-            String defaultStart = String.valueOf(oeoriInfoMap.get("OEORIRequireExecDate"));//要求执行日期 YYYY-MM-DD
-            String defaultEnd = String.valueOf(oeoriInfoMap.get("OEORIRequireExecTime"));//要求执行时间 hh:mm:ss
+            medOrderExec.setOrderAttr(String.valueOf(oEORIInfoMap.get("OEORIDoseFormsDesc")));//剂型描述 补液类型（如：晶体液、胶体液等）
+            String defaultStart = String.valueOf(oEORIInfoMap.get("OEORIRequireExecDate"));//要求执行日期 YYYY-MM-DD
+            String defaultEnd = String.valueOf(oEORIInfoMap.get("OEORIRequireExecTime"));//要求执行时间 hh:mm:ss
             medOrderExec.setDefaultTimePoint(yyyyMMddHHmmssSdfToDate(defaultStart + " " + defaultEnd));//计划执行时间
-            String completeStart = String.valueOf(oeoriInfoMap.get("OEORIStopDate"));//医嘱停止日期 YYYY-MM-DD
-            String completeEnd = String.valueOf(oeoriInfoMap.get("OEORIStopTime"));//医嘱停止时间 hh:mm:ss
+            String completeStart = String.valueOf(oEORIInfoMap.get("OEORIStopDate"));//医嘱停止日期 YYYY-MM-DD
+            String completeEnd = String.valueOf(oEORIInfoMap.get("OEORIStopTime"));//医嘱停止时间 hh:mm:ss
             medOrderExec.setCompleteTimePoint(yyyyMMddHHmmssSdfToDate(completeStart + "" + completeEnd));//执行完成时间
-            medOrderExec.setDosage(!objectIsNull(oeoriInfoMap.get("OEORIDoseQty")) ?
-                    String.valueOf(oeoriInfoMap.get("OEORIDoseQty")) : null);//单次剂量
-            medOrderExec.setDosageUnits(!objectIsNull(oeoriInfoMap.get("OEORIDoseUnitDesc")) ?
-                    String.valueOf(oeoriInfoMap.get("OEORIDoseUnitDesc")) : null);//单次剂量单位描述
-            medOrderExec.setAllDosage(String.valueOf(oeoriInfoMap.get("OEORIOrderQty")));//医嘱数量
-            switch (String.valueOf(oeoriInfoMap.get("OEORIPriorityDesc"))) {//医嘱类型描述 长期、临时、自备长期、自备临时、出院带药
+            medOrderExec.setDosage(!objectIsNull(oEORIInfoMap.get("OEORIDoseQty")) ?
+                    String.valueOf(oEORIInfoMap.get("OEORIDoseQty")) : null);//单次剂量
+            medOrderExec.setDosageUnits(!objectIsNull(oEORIInfoMap.get("OEORIDoseUnitDesc")) ?
+                    String.valueOf(oEORIInfoMap.get("OEORIDoseUnitDesc")) : null);//单次剂量单位描述
+            medOrderExec.setAllDosage(String.valueOf(oEORIInfoMap.get("OEORIOrderQty")));//医嘱数量
+            switch (String.valueOf(oEORIInfoMap.get("OEORIPriorityDesc"))) {//医嘱类型描述 长期、临时、自备长期、自备临时、出院带药
                 case "长期":
                 case "自备长期":
                 case "出院带药":
@@ -245,14 +245,14 @@ public class HisWebServiceImpl implements HisWebService {
                     medOrderExec.setRepeatIndicator(0);//医嘱类型，0：临时医嘱；1：长期医嘱
                     break;
             }
-            medOrderExec.setUseMode(!objectIsNull(oeoriInfoMap.get("OEORIInstrCode")) ?
-                    String.valueOf(oeoriInfoMap.get("OEORIInstrCode")) : null);//用药途径代码
-            medOrderExec.setClassType(String.valueOf(oeoriInfoMap.get("OEORIClass")));//医嘱类别代码 检查类 西药类 中药类
-            medOrderExec.setFrequency(String.valueOf(oeoriInfoMap.get("OEORIFreqDesc")));//频次描述
+            medOrderExec.setUseMode(!objectIsNull(oEORIInfoMap.get("OEORIInstrCode")) ?
+                    String.valueOf(oEORIInfoMap.get("OEORIInstrCode")) : null);//用药途径代码
+            medOrderExec.setClassType(String.valueOf(oEORIInfoMap.get("OEORIClass")));//医嘱类别代码 检查类 西药类 中药类
+            medOrderExec.setFrequency(String.valueOf(oEORIInfoMap.get("OEORIFreqDesc")));//频次描述
             medOrderExec.setPerformSpeed(null);//流速
-            medOrderExec.setOrderStatus(Integer.valueOf(String.valueOf(oeoriInfoMap.get("OEORIStatusCode"))));//医嘱状态代码  执行状态，0：未执行；1：执行中；2：执行完毕；3：交班
-            medOrderExec.setRemark(!objectIsNull(oeoriInfoMap.get("OEORIRemarks")) ?
-                    String.valueOf(oeoriInfoMap.get("OEORIRemarks")) : null);//医嘱备注信息
+            medOrderExec.setOrderStatus(Integer.valueOf(String.valueOf(oEORIInfoMap.get("OEORIStatusCode"))));//医嘱状态代码  执行状态，0：未执行；1：执行中；2：执行完毕；3：交班
+            medOrderExec.setRemark(!objectIsNull(oEORIInfoMap.get("OEORIRemarks")) ?
+                    String.valueOf(oEORIInfoMap.get("OEORIRemarks")) : null);//医嘱备注信息
             medOrderExec.setUpdateTime(new Date());//记录最后修改时间
             medOrderExec.setIsSync(0);//是否已同步到护理单，0：未同步；1：已同步；
             medOrderExec.setOrderExecNum(1);//医嘱每天执行次数 默认1
