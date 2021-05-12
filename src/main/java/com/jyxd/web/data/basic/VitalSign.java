@@ -28,7 +28,7 @@ public class VitalSign implements Serializable {
      */
     @Id
     @Column(name = "id", length = 32, nullable = false)
-    @GeneratedValue(generator="system-uuid")
+    @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
     private String id;
 
@@ -58,44 +58,45 @@ public class VitalSign implements Serializable {
     private Date dataTime;
 
     /**
-     *  项目code
-     *  （神志：consciousness
-     *  瞳孔大小左：pupilLeft
-     *  瞳孔大小右：pupilRight
-     *  瞳孔反射左：lightReflectionLeft
-     *  瞳孔反射右：lightReflectionRight
-     *  体温：temperature
-     *  心率：hr
-     *  脉搏：pulse
-     *  心律：heartRate
-     *  呼吸：br
-     *  有创血压：ibp
-     *  无创血压：bp
-     *  SpO₂：spo2
-     *  CVPcmH₂O：cvp
-     *  CVPmmHg：cvpmmHg
-     *  血糖：bloodSugar
-     *  人工气道方式：airWayStyle
-     *  气囊压力cmH₂O：airbagPressure
-     *  插管深度cm：rsDepth
-     *  机械通气-模式：rsModel
-     *  机械通气-氧浓度：rsOxygen
-     *  机械通气-潮气量：rsMoisture
-     *  机械通气-PC：pc
-     *  机械通气-频率：rsFrequency
-     *  机械通气-PS：ps
-     *  机械通气-PEEP：peep
-     *  机械通气-IPAP：ipap
-     *  机械通气-EPAP：epap
-     *  机械通气-BPM：bpm
-     *  机械通气-I/E：ie
-     *  呼吸音左：breathSoundLeft
-     *  呼吸音右：breathSoundRight
-     *  吸氧-方式：inhaleOxygenStyle
-     *  吸氧-L/分：inhaleOxygenConcentration
-     *  吸氧-氧浓度：inhaleOxygenConcentration2
-     *  签名：signature）
-     *  glasgow昏迷评分：glasgow
+     * 项目code
+     * （神志：consciousness
+     * 瞳孔大小左：pupilLeft
+     * 瞳孔大小右：pupilRight
+     * 瞳孔反射左：lightReflectionLeft
+     * 瞳孔反射右：lightReflectionRight
+     * 体温：temperature
+     * 心率：hr
+     * 脉搏：pulse
+     * 心律：heartRate
+     * 呼吸：br
+     * 有创血压：ibp
+     * 无创血压：bp
+     * SpO₂：spo2
+     * CVPcmH₂O：cvp
+     * CVPmmHg：cvpmmHg
+     * 血糖：bloodSugar
+     * 人工气道方式：airWayStyle
+     * 气囊压力cmH₂O：airbagPressure
+     * 插管深度cm：rsDepth
+     * 机械通气-模式：rsModel
+     * 机械通气-氧浓度：rsOxygen
+     * 机械通气-潮气量：rsMoisture
+     * 机械通气-PC：pc
+     * 机械通气-频率：rsFrequency
+     * 机械通气-PS：ps
+     * 机械通气-PEEP：peep
+     * 机械通气-IPAP：ipap
+     * 机械通气-EPAP：epap
+     * 机械通气-BPM：bpm
+     * 机械通气-I/E：ie
+     * 呼吸音左：breathSoundLeft
+     * 呼吸音右：breathSoundRight
+     * 吸氧-方式：inhaleOxygenStyle
+     * 吸氧-L/分：inhaleOxygenConcentration
+     * 吸氧-氧浓度：inhaleOxygenConcentration2
+     * 签名：signature
+     * 移交签名 handoverSignature
+     * glasgow昏迷评分：glasgow
      */
     @Column(name = "code")
     private String code;
@@ -131,5 +132,5 @@ public class VitalSign implements Serializable {
     private Date updateTime;
 
     @Transient
-    private Map<String,Object> glasgowMap;
+    private Map<String, Object> glasgowMap;
 }

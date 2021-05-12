@@ -7,15 +7,15 @@
         <result column="visit_id" property="visitId" jdbcType="VARCHAR"/>
         <result column="visit_code" property="visitCode" jdbcType="VARCHAR"/>
         <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
-        <result column="data_time" property="dataTime" />
+        <result column="data_time" property="dataTime"/>
         <result column="code" property="code" jdbcType="VARCHAR"/>
         <result column="content" property="content" jdbcType="VARCHAR"/>
-        <result column="create_time" property="createTime" />
+        <result column="create_time" property="createTime"/>
         <result column="operator_code" property="operatorCode" jdbcType="VARCHAR"/>
         <result column="status" property="status" jdbcType="INTEGER"/>
         <result column="update_time" property="updateTime" jdbcType="DATE"/>
     </resultMap>
-    
+
     <sql id="vitalSign_colums">id,visit_id,visit_code,patient_id,data_time,code,content,create_time,operator_code,status,update_time</sql>
 
     <sql id="vitalSign_propertys">#{id},#{visitId},#{visitCode},#{patientId},#{dataTime},#{code},
@@ -31,36 +31,37 @@
         values (<include refid="vitalSign_propertys"></include>)
     </insert>
 
-    <update id="update" parameterType="com.jyxd.web.data.basic.VitalSign" >
+    <update id="update" parameterType="com.jyxd.web.data.basic.VitalSign">
         update
         table_vital_sign
-        set <include refid="vitalSign_update"></include>
+        set
+        <include refid="vitalSign_update"></include>
         where
-          id=#{id}
+        id=#{id}
     </update>
 
     <select id="queryData" resultMap="vitalSignMap" parameterType="java.lang.String">
         select
-          <include refid="vitalSign_colums"></include>
+        <include refid="vitalSign_colums"></include>
         from
         table_vital_sign
         where
-          id=#{id}
+        id=#{id}
     </select>
 
     <select id="queryList" resultType="java.util.Map">
         select
-          <include refid="vitalSign_colums"></include>
+        <include refid="vitalSign_colums"></include>
         from
         table_vital_sign
         where
-          1=1
-        and  status != -1
+        1=1
+        and status != -1
         <if test="content != null and content != ''">
-            and  content like '%${content}%'
+            and content like '%${content}%'
         </if>
         <if test="status != null ">
-            and  status= #{status}
+            and status= #{status}
         </if>
         <if test="start != null ">limit #{start},</if>
         <if test="size != null ">#{size}</if>
@@ -68,17 +69,17 @@
 
     <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
         select
-          count(id)
+        count(id)
         from
         table_vital_sign
         where
         1=1
-        and  status != -1
+        and status != -1
         <if test="content != null and content != ''">
-            and  content like '%${content}%'
+            and content like '%${content}%'
         </if>
         <if test="status != null ">
-            and  status= #{status}
+            and status= #{status}
         </if>
     </select>
 
@@ -87,9 +88,9 @@
         SELECT
         <include refid="vitalSign_colums"></include>
         FROM
-            table_vital_sign
+        table_vital_sign
         WHERE
-            1 = 1
+        1 = 1
         AND status !=- 1
         <if test="code != null and code != ''">
             AND code = #{code}
@@ -107,7 +108,7 @@
             )
         </if>
         <if test="status != null ">
-            and  status= #{status}
+            and status= #{status}
         </if>
     </select>
 
@@ -133,7 +134,7 @@
             )
         </if>
         <if test="status != null ">
-            and  status= #{status}
+            and status= #{status}
         </if>
     </select>
 
@@ -180,6 +181,7 @@
             IFNULL(max(CASE WHEN tvs.code='inhaleOxygenConcentration' THEN tvs.content END),"") AS inhaleOxygenConcentration,
             IFNULL(max(CASE WHEN tvs.code='inhaleOxygenConcentration2' THEN tvs.content END),"") AS inhaleOxygenConcentration2,
             IFNULL(max(CASE WHEN tvs.code='signature' THEN tu.user_name END),"") AS signature
+            IFNULL(max(CASE WHEN tvs.code='handoverSignature' THEN tu.user_name END),"") AS handoverSignature
         FROM
             table_vital_sign tvs LEFT JOIN dict_common_item dcia ON dcia.common_item_code=tvs.content AND dcia.type='consciousness'
         LEFT JOIN dict_common_item dcib ON dcib.common_item_code=tvs.content AND dcib.type='pupil'
