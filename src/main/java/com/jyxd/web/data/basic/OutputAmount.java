@@ -125,27 +125,4 @@ public class OutputAmount implements Serializable {
     @Column(name = "drainage")
     private String drainage;
 
-    /**
-     * 自定义列1
-     */
-    @Column(name = "default_one")
-    private String defaultOne;
-
-    /**
-     * 自定义列2
-     */
-    @Column(name = "default_two")
-    private String defaultTwo;
-
-    /**
-     * 自定义列3
-     */
-    @Column(name = "default_three")
-    private String defaultThree;
-
-    /**
-     * 自定义列4
-     */
-    @Column(name = "default_four")
-    private String defaultFour;
 }

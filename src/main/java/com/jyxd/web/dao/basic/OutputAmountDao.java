@@ -92,4 +92,11 @@ public interface OutputAmountDao {
      * @return
      */
      List<Map<String,Object>> getNewPatientOutputList(Map<String,Object> map);
+
+    /**
+     * 测试
+     * @param map
+     * @return
+     */
+     List<Map<String,Object>> test(Map<String,Object> map);
 }

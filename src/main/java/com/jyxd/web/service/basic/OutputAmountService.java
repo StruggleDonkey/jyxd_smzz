@@ -102,4 +102,13 @@ public class OutputAmountService {
     public List<Map<String,Object>> getNewPatientOutputList(Map<String,Object> map){
         return outputAmountDao.getNewPatientOutputList(map);
     }
+
+    /**
+     * 测试
+     * @param map
+     * @return
+     */
+    public List<Map<String,Object>> test(Map<String,Object> map){
+        return outputAmountDao.test(map);
+    }
 }

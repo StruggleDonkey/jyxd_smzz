@@ -1,9 +1,11 @@
 package com.jyxd.web.controller.basic;
 
+import com.jyxd.web.data.basic.CustomField;
 import com.jyxd.web.data.basic.InputAmount;
 import com.jyxd.web.data.basic.OutputAmount;
 import com.jyxd.web.data.log.Log;
 import com.jyxd.web.data.user.User;
+import com.jyxd.web.service.basic.CustomFieldService;
 import com.jyxd.web.service.basic.InputAmountService;
 import com.jyxd.web.service.basic.OutputAmountService;
 import com.jyxd.web.service.log.LogService;
@@ -40,6 +42,9 @@ public class OutputAmountController {
 
     @Autowired
     private LogService logService;
+
+    @Autowired
+    private CustomFieldService customFieldService;
 
     /**
      * 增加一条出量表记录
@@ -578,6 +583,24 @@ public class OutputAmountController {
         }catch (Exception e){
             logger.info("护理文书--护理单--出量--查询病人出量列表(新版 为了打印可以和出入量一起打印):"+e);
         }
+        return json.toString();
+    }
+
+    /**
+     * 测试
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/test")
+    @ResponseBody
+    public String test(@RequestBody(required=false) Map<String,Object> map){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        List<CustomField> list=customFieldService.queryList(map);
+        map.put("list",list);
+        System.out.println("---------"+map.toString());
+        List<Map<String,Object>> ll=outputAmountService.test(map);
+        System.out.println("==============="+ll.toString());
         return json.toString();
     }
 
