@@ -11,6 +11,7 @@ public interface BedArrangeDao {
 
     /**
      * 新增一条床位安排表记录
+     *
      * @param bedArrange
      * @return boolean
      */
@@ -18,6 +19,7 @@ public interface BedArrangeDao {
 
     /**
      * 根据主键id查询一条床位安排表记录
+     *
      * @param id
      * @return BedArrange
      */
@@ -25,6 +27,7 @@ public interface BedArrangeDao {
 
     /**
      * 更新一条床位安排表记录
+     *
      * @param bedArrange
      * @return boolean
      */
@@ -32,6 +35,7 @@ public interface BedArrangeDao {
 
     /**
      * 根据条件分页查询床位安排表记录列表
+     *
      * @param map
      * @return list
      */
@@ -39,21 +43,40 @@ public interface BedArrangeDao {
 
     /**
      * 根据条件查询列表总记录数
+     *
      * @param map
      * @return
      */
     int queryNum(Map<String, Object> map);
 
     /**
-     *查询床位安排列表信息
+     * 查询床位安排列表信息
+     *
      * @return
      */
-    List<Map<String,Object>> getBedArrangeList(Map<String,Object> map);
+    List<Map<String, Object>> getBedArrangeList(Map<String, Object> map);
 
     /**
-     *根据条件查询床位安排实体对象
+     * 根据条件查询床位安排实体对象
+     *
      * @param map
      * @return
      */
-    BedArrange queryDataByCode(Map<String,Object> map);
+    BedArrange queryDataByCode(Map<String, Object> map);
+
+    /**
+     * 根据床位号查询床位安排
+     *
+     * @param bedCode
+     * @return
+     */
+    BedArrange queryDataByBedCode(String bedCode);
+
+    /**
+     * 根据病人号查询床位安排
+     *
+     * @param patientId
+     * @return
+     */
+    BedArrange queryDataByPatientId(String patientId);
 }

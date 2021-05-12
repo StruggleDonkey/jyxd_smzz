@@ -11,6 +11,7 @@ public interface MedOrderExecDao {
 
     /**
      * 新增一条医嘱执行表记录
+     *
      * @param medOrderExec
      * @return boolean
      */
@@ -18,6 +19,7 @@ public interface MedOrderExecDao {
 
     /**
      * 根据主键id查询一条医嘱执行表记录
+     *
      * @param id
      * @return MedOrderExec
      */
@@ -25,6 +27,7 @@ public interface MedOrderExecDao {
 
     /**
      * 更新一条医嘱执行表记录
+     *
      * @param medOrderExec
      * @return boolean
      */
@@ -32,6 +35,7 @@ public interface MedOrderExecDao {
 
     /**
      * 根据条件分页查询医嘱执行表记录列表
+     *
      * @param map
      * @return list
      */
@@ -39,6 +43,7 @@ public interface MedOrderExecDao {
 
     /**
      * 根据条件查询列表总记录数
+     *
      * @param map
      * @return
      */
@@ -46,12 +51,21 @@ public interface MedOrderExecDao {
 
     /**
      * 查询所有医嘱对象列表
+     *
      * @param map
      * @return
      */
-      List<MedOrderExec> queryMedOrderExecList(Map<String,Object> map);
+    List<MedOrderExec> queryMedOrderExecList(Map<String, Object> map);
 
-     List<Map<String, Object>> getList(Map<String,Object> map);
+    List<Map<String, Object>> getList(Map<String, Object> map);
 
-     int getNum(Map<String,Object> map);
+    int getNum(Map<String, Object> map);
+
+    /**
+     * 根据医嘱第三方主键id查询医嘱
+     *
+     * @param orderCode
+     * @return
+     */
+    MedOrderExec queryDataByOrderCode(String orderCode);
 }

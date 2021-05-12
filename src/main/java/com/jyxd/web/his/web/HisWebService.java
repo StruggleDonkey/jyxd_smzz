@@ -16,6 +16,6 @@ import java.text.ParseException;
 public interface HisWebService {
 
     @WebResult(name = "Response")
-    @WebMethod(operationName = "patientRegistry")
-    CommonResponse hisService(@WebParam(name = "action") String action, @WebParam(name = "hisRequestXml") String hisRequestXml) throws ParseException;
+    @WebMethod(operationName = "hisService")
+    CommonResponse hisService(@WebParam(name = "action") String action, @WebParam(name = "hisRequestXml") String hisRequestXml);
 }

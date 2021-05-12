@@ -8,7 +8,7 @@
         <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
         <result column="monitor_code" property="monitorCode" jdbcType="VARCHAR"/>
     </resultMap>
-    
+
     <sql id="bedArrange_colums">id,bed_code,patient_id,monitor_code</sql>
 
     <sql id="bedArrange_propertys">#{id},#{bedCode},#{patientId},#{monitorCode}</sql>
@@ -21,35 +21,36 @@
         values (<include refid="bedArrange_propertys"></include>)
     </insert>
 
-    <update id="update" parameterType="com.jyxd.web.data.basic.BedArrange" >
+    <update id="update" parameterType="com.jyxd.web.data.basic.BedArrange">
         update
         table_bed_arrange
-        set <include refid="bedArrange_update"></include>
+        set
+        <include refid="bedArrange_update"></include>
         where
-          id=#{id}
+        id=#{id}
     </update>
 
     <select id="queryData" resultMap="bedArrangeMap" parameterType="java.lang.String">
         select
-          <include refid="bedArrange_colums"></include>
+        <include refid="bedArrange_colums"></include>
         from
         table_bed_arrange
         where
-          id=#{id}
+        id=#{id}
     </select>
 
     <select id="queryList" resultType="java.util.Map">
         select
-          <include refid="bedArrange_colums"></include>
+        <include refid="bedArrange_colums"></include>
         from
         table_bed_arrange
         where
-          1=1
+        1=1
         <if test="content != null and content != ''">
-            and  content like '%${content}%'
+            and content like '%${content}%'
         </if>
         <if test="status != null ">
-            and  status= #{status}
+            and status= #{status}
         </if>
         <if test="start != null ">limit #{start},</if>
         <if test="size != null ">#{size}</if>
@@ -57,16 +58,16 @@
 
     <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
         select
-          count(id)
+        count(id)
         from
         table_bed_arrange
         where
         1=1
         <if test="content != null and content != ''">
-            and  content like '%${content}%'
+            and content like '%${content}%'
         </if>
         <if test="status != null ">
-            and  status= #{status}
+            and status= #{status}
         </if>
     </select>
 
@@ -112,5 +113,22 @@
         <if test="monitorCode != null and monitorCode != ''">
             and monitor_code=#{monitorCode}
         </if>
+    </select>
+    <select id="queryDataByBedCode" resultMap="bedArrangeMap" parameterType="java.lang.String">
+        select
+        <include refid="bedArrange_colums"></include>
+        from
+        table_bed_arrange
+        where
+        bed_code=#{bedCode}
+    </select>
+
+    <select id="queryDataByPatientId" resultMap="bedArrangeMap" parameterType="java.lang.String">
+        select
+        <include refid="bedArrange_colums"></include>
+        from
+        table_bed_arrange
+        where
+        patient_id=#{patientId}
     </select>
 </mapper>

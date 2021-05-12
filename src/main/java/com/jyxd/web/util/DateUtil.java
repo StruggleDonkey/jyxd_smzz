@@ -7,12 +7,12 @@ import java.util.Date;
 
 public class DateUtil {
 
-    public static String yyyyMMddHHmmsSdfToString(Date date) {
+    public static String yyyyMMddHHmmssSdfToString(Date date) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return sdf.format(date);
     }
 
-    public static Date yyyyMMddHHmmsSdfToDate(String time) throws ParseException {
+    public static Date yyyyMMddHHmmssSdfToDate(String time) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return sdf.parse(time);
     }

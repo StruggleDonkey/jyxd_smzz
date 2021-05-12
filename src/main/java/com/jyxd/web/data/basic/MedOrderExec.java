@@ -48,13 +48,13 @@ public class MedOrderExec implements Serializable {
     private String patientId;
 
     /**
-     * 医嘱编码（同步时使用）
+     * 医嘱编码（同步时使用）(唯一)
      */
     @Column(name = "order_code")
     private String orderCode;
 
     /**
-     * 医嘱主键
+     * 医嘱同批次主键
      */
     @Column(name = "order_no")
     private String orderNo;

@@ -36,7 +36,7 @@
         <result column="sync_num" property="syncNum" jdbcType="INTEGER"/>
         <result column="recent_sync_time" property="recentSyncTime" jdbcType="DATE"/>
     </resultMap>
-    
+
     <sql id="medOrderExec_colums">id,visit_id,visit_code,patient_id,order_code,order_no,
                                     order_sub_no,order_name,specs,drug_type,order_attr,
                                     default_time_point,start_time_point,complete_time_point,
@@ -68,51 +68,52 @@
         values (<include refid="medOrderExec_propertys"></include>)
     </insert>
 
-    <update id="update" parameterType="com.jyxd.web.data.basic.MedOrderExec" >
+    <update id="update" parameterType="com.jyxd.web.data.basic.MedOrderExec">
         update
         table_med_order_exec
-        set <include refid="medOrderExec_update"></include>
+        set
+        <include refid="medOrderExec_update"></include>
         where
-          id=#{id}
+        id=#{id}
     </update>
 
     <select id="queryData" resultMap="medOrderExecMap" parameterType="java.lang.String">
         select
-          <include refid="medOrderExec_colums"></include>
+        <include refid="medOrderExec_colums"></include>
         from
         table_med_order_exec
         where
-          id=#{id}
+        id=#{id}
     </select>
 
     <select id="queryList" resultMap="medOrderExecMap" parameterType="java.util.Map">
         select
-          <include refid="medOrderExec_colums"></include>
+        <include refid="medOrderExec_colums"></include>
         from
         table_med_order_exec
         where
-          1=1
+        1=1
         <if test="startTime != null and startTime != ''">
-            and   date_format(default_time_point,'%Y%m%d') between date_format(#{startTime},'%Y%m%d')
+            and date_format(default_time_point,'%Y%m%d') between date_format(#{startTime},'%Y%m%d')
             and date_format(#{endTime},'%Y%m%d')
         </if>
         <if test="orderNo != null and orderNo != ''">
             and order_no = #{orderNo}
         </if>
         <if test="orderStatus != null and orderStatus != 5">
-            and  order_status= #{orderStatus}
+            and order_status= #{orderStatus}
         </if>
         <if test="isSync != null and isSync != 5">
-            and  is_sync= #{isSync}
+            and is_sync= #{isSync}
         </if>
         <if test="drugType != null and drugType != 5">
-            and  drug_type= #{drugType}
+            and drug_type= #{drugType}
         </if>
         <if test="repeatIndicator != null and repeatIndicator != 5">
-            and  repeat_indicator= #{repeatIndicator}
+            and repeat_indicator= #{repeatIndicator}
         </if>
         <if test="patientId != null and patientId !=''">
-            and  patient_id= #{patientId}
+            and patient_id= #{patientId}
         </if>
         ORDER BY order_no,remark DESC
         <if test="start != null ">limit #{start},</if>
@@ -121,32 +122,32 @@
 
     <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
         select
-          count(id)
+        count(id)
         from
         table_med_order_exec
         where
         1=1
         <if test="startTime != null and startTime != ''">
-            and   date_format(default_time_point,'%Y%m%d') between date_format(#{startTime},'%Y%m%d')
+            and date_format(default_time_point,'%Y%m%d') between date_format(#{startTime},'%Y%m%d')
             and date_format(#{endTime},'%Y%m%d')
         </if>
         <if test="orderNo != null and orderNo != ''">
             and order_no = #{orderNo}
         </if>
         <if test="orderStatus != null and orderStatus != 5">
-            and  order_status= #{orderStatus}
+            and order_status= #{orderStatus}
         </if>
         <if test="isSync != null and isSync != 5">
-            and  is_sync= #{isSync}
+            and is_sync= #{isSync}
         </if>
         <if test="drugType != null and drugType != 5">
-            and  drug_type= #{drugType}
+            and drug_type= #{drugType}
         </if>
         <if test="repeatIndicator != null and repeatIndicator != 5">
-            and  repeat_indicator= #{repeatIndicator}
+            and repeat_indicator= #{repeatIndicator}
         </if>
         <if test="patientId != null and patientId !=''">
-            and  patient_id= #{patientId}
+            and patient_id= #{patientId}
         </if>
     </select>
 
@@ -159,38 +160,38 @@
 
     <select id="getList" resultType="java.util.Map" parameterType="java.util.Map">
         SELECT
-            tmoc.id AS id,
-            IFNULL(tmoc.visit_id,"") AS visitId,
-            IFNULL(tmoc.visit_code,"") AS visitCode,
-            IFNULL(tmoc.patient_id,"") AS patientId,
-            IFNULL(tmoc.order_code,"") AS orderCode,
-            IFNULL(tmoc.order_no,"") AS orderNo,
-            IFNULL(tmoc.order_sub_no,"") AS orderSubNo,
-            IFNULL(tmoc.order_name,"") AS orderName,
-            IFNULL(tmoc.specs,"") AS specs,
-            tmoc.drug_type AS drugType,
-            IFNULL(tmoc.order_attr,"") AS orderAttr,
-            IFNULL(date_format(tmoc.default_time_point, '%Y-%m-%d %H:%i:%s'),"") AS defaultTimePoint,
-            IFNULL(dcia.common_item_name,"") AS useMode,
-            IFNULL(date_format(tmoc.start_time_point, '%Y-%m-%d %H:%i:%s'),"") AS startTimePoint,
-            IFNULL(date_format(tmoc.complete_time_point, '%Y-%m-%d %H:%i:%s'),"") AS completeTimePoint,
-            IFNULL(tmoc.dosage,"") AS dosage,
-            IFNULL(tmoc.dosage_units,"") AS dosageUnits,
-            IFNULL(tmoc.all_dosage,"") AS allDosage,
-            tmoc.repeat_indicator AS repeatIndicator,
-            IFNULL(tmoc.class_type,"") AS classType,
-            IFNULL(tmoc.frequency,"") AS frequency,
-            IFNULL(tmoc.perform_speed,"") AS performSpeed,
-            IFNULL(tmoc.speed_units,"") AS speedUnits,
-            IFNULL(ts.user_name,"") AS nurseCode,
-            tmoc.order_status AS orderStatus,
-            IFNULL(tmoc.remark,"") AS remark,
-            IFNULL(date_format(tmoc.create_time, '%Y-%m-%d %H:%i:%s'),"") AS createTime,
-            IFNULL(date_format(tmoc.update_time, '%Y-%m-%d %H:%i:%s'),"") AS updateTime,
-            tmoc.is_sync AS isSync,
-            tmoc.order_exec_num AS orderExecNum,
-            tmoc.sync_num AS syncNum,
-            IFNULL(date_format(tmoc.recent_sync_time, '%Y-%m-%d %H:%i:%s'),"") AS recentSyncTime
+        tmoc.id AS id,
+        IFNULL(tmoc.visit_id,"") AS visitId,
+        IFNULL(tmoc.visit_code,"") AS visitCode,
+        IFNULL(tmoc.patient_id,"") AS patientId,
+        IFNULL(tmoc.order_code,"") AS orderCode,
+        IFNULL(tmoc.order_no,"") AS orderNo,
+        IFNULL(tmoc.order_sub_no,"") AS orderSubNo,
+        IFNULL(tmoc.order_name,"") AS orderName,
+        IFNULL(tmoc.specs,"") AS specs,
+        tmoc.drug_type AS drugType,
+        IFNULL(tmoc.order_attr,"") AS orderAttr,
+        IFNULL(date_format(tmoc.default_time_point, '%Y-%m-%d %H:%i:%s'),"") AS defaultTimePoint,
+        IFNULL(dcia.common_item_name,"") AS useMode,
+        IFNULL(date_format(tmoc.start_time_point, '%Y-%m-%d %H:%i:%s'),"") AS startTimePoint,
+        IFNULL(date_format(tmoc.complete_time_point, '%Y-%m-%d %H:%i:%s'),"") AS completeTimePoint,
+        IFNULL(tmoc.dosage,"") AS dosage,
+        IFNULL(tmoc.dosage_units,"") AS dosageUnits,
+        IFNULL(tmoc.all_dosage,"") AS allDosage,
+        tmoc.repeat_indicator AS repeatIndicator,
+        IFNULL(tmoc.class_type,"") AS classType,
+        IFNULL(tmoc.frequency,"") AS frequency,
+        IFNULL(tmoc.perform_speed,"") AS performSpeed,
+        IFNULL(tmoc.speed_units,"") AS speedUnits,
+        IFNULL(ts.user_name,"") AS nurseCode,
+        tmoc.order_status AS orderStatus,
+        IFNULL(tmoc.remark,"") AS remark,
+        IFNULL(date_format(tmoc.create_time, '%Y-%m-%d %H:%i:%s'),"") AS createTime,
+        IFNULL(date_format(tmoc.update_time, '%Y-%m-%d %H:%i:%s'),"") AS updateTime,
+        tmoc.is_sync AS isSync,
+        tmoc.order_exec_num AS orderExecNum,
+        tmoc.sync_num AS syncNum,
+        IFNULL(date_format(tmoc.recent_sync_time, '%Y-%m-%d %H:%i:%s'),"") AS recentSyncTime
         FROM
         table_med_order_exec tmoc
         LEFT JOIN dict_common_item dcia ON dcia.common_item_code = tmoc.use_mode AND dcia.type='use_mode'
@@ -198,26 +199,26 @@
         where
         1=1
         <if test="startTime != null and startTime != ''">
-            and   date_format(tmoc.default_time_point,'%Y%m%d') between date_format(#{startTime},'%Y%m%d')
+            and date_format(tmoc.default_time_point,'%Y%m%d') between date_format(#{startTime},'%Y%m%d')
             and date_format(#{endTime},'%Y%m%d')
         </if>
         <if test="orderNo != null and orderNo != ''">
             and tmoc.order_no = #{orderNo}
         </if>
         <if test="orderStatus != null and orderStatus != 5">
-            and  tmoc.order_status= #{orderStatus}
+            and tmoc.order_status= #{orderStatus}
         </if>
         <if test="isSync != null and isSync != 5">
-            and  tmoc.is_sync= #{isSync}
+            and tmoc.is_sync= #{isSync}
         </if>
         <if test="drugType != null and drugType != 5">
-            and  tmoc.drug_type= #{drugType}
+            and tmoc.drug_type= #{drugType}
         </if>
         <if test="repeatIndicator != null and repeatIndicator != 5">
-            and  tmoc.repeat_indicator= #{repeatIndicator}
+            and tmoc.repeat_indicator= #{repeatIndicator}
         </if>
         <if test="patientId != null and patientId !=''">
-            and  tmoc.patient_id= #{patientId}
+            and tmoc.patient_id= #{patientId}
         </if>
         ORDER BY tmoc.order_no,tmoc.remark DESC
         <if test="start != null ">limit #{start},</if>
@@ -226,7 +227,7 @@
 
     <select id="getNum" resultType="java.lang.Integer" parameterType="java.util.Map">
         SELECT
-          count(tmoc.id)
+        count(tmoc.id)
         FROM
         table_med_order_exec tmoc
         LEFT JOIN dict_common_item dcia ON dcia.common_item_code = tmoc.use_mode AND dcia.type='use_mode'
@@ -234,27 +235,35 @@
         where
         1=1
         <if test="startTime != null and startTime != ''">
-            and   date_format(tmoc.default_time_point,'%Y%m%d') between date_format(#{startTime},'%Y%m%d')
+            and date_format(tmoc.default_time_point,'%Y%m%d') between date_format(#{startTime},'%Y%m%d')
             and date_format(#{endTime},'%Y%m%d')
         </if>
         <if test="orderNo != null and orderNo != ''">
             and tmoc.order_no = #{orderNo}
         </if>
         <if test="orderStatus != null and orderStatus != 5">
-            and  tmoc.order_status= #{orderStatus}
+            and tmoc.order_status= #{orderStatus}
         </if>
         <if test="isSync != null and isSync != 5">
-            and  tmoc.is_sync= #{isSync}
+            and tmoc.is_sync= #{isSync}
         </if>
         <if test="drugType != null and drugType != 5">
-            and  tmoc.drug_type= #{drugType}
+            and tmoc.drug_type= #{drugType}
         </if>
         <if test="repeatIndicator != null and repeatIndicator != 5">
-            and  tmoc.repeat_indicator= #{repeatIndicator}
+            and tmoc.repeat_indicator= #{repeatIndicator}
         </if>
         <if test="patientId != null and patientId !=''">
-            and  tmoc.patient_id= #{patientId}
+            and tmoc.patient_id= #{patientId}
         </if>
+    </select>
+    <select id="queryDataByOrderCode" resultMap="medOrderExecMap" parameterType="java.lang.String">
+        select
+        <include refid="medOrderExec_colums"></include>
+        from
+        table_med_order_exec
+        where
+        order_code=#{orderCode}
     </select>
 
 </mapper>

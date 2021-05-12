@@ -1,13 +1,26 @@
 package com.jyxd.web.his.web.webimplements;
 
 import cn.hutool.json.XML;
-import com.jyxd.web.controller.basic.OutputAmountController;
+import com.alibaba.fastjson.JSON;
+import com.jyxd.web.data.basic.BedArrange;
+import com.jyxd.web.data.basic.MedOrderExec;
+import com.jyxd.web.data.dictionary.BedDictionary;
+import com.jyxd.web.data.dictionary.DepartmentDictionary;
+import com.jyxd.web.data.dictionary.WardDictionary;
 import com.jyxd.web.data.patient.Patient;
+import com.jyxd.web.data.user.User;
 import com.jyxd.web.his.data.commmon.*;
-import com.jyxd.web.his.data.patient.PatientRequest;
+import com.jyxd.web.his.data.medOrderExec.AddOrdersRtRequest;
 import com.jyxd.web.his.web.HisWebService;
 
+import com.jyxd.web.service.basic.BedArrangeService;
+import com.jyxd.web.service.basic.MedOrderExecService;
+import com.jyxd.web.service.dictionary.BedDictionaryService;
+import com.jyxd.web.service.dictionary.DepartmentDictionaryService;
+import com.jyxd.web.service.dictionary.WardDictionaryService;
 import com.jyxd.web.service.patient.PatientService;
+import com.jyxd.web.service.user.UserService;
+import com.jyxd.web.util.MD5Util;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
@@ -20,6 +33,7 @@ import javax.jws.WebService;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.jyxd.web.util.DateUtil.*;
 
@@ -35,21 +49,66 @@ public class HisWebServiceImpl implements HisWebService {
     @Autowired
     private PatientService patientService;
 
+    @Autowired
+    private BedArrangeService bedArrangeService;
+
+    @Autowired
+    private BedDictionaryService bedDictionaryService;
+
+    @Autowired
+    private WardDictionaryService wardDictionaryService;
+
+    @Autowired
+    private DepartmentDictionaryService departmentDictionaryService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private MedOrderExecService medOrderExecService;
+
     @Override
-    public CommonResponse hisService(String action, String hisRequestXml) throws ParseException {
+    public CommonResponse hisService(String action, String hisRequestXml) {
         logger.info("action ===== --> :" + action);
         logger.info("hisRequestXml ----->> " + hisRequestXml);
         boolean isSaveData = false;
         BodyData bodyData = new BodyData("-1", "失败");
-        switch (action) {
-            case "T0004":
-                isSaveData = patientRegistry(hisRequestXml);
-                break;
-            case "T0017":
-                isSaveData = inpatientEncounterStarted(hisRequestXml);
-                break;
-            default:
-                break;
+        try {
+            switch (action) {
+                case "T0004":
+                    isSaveData = patientRegistry(hisRequestXml);
+                    break;
+                case "T0017":
+                    isSaveData = inpatientEncounterStarted(hisRequestXml);
+                    break;
+                case "T0018":
+                    isSaveData = inpatientEncounterCancel(hisRequestXml);
+                    break;
+                case "T0014":
+                    isSaveData = admTransaction(hisRequestXml);
+                    break;
+                case "MS028(CT_Bed)":
+                    isSaveData = receiveBed(hisRequestXml);
+                    break;
+                case "MS027(CT_Ward)":
+                    isSaveData = receiveWard(hisRequestXml);
+                    break;
+                case "MS003(CT_Dept)":
+                    isSaveData = receiveDepartment(hisRequestXml);
+                case "MS004(CT_CareProv)":
+                    isSaveData = receiveUser(hisRequestXml);
+                    break;
+                case "T0001":
+                    isSaveData = addOrders(hisRequestXml);
+                    break;
+                case "T0003":
+                    isSaveData = updateOrdersStatus(hisRequestXml);
+                    break;
+                default:
+                    break;
+            }
+        } catch (Exception e) {
+            logger.error("接收his信息保存错误，错误信息：" + e.getMessage());
         }
         if (isSaveData) {
             bodyData.setResultCode("0");
@@ -58,12 +117,511 @@ public class HisWebServiceImpl implements HisWebService {
         return new CommonResponse(getXmlHeader(hisRequestXml), bodyData);
     }
 
-    private boolean inpatientEncounterStarted(String hisRequestXml) {
-        Map<String, Object> inpatientEncounterStartedRtMap = gainXmlData(hisRequestXml, "InpatientEncounterStartedRt");
-
-        return false;
+    /**
+     * 接收修改医嘱状态
+     *
+     * @param hisRequestXml
+     * @return
+     */
+    private boolean updateOrdersStatus(String hisRequestXml) {
+        Map<String, Object> ordersRtMap = gainXmlData(hisRequestXml, "UpdateOrdersRt");
+        return orderDataDispose(ordersRtMap, "update");
     }
 
+    /**
+     * 对医嘱数据进行修改或者新增
+     *
+     * @param ordersRtMap
+     * @param updateOrAdd
+     * @return
+     */
+    private boolean orderDataDispose(Map ordersRtMap, String updateOrAdd) {
+        Patient patient = findPatient(ordersRtMap);
+        if (Objects.isNull(patient)) {
+            logger.error("该患者不存在系统，医嘱接收失败");
+            return false;
+        }
+        List<Object> oeoriInfoMapList = castList(ordersRtMap.get("OEORIInfoList"), Object.class);
+        AtomicBoolean isSaveData = new AtomicBoolean(false);
+        oeoriInfoMapList.forEach(oeoriInfo -> {
+            switch (updateOrAdd) {
+                case "add":
+                    isSaveData.set(saveMedOrderExec(ordersRtMap, oeoriInfo, patient.getId()));
+                    break;
+                case "update":
+                    isSaveData.set(updateOrderData(oeoriInfo));
+                    break;
+                default:
+                    break;
+            }
+        });
+        return isSaveData.get();
+    }
+
+    /**
+     * 跟新医嘱信息到数据库
+     *
+     * @param oeoriInfo
+     * @return
+     */
+    private boolean updateOrderData(Object oeoriInfo) {
+        Map<String, Object> oeoriInfoMap = (Map) JSON.parse(String.valueOf(oeoriInfo));
+        MedOrderExec medOrderExec = medOrderExecService.queryDataByOrderCode(String.valueOf(oeoriInfoMap.get("OEORIOrderItemID")));
+        if (Objects.isNull(medOrderExec)) {
+            logger.error("医嘱不存在，修改失败");
+            return false;
+        }
+        medOrderExec.setOrderStatus(Integer.valueOf(String.valueOf(oeoriInfoMap.get("OEORIStatusCode"))));//医嘱状态代码  执行状态，0：未执行；1：执行中；2：执行完毕；3：交班
+        //TODO 父医嘱ID目前不是特别确定
+        medOrderExec.setOrderSubNo(String.valueOf(oeoriInfoMap.get("OEORIParentOrderID")));
+        return medOrderExecService.update(medOrderExec);
+    }
+
+    /**
+     * 收医嘱信息 医生开完医嘱保存成功后调用
+     *
+     * @param hisRequestXml
+     * @return
+     */
+    private boolean addOrders(String hisRequestXml) {
+        Map<String, Object> addOrdersRtMap = gainXmlData(hisRequestXml, "AddOrdersRt");
+        return orderDataDispose(addOrdersRtMap, "add");
+    }
+
+    /**
+     * 保存医嘱信息到数据库
+     *
+     * @param addOrdersRtMap
+     * @param oeoriInfo
+     * @param patientId
+     * @return
+     */
+    private boolean saveMedOrderExec(Map addOrdersRtMap, Object oeoriInfo, String patientId) {
+        try {
+            Map<String, Object> oeoriInfoMap = (Map) JSON.parse(String.valueOf(oeoriInfo));
+            MedOrderExec medOrderExec = new MedOrderExec();
+            medOrderExec.setId(UUIDUtil.getUUID());
+            medOrderExec.setVisitId(String.valueOf(addOrdersRtMap.get("PATPatientID")));//addOrdersRt
+            medOrderExec.setVisitCode(String.valueOf(addOrdersRtMap.get("PAADMVisitNumber")));//就诊号码
+            medOrderExec.setPatientId(patientId);
+            medOrderExec.setCreateTime(new Date());
+
+            //TODO 医嘱id目前不是特别确定
+            medOrderExec.setOrderCode(String.valueOf(oeoriInfoMap.get("OEORIOrderItemID")));
+            medOrderExec.setOrderNo(String.valueOf(oeoriInfoMap.get("OEORIOEORIDR")));
+            medOrderExec.setOrderSubNo(String.valueOf(oeoriInfoMap.get("OEORIParentOrderID")));
+
+            medOrderExec.setOrderName(String.valueOf(oeoriInfoMap.get("OEORIARCItmMastDesc")));//医嘱项目描述
+            medOrderExec.setSpecs(String.valueOf(oeoriInfoMap.get("OEORISpecification")));//医嘱规格
+            switch (String.valueOf(oeoriInfoMap.get("OEORIClass"))) {//医嘱类别代码 检查类 西药类 中药类
+                case "检查类":
+                    medOrderExec.setDrugType(0);//是否为药嘱（0：否  1：是）
+                    break;
+                case "西药类":
+                case "中药类":
+                    medOrderExec.setDrugType(1);//是否为药嘱（0：否  1：是）
+                    break;
+            }
+            medOrderExec.setOrderAttr(String.valueOf(oeoriInfoMap.get("OEORIDoseFormsDesc")));//剂型描述 补液类型（如：晶体液、胶体液等）
+            String defaultStart = String.valueOf(oeoriInfoMap.get("OEORIRequireExecDate"));//要求执行日期 YYYY-MM-DD
+            String defaultEnd = String.valueOf(oeoriInfoMap.get("OEORIRequireExecTime"));//要求执行时间 hh:mm:ss
+            medOrderExec.setDefaultTimePoint(yyyyMMddHHmmssSdfToDate(defaultStart + " " + defaultEnd));//计划执行时间
+            String completeStart = String.valueOf(oeoriInfoMap.get("OEORIStopDate"));//医嘱停止日期 YYYY-MM-DD
+            String completeEnd = String.valueOf(oeoriInfoMap.get("OEORIStopTime"));//医嘱停止时间 hh:mm:ss
+            medOrderExec.setCompleteTimePoint(yyyyMMddHHmmssSdfToDate(completeStart + "" + completeEnd));//执行完成时间
+            medOrderExec.setDosage(!objectIsNull(oeoriInfoMap.get("OEORIDoseQty")) ?
+                    String.valueOf(oeoriInfoMap.get("OEORIDoseQty")) : null);//单次剂量
+            medOrderExec.setDosageUnits(!objectIsNull(oeoriInfoMap.get("OEORIDoseUnitDesc")) ?
+                    String.valueOf(oeoriInfoMap.get("OEORIDoseUnitDesc")) : null);//单次剂量单位描述
+            medOrderExec.setAllDosage(String.valueOf(oeoriInfoMap.get("OEORIOrderQty")));//医嘱数量
+            switch (String.valueOf(oeoriInfoMap.get("OEORIPriorityDesc"))) {//医嘱类型描述 长期、临时、自备长期、自备临时、出院带药
+                case "长期":
+                case "自备长期":
+                case "出院带药":
+                    medOrderExec.setRepeatIndicator(1);//医嘱类型，0：临时医嘱；1：长期医嘱
+                    break;
+                case "临时":
+                case "自备临时":
+                    medOrderExec.setRepeatIndicator(0);//医嘱类型，0：临时医嘱；1：长期医嘱
+                    break;
+            }
+            medOrderExec.setUseMode(!objectIsNull(oeoriInfoMap.get("OEORIInstrCode")) ?
+                    String.valueOf(oeoriInfoMap.get("OEORIInstrCode")) : null);//用药途径代码
+            medOrderExec.setClassType(String.valueOf(oeoriInfoMap.get("OEORIClass")));//医嘱类别代码 检查类 西药类 中药类
+            medOrderExec.setFrequency(String.valueOf(oeoriInfoMap.get("OEORIFreqDesc")));//频次描述
+            medOrderExec.setPerformSpeed(null);//流速
+            medOrderExec.setOrderStatus(Integer.valueOf(String.valueOf(oeoriInfoMap.get("OEORIStatusCode"))));//医嘱状态代码  执行状态，0：未执行；1：执行中；2：执行完毕；3：交班
+            medOrderExec.setRemark(!objectIsNull(oeoriInfoMap.get("OEORIRemarks")) ?
+                    String.valueOf(oeoriInfoMap.get("OEORIRemarks")) : null);//医嘱备注信息
+            medOrderExec.setUpdateTime(new Date());//记录最后修改时间
+            medOrderExec.setIsSync(0);//是否已同步到护理单，0：未同步；1：已同步；
+            medOrderExec.setOrderExecNum(1);//医嘱每天执行次数 默认1
+            medOrderExec.setSyncNum(1);//剩余同步次数 默认1
+            //更新同步时间为当前时间
+            medOrderExec.setRecentSyncTime(new Date());//最新同步时间
+            return medOrderExecService.insert(medOrderExec);
+        } catch (Exception e) {
+            logger.error("医嘱信息保存失败");
+            return false;
+        }
+    }
+
+
+    private Patient findPatient(Map dataMap) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("visitId", dataMap.get("PATPatientID"));//患者主索引
+        map.put("visitCode", dataMap.get("PAADMVisitNumber"));//就诊号码
+        return patientService.getPatientByConditions(map);
+    }
+
+    /**
+     * 接收医护人员字典信息
+     *
+     * @param hisRequestXml
+     * @return
+     */
+    private boolean receiveUser(String hisRequestXml) {
+        Map<String, Object> ctCareProvListMap = gainXmlData(hisRequestXml, "CT_CareProvList");
+        List<Object> ctCareProvMapList = castList(ctCareProvListMap.get("CT_CareProv"), Object.class);
+        AtomicBoolean isSaveData = new AtomicBoolean(false);
+        ctCareProvMapList.forEach(ctCareProv -> {
+            Map<String, Object> ctCareProvMap = (Map) JSON.parse(String.valueOf(ctCareProv));
+            isSaveData.set(saveUser(ctCareProvMap));
+        });
+        return isSaveData.get();
+    }
+
+    /**
+     * 新增护士信息到数据库
+     *
+     * @param ctCareProvMap
+     * @return
+     */
+    private boolean saveUser(Map<String, Object> ctCareProvMap) {
+        User user = new User();
+        user.setId(UUIDUtil.getUUID());
+        user.setCreateTime(new Date());
+        user.setUserName(String.valueOf(ctCareProvMap.get("CTCP_Desc")));//职工姓名
+        user.setLoginName(String.valueOf(ctCareProvMap.get("CTCP_Desc")));//职工姓名
+        try {
+            //1 男  2女
+            user.setSex(!objectIsNull(ctCareProvMap.get("CTCP_SexCode")) && StringUtils.equals("1", String.valueOf(ctCareProvMap.get("CTCP_SexCode"))) ?
+                    1 : 0);
+            user.setEnterTime(!objectIsNull(ctCareProvMap.get("CTCP_StartDate"))
+                    ? yyyyMMddSdfToDate(String.valueOf(ctCareProvMap.get("CTCP_StartDate"))) : null);//有效开始日期
+
+            user.setExitTime(!objectIsNull(ctCareProvMap.get("CTCP_EndDate"))
+                    ? yyyyMMddSdfToDate(String.valueOf(ctCareProvMap.get("CTCP_EndDate"))) : null);//有效结束日期
+            //1启用0停用-1删除
+            switch (String.valueOf(ctCareProvMap.get("CTCP_Status"))) {
+                case "1":
+                    user.setStatus(1);
+                    break;
+                case "0":
+                    user.setStatus(0);
+                    break;
+                case "-1":
+                    user.setStatus(-1);
+                    break;
+            }
+            // 默认123456
+            user.setPassword(!objectIsNull(ctCareProvMap.get("CTCP_PassWord"))
+                    ? MD5Util.string2MD5(String.valueOf(ctCareProvMap.get("CTCP_PassWord"))) : "e10adc3949ba59abbe56e057f20f883e");
+            //职工代码
+            user.setWorkNumber(String.valueOf(ctCareProvMap.get("CTCP_Code")));
+            //姓名
+            user.setSimplicity(!objectIsNull(ctCareProvMap.get("CTCP_Name"))
+                    ? String.valueOf(ctCareProvMap.get("CTCP_Name")) : null);
+            //是否参与排班（0：不参与 1：参与）
+            user.setIsShedual(!objectIsNull(ctCareProvMap.get("CTCP_StaffType"))
+                    && StringUtils.equals("NURSE", String.valueOf(ctCareProvMap.get("CTCP_StaffType"))) ?
+                    1 : 0);
+        } catch (Exception e) {
+            logger.error("护士用户保存失败");
+            return false;
+        }
+        return userService.insert(user);
+    }
+
+    /**
+     * 接收科室信息
+     *
+     * @param hisRequestXml
+     * @return
+     */
+    private boolean receiveDepartment(String hisRequestXml) {
+        Map<String, Object> receiveDepartmentMap = gainXmlData(hisRequestXml, "CT_DeptList");
+        List<Object> ctDeptMapList = castList(receiveDepartmentMap.get("CT_Dept"), Object.class);
+        AtomicBoolean isSaveData = new AtomicBoolean(false);
+        ctDeptMapList.forEach(ctDept -> {
+            Map<String, Object> ctDeptMap = (Map) JSON.parse(String.valueOf(ctDept));
+            isSaveData.set(saveDepartmentDictionary(ctDeptMap));
+        });
+        return isSaveData.get();
+    }
+
+    /**
+     * 新增科室信息到数据库
+     *
+     * @param ctDeptMap
+     * @return
+     */
+    private boolean saveDepartmentDictionary(Map<String, Object> ctDeptMap) {
+        DepartmentDictionary departmentDictionary = new DepartmentDictionary();
+        departmentDictionary.setId(UUIDUtil.getUUID());
+        departmentDictionary.setDepartmentCode(String.valueOf(ctDeptMap.get("CTD_Code")));
+        departmentDictionary.setDepartmentName(String.valueOf(ctDeptMap.get("CTD_Desc()")));
+        //1启用0停用-1删除
+        switch (String.valueOf(ctDeptMap.get("CTD_Status"))) {
+            case "1":
+                departmentDictionary.setStatus(1);
+                break;
+            case "0":
+                departmentDictionary.setStatus(0);
+                break;
+            case "-1":
+                departmentDictionary.setStatus(-1);
+                break;
+        }
+        return departmentDictionaryService.insert(departmentDictionary);
+    }
+
+    /**
+     * 接收病区字典信息
+     *
+     * @param hisRequestXml
+     * @return
+     */
+    private boolean receiveWard(String hisRequestXml) {
+        Map<String, Object> ctWardCtWardMap = gainXmlData(hisRequestXml, "CT_BedList");
+        List<Object> ctWardList = castList(ctWardCtWardMap.get("CT_Ward"), Object.class);
+        AtomicBoolean isSaveData = new AtomicBoolean(false);
+        ctWardList.forEach(ctWard -> {
+            Map<String, Object> ctWardMap = (Map) JSON.parse(String.valueOf(ctWard));
+            isSaveData.set(saveWardDictionary(ctWardMap));
+        });
+        return isSaveData.get();
+    }
+
+    /**
+     * 新增病区信息到数据库
+     *
+     * @param ctBedMap
+     * @return
+     */
+    private boolean saveWardDictionary(Map<String, Object> ctBedMap) {
+        WardDictionary wardDictionary = new WardDictionary();
+        wardDictionary.setId(UUIDUtil.getUUID());
+        wardDictionary.setStatus(1);
+        wardDictionary.setWardCode(String.valueOf(ctBedMap.get("CTW_Code")));
+        wardDictionary.setWardName(String.valueOf(ctBedMap.get("CTW_Desc")));
+        switch (String.valueOf(ctBedMap.get("CTW_Status"))) {//1启用0停用-1删除
+            case "1":
+                wardDictionary.setStatus(1);
+                break;
+            case "0":
+                wardDictionary.setStatus(0);
+                break;
+            case "-1":
+                wardDictionary.setStatus(-1);
+                break;
+        }
+        return wardDictionaryService.insert(wardDictionary);
+    }
+
+    /**
+     * 接收床位字典信息
+     *
+     * @param hisRequestXml
+     * @return
+     */
+    private boolean receiveBed(String hisRequestXml) {
+        Map<String, Object> receiveBedMap = gainXmlData(hisRequestXml, "CT_BedList");
+        List<Object> ctBedList = castList(receiveBedMap.get("CT_Bed"), Object.class);
+        AtomicBoolean isSaveData = new AtomicBoolean(false);
+        ctBedList.forEach(ctBed -> {
+            Map<String, Object> ctBedMap = (Map) JSON.parse(String.valueOf(ctBed));
+            isSaveData.set(saveBedDictionary(ctBedMap));
+        });
+        return isSaveData.get();
+    }
+
+    /**
+     * 新增床位信息到数据库
+     *
+     * @param ctBedMap
+     * @return
+     */
+    private boolean saveBedDictionary(Map<String, Object> ctBedMap) {
+        BedDictionary bedDictionary = new BedDictionary();
+        bedDictionary.setId(UUIDUtil.getUUID());
+        switch (String.valueOf(ctBedMap.get("CTB_Status()"))) {//1启用0停用-1删除
+            case "1":
+                bedDictionary.setStatus(1);
+                break;
+            case "0":
+                bedDictionary.setStatus(0);
+                break;
+            case "-1":
+                bedDictionary.setStatus(-1);
+                break;
+        }
+        bedDictionary.setBedCode(String.valueOf(ctBedMap.get("CTB_Code")));//床位代码
+        if (!objectIsNull(ctBedMap.get("CTB_Desc"))) {
+            bedDictionary.setBedName(String.valueOf(ctBedMap.get("CTB_Desc")));//床位描述
+        }
+        return bedDictionaryService.insert(bedDictionary);
+    }
+
+    /**
+     * 接收转科信息
+     *
+     * @param hisRequestXml
+     * @return
+     */
+    private boolean admTransaction(String hisRequestXml) throws ParseException {
+        Map<String, Object> admTransactionRtMap = gainXmlData(hisRequestXml, "AdmTransactionRt");
+        Patient patient = findPatient(admTransactionRtMap);
+        if (Objects.isNull(patient)) {
+            logger.error("该患者不存在系统，转科失败");
+            return false;
+        }
+        String exitDate = String.valueOf(admTransactionRtMap.get("PAADMTStartDate"));//转出日期
+        String exitTime = String.valueOf(admTransactionRtMap.get("PAADMTStartTime"));//转出时间
+        patient.setExitTime(yyyyMMddHHmmssSdfToDate(exitDate + " " + exitTime));//出科时间
+        patient.setToDepartmentCode(String.valueOf(admTransactionRtMap.get("PAADMTOrigDeptCode")));//转出科室代码
+
+        String enterDate = String.valueOf(admTransactionRtMap.get("PAADMTEndDate"));//转入日期
+        String enterTime = String.valueOf(admTransactionRtMap.get("PAADMTEndTime"));//转入时间
+        patient.setEnterTime(yyyyMMddHHmmssSdfToDate(enterDate + " " + enterTime));//入科时间
+        patient.setDepartmentCode(String.valueOf(admTransactionRtMap.get("PAADMTTargDeptCode")));//转入科室代码
+        patient.setWardCode(String.valueOf(admTransactionRtMap.get("PAADMTTargWardCode")));//转入病区代码
+        patient.setBedCode(String.valueOf(admTransactionRtMap.get("PAADMTTargBedCode")));//转入床位代码
+        patient.setDoctorCode(String.valueOf(admTransactionRtMap.get("PAADMTTargDocCode")));//转入医生代码
+        switch (String.valueOf(admTransactionRtMap.get("PAADMTState"))) {
+            //01转出02转入03换床04换医生
+            case "01":
+                patient.setFlag(0);//在院标志（0：出科；1：在科）
+                patient.setExitType("转科");//出科方式 (出院、转科、死亡、放弃、转院)
+                break;
+            case "02":
+            case "03":
+            case "04":
+                patient.setFlag(1);//在院标志（0：出科；1：在科）
+                break;
+            default:
+                break;
+        }
+        return transferBed(patient) && patientService.update(patient);
+    }
+
+    /**
+     * 转移床位
+     */
+    private boolean transferBed(Patient patient) {
+        if (StringUtils.isEmpty(patient.getBedCode())) {
+            return true;
+        }
+        BedArrange bedArrange = bedArrangeService.queryDataByPatientId(patient.getId());
+        if (Objects.isNull(bedArrange)) {
+            logger.error("该患者为查到之前的床号，转科失败");
+            return false;
+        }
+        if (StringUtils.equals(bedArrange.getBedCode(), patient.getBedCode())) {
+            logger.info("转入床位与之前一致，床位号无需改变");
+            return true;
+        }
+        bedArrange.setPatientId(null);
+        bedArrangeService.update(bedArrange);
+        bedArrange = bedArrangeService.queryDataByBedCode(patient.getBedCode());
+        if (Objects.isNull(bedArrange)) {
+            logger.error("系统未查询到床位，转科失败");
+            return false;
+        }
+        if (Objects.nonNull(bedArrange.getPatientId())) {
+            logger.error("该床位存在患者，转科失败");
+            return false;
+        }
+        bedArrange.setPatientId(patient.getId());
+        bedArrangeService.update(bedArrange);
+        return true;
+    }
+
+    /**
+     * 取消住院登记
+     *
+     * @param hisRequestXml
+     * @return
+     */
+    private boolean inpatientEncounterCancel(String hisRequestXml) throws ParseException {
+        Map<String, Object> inpatientEncounterCancelRtMap = gainXmlData(hisRequestXml, "InpatientEncounterCancelRt");
+        Patient patient = findPatient(inpatientEncounterCancelRtMap);
+        if (Objects.isNull(patient)) {
+            return false;
+        }
+        patient.setFlag(0);
+        patient.setExitType("出院");
+        String date = String.valueOf(inpatientEncounterCancelRtMap.get("UpdateDate"));
+        String time = String.valueOf(inpatientEncounterCancelRtMap.get("UpdateTime"));
+        patient.setExitTime(yyyyMMddHHmmssSdfToDate(date + " " + time));
+        BedArrange bedArrange = bedArrangeService.queryDataByPatientId(patient.getId());
+        if (Objects.isNull(bedArrange)) {
+            logger.error("未查询到床位安排，患者出院信息接收失败");
+            return false;
+        }
+        bedArrange.setPatientId(null);
+        //更新床位信息并且更新患者信息
+        return bedArrangeService.update(bedArrange) && patientService.update(patient);
+    }
+
+    /**
+     * 入院登记信息接收
+     *
+     * @param hisRequestXml
+     * @return
+     * @throws ParseException
+     */
+    private boolean inpatientEncounterStarted(String hisRequestXml) throws ParseException {
+        Map<String, Object> inpatientEncounterStartedRtMap = gainXmlData(hisRequestXml, "InpatientEncounterStartedRt");
+        Patient patient = patientService.getPatientByVisitId(String.valueOf(inpatientEncounterStartedRtMap.get("PATPatientID")));
+        if (Objects.isNull(patient)) {
+            logger.error("inpatientEncounterStarted -> 患者在系统不存在");
+            return false;
+        }
+        patient.setVisitCode(String.valueOf(inpatientEncounterStartedRtMap.get("PAADMVisitNumber")));
+        patient.setFlag(1);//在院标志（0：出科；1：在科）
+        patient.setWardCode(String.valueOf(inpatientEncounterStartedRtMap.get("PAADMAdmWardCode")));//入院病区代码
+        patient.setBedCode(String.valueOf(inpatientEncounterStartedRtMap.get("PAADMCurBedNo")));//病床号
+        patient.setDepartmentCode(String.valueOf(inpatientEncounterStartedRtMap.get("PAADMAdmDeptCode")));
+        String date = String.valueOf(inpatientEncounterStartedRtMap.get("PAADMStartDate"));
+        String time = String.valueOf(inpatientEncounterStartedRtMap.get("PAADMStartTime"));
+        patient.setVisitTime(yyyyMMddHHmmssSdfToDate(date + " " + time));//入院日期时间
+        patient.setEnterTime(yyyyMMddHHmmssSdfToDate(date + " " + time));//入科时间
+        /** 诊断信息赋值 **/
+        Map<String, Object> pAASMDiagnoseMap = getPAADMDiagnoseMap(inpatientEncounterStartedRtMap);
+        patient.setDiagnosisCode(String.valueOf(pAASMDiagnoseMap.get("PADDiagCode")));//诊断代码
+        patient.setDiagnosisName(String.valueOf(pAASMDiagnoseMap.get("PADDiagDesc")));//诊断描述
+        patient.setDoctorCode(String.valueOf(pAASMDiagnoseMap.get("PADDiagDocCode")));//诊断医生代码
+        BedArrange bedArrange = bedArrangeService.queryDataByBedCode(patient.getBedCode());
+        if (Objects.isNull(bedArrange)) {
+            logger.error("床位不存在，病人入院接收失败");
+            return false;
+        }
+        bedArrange.setPatientId(patient.getId());
+        //更新床位信息并且更新患者信息
+        return bedArrangeService.update(bedArrange) && patientService.update(patient);
+    }
+
+    /**
+     * 获取诊断信息
+     *
+     * @param inpatientEncounterStartedRtMap
+     * @return
+     */
+    private Map<String, Object> getPAADMDiagnoseMap(Map<String, Object> inpatientEncounterStartedRtMap) {
+        Map<String, Object> map = xmlToJsonMap(inpatientEncounterStartedRtMap.get("PAADMDiagnoseList"));
+        return xmlToJsonMap(map.get("PAADMDiagnose"));
+    }
 
     /**
      * 患者基本信息接收
@@ -92,7 +650,7 @@ public class HisWebServiceImpl implements HisWebService {
                 && Objects.nonNull(patientRegistryRtMap.get("PATDeceasedTime"))) {
             String deceasedDate = String.valueOf(patientRegistryRtMap.get("PATDeceasedDate"));
             String deceasedTime = String.valueOf(patientRegistryRtMap.get("PATDeceasedTime"));
-            patient.setDeathTime(yyyyMMddHHmmsSdfToDate(deceasedDate + " " + deceasedTime));
+            patient.setDeathTime(yyyyMMddHHmmssSdfToDate(deceasedDate + " " + deceasedTime));
         }
         Map<String, Object> pATIdentityMap = getPATIdentityMap(patientRegistryRtMap);
         if (!objectIsNull(pATIdentityMap.get("PATIdentityNum"))) {
@@ -237,10 +795,32 @@ public class HisWebServiceImpl implements HisWebService {
         return String.valueOf(age);
     }
 
+    private <T> List<T> castList(Object obj, Class<T> clazz) {
+        List<T> result = new ArrayList<T>();
+        if (obj instanceof List<?>) {
+            for (Object o : (List<?>) obj) {
+                result.add(clazz.cast(o));
+            }
+            return result;
+        }
+        return null;
+    }
+
     public void test(String xml) {
-        Map<String, Object> patientRegistryRtMap = gainXmlData(xml, "PatientRegistryRt");
+        //Map<String, Object> patientRegistryRtMap = gainXmlData(xml, "PatientRegistryRt");
+        Map<String, Object> patientRegistryRtMap = gainXmlData(xml, "CT_BedList");
         System.out.println(patientRegistryRtMap);
-        Map<String, Object> patRelationAddressMap = getPATRelationMap(patientRegistryRtMap);
+        List<Object> ctBed = castList(patientRegistryRtMap.get("CT_Bed"), Object.class);
+        System.out.println(ctBed.size());
+
+        ctBed.forEach(object -> {
+            System.out.println(object);
+
+            Map<String, Object> maps = (Map) JSON.parse(String.valueOf(object));
+            System.out.println(maps.get("CTB_CodesystemCode"));
+        });
+
+
        /* Map<String, Object> map = xmlToJsonMap(patientRegistryRtMap.get("PATRelationList"));
         Map<String, Object> pATRElationAddressMap = xmlToJsonMap(map.get("PATRelation"));
         Map<String, Object> pATRelationAddressListMap = xmlToJsonMap(pATRElationAddressMap.get("PATRelationAddressList"));
@@ -256,14 +836,56 @@ public class HisWebServiceImpl implements HisWebService {
 //        System.out.println(patRelationAddressMap.get("PATIdentityNum"));
         System.out.println("-------------------------------------");
         System.out.println("-------------------------------------");
-        System.out.println(patRelationAddressMap);
+       /* System.out.println(patRelationAddressMap);
 
-        System.out.println(objectIsNull(patRelationAddressMap.get("PATRelationName")));
+        System.out.println(objectIsNull(patRelationAddressMap.get("PATRelationName")));*/
 
     }
 
     public static void main(String[] args) {
-        String xml = "<Request>\n" +
+        String ctXml = "<Request>\n" +
+                "\t<Header>\n" +
+                "\t\t<SourceSystem>02</SourceSystem>\n" +
+                "\t\t<MessageID>23950</MessageID>\n" +
+                "\t</Header>\n" +
+                "\t<Body>\n" +
+                "\t\t<CT_BedList>\n" +
+                "\t\t\t\t<CT_Bed>\n" +
+                "\t\t\t\t\t<CTB_BedType>床位类型</CTB_BedType>\n" +
+                "\t\t\t\t\t<CTB_Code>123</CTB_Code>\n" +
+                "\t\t\t\t\t<CTB_CodesystemCode>代码表类型</CTB_CodesystemCode>\n" +
+                "\t\t\t\t\t<CTB_Desc>描述</CTB_Desc>\n" +
+                "\t\t\t\t\t<CTB_HosCode>医院编号</CTB_HosCode>\n" +
+                "\t\t\t\t\t<CTB_Remarks>备注</CTB_Remarks>\n" +
+                "\t\t\t\t\t<CTB_RoomCode>房间号</CTB_RoomCode>\n" +
+                "\t\t\t\t\t<CTB_Status>状态（1启用0停用-1删除）</CTB_Status>\n" +
+                "\t\t\t\t\t<CTB_UpdateDate>最后更新日期</CTB_UpdateDate>\n" +
+                "\t\t\t\t\t<CTB_UpdateTime>最后更新时间</CTB_UpdateTime>\n" +
+                "\t\t\t\t\t<CTB_UpdateUserCode>最后更新人编码</CTB_UpdateUserCode>\n" +
+                "\t\t\t\t\t<CTB_WardCode>所属病区</CTB_WardCode>\n" +
+                "\t\t\t\t</CT_Bed>\n" +
+                "\t\t\t\t<CT_Bed>\n" +
+                "\t\t\t\t\t<CTB_BedType>床位类型</CTB_BedType>\n" +
+                "\t\t\t\t\t<CTB_Code>456</CTB_Code>\n" +
+                "\t\t\t\t\t<CTB_CodesystemCode>代码表类型</CTB_CodesystemCode>\n" +
+                "\t\t\t\t\t<CTB_Desc>描述</CTB_Desc>\n" +
+                "\t\t\t\t\t<CTB_HosCode>医院编号</CTB_HosCode>\n" +
+                "\t\t\t\t\t<CTB_Remarks>备注</CTB_Remarks>\n" +
+                "\t\t\t\t\t<CTB_RoomCode>房间号</CTB_RoomCode>\n" +
+                "\t\t\t\t\t<CTB_Status>状态（1启用0停用-1删除）</CTB_Status>\n" +
+                "\t\t\t\t\t<CTB_UpdateDate>最后更新日期</CTB_UpdateDate>\n" +
+                "\t\t\t\t\t<CTB_UpdateTime>最后更新时间</CTB_UpdateTime>\n" +
+                "\t\t\t\t\t<CTB_UpdateUserCode>最后更新人编码</CTB_UpdateUserCode>\n" +
+                "\t\t\t\t\t<CTB_WardCode>所属病区</CTB_WardCode>\n" +
+                "\t\t\t\t</CT_Bed>\n" +
+                "\t\t</CT_BedList>\n" +
+                "\t</Body>\n" +
+                "</Request>";
+
+        HisWebServiceImpl hisWebService = new HisWebServiceImpl();
+        hisWebService.test(ctXml);
+
+        /*String xml = "<Request>\n" +
                 "\t<Header>\n" +
                 "\t\t<SourceSystem>02</SourceSystem>\n" +
                 "\t\t<MessageID>23950</MessageID>\n" +
@@ -374,30 +996,7 @@ public class HisWebServiceImpl implements HisWebService {
                 "\t\t\t<UpdateTime>17:29:33</UpdateTime>\n" +
                 "\t\t</PatientRegistryRt>\n" +
                 "\t</Body>\n" +
-                "</Request>";
-       /* HisWebService hisWebService = new HisWebServiceImpl();
-        hisWebService.hisService("T0004",xml);*/
-
-        /*JSONObject xmlJSONObj = JSONObject.fromObject(XML.toJSONObject(xml));
-
-        Map<String, Object> messageMap = com.alibaba.fastjson.JSONObject.parseObject(com.alibaba.fastjson.JSONObject.toJSONString(xmlJSONObj), HashMap.class);
-        //String jsonObject2 = JSON.toJSONString(users);
-        //System.out.println(messageMap);
-
-        //System.out.println(messageMap.get("Request"));
-
-
-        Map<String, Object> bodyMap = com.alibaba.fastjson.JSONObject.parseObject(com.alibaba.fastjson.JSONObject.toJSONString(messageMap.get("Request")), HashMap.class);
-
-        //System.out.println(bodyMap.get("Body"));
-
-        Map<String, Object> patientRegistryRtMap = com.alibaba.fastjson.JSONObject.parseObject(com.alibaba.fastjson.JSONObject.toJSONString(bodyMap.get("Body")), HashMap.class);
-
-        System.out.println(patientRegistryRtMap.get("PatientRegistryRt"));*/
-
-        HisWebServiceImpl hisWebService = new HisWebServiceImpl();
-        hisWebService.test(xml);
-        //PATPatientID
+                "</Request>";*/
 
     }
 }
