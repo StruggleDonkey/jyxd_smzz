@@ -735,7 +735,10 @@ public class HisWebServiceImpl implements HisWebService {
             patient.setContactMan((String) patRelationMap.get("PATRelationName"));//患者联系人姓名
         }
         if (!objectIsNull(patRelationMap.get("PATRelationPhone"))) {
-            patient.setContactMan(String.valueOf(patRelationMap.get("PATRelationPhone")));
+            patient.setContactPhone(String.valueOf(patRelationMap.get("PATRelationPhone")));
+        }
+        if (!objectIsNull(pATIdentityMap.get("PATTelephone"))) {
+            patient.setPhone(String.valueOf(patRelationMap.get("PATTelephone")));//患者电话
         }
         return patientService.insert(patient);
     }

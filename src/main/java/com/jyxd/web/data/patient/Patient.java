@@ -26,7 +26,7 @@ public class Patient implements Serializable {
      */
     @Id
     @Column(name = "id", length = 32, nullable = false)
-    @GeneratedValue(generator="system-uuid")
+    @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
     private String id;
 
@@ -308,6 +308,12 @@ public class Patient implements Serializable {
     private String contactPhone;
 
     /**
+     *
+     */
+    @Column(name = "phone")
+    private String phone;
+
+    /**
      * 入科信息确认(0:未确认，1:已确认)
      */
     @Column(name = "is_confirmed")
@@ -346,7 +352,7 @@ public class Patient implements Serializable {
     /**
      * 自增主键ID
      */
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "int_id")
     private int intId;
