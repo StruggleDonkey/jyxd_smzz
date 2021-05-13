@@ -1,15 +1,19 @@
 package com.jyxd.web.controller.basic;
 
 import com.jyxd.web.data.basic.CatheterMaintain;
+import com.jyxd.web.data.basic.CustomContent;
 import com.jyxd.web.data.basic.CustomField;
 import com.jyxd.web.data.basic.InOutAmount;
+import com.jyxd.web.data.user.User;
 import com.jyxd.web.service.basic.CatheterMaintainService;
+import com.jyxd.web.service.basic.CustomContentService;
 import com.jyxd.web.service.basic.CustomFieldService;
 import com.jyxd.web.service.basic.InOutAmountService;
 import com.jyxd.web.util.HttpCode;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Controller
@@ -32,6 +38,9 @@ public class InOutAmountController {
 
     @Autowired
     private CustomFieldService customFieldService;
+
+    @Autowired
+    private CustomContentService customContentService;
 
     /**
      * 增加一条出入量表（二表合一）记录
@@ -183,6 +192,145 @@ public class InOutAmountController {
             json.put("data",JSONArray.fromObject(amountList));
         }
         json.put("code",HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
+    /**
+     * 病人管理-护理文书-护理单文书-出入量-保存出入量
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/saveData")
+    @ResponseBody
+    public String saveData(@RequestBody(required=false) Map<String,Object> map, HttpSession session){
+        JSONObject json=new JSONObject();
+        json.put("code",HttpCode.FAILURE_CODE.getCode());
+        json.put("msg","失败");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        User user=(User)session.getAttribute("user");
+        try {
+            if(map!=null && map.containsKey("id") ){
+                //有id 编辑
+                InOutAmount inOutAmount=inOutAmountService.queryData(map.get("id").toString());
+                if(inOutAmount!=null){
+                    inOutAmount.setStatus(map.containsKey("status") && StringUtils.isNotEmpty(map.get("status").toString()) ? Integer.valueOf(map.get("status").toString()) : 1);
+                    inOutAmount.setDataTime(map.containsKey("dataTime") && StringUtils.isNotEmpty(map.get("dataTime").toString()) ? format.parse(map.get("dataTime").toString()) : null);
+                    inOutAmount.setOrderCode(map.containsKey("orderCode") && StringUtils.isNotEmpty(map.get("orderCode").toString()) ? map.get("orderCode").toString() : null);
+                    inOutAmount.setOrderNo(map.containsKey("orderNo") && StringUtils.isNotEmpty(map.get("orderNo").toString()) ? map.get("orderNo").toString() : null);
+                    inOutAmount.setOrderSubNo(map.containsKey("orderSubNo") && StringUtils.isNotEmpty(map.get("orderSubNo").toString()) ? map.get("orderSubNo").toString() : null);
+                    inOutAmount.setOrderName(map.containsKey("orderName") && StringUtils.isNotEmpty(map.get("orderName").toString()) ? map.get("orderName").toString() : null);
+                    inOutAmount.setDosage(map.containsKey("dosage") && StringUtils.isNotEmpty(map.get("dosage").toString()) ? map.get("dosage").toString() : null);
+                    inOutAmount.setAllowanceDosage(map.containsKey("allowanceDosage") && StringUtils.isNotEmpty(map.get("allowanceDosage").toString()) ? map.get("allowanceDosage").toString() : null);
+                    inOutAmount.setPiss(map.containsKey("piss") && StringUtils.isNotEmpty(map.get("piss").toString()) ? map.get("piss").toString() : null);
+                    inOutAmount.setFeces(map.containsKey("faces") && StringUtils.isNotEmpty(map.get("faces").toString()) ? map.get("faces").toString() : null);
+                    inOutAmount.setFeces(map.containsKey("faces") && StringUtils.isNotEmpty(map.get("faces").toString()) ? map.get("faces").toString() : null);
+                    inOutAmount.setDrainage(map.containsKey("drainage") && StringUtils.isNotEmpty(map.get("drainage").toString()) ? map.get("drainage").toString() : null);
+                    inOutAmount.setRemark(map.containsKey("remark") && StringUtils.isNotEmpty(map.get("remark").toString()) ? map.get("remark").toString() : null);
+                    inOutAmount.setSignature(map.containsKey("signature") && StringUtils.isNotEmpty(map.get("signature").toString()) ? map.get("signature").toString() : null);
+                    inOutAmount.setCheckSignature(map.containsKey("checkSignature") && StringUtils.isNotEmpty(map.get("checkSignature").toString()) ? map.get("checkSignature").toString() : null);
+                    inOutAmount.setIllnessRecords(map.containsKey("illnessRecords") && StringUtils.isNotEmpty(map.get("illnessRecords").toString()) ? map.get("illnessRecords").toString() : null);
+                    inOutAmount.setBalance(map.containsKey("balance") && StringUtils.isNotEmpty(map.get("balance").toString()) ? map.get("balance").toString() : null);
+                    if(user!=null){
+                        inOutAmount.setOperatorCode(user.getLoginName());
+                    }
+                    inOutAmount.setType(map.containsKey("type") && StringUtils.isNotEmpty(map.get("type").toString()) ? Integer.valueOf(map.get("type").toString()) : 1);
+                    inOutAmountService.update(inOutAmount);
+                    //根据时间 病人主键id 表名 查询对象
+                    List<CustomContent> list=customContentService.getCustomContentByTime(map);
+                    if(list!=null && list.size()>0){
+                        CustomContent customContent=list.get(0);
+                        if(customContent!=null){
+                            customContent.setContentOne(map.containsKey("contentOne") && StringUtils.isNotEmpty(map.get("contentOne").toString()) ? map.get("contentOne").toString(): null );
+                            customContent.setContentTwo(map.containsKey("contentTwo") && StringUtils.isNotEmpty(map.get("contentTwo").toString()) ? map.get("contentTwo").toString(): null );
+                            customContent.setContentThree(map.containsKey("contentThree") && StringUtils.isNotEmpty(map.get("contentThree").toString()) ? map.get("contentThree").toString(): null );
+                            customContent.setContentFour(map.containsKey("contentFour") && StringUtils.isNotEmpty(map.get("contentFour").toString()) ? map.get("contentFour").toString(): null );
+                            customContent.setContentFive(map.containsKey("contentFive") && StringUtils.isNotEmpty(map.get("contentFive").toString()) ? map.get("contentFive").toString(): null );
+                            customContent.setContentSix(map.containsKey("contentSix") && StringUtils.isNotEmpty(map.get("contentSix").toString()) ? map.get("contentSix").toString(): null );
+                            customContent.setContentSeven(map.containsKey("contentSeven") && StringUtils.isNotEmpty(map.get("contentSeven").toString()) ? map.get("contentSeven").toString(): null );
+                            customContent.setContentEight(map.containsKey("contentEight") && StringUtils.isNotEmpty(map.get("contentEight").toString()) ? map.get("contentEight").toString(): null );
+                            customContent.setContentNine(map.containsKey("contentNine") && StringUtils.isNotEmpty(map.get("contentNine").toString()) ? map.get("contentNine").toString(): null );
+                            customContent.setContentTen(map.containsKey("contentTen") && StringUtils.isNotEmpty(map.get("contentTen").toString()) ? map.get("contentTen").toString(): null );
+                            customContentService.update(customContent);
+                        }else {
+                            CustomContent data=new CustomContent();
+                            data.setId(UUIDUtil.getUUID());
+                            data.setAssociatedTable(map.get("associatedTable").toString());
+                            data.setPatientId(map.get("patientId").toString());
+                            data.setDataTime(format.parse(map.get("dataTime").toString()));
+                            data.setCreateTime(new Date());
+                            data.setContentOne(map.containsKey("contentOne") && StringUtils.isNotEmpty(map.get("contentOne").toString()) ? map.get("contentOne").toString(): null );
+                            data.setContentTwo(map.containsKey("contentTwo") && StringUtils.isNotEmpty(map.get("contentTwo").toString()) ? map.get("contentTwo").toString(): null );
+                            data.setContentThree(map.containsKey("contentThree") && StringUtils.isNotEmpty(map.get("contentThree").toString()) ? map.get("contentThree").toString(): null );
+                            data.setContentFour(map.containsKey("contentFour") && StringUtils.isNotEmpty(map.get("contentFour").toString()) ? map.get("contentFour").toString(): null );
+                            data.setContentFive(map.containsKey("contentFive") && StringUtils.isNotEmpty(map.get("contentFive").toString()) ? map.get("contentFive").toString(): null );
+                            data.setContentSix(map.containsKey("contentSix") && StringUtils.isNotEmpty(map.get("contentSix").toString()) ? map.get("contentSix").toString(): null );
+                            data.setContentSeven(map.containsKey("contentSeven") && StringUtils.isNotEmpty(map.get("contentSeven").toString()) ? map.get("contentSeven").toString(): null );
+                            data.setContentEight(map.containsKey("contentEight") && StringUtils.isNotEmpty(map.get("contentEight").toString()) ? map.get("contentEight").toString(): null );
+                            data.setContentNine(map.containsKey("contentNine") && StringUtils.isNotEmpty(map.get("contentNine").toString()) ? map.get("contentNine").toString(): null );
+                            data.setContentTen(map.containsKey("contentTen") && StringUtils.isNotEmpty(map.get("contentTen").toString()) ? map.get("contentTen").toString(): null );
+                            customContentService.insert(data);
+                        }
+                    }
+                    json.put("msg","更新成功");
+                    json.put("code",HttpCode.OK_CODE.getCode());
+                }
+            }else{
+                //没id 新增
+                InOutAmount inOutAmount=new InOutAmount();
+                Date newDate=new Date();
+                inOutAmount.setId(UUIDUtil.getUUID());
+                inOutAmount.setCreateTime(newDate);
+                inOutAmount.setStatus(1);
+                inOutAmount.setVisitId(map.containsKey("visitId") && StringUtils.isNotEmpty(map.get("visitId").toString()) ? map.get("visitId").toString() : null);
+                inOutAmount.setVisitCode(map.containsKey("visitCode") && StringUtils.isNotEmpty(map.get("visitCode").toString()) ? map.get("visitCode").toString() : null);
+                inOutAmount.setPatientId(map.containsKey("patientId") && StringUtils.isNotEmpty(map.get("patientId").toString()) ? map.get("patientId").toString() : null);
+                inOutAmount.setDataTime(map.containsKey("dataTime") && StringUtils.isNotEmpty(map.get("dataTime").toString()) ? format.parse(map.get("dataTime").toString()) : null);
+                inOutAmount.setOrderCode(map.containsKey("orderCode") && StringUtils.isNotEmpty(map.get("orderCode").toString()) ? map.get("orderCode").toString() : null);
+                inOutAmount.setOrderNo(map.containsKey("orderNo") && StringUtils.isNotEmpty(map.get("orderNo").toString()) ? map.get("orderNo").toString() : null);
+                inOutAmount.setOrderSubNo(map.containsKey("orderSubNo") && StringUtils.isNotEmpty(map.get("orderSubNo").toString()) ? map.get("orderSubNo").toString() : null);
+                inOutAmount.setOrderName(map.containsKey("orderName") && StringUtils.isNotEmpty(map.get("orderName").toString()) ? map.get("orderName").toString() : null);
+                inOutAmount.setDosage(map.containsKey("dosage") && StringUtils.isNotEmpty(map.get("dosage").toString()) ? map.get("dosage").toString() : null);
+                inOutAmount.setAllowanceDosage(map.containsKey("allowanceDosage") && StringUtils.isNotEmpty(map.get("allowanceDosage").toString()) ? map.get("allowanceDosage").toString() : null);
+                inOutAmount.setPiss(map.containsKey("piss") && StringUtils.isNotEmpty(map.get("piss").toString()) ? map.get("piss").toString() : null);
+                inOutAmount.setFeces(map.containsKey("faces") && StringUtils.isNotEmpty(map.get("faces").toString()) ? map.get("faces").toString() : null);
+                inOutAmount.setFeces(map.containsKey("faces") && StringUtils.isNotEmpty(map.get("faces").toString()) ? map.get("faces").toString() : null);
+                inOutAmount.setDrainage(map.containsKey("drainage") && StringUtils.isNotEmpty(map.get("drainage").toString()) ? map.get("drainage").toString() : null);
+                inOutAmount.setRemark(map.containsKey("remark") && StringUtils.isNotEmpty(map.get("remark").toString()) ? map.get("remark").toString() : null);
+                inOutAmount.setSignature(map.containsKey("signature") && StringUtils.isNotEmpty(map.get("signature").toString()) ? map.get("signature").toString() : null);
+                inOutAmount.setCheckSignature(map.containsKey("checkSignature") && StringUtils.isNotEmpty(map.get("checkSignature").toString()) ? map.get("checkSignature").toString() : null);
+                inOutAmount.setIllnessRecords(map.containsKey("illnessRecords") && StringUtils.isNotEmpty(map.get("illnessRecords").toString()) ? map.get("illnessRecords").toString() : null);
+                inOutAmount.setBalance(map.containsKey("balance") && StringUtils.isNotEmpty(map.get("balance").toString()) ? map.get("balance").toString() : null);
+                if(user!=null){
+                    inOutAmount.setOperatorCode(user.getLoginName());
+                }
+                inOutAmount.setType(map.containsKey("type") && StringUtils.isNotEmpty(map.get("type").toString()) ? Integer.valueOf(map.get("type").toString()) : 1);
+                inOutAmountService.insert(inOutAmount);
+                //新增自定义字段内容表
+                if(map.containsKey("associatedTable") && StringUtils.isNotEmpty(map.get("associatedTable").toString())){
+                    CustomContent customContent=new CustomContent();
+                    customContent.setId(UUIDUtil.getUUID());
+                    customContent.setAssociatedTable(map.get("associatedTable").toString());
+                    customContent.setPatientId(map.get("patientId").toString());
+                    customContent.setDataTime(format.parse(map.get("dataTime").toString()));
+                    customContent.setCreateTime(newDate);
+                    customContent.setContentOne(map.containsKey("contentOne") && StringUtils.isNotEmpty(map.get("contentOne").toString()) ? map.get("contentOne").toString(): null );
+                    customContent.setContentTwo(map.containsKey("contentTwo") && StringUtils.isNotEmpty(map.get("contentTwo").toString()) ? map.get("contentTwo").toString(): null );
+                    customContent.setContentThree(map.containsKey("contentThree") && StringUtils.isNotEmpty(map.get("contentThree").toString()) ? map.get("contentThree").toString(): null );
+                    customContent.setContentFour(map.containsKey("contentFour") && StringUtils.isNotEmpty(map.get("contentFour").toString()) ? map.get("contentFour").toString(): null );
+                    customContent.setContentFive(map.containsKey("contentFive") && StringUtils.isNotEmpty(map.get("contentFive").toString()) ? map.get("contentFive").toString(): null );
+                    customContent.setContentSix(map.containsKey("contentSix") && StringUtils.isNotEmpty(map.get("contentSix").toString()) ? map.get("contentSix").toString(): null );
+                    customContent.setContentSeven(map.containsKey("contentSeven") && StringUtils.isNotEmpty(map.get("contentSeven").toString()) ? map.get("contentSeven").toString(): null );
+                    customContent.setContentEight(map.containsKey("contentEight") && StringUtils.isNotEmpty(map.get("contentEight").toString()) ? map.get("contentEight").toString(): null );
+                    customContent.setContentNine(map.containsKey("contentNine") && StringUtils.isNotEmpty(map.get("contentNine").toString()) ? map.get("contentNine").toString(): null );
+                    customContent.setContentTen(map.containsKey("contentTen") && StringUtils.isNotEmpty(map.get("contentTen").toString()) ? map.get("contentTen").toString(): null );
+                    customContentService.insert(customContent);
+                }
+                json.put("code",HttpCode.OK_CODE.getCode());
+                json.put("msg","成功");
+            }
+        }catch (Exception e){
+            logger.info("病人管理-护理文书-护理单文书-出入量-保存出入量:"+e);
+        }
         return json.toString();
     }
 

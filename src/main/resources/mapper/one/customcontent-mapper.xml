@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyxd.web.dao.basic.CustomContentDao">
+
+    <resultMap id="customContentMap" type="com.jyxd.web.data.basic.CustomContent">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
+        <result column="associated_table" property="associatedTable" jdbcType="VARCHAR"/>
+        <result column="content_one" property="contentOne" jdbcType="VARCHAR"/>
+        <result column="content_two" property="contentTwo" jdbcType="VARCHAR"/>
+        <result column="content_three" property="contentThree" jdbcType="VARCHAR"/>
+        <result column="content_four" property="contentFour" jdbcType="VARCHAR"/>
+        <result column="content_five" property="contentFive" jdbcType="VARCHAR"/>
+        <result column="content_six" property="contentSix" jdbcType="VARCHAR"/>
+        <result column="content_seven" property="contentSeven" jdbcType="VARCHAR"/>
+        <result column="content_eight" property="contentEight" jdbcType="VARCHAR"/>
+        <result column="content_nine" property="contentNine" jdbcType="VARCHAR"/>
+        <result column="content_ten" property="contentTen" jdbcType="VARCHAR"/>
+        <result column="data_time" property="dataTime" jdbcType="DATE"/>
+        <result column="create_time" property="createTime" jdbcType="DATE"/>
+    </resultMap>
+    
+    <sql id="customContent_colums">id,patient_id,associated_table,content_one,content_two,content_three,content_four,content_five,content_six,
+                                    content_seven,content_eight,content_nine,content_ten,data_time,create_time</sql>
+
+    <sql id="customContent_propertys">#{id},#{patientId},#{associatedTable},#{contentOne},#{contentTwo},#{contentThree},#{contentFour},#{contentFive},
+                                    #{contentSix},#{contentSeven},#{contentEight},#{contentNine},#{contentTen},#{dataTime},#{createTime}</sql>
+
+    <sql id="customContent_update">patient_id=#{patientId},associated_table=#{associatedTable},content_one=#{contentOne},content_two=#{contentTwo},
+                              content_three=#{contentThree},content_four=#{contentFour},content_five=#{contentFive},content_six=#{contentSix},
+                               content_seven=#{contentSeven},content_eight=#{contentEight},content_nine=#{contentNine},content_ten=#{contentTen},
+                               data_time=#{dataTime},create_time=#{createTime}</sql>
+
+    <insert id="insert">
+        insert into
+        table_custom_content(<include refid="customContent_colums"></include>)
+        values (<include refid="customContent_propertys"></include>)
+    </insert>
+
+    <update id="update" parameterType="com.jyxd.web.data.basic.CustomContent" >
+        update
+        table_custom_content
+        set <include refid="customContent_update"></include>
+        where
+          id=#{id}
+    </update>
+
+    <select id="queryData" resultMap="customContentMap" parameterType="java.lang.String">
+        select
+          <include refid="customContent_colums"></include>
+        from
+        table_custom_content
+        where
+          id=#{id}
+    </select>
+
+    <select id="queryList" resultMap="customContentMap">
+        select
+          <include refid="customContent_colums"></include>
+        from
+        table_custom_content
+        where
+          1=1
+        <if test="associatedTable != null and associatedTable != ''">
+            and   associated_table= #{associatedTable}
+        </if>
+        <if test="patientId != null and patientId != ''">
+            and   patient_id= #{patientId}
+        </if>
+        <if test="dataTime != null and dataTime != ''">
+        AND date_format(
+        data_time,
+        '%Y%m%d %H%i'
+        ) = date_format(
+        #{dataTime},
+        '%Y%m%d %H%i'
+        )
+        </if>
+        order by sort
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+          count(id)
+        from
+        table_custom_content
+        where
+        1=1
+        <if test="associatedTable != null and associatedTable != ''">
+            and   associated_table= #{associatedTable}
+        </if>
+        <if test="patientId != null and patientId != ''">
+            and   patient_id= #{patientId}
+        </if>
+        <if test="dataTime != null and dataTime != ''">
+            AND date_format(
+            data_time,
+            '%Y%m%d %H%i'
+            ) = date_format(
+            #{dataTime},
+            '%Y%m%d %H%i'
+            )
+        </if>
+    </select>
+
+    <select id="getCustomContentByTime" resultMap="customContentMap">
+        select
+        <include refid="customContent_colums"></include>
+        from
+        table_custom_content
+        where
+        1=1
+        <if test="associatedTable != null and associatedTable != ''">
+            and   associated_table= #{associatedTable}
+        </if>
+        <if test="patientId != null and patientId != ''">
+            and   patient_id= #{patientId}
+        </if>
+        <if test="dataTime != null and dataTime != ''">
+            AND date_format(
+            data_time,
+            '%Y%m%d %H%i'
+            ) = date_format(
+            #{dataTime},
+            '%Y%m%d %H%i'
+            )
+        </if>
+        order by data_time desc
+    </select>
+
+</mapper>

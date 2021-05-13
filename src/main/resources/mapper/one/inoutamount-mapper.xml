@@ -122,17 +122,19 @@
         IFNULL(tub.user_name,"") as signature,
         IFNULL(tuc.user_name,"") as check_signature,
         tioa.status as status,
-        tioa.type as type,
-        <foreach collection="list" item="customField" index="index" open="" separator="," close="">
-            IFNULL(tuc.${customField.filedCode},"") as #{customField.filedName}
-        </foreach>
+        tioa.type as type
+        <if test="list != null and list != ''">
+            <foreach collection="list" item="customField" index="index" open="," separator="," close="">
+                IFNULL(tuc.${customField.filedCode},"") as #{customField.filedName}
+            </foreach>
+        </if>
         FROM
         table_in_out_amount tioa
         LEFT JOIN table_user tua ON tua.login_name=tioa.operator_code
         LEFT JOIN table_user tub ON tub.login_name=tioa.signature
         LEFT JOIN table_user tuc ON tuc.login_name=tioa.check_signature
-        LEFT JOIN table_custom_content tco ON tco.patient_id=toa.patient_id
-        AND date_format(toa.data_time, '%Y-%m-%d %H:%i:%s')=date_format(tco.data_time, '%Y-%m-%d %H:%i:%s')
+        LEFT JOIN table_custom_content tco ON tco.patient_id=tioa.patient_id
+        AND date_format(tioa.data_time, '%Y-%m-%d %H:%i')=date_format(tco.data_time, '%Y-%m-%d %H:%i')
         AND tco.associated_table='table_in_out_amount'
         WHERE 1=1
         AND tioa.status!=-1
@@ -159,7 +161,7 @@
         LEFT JOIN table_user tub ON tub.login_name=tioa.signature
         LEFT JOIN table_user tuc ON tuc.login_name=tioa.check_signature
         LEFT JOIN table_custom_content tco ON tco.patient_id=toa.patient_id
-        AND date_format(toa.data_time, '%Y-%m-%d %H:%i:%s')=date_format(tco.data_time, '%Y-%m-%d %H:%i:%s')
+        AND date_format(tioa.data_time, '%Y-%m-%d %H:%i')=date_format(tco.data_time, '%Y-%m-%d %H:%i')
         AND tco.associated_table='table_in_out_amount'
         WHERE 1=1
         AND tioa.status!=-1

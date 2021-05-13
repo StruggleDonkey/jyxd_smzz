@@ -9,15 +9,16 @@
         <result column="associated_table" property="associatedTable" jdbcType="VARCHAR"/>
         <result column="operator_code" property="operatorCode" jdbcType="VARCHAR"/>
         <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="sort" property="sort" jdbcType="INTEGER"/>
         <result column="create_time" property="createTime" jdbcType="DATE"/>
     </resultMap>
     
-    <sql id="customField_colums">id,filed_name,filed_code,associated_table,operator_code,status,create_time</sql>
+    <sql id="customField_colums">id,filed_name,filed_code,associated_table,operator_code,status,sort,create_time</sql>
 
-    <sql id="customField_propertys">#{id},#{filedName},#{filedCode},#{associatedTable},#{operatorCode},#{status},#{createTime}</sql>
+    <sql id="customField_propertys">#{id},#{filedName},#{filedCode},#{associatedTable},#{operatorCode},#{status},#{sort},#{createTime}</sql>
 
     <sql id="customField_update">filed_name=#{filedName},filed_code=#{filedCode},associated_table=#{associatedTable},operator_code=#{operatorCode},
-                              status=#{status},create_time=#{createTime}</sql>
+                              status=#{status},sort=#{sort},create_time=#{createTime}</sql>
 
     <insert id="insert">
         insert into
@@ -56,6 +57,7 @@
         <if test="status != null ">
             and  status= #{status}
         </if>
+        order by sort
         <if test="start != null ">limit #{start},</if>
         <if test="size != null ">#{size}</if>
     </select>

@@ -58,6 +58,12 @@ public class CustomField {
     private int status;
 
     /**
+     * 顺序 1-10 前端传值时传过来 和前端沟通好
+     */
+    @Column(name = "sort")
+    private int sort;
+
+    /**
      * 创建时间
      */
     @Column(name = "create_time")
