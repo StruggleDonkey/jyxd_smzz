@@ -101,7 +101,7 @@ public class Patient implements Serializable {
     private String idCard;
 
     /**
-     * 性别(0：女 1：男)
+     * 性别(2：女 1：男)
      */
     @Column(name = "sex")
     private int sex;

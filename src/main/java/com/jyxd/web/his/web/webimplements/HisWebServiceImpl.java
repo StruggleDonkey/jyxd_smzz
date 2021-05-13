@@ -8,6 +8,7 @@ import com.jyxd.web.data.dictionary.BedDictionary;
 import com.jyxd.web.data.dictionary.DepartmentDictionary;
 import com.jyxd.web.data.dictionary.WardDictionary;
 import com.jyxd.web.data.patient.Patient;
+import com.jyxd.web.data.user.Role;
 import com.jyxd.web.data.user.User;
 import com.jyxd.web.his.data.commmon.*;
 import com.jyxd.web.his.data.medOrderExec.AddOrdersRtRequest;
@@ -19,6 +20,7 @@ import com.jyxd.web.service.dictionary.BedDictionaryService;
 import com.jyxd.web.service.dictionary.DepartmentDictionaryService;
 import com.jyxd.web.service.dictionary.WardDictionaryService;
 import com.jyxd.web.service.patient.PatientService;
+import com.jyxd.web.service.user.RoleService;
 import com.jyxd.web.service.user.UserService;
 import com.jyxd.web.util.MD5Util;
 import com.jyxd.web.util.UUIDUtil;
@@ -28,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.jws.WebService;
 import java.text.ParseException;
@@ -67,6 +70,9 @@ public class HisWebServiceImpl implements HisWebService {
     @Autowired
     private MedOrderExecService medOrderExecService;
 
+    @Autowired
+    private RoleService roleService;
+
     @Override
     public CommonResponse hisService(String action, String hisRequestXml) {
         logger.info("action ===== --> :" + action);
@@ -87,16 +93,16 @@ public class HisWebServiceImpl implements HisWebService {
                 case "T0014":
                     isSaveData = admTransaction(hisRequestXml);
                     break;
-                case "MS028(CT_Bed)":
+                case "MS028":
                     isSaveData = receiveBed(hisRequestXml);
                     break;
-                case "MS027(CT_Ward)":
+                case "MS027":
                     isSaveData = receiveWard(hisRequestXml);
                     break;
-                case "MS003(CT_Dept)":
+                case "MS003":
                     isSaveData = receiveDepartment(hisRequestXml);
                     break;
-                case "MS004(CT_CareProv)":
+                case "MS004":
                     isSaveData = receiveUser(hisRequestXml);
                     break;
                 case "T0001":
@@ -110,6 +116,7 @@ public class HisWebServiceImpl implements HisWebService {
             }
         } catch (Exception e) {
             logger.error("接收his信息保存错误，错误信息：" + e.getMessage());
+            e.printStackTrace();
         }
         if (isSaveData) {
             bodyData.setResultCode("0");
@@ -267,7 +274,12 @@ public class HisWebServiceImpl implements HisWebService {
         }
     }
 
-
+    /**
+     * 查询患者对象
+     *
+     * @param dataMap
+     * @return
+     */
     private Patient findPatient(Map dataMap) {
         Map<String, Object> map = new HashMap<>();
         map.put("visitId", dataMap.get("PATPatientID"));//患者主索引
@@ -284,6 +296,16 @@ public class HisWebServiceImpl implements HisWebService {
     private boolean receiveUser(String hisRequestXml) {
         Map<String, Object> ctCareProvListMap = gainXmlData(hisRequestXml, "CT_CareProvList");
         List<Object> ctCareProvMapList = castList(ctCareProvListMap.get("CT_CareProv"), Object.class);
+        if (CollectionUtils.isEmpty(ctCareProvMapList)) {
+            logger.info("医护人员列表数据一条");
+            Object ctCareProv = ctCareProvListMap.get("CT_CareProv");
+            if (Objects.isNull(ctCareProv)) {
+                logger.error("医护人员数据不存在");
+                return false;
+            }
+            Map<String, Object> ctCareProvMap = (Map) JSON.parse(String.valueOf(ctCareProv));
+            return saveUser(ctCareProvMap);
+        }
         AtomicBoolean isSaveData = new AtomicBoolean(false);
         ctCareProvMapList.forEach(ctCareProv -> {
             Map<String, Object> ctCareProvMap = (Map) JSON.parse(String.valueOf(ctCareProv));
@@ -337,11 +359,31 @@ public class HisWebServiceImpl implements HisWebService {
             user.setIsShedual(!objectIsNull(ctCareProvMap.get("CTCP_StaffType"))
                     && StringUtils.equals("NURSE", String.valueOf(ctCareProvMap.get("CTCP_StaffType"))) ?
                     1 : 0);
+            user = setRole(ctCareProvMap.get("CTCP_StaffType"), user);
+            if (Objects.isNull(user)) {
+                return false;
+            }
         } catch (Exception e) {
             logger.error("护士用户保存失败");
             return false;
         }
         return userService.insert(user);
+    }
+
+    private User setRole(Object object, User user) {
+        if (!objectIsNull(object)) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("roleName", String.valueOf(object));
+            Role role = roleService.queryDataByName(map);
+            if (Objects.isNull(role)) {
+                logger.error("人员角色不存在数据库：" + object);
+            } else {
+                user.setRoleId(role.getId());
+                user.setUserTypeCode(role.getUserTypeCode());
+                return user;
+            }
+        }
+        return null;
     }
 
     /**
@@ -353,6 +395,16 @@ public class HisWebServiceImpl implements HisWebService {
     private boolean receiveDepartment(String hisRequestXml) {
         Map<String, Object> receiveDepartmentMap = gainXmlData(hisRequestXml, "CT_DeptList");
         List<Object> ctDeptMapList = castList(receiveDepartmentMap.get("CT_Dept"), Object.class);
+        if (CollectionUtils.isEmpty(ctDeptMapList)) {
+            logger.info("科室信息列表数据一条");
+            Object ctDept = receiveDepartmentMap.get("CT_Dept");
+            if (Objects.isNull(ctDept)) {
+                logger.error("科室信息数据不存在");
+                return false;
+            }
+            Map<String, Object> ctDeptMap = (Map) JSON.parse(String.valueOf(ctDept));
+            return saveDepartmentDictionary(ctDeptMap);
+        }
         AtomicBoolean isSaveData = new AtomicBoolean(false);
         ctDeptMapList.forEach(ctDept -> {
             Map<String, Object> ctDeptMap = (Map) JSON.parse(String.valueOf(ctDept));
@@ -371,7 +423,7 @@ public class HisWebServiceImpl implements HisWebService {
         DepartmentDictionary departmentDictionary = new DepartmentDictionary();
         departmentDictionary.setId(UUIDUtil.getUUID());
         departmentDictionary.setDepartmentCode(String.valueOf(ctDeptMap.get("CTD_Code")));
-        departmentDictionary.setDepartmentName(String.valueOf(ctDeptMap.get("CTD_Desc()")));
+        departmentDictionary.setDepartmentName(String.valueOf(ctDeptMap.get("CTD_Desc")));
         //1启用0停用-1删除
         switch (String.valueOf(ctDeptMap.get("CTD_Status"))) {
             case "1":
@@ -394,8 +446,18 @@ public class HisWebServiceImpl implements HisWebService {
      * @return
      */
     private boolean receiveWard(String hisRequestXml) {
-        Map<String, Object> ctWardCtWardMap = gainXmlData(hisRequestXml, "CT_BedList");
+        Map<String, Object> ctWardCtWardMap = gainXmlData(hisRequestXml, "CT_WardList");
         List<Object> ctWardList = castList(ctWardCtWardMap.get("CT_Ward"), Object.class);
+        if (CollectionUtils.isEmpty(ctWardList)) {
+            logger.info("病区字典列表数据一条");
+            Object ctWard = ctWardCtWardMap.get("CT_Ward");
+            if (Objects.isNull(ctWard)) {
+                logger.error("病区字典数据不存在");
+                return false;
+            }
+            Map<String, Object> ctWardMap = (Map) JSON.parse(String.valueOf(ctWard));
+            return saveWardDictionary(ctWardMap);
+        }
         AtomicBoolean isSaveData = new AtomicBoolean(false);
         ctWardList.forEach(ctWard -> {
             Map<String, Object> ctWardMap = (Map) JSON.parse(String.valueOf(ctWard));
@@ -439,6 +501,16 @@ public class HisWebServiceImpl implements HisWebService {
     private boolean receiveBed(String hisRequestXml) {
         Map<String, Object> receiveBedMap = gainXmlData(hisRequestXml, "CT_BedList");
         List<Object> ctBedList = castList(receiveBedMap.get("CT_Bed"), Object.class);
+        if (CollectionUtils.isEmpty(ctBedList)) {
+            logger.info("床位列表数据一条");
+            Object ctBed = receiveBedMap.get("CT_Bed");
+            if (Objects.isNull(ctBed)) {
+                logger.error("床位数据不存在");
+                return false;
+            }
+            Map<String, Object> ctBedMap = (Map) JSON.parse(String.valueOf(ctBed));
+            return saveWardDictionary(ctBedMap);
+        }
         AtomicBoolean isSaveData = new AtomicBoolean(false);
         ctBedList.forEach(ctBed -> {
             Map<String, Object> ctBedMap = (Map) JSON.parse(String.valueOf(ctBed));
@@ -635,12 +707,12 @@ public class HisWebServiceImpl implements HisWebService {
         patient.setId(UUIDUtil.getUUID());
         patient.setCreateTime(new Date());
         patient.setVisitId(String.valueOf(patientRegistryRtMap.get("PATPatientID")));
-        patient.setName(String.valueOf(patientRegistryRtMap.get("PATPatientName")));
+        patient.setName(String.valueOf(patientRegistryRtMap.get("PATName")));
         if (!objectIsNull(patientRegistryRtMap.get("PATDob"))) {
             patient.setBirthday(String.valueOf(patientRegistryRtMap.get("PATDob")));
             patient.setAge(getAge(yyyyMMddSdfToDate(String.valueOf(patientRegistryRtMap.get("PATDob")))));
         }
-        patient.setSex((int) patientRegistryRtMap.get("PATSexCode"));
+        patient.setSex(Integer.valueOf(String.valueOf(patientRegistryRtMap.get("PATSexCode"))));
         if (!objectIsNull(patientRegistryRtMap.get("PATMaritalStatusCode"))) {
             patient.setMaritalState(String.valueOf(patientRegistryRtMap.get("PATMaritalStatusCode")));
         }
@@ -809,19 +881,25 @@ public class HisWebServiceImpl implements HisWebService {
 
     public void test(String xml) {
         //Map<String, Object> patientRegistryRtMap = gainXmlData(xml, "PatientRegistryRt");
-        Map<String, Object> patientRegistryRtMap = gainXmlData(xml, "CT_BedList");
-        System.out.println(patientRegistryRtMap);
+        // HeaderData headerData = getXmlHeader(xml);
+        /*System.out.println(patientRegistryRtMap);
         List<Object> ctBed = castList(patientRegistryRtMap.get("CT_Bed"), Object.class);
-        System.out.println(ctBed.size());
-
-        ctBed.forEach(object -> {
+        System.out.println(ctBed.size());*/
+        //System.out.println(headerData.getMessageID());
+        /*ctBed.forEach(object -> {
             System.out.println(object);
 
             Map<String, Object> maps = (Map) JSON.parse(String.valueOf(object));
             System.out.println(maps.get("CTB_CodesystemCode"));
         });
+*/
+        Map<String, Object> ctCareProvListMap = gainXmlData(xml, "CT_CareProvList");
 
-
+        //System.out.println(ctCareProvListMap);
+        System.out.println(ctCareProvListMap.get("CT_CareProv"));
+        List<Object> ctCareProvMapList = castList(ctCareProvListMap.get("CT_CareProv"), Object.class);
+        //JSONObject json = (JSONObject) JSON.toJSON(o);
+        System.out.println(ctCareProvMapList.size());
        /* Map<String, Object> map = xmlToJsonMap(patientRegistryRtMap.get("PATRelationList"));
         Map<String, Object> pATRElationAddressMap = xmlToJsonMap(map.get("PATRelation"));
         Map<String, Object> pATRelationAddressListMap = xmlToJsonMap(pATRElationAddressMap.get("PATRelationAddressList"));
@@ -843,7 +921,7 @@ public class HisWebServiceImpl implements HisWebService {
 
     }
 
-    /*public static void main(String[] args) {
+   /* public static void main(String[] args) {
         String ctXml = "<Request>\n" +
                 "\t<Header>\n" +
                 "\t\t<SourceSystem>02</SourceSystem>\n" +
@@ -884,9 +962,9 @@ public class HisWebServiceImpl implements HisWebService {
                 "</Request>";
 
         HisWebServiceImpl hisWebService = new HisWebServiceImpl();
-        hisWebService.test(ctXml);
+        //hisWebService.test(ctXml);
 
-        *//*String xml = "<Request>\n" +
+        String xml = "<Request>\n" +
                 "\t<Header>\n" +
                 "\t\t<SourceSystem>02</SourceSystem>\n" +
                 "\t\t<MessageID>23950</MessageID>\n" +
@@ -997,7 +1075,70 @@ public class HisWebServiceImpl implements HisWebService {
                 "\t\t\t<UpdateTime>17:29:33</UpdateTime>\n" +
                 "\t\t</PatientRegistryRt>\n" +
                 "\t</Body>\n" +
-                "</Request>";*//*
+                "</Request>";
 
+
+        String userXml = "<Request>" +
+                "<Header>" +
+                "<SourceSystem>HIS</SourceSystem>" +
+                "<MessageID>17372</MessageID>" +
+                "</Header><Body>" +
+                "<CT_CareProvList>" +
+                "<CT_CareProv>" +
+                "<BusinessFieldCode>00001</BusinessFieldCode>" +
+                "<CTCP_BirthPlace></CTCP_BirthPlace>" +
+                "<CTCP_Code>demo</CTCP_Code>" +
+                "<CTCP_CodesystemCode>CT_CareProv</CTCP_CodesystemCode>" +
+                "<CTCP_DeptCode>111</CTCP_DeptCode>" +
+                "<CTCP_Desc>Demo Group</CTCP_Desc>" +
+                "<CTCP_ExtranetURL></CTCP_ExtranetURL>" +
+                "<CTCP_HosCode>LLSRMYY</CTCP_HosCode>" +
+                "<CTCP_IDCardNO></CTCP_IDCardNO>" +
+                "<CTCP_IntranetURL></CTCP_IntranetURL>" +
+                "<CTCP_Name>Demo Group</CTCP_Name>" +
+                "<CTCP_PassWord></CTCP_PassWord>" +
+                "<CTCP_Position></CTCP_Position>" +
+                "<CTCP_Remarks></CTCP_Remarks>" +
+                "<CTCP_SexCode></CTCP_SexCode>" +
+                "<CTCP_StaffType>药剂师</CTCP_StaffType>" +
+                "<CTCP_Status>1</CTCP_Status>" +
+                "<CTCP_TitleOfTechCode></CTCP_TitleOfTechCode>" +
+                "<CTCP_UpdateUserCode>无</CTCP_UpdateUserCode>" +
+                "<CTCP_OriginalCode></CTCP_OriginalCode>" +
+                "<CTCP_OriginalDesc></CTCP_OriginalDesc>" +
+                "<CTCP_StartDate>2008-04-12</CTCP_StartDate>" +
+                "<CTCP_EndDate></CTCP_EndDate><CTCP_CreatDate>" +
+                "</CTCP_CreatDate><CTCP_CreatTime></CTCP_CreatTime>" +
+                "<CTCP_CareProvTypeCode></CTCP_CareProvTypeCode>" +
+                "</CT_CareProv>" +
+                "<CT_CareProv>" +
+                "<BusinessFieldCode>00001</BusinessFieldCode>" +
+                "<CTCP_BirthPlace></CTCP_BirthPlace>" +
+                "<CTCP_Code>demo</CTCP_Code>" +
+                "<CTCP_CodesystemCode>CT_CareProv</CTCP_CodesystemCode>" +
+                "<CTCP_DeptCode>111</CTCP_DeptCode>" +
+                "<CTCP_Desc>Demo Group</CTCP_Desc>" +
+                "<CTCP_ExtranetURL></CTCP_ExtranetURL>" +
+                "<CTCP_HosCode>LLSRMYY</CTCP_HosCode>" +
+                "<CTCP_IDCardNO></CTCP_IDCardNO>" +
+                "<CTCP_IntranetURL></CTCP_IntranetURL>" +
+                "<CTCP_Name>Demo Group</CTCP_Name>" +
+                "<CTCP_PassWord></CTCP_PassWord>" +
+                "<CTCP_Position></CTCP_Position>" +
+                "<CTCP_Remarks></CTCP_Remarks>" +
+                "<CTCP_SexCode></CTCP_SexCode>" +
+                "<CTCP_StaffType>药剂师</CTCP_StaffType>" +
+                "<CTCP_Status>1</CTCP_Status>" +
+                "<CTCP_TitleOfTechCode></CTCP_TitleOfTechCode>" +
+                "<CTCP_UpdateUserCode>无</CTCP_UpdateUserCode>" +
+                "<CTCP_OriginalCode></CTCP_OriginalCode>" +
+                "<CTCP_OriginalDesc></CTCP_OriginalDesc>" +
+                "<CTCP_StartDate>2008-04-12</CTCP_StartDate>" +
+                "<CTCP_EndDate></CTCP_EndDate><CTCP_CreatDate>" +
+                "</CTCP_CreatDate><CTCP_CreatTime></CTCP_CreatTime>" +
+                "<CTCP_CareProvTypeCode></CTCP_CareProvTypeCode>" +
+                "</CT_CareProv>" +
+                "</CT_CareProvList></Body></Request>";
+        hisWebService.test(userXml);
     }*/
 }
