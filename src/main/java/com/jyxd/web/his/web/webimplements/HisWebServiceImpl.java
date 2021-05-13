@@ -842,7 +842,7 @@ public class HisWebServiceImpl implements HisWebService {
 
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         String ctXml = "<Request>\n" +
                 "\t<Header>\n" +
                 "\t\t<SourceSystem>02</SourceSystem>\n" +
@@ -885,7 +885,7 @@ public class HisWebServiceImpl implements HisWebService {
         HisWebServiceImpl hisWebService = new HisWebServiceImpl();
         hisWebService.test(ctXml);
 
-        /*String xml = "<Request>\n" +
+        *//*String xml = "<Request>\n" +
                 "\t<Header>\n" +
                 "\t\t<SourceSystem>02</SourceSystem>\n" +
                 "\t\t<MessageID>23950</MessageID>\n" +
@@ -996,7 +996,7 @@ public class HisWebServiceImpl implements HisWebService {
                 "\t\t\t<UpdateTime>17:29:33</UpdateTime>\n" +
                 "\t\t</PatientRegistryRt>\n" +
                 "\t</Body>\n" +
-                "</Request>";*/
+                "</Request>";*//*
 
-    }
+    }*/
 }

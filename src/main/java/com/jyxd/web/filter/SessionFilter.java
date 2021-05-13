@@ -37,7 +37,7 @@ public class SessionFilter implements Filter {
         response.setHeader("Access-Control-Allow-Headers", "*");
         //((HttpServletResponse)servletResponse).setHeader("Access-Control-Allow-Origin", "*");
         response.setContentType("text/html;charset=utf-8");
-
+        System.out.println("filter url:"+uri);
         //是否需要过滤
         boolean needFilter = isNeedFilter(uri);
 

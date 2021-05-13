@@ -38,7 +38,7 @@ public class WebServiceConfig {
      *
      * @return
      */
-    @Bean(name = "hisService")
+    @Bean(name = "hisWebService")
     public Endpoint hisWebService() {
         EndpointImpl endpoint = new EndpointImpl(springBus(), hisWebService);
         endpoint.publish("/hisService");
