@@ -95,6 +95,7 @@ public class HisWebServiceImpl implements HisWebService {
                     break;
                 case "MS003(CT_Dept)":
                     isSaveData = receiveDepartment(hisRequestXml);
+                    break;
                 case "MS004(CT_CareProv)":
                     isSaveData = receiveUser(hisRequestXml);
                     break;
