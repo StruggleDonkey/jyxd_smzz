@@ -125,7 +125,7 @@
         tioa.type as type
         <if test="list != null and list != ''">
             <foreach collection="list" item="customField" index="index" open="," separator="," close="">
-                IFNULL(tuc.${customField.filedCode},"") as #{customField.filedName}
+                IFNULL(tco.${customField.filedCode},"") as #{customField.filedName}
             </foreach>
         </if>
         FROM

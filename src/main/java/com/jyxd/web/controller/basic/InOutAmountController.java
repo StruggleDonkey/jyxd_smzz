@@ -176,15 +176,17 @@ public class InOutAmountController {
         json.put("data",new ArrayList<>());
         json.put("msg","暂无数据");
         if(map!=null && map.containsKey("start")){
-            //先查询有哪些自定义字段，放入查询条件中
-            Map<String,Object> m=new HashMap<>();
-            m.put("status",1);
-            m.put("associatedTable","table_in_out_amount");//关联表名
-            List<CustomField> list=customFieldService.queryList(m);
-            map.put("list",list);
             int totalCount =inOutAmountService.getInOutAmountNum(map);
             map.put("start",((int)map.get("start")-1)*(int)map.get("size"));
             json.put("totalCount",totalCount);
+        }
+        //先查询有哪些自定义字段，放入查询条件中
+        Map<String,Object> m=new HashMap<>();
+        m.put("status",1);
+        m.put("associatedTable","table_in_out_amount");//关联表名
+        List<CustomField> list=customFieldService.queryList(m);
+        if(list!=null && list.size()>0){
+            map.put("list",list);
         }
         List<Map<String,Object>> amountList =inOutAmountService.getInOutAmountList(map);
         if(amountList!=null && amountList.size()>0){
