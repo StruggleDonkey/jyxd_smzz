@@ -24,7 +24,9 @@ import com.jyxd.web.service.user.RoleService;
 import com.jyxd.web.service.user.UserService;
 import com.jyxd.web.util.MD5Util;
 import com.jyxd.web.util.UUIDUtil;
+import lombok.SneakyThrows;
 import net.sf.json.JSONObject;
+import net.sf.json.xml.XMLSerializer;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,8 +75,9 @@ public class HisWebServiceImpl implements HisWebService {
     @Autowired
     private RoleService roleService;
 
+    @SneakyThrows
     @Override
-    public CommonResponse hisService(String action, String hisRequestXml) {
+    public String hisService(String action, String hisRequestXml) {
         logger.info("action ===== --> :" + action);
         logger.info("hisRequestXml ----->> " + hisRequestXml);
         boolean isSaveData = false;
@@ -116,13 +119,31 @@ public class HisWebServiceImpl implements HisWebService {
             }
         } catch (Exception e) {
             logger.error("接收his信息保存错误，错误信息：" + e.getMessage());
-            e.printStackTrace();
         }
         if (isSaveData) {
             bodyData.setResultCode("0");
             bodyData.setResultContent("成功");
         }
-        return new CommonResponse(getXmlHeader(hisRequestXml), bodyData);
+        return getResult(bodyData);
+    }
+
+    /**
+     * 获取对接返回值
+     *
+     * @param bodyData
+     * @return
+     */
+    private String getResult(BodyData bodyData) {
+        StringBuffer result = new StringBuffer();
+        result.append("<Response>");
+        result.append("<ResultCode>");
+        result.append(bodyData.getResultCode());
+        result.append("</ResultCode>");
+        result.append("<ResultContent>");
+        result.append(bodyData.getResultContent());
+        result.append("</ResultContent>");
+        result.append("</Response>");
+        return result.toString();
     }
 
     /**
