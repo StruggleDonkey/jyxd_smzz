@@ -222,8 +222,8 @@ public class InOutAmountController {
                     inOutAmount.setDosage(map.containsKey("dosage") && StringUtils.isNotEmpty(map.get("dosage").toString()) ? map.get("dosage").toString() : null);
                     inOutAmount.setAllowanceDosage(map.containsKey("allowanceDosage") && StringUtils.isNotEmpty(map.get("allowanceDosage").toString()) ? map.get("allowanceDosage").toString() : null);
                     inOutAmount.setPiss(map.containsKey("piss") && StringUtils.isNotEmpty(map.get("piss").toString()) ? map.get("piss").toString() : null);
-                    inOutAmount.setFeces(map.containsKey("faces") && StringUtils.isNotEmpty(map.get("faces").toString()) ? map.get("faces").toString() : null);
-                    inOutAmount.setFeces(map.containsKey("faces") && StringUtils.isNotEmpty(map.get("faces").toString()) ? map.get("faces").toString() : null);
+                    inOutAmount.setFaces(map.containsKey("faces") && StringUtils.isNotEmpty(map.get("faces").toString()) ? map.get("faces").toString() : null);
+                    inOutAmount.setFaces(map.containsKey("faces") && StringUtils.isNotEmpty(map.get("faces").toString()) ? map.get("faces").toString() : null);
                     inOutAmount.setDrainage(map.containsKey("drainage") && StringUtils.isNotEmpty(map.get("drainage").toString()) ? map.get("drainage").toString() : null);
                     inOutAmount.setRemark(map.containsKey("remark") && StringUtils.isNotEmpty(map.get("remark").toString()) ? map.get("remark").toString() : null);
                     inOutAmount.setSignature(map.containsKey("signature") && StringUtils.isNotEmpty(map.get("signature").toString()) ? map.get("signature").toString() : null);
@@ -292,8 +292,8 @@ public class InOutAmountController {
                 inOutAmount.setDosage(map.containsKey("dosage") && StringUtils.isNotEmpty(map.get("dosage").toString()) ? map.get("dosage").toString() : null);
                 inOutAmount.setAllowanceDosage(map.containsKey("allowanceDosage") && StringUtils.isNotEmpty(map.get("allowanceDosage").toString()) ? map.get("allowanceDosage").toString() : null);
                 inOutAmount.setPiss(map.containsKey("piss") && StringUtils.isNotEmpty(map.get("piss").toString()) ? map.get("piss").toString() : null);
-                inOutAmount.setFeces(map.containsKey("faces") && StringUtils.isNotEmpty(map.get("faces").toString()) ? map.get("faces").toString() : null);
-                inOutAmount.setFeces(map.containsKey("faces") && StringUtils.isNotEmpty(map.get("faces").toString()) ? map.get("faces").toString() : null);
+                inOutAmount.setFaces(map.containsKey("faces") && StringUtils.isNotEmpty(map.get("faces").toString()) ? map.get("faces").toString() : null);
+                inOutAmount.setFaces(map.containsKey("faces") && StringUtils.isNotEmpty(map.get("faces").toString()) ? map.get("faces").toString() : null);
                 inOutAmount.setDrainage(map.containsKey("drainage") && StringUtils.isNotEmpty(map.get("drainage").toString()) ? map.get("drainage").toString() : null);
                 inOutAmount.setRemark(map.containsKey("remark") && StringUtils.isNotEmpty(map.get("remark").toString()) ? map.get("remark").toString() : null);
                 inOutAmount.setSignature(map.containsKey("signature") && StringUtils.isNotEmpty(map.get("signature").toString()) ? map.get("signature").toString() : null);

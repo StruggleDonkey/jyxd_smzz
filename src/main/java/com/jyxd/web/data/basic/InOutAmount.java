@@ -101,7 +101,7 @@ public class InOutAmount implements Serializable {
      * 出量-排泄物（便）
      */
     @Column(name = "faces")
-    private String feces;
+    private String faces;
 
     /**
      * 出量-引流量
