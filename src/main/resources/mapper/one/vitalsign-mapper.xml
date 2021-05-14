@@ -180,7 +180,7 @@
             IFNULL(max(CASE WHEN tvs.code='inhaleOxygenStyle' THEN dcik.common_item_name END),"") AS inhaleOxygenStyle,
             IFNULL(max(CASE WHEN tvs.code='inhaleOxygenConcentration' THEN tvs.content END),"") AS inhaleOxygenConcentration,
             IFNULL(max(CASE WHEN tvs.code='inhaleOxygenConcentration2' THEN tvs.content END),"") AS inhaleOxygenConcentration2,
-            IFNULL(max(CASE WHEN tvs.code='signature' THEN tu.user_name END),"") AS signature
+            IFNULL(max(CASE WHEN tvs.code='signature' THEN tu.user_name END),"") AS signature,
             IFNULL(max(CASE WHEN tvs.code='handoverSignature' THEN tu.user_name END),"") AS handoverSignature
         FROM
             table_vital_sign tvs LEFT JOIN dict_common_item dcia ON dcia.common_item_code=tvs.content AND dcia.type='consciousness'
