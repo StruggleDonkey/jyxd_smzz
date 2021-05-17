@@ -3,9 +3,17 @@ package com.jyxd.web.util;
 import javax.xml.crypto.Data;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class DateUtil {
+
+    public static Date getLaterHoursDate(Date date, Long hours) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.HOUR, hours.intValue());
+        return c.getTime();
+    }
 
     public static String yyyyMMddHHmmssSdfToString(Date date) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -30,6 +38,11 @@ public class DateUtil {
     public static String hhmmssSdfToString(Date date) {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
         return sdf.format(date);
+    }
+
+    public static Date hhmmssSdfToDate(String time) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        return sdf.parse(time);
     }
 
 }

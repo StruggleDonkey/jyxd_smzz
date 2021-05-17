@@ -27,7 +27,7 @@
         <result column="type" property="type" jdbcType="INTEGER"/>
         <result column="create_time" property="createTime" jdbcType="DATE"/>
     </resultMap>
-    
+
     <sql id="inOutAmount_colums">id,visit_id,visit_code,patient_id,data_time,order_code,order_no,order_sub_no,order_name,dosage,allowance_dosage,
                                    piss,faces,drainage,remark,signature,check_signature,illness_records,balance,operator_code,status,type,create_time</sql>
 
@@ -46,36 +46,37 @@
         values (<include refid="inOutAmount_propertys"></include>)
     </insert>
 
-    <update id="update" parameterType="com.jyxd.web.data.basic.InOutAmount" >
+    <update id="update" parameterType="com.jyxd.web.data.basic.InOutAmount">
         update
         table_in_out_amount
-        set <include refid="inOutAmount_update"></include>
+        set
+        <include refid="inOutAmount_update"></include>
         where
-          id=#{id}
+        id=#{id}
     </update>
 
     <select id="queryData" resultMap="inOutAmountMap" parameterType="java.lang.String">
         select
-          <include refid="inOutAmount_colums"></include>
+        <include refid="inOutAmount_colums"></include>
         from
         table_in_out_amount
         where
-          id=#{id}
+        id=#{id}
     </select>
 
     <select id="queryList" resultMap="inOutAmountMap">
         select
-          <include refid="inOutAmount_colums"></include>
+        <include refid="inOutAmount_colums"></include>
         from
         table_in_out_amount
         where
-          1=1
-        and  status != -1
+        1=1
+        and status != -1
         <if test="associatedTable != null and associatedTable != ''">
-            and   associated_table= #{associatedTable}
+            and associated_table= #{associatedTable}
         </if>
         <if test="status != null ">
-            and  status= #{status}
+            and status= #{status}
         </if>
         <if test="start != null ">limit #{start},</if>
         <if test="size != null ">#{size}</if>
@@ -83,17 +84,17 @@
 
     <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
         select
-          count(id)
+        count(id)
         from
         table_in_out_amount
         where
         1=1
-        and  status != -1
+        and status != -1
         <if test="associatedTable != null and associatedTable != ''">
-            and   associated_table= #{associatedTable}
+            and associated_table= #{associatedTable}
         </if>
         <if test="status != null ">
-            and  status= #{status}
+            and status= #{status}
         </if>
     </select>
 
@@ -147,6 +148,12 @@
         <if test="dataTime != null and dataTime != ''">
             AND date_format(tioa.data_time, '%Y-%m-%d')=#{dataTime}
         </if>
+        <if test="startTime != null and startTime != ''">
+            AND tioa.data_time <![CDATA[ >= ]]> #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND tioa.data_time <![CDATA[ < ]]> #{endTime}
+        </if>
         order by tioa.data_time,tioa.type
         <if test="start != null ">limit #{start},</if>
         <if test="size != null ">#{size}</if>
@@ -173,6 +180,12 @@
         </if>
         <if test="dataTime != null and dataTime != ''">
             AND date_format(tioa.data_time, '%Y-%m-%d')=#{dataTime}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND tioa.data_time <![CDATA[ >= ]]> #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND tioa.data_time <![CDATA[ < ]]> #{endTime}
         </if>
     </select>
 

@@ -41,6 +41,8 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.jyxd.web.util.DateUtil.*;
+import static com.jyxd.web.util.ObjectUtil.castList;
+import static com.jyxd.web.util.ObjectUtil.objectStrIsNull;
 
 @Service
 @WebService(serviceName = "HisWebService", // 与接口中指定的name一致
@@ -258,9 +260,9 @@ public class HisWebServiceImpl implements HisWebService {
             String completeStart = String.valueOf(oEORIInfoMap.get("OEORIStopDate"));//医嘱停止日期 YYYY-MM-DD
             String completeEnd = String.valueOf(oEORIInfoMap.get("OEORIStopTime"));//医嘱停止时间 hh:mm:ss
             medOrderExec.setCompleteTimePoint(yyyyMMddHHmmssSdfToDate(completeStart + "" + completeEnd));//执行完成时间
-            medOrderExec.setDosage(!objectIsNull(oEORIInfoMap.get("OEORIDoseQty")) ?
+            medOrderExec.setDosage(!objectStrIsNull(oEORIInfoMap.get("OEORIDoseQty")) ?
                     String.valueOf(oEORIInfoMap.get("OEORIDoseQty")) : null);//单次剂量
-            medOrderExec.setDosageUnits(!objectIsNull(oEORIInfoMap.get("OEORIDoseUnitDesc")) ?
+            medOrderExec.setDosageUnits(!objectStrIsNull(oEORIInfoMap.get("OEORIDoseUnitDesc")) ?
                     String.valueOf(oEORIInfoMap.get("OEORIDoseUnitDesc")) : null);//单次剂量单位描述
             medOrderExec.setAllDosage(String.valueOf(oEORIInfoMap.get("OEORIOrderQty")));//医嘱数量
             switch (String.valueOf(oEORIInfoMap.get("OEORIPriorityDesc"))) {//医嘱类型描述 长期、临时、自备长期、自备临时、出院带药
@@ -274,13 +276,13 @@ public class HisWebServiceImpl implements HisWebService {
                     medOrderExec.setRepeatIndicator(0);//医嘱类型，0：临时医嘱；1：长期医嘱
                     break;
             }
-            medOrderExec.setUseMode(!objectIsNull(oEORIInfoMap.get("OEORIInstrCode")) ?
+            medOrderExec.setUseMode(!objectStrIsNull(oEORIInfoMap.get("OEORIInstrCode")) ?
                     String.valueOf(oEORIInfoMap.get("OEORIInstrCode")) : null);//用药途径代码
             medOrderExec.setClassType(String.valueOf(oEORIInfoMap.get("OEORIClass")));//医嘱类别代码 检查类 西药类 中药类
             medOrderExec.setFrequency(String.valueOf(oEORIInfoMap.get("OEORIFreqDesc")));//频次描述
             medOrderExec.setPerformSpeed(null);//流速
             medOrderExec.setOrderStatus(Integer.valueOf(String.valueOf(oEORIInfoMap.get("OEORIStatusCode"))));//医嘱状态代码  执行状态，0：未执行；1：执行中；2：执行完毕；3：交班
-            medOrderExec.setRemark(!objectIsNull(oEORIInfoMap.get("OEORIRemarks")) ?
+            medOrderExec.setRemark(!objectStrIsNull(oEORIInfoMap.get("OEORIRemarks")) ?
                     String.valueOf(oEORIInfoMap.get("OEORIRemarks")) : null);//医嘱备注信息
             medOrderExec.setUpdateTime(new Date());//记录最后修改时间
             medOrderExec.setIsSync(0);//是否已同步到护理单，0：未同步；1：已同步；
@@ -349,12 +351,12 @@ public class HisWebServiceImpl implements HisWebService {
         user.setLoginName(String.valueOf(ctCareProvMap.get("CTCP_Desc")));//职工姓名
         try {
             //1 男  2女
-            user.setSex(!objectIsNull(ctCareProvMap.get("CTCP_SexCode")) && StringUtils.equals("1", String.valueOf(ctCareProvMap.get("CTCP_SexCode"))) ?
+            user.setSex(!objectStrIsNull(ctCareProvMap.get("CTCP_SexCode")) && StringUtils.equals("1", String.valueOf(ctCareProvMap.get("CTCP_SexCode"))) ?
                     1 : 0);
-            user.setEnterTime(!objectIsNull(ctCareProvMap.get("CTCP_StartDate"))
+            user.setEnterTime(!objectStrIsNull(ctCareProvMap.get("CTCP_StartDate"))
                     ? yyyyMMddSdfToDate(String.valueOf(ctCareProvMap.get("CTCP_StartDate"))) : null);//有效开始日期
 
-            user.setExitTime(!objectIsNull(ctCareProvMap.get("CTCP_EndDate"))
+            user.setExitTime(!objectStrIsNull(ctCareProvMap.get("CTCP_EndDate"))
                     ? yyyyMMddSdfToDate(String.valueOf(ctCareProvMap.get("CTCP_EndDate"))) : null);//有效结束日期
             //1启用0停用-1删除
             switch (String.valueOf(ctCareProvMap.get("CTCP_Status"))) {
@@ -369,15 +371,15 @@ public class HisWebServiceImpl implements HisWebService {
                     break;
             }
             // 默认123456
-            user.setPassword(!objectIsNull(ctCareProvMap.get("CTCP_PassWord"))
+            user.setPassword(!objectStrIsNull(ctCareProvMap.get("CTCP_PassWord"))
                     ? MD5Util.string2MD5(String.valueOf(ctCareProvMap.get("CTCP_PassWord"))) : "e10adc3949ba59abbe56e057f20f883e");
             //职工代码
             user.setWorkNumber(String.valueOf(ctCareProvMap.get("CTCP_Code")));
             //姓名
-            user.setSimplicity(!objectIsNull(ctCareProvMap.get("CTCP_Name"))
+            user.setSimplicity(!objectStrIsNull(ctCareProvMap.get("CTCP_Name"))
                     ? String.valueOf(ctCareProvMap.get("CTCP_Name")) : null);
             //是否参与排班（0：不参与 1：参与）
-            user.setIsShedual(!objectIsNull(ctCareProvMap.get("CTCP_StaffType"))
+            user.setIsShedual(!objectStrIsNull(ctCareProvMap.get("CTCP_StaffType"))
                     && StringUtils.equals("NURSE", String.valueOf(ctCareProvMap.get("CTCP_StaffType"))) ?
                     1 : 0);
             user = setRole(ctCareProvMap.get("CTCP_StaffType"), user);
@@ -392,7 +394,7 @@ public class HisWebServiceImpl implements HisWebService {
     }
 
     private User setRole(Object object, User user) {
-        if (!objectIsNull(object)) {
+        if (!objectStrIsNull(object)) {
             Map<String, Object> map = new HashMap<>();
             map.put("roleName", String.valueOf(object));
             Role role = roleService.queryDataByName(map);
@@ -561,7 +563,7 @@ public class HisWebServiceImpl implements HisWebService {
                 break;
         }
         bedDictionary.setBedCode(String.valueOf(ctBedMap.get("CTB_Code")));//床位代码
-        if (!objectIsNull(ctBedMap.get("CTB_Desc"))) {
+        if (!objectStrIsNull(ctBedMap.get("CTB_Desc"))) {
             bedDictionary.setBedName(String.valueOf(ctBedMap.get("CTB_Desc")));//床位描述
         }
         return bedDictionaryService.insert(bedDictionary);
@@ -729,36 +731,36 @@ public class HisWebServiceImpl implements HisWebService {
         patient.setCreateTime(new Date());
         patient.setVisitId(String.valueOf(patientRegistryRtMap.get("PATPatientID")));
         patient.setName(String.valueOf(patientRegistryRtMap.get("PATName")));
-        if (!objectIsNull(patientRegistryRtMap.get("PATDob"))) {
+        if (!objectStrIsNull(patientRegistryRtMap.get("PATDob"))) {
             patient.setBirthday(String.valueOf(patientRegistryRtMap.get("PATDob")));
             patient.setAge(getAge(yyyyMMddSdfToDate(String.valueOf(patientRegistryRtMap.get("PATDob")))));
         }
         patient.setSex(Integer.valueOf(String.valueOf(patientRegistryRtMap.get("PATSexCode"))));
-        if (!objectIsNull(patientRegistryRtMap.get("PATMaritalStatusCode"))) {
+        if (!objectStrIsNull(patientRegistryRtMap.get("PATMaritalStatusCode"))) {
             patient.setMaritalState(String.valueOf(patientRegistryRtMap.get("PATMaritalStatusCode")));
         }
-        if (!objectIsNull(patientRegistryRtMap.get("PATNationCode"))) {
+        if (!objectStrIsNull(patientRegistryRtMap.get("PATNationCode"))) {
             patient.setRace(String.valueOf(patientRegistryRtMap.get("PATNationCode")));//患者民族代码
         }
-        if (!objectIsNull(patientRegistryRtMap.get("PATDeceasedDate"))
+        if (!objectStrIsNull(patientRegistryRtMap.get("PATDeceasedDate"))
                 && Objects.nonNull(patientRegistryRtMap.get("PATDeceasedTime"))) {
             String deceasedDate = String.valueOf(patientRegistryRtMap.get("PATDeceasedDate"));
             String deceasedTime = String.valueOf(patientRegistryRtMap.get("PATDeceasedTime"));
             patient.setDeathTime(yyyyMMddHHmmssSdfToDate(deceasedDate + " " + deceasedTime));
         }
         Map<String, Object> pATIdentityMap = getPATIdentityMap(patientRegistryRtMap);
-        if (!objectIsNull(pATIdentityMap.get("PATIdentityNum"))) {
+        if (!objectStrIsNull(pATIdentityMap.get("PATIdentityNum"))) {
             patient.setIdCard(String.valueOf(pATIdentityMap.get("PATIdentityNum")));//患者证件号码
             patient.setAge(IdNOToAge(String.valueOf(pATIdentityMap.get("PATIdentityNum"))));//年龄
         }
         Map<String, Object> patRelationMap = getPATRelationMap(patientRegistryRtMap);
-        if (!objectIsNull(patRelationMap.get("PATRelationName"))) {
+        if (!objectStrIsNull(patRelationMap.get("PATRelationName"))) {
             patient.setContactMan((String) patRelationMap.get("PATRelationName"));//患者联系人姓名
         }
-        if (!objectIsNull(patRelationMap.get("PATRelationPhone"))) {
+        if (!objectStrIsNull(patRelationMap.get("PATRelationPhone"))) {
             patient.setContactPhone(String.valueOf(patRelationMap.get("PATRelationPhone")));
         }
-        if (!objectIsNull(pATIdentityMap.get("PATTelephone"))) {
+        if (!objectStrIsNull(pATIdentityMap.get("PATTelephone"))) {
             patient.setPhone(String.valueOf(patRelationMap.get("PATTelephone")));//患者电话
         }
         return patientService.insert(patient);
@@ -784,22 +786,6 @@ public class HisWebServiceImpl implements HisWebService {
     private Map<String, Object> getPATRelationMap(Map<String, Object> patientRegistryRtMap) {
         Map<String, Object> map = xmlToJsonMap(patientRegistryRtMap.get("PATRelationList"));
         return xmlToJsonMap(map.get("PATRelation"));
-    }
-
-    /**
-     * 判断数据是否为空
-     *
-     * @param object
-     * @return
-     */
-    private boolean objectIsNull(Object object) {
-        if (Objects.isNull(object)) {
-            return true;
-        }
-        if (StringUtils.isEmpty(String.valueOf(object))) {
-            return true;
-        }
-        return false;
     }
 
     /**
@@ -892,17 +878,6 @@ public class HisWebServiceImpl implements HisWebService {
         return String.valueOf(age);
     }
 
-    private <T> List<T> castList(Object obj, Class<T> clazz) {
-        List<T> result = new ArrayList<T>();
-        if (obj instanceof List<?>) {
-            for (Object o : (List<?>) obj) {
-                result.add(clazz.cast(o));
-            }
-            return result;
-        }
-        return null;
-    }
-
     public void test(String xml) {
         //Map<String, Object> patientRegistryRtMap = gainXmlData(xml, "PatientRegistryRt");
         // HeaderData headerData = getXmlHeader(xml);
@@ -941,7 +916,7 @@ public class HisWebServiceImpl implements HisWebService {
         System.out.println("-------------------------------------");
        /* System.out.println(patRelationAddressMap);
 
-        System.out.println(objectIsNull(patRelationAddressMap.get("PATRelationName")));*/
+        System.out.println(objectStrIsNull(patRelationAddressMap.get("PATRelationName")));*/
 
     }
 
