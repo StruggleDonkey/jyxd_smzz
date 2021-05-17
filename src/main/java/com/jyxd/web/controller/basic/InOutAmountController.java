@@ -175,6 +175,11 @@ public class InOutAmountController {
         json.put("code",HttpCode.FAILURE_CODE.getCode());
         json.put("data",new ArrayList<>());
         json.put("msg","暂无数据");
+        if(map ==null || !map.containsKey("patientId") || StringUtils.isEmpty(map.get("patientId").toString())){
+            json.put("code",HttpCode.NO_PATIENT_CODE.getCode());
+            json.put("msg","请选择病人");
+            return json.toString();
+        }
         if(map!=null && map.containsKey("start")){
             int totalCount =inOutAmountService.getInOutAmountNum(map);
             map.put("start",((int)map.get("start")-1)*(int)map.get("size"));
