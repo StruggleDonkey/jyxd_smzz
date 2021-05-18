@@ -5,8 +5,6 @@ import com.jyxd.web.dao.basic.CustomFieldDao;
 import com.jyxd.web.dao.basic.InOutAmountDao;
 import com.jyxd.web.data.basic.CustomContent;
 import com.jyxd.web.data.basic.CustomField;
-import com.jyxd.web.data.basic.Schedual;
-import com.jyxd.web.data.dto.StatisticsDTO;
 import com.jyxd.web.util.HttpCode;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -396,7 +394,7 @@ public class InOUtAmountStatisticsService {
         }
     }
 
-    public static void main(String[] args) throws ParseException {
+    /*public static void main(String[] args) throws ParseException {
         String s = "{\"code\":200,\n" +
                 "\"data\":\n" +
                 "[\n" +
@@ -440,7 +438,7 @@ public class InOUtAmountStatisticsService {
 
         i.test();
 
-    }
+    }*/
 
     public void test() {
 

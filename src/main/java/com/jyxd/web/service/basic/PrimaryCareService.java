@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Service
 @Transactional
-public class InOutAmountService {
+public class PrimaryCareService {
 
     @Autowired
     private InOutAmountDao inOutAmountDao;

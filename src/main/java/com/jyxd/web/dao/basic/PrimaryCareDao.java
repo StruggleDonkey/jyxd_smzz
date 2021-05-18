@@ -1,6 +1,5 @@
 package com.jyxd.web.dao.basic;
 
-import com.jyxd.web.data.basic.CustomField;
 import com.jyxd.web.data.basic.InOutAmount;
 import org.springframework.stereotype.Repository;
 
@@ -8,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public interface InOutAmountDao {
+public interface PrimaryCareDao {
 
     /**
      * 新增一条出入量表（二表合一）记录
