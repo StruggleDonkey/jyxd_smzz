@@ -43,13 +43,18 @@ public class InOUtAmountStatisticsService {
         isMapNull(map);
         //统计时刻
         String countingTime = (String) map.get("countingTime");
-        //Long countingHours = (Long) map.get("countingTime");
+        //小结间隔
+        Long countingHours = Long.valueOf(String.valueOf(map.get("countingHours")));
         Long summaryHours = 0L;
+        //是否需要大结，null不需要，false 为还未大结，true为已经大结
+        Boolean isSummaryHours = null;
         if (!objectStrIsNull(map.get("summaryHours"))) {
+            isSummaryHours = false;
             summaryHours = (Long) map.get("summaryHours");
         }
-        Date endTime = getLaterHoursDate(new Date(), Long.valueOf(String.valueOf(map.get("hours"))));
-        map.put("endTime", yyyyMMddHHmmssSdfToString(endTime));
+        //查询数据结束时间
+        Date endDataTime = getLaterHoursDate(new Date(), Long.valueOf(String.valueOf(map.get("hours"))));
+        map.put("endTime", yyyyMMddHHmmssSdfToString(endDataTime));
         JSONObject inOutAmountJson = getInOutAmountList(map);
         Object data = inOutAmountJson.get("data");
         List<Map> inOutAmountMapList = castList(data, Map.class);
@@ -64,8 +69,6 @@ public class InOUtAmountStatisticsService {
         Map finallyData = inOutAmountMapList.get(inOutAmountMapList.size() - 1);
         String finallyDateDate = (String) finallyData.get("data_date");
         String finallyDateTime = (String) finallyData.get("data_time");
-
-
         int oneStatisticsCount = 0;
         List<Map> statisticsList = new ArrayList<>();
         for (int i = 0; i < inOutAmountMapList.size(); i++) {
@@ -76,7 +79,6 @@ public class InOUtAmountStatisticsService {
             if (objectStrIsNull(inOutAmountMap.get("data_time"))) {
                 continue;
             }
-            /*Date dateTime = hhmmSdfToDate((String) inOutAmountMap.get("data_time"));*/
             Date date = yyyyMMddHHmmssSdfToDate(oneData.get("data_date") + " " + oneData.get("data_time") + ":00");
             if (oneStartTime.getTime() <= date.getTime() && date.getTime() <= oneEndTime.getTime()) {
                 statisticsList.add(inOutAmountMap);
@@ -85,13 +87,39 @@ public class InOUtAmountStatisticsService {
                 break;
             }
         }
-
         //插入第一次节点总结
-        newOutAmountMapList.add(oneStatisticsCount, mapDataTransition(addStatisticsDate(statisticsList), inOutAmountMapList.get(oneStatisticsCount)));
+        newOutAmountMapList.add(oneStatisticsCount + 1, mapDataTransition(addStatisticsDate(statisticsList), inOutAmountMapList.get(oneStatisticsCount)));
 
         System.out.println("计算后的数据：" + newOutAmountMapList);
-
+        //计算小结总结数据
+        Date startTime = oneEndTime;
+        Date endCountingHoursTime = getLaterHoursDate(startTime, countingHours);
+        statisticsList = new ArrayList<>();
         for (int i = oneStatisticsCount; i < inOutAmountMapList.size() && oneStatisticsCount != 0; i++) {
+            Map inOutAmountMap = inOutAmountMapList.get(i);
+            Date date = yyyyMMddHHmmssSdfToDate(inOutAmountMap.get("data_date") + " " + inOutAmountMap.get("data_time") + ":00");
+            if (date.getTime() > startTime.getTime() && date.getTime() <= endCountingHoursTime.getTime()) {
+                statisticsList.add(inOutAmountMap);
+            } else {
+                if (Objects.nonNull(isSummaryHours) && isSummaryHours) {
+                    Map mapDataTransition = mapDataTransition(addStatisticsDate(statisticsList), inOutAmountMapList.get(i));
+                    newOutAmountMapList.add(i + 1, mapDataTransition);
+                    startTime = endCountingHoursTime;
+                    endCountingHoursTime = getLaterHoursDate(startTime, summaryHours);
+                    statisticsList = new ArrayList<>();
+                    isSummaryHours = false;
+                } else {
+                    Map mapDataTransition = mapDataTransition(addStatisticsDate(statisticsList), inOutAmountMapList.get(i));
+                    newOutAmountMapList.add(i + 1, mapDataTransition);
+                    startTime = endCountingHoursTime;
+                    endCountingHoursTime = getLaterHoursDate(startTime, countingHours);
+                    if (Objects.nonNull(isSummaryHours)) {
+                        isSummaryHours = true;
+                    } else {
+                        statisticsList = new ArrayList<>();
+                    }
+                }
+            }
 
         }
         inOutAmountJson.put("data", JSONArray.fromObject(newOutAmountMapList));
@@ -99,6 +127,7 @@ public class InOUtAmountStatisticsService {
     }
 
     //addStatisticsDate(inOutAmountMap, countingTime, countingHours, summaryHours, statisticsList, i, statisticsCount);
+
 
     /**
      * 计算第一次统计结束时间
@@ -341,7 +370,7 @@ public class InOUtAmountStatisticsService {
         countMap.put("facesCount", facesCount);
         countMap.put("drainageCount", drainageCount);
         countMap.put("balanceCount", balanceCount);
-        if (Objects.isNull(customContent)){
+        if (Objects.isNull(customContent)) {
             return countMap;
         }
         if (!objectStrIsNull(customContent.getContentOne()) && isNumeric(customContent.getContentOne())) {
@@ -531,7 +560,7 @@ public class InOUtAmountStatisticsService {
         if (list != null && list.size() > 0) {
             map.put("list", list);
         }
-        List<Map<String, Object>> amountList = inOutAmountDao.getInOutAmountList(map);
+        List<Map<String, Object>> amountList = inOutAmountDao.queryInOutAmountList(map);
         if (amountList != null && amountList.size() > 0) {
             json.put("msg", "查询成功");
             json.put("data", JSONArray.fromObject(amountList));
