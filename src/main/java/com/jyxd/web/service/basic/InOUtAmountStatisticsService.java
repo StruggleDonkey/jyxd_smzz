@@ -5,8 +5,6 @@ import com.jyxd.web.dao.basic.CustomFieldDao;
 import com.jyxd.web.dao.basic.InOutAmountDao;
 import com.jyxd.web.data.basic.CustomContent;
 import com.jyxd.web.data.basic.CustomField;
-import com.jyxd.web.data.basic.Schedual;
-import com.jyxd.web.data.dto.StatisticsDTO;
 import com.jyxd.web.util.HttpCode;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -44,18 +42,24 @@ public class InOUtAmountStatisticsService {
     public String statistics(Map<String, Object> map) throws ParseException {
         isMapNull(map);
         //统计时刻
-        Date countingTime = hhmmssSdfToDate((String) map.get("countingTime"));
-        Long countingHours = (Long) map.get("countingTime");
+        String countingTime = (String) map.get("countingTime");
+        //Long countingHours = (Long) map.get("countingTime");
         Long summaryHours = 0L;
         if (!objectStrIsNull(map.get("summaryHours"))) {
             summaryHours = (Long) map.get("summaryHours");
         }
         Date endTime = getLaterHoursDate(new Date(), Long.valueOf(String.valueOf(map.get("hours"))));
-        map.put("endTime", endTime);
+        map.put("endTime", yyyyMMddHHmmssSdfToString(endTime));
         JSONObject inOutAmountJson = getInOutAmountList(map);
         Object data = inOutAmountJson.get("data");
         List<Map> inOutAmountMapList = castList(data, Map.class);
         List<Map> newOutAmountMapList = inOutAmountMapList;
+        //第一条数据
+        Map oneData = inOutAmountMapList.get(0);
+        //第一条数据的时间
+        Date oneStartTime = yyyyMMddHHmmssSdfToDate(oneData.get("data_date") + " " + oneData.get("data_time") + ":00");
+        //计算出第一次统计结束的时间
+        Date oneEndTime = calculateOneStatisticsEndTime(String.valueOf(oneData.get("data_date")), String.valueOf(oneData.get("data_time")), countingTime);
         //最后一条数据
         Map finallyData = inOutAmountMapList.get(inOutAmountMapList.size() - 1);
         String finallyDateDate = (String) finallyData.get("data_date");
@@ -72,17 +76,18 @@ public class InOUtAmountStatisticsService {
             if (objectStrIsNull(inOutAmountMap.get("data_time"))) {
                 continue;
             }
-            Date dateTime = hhmmssSdfToDate((String) inOutAmountMap.get("data_time"));
-            if (dateTime.getTime() <= countingTime.getTime()) {
+            /*Date dateTime = hhmmSdfToDate((String) inOutAmountMap.get("data_time"));*/
+            Date date = yyyyMMddHHmmssSdfToDate(oneData.get("data_date") + " " + oneData.get("data_time") + ":00");
+            if (oneStartTime.getTime() <= date.getTime() && date.getTime() <= oneEndTime.getTime()) {
                 statisticsList.add(inOutAmountMap);
-            }
-            if (dateTime.getTime() > countingTime.getTime()) {
+            } else {
                 oneStatisticsCount = i;
                 break;
             }
         }
+
         //插入第一次节点总结
-        newOutAmountMapList.add(oneStatisticsCount, mapDataTransition(addStatisticsDate(statisticsList), inOutAmountMapList.get(oneStatisticsCount - 1)));
+        newOutAmountMapList.add(oneStatisticsCount, mapDataTransition(addStatisticsDate(statisticsList), inOutAmountMapList.get(oneStatisticsCount)));
 
         System.out.println("计算后的数据：" + newOutAmountMapList);
 
@@ -94,6 +99,21 @@ public class InOUtAmountStatisticsService {
     }
 
     //addStatisticsDate(inOutAmountMap, countingTime, countingHours, summaryHours, statisticsList, i, statisticsCount);
+
+    /**
+     * 计算第一次统计结束时间
+     *
+     * @return
+     */
+    private Date calculateOneStatisticsEndTime(String oneDateDay, String oneDateTime, String countingTime) throws ParseException {
+        Date oneDateTimeDate = hhmmSdfToDate(oneDateTime);
+        Date countingTimeDate = hhmmSdfToDate(countingTime);
+        if (oneDateTimeDate.getTime() > countingTimeDate.getTime()) {
+            Date date = yyyyMMddHHmmssSdfToDate(oneDateDay + " " + countingTime);
+            return getLaterHoursDate(date, 24L);
+        }
+        return yyyyMMddHHmmssSdfToDate(oneDateDay + " " + countingTime);
+    }
 
     /**
      * 转换为前端数据
@@ -242,7 +262,7 @@ public class InOUtAmountStatisticsService {
         Integer dosage = stringIntegerMap.get("dosageCount");
         calculateAccumulationMap.put("dosage", dosage + calculateAccumulationMap.get("dosage"));
         Integer allowanceDosageCount = stringIntegerMap.get("allowanceDosageCount");
-        calculateAccumulationMap.put("allowanceDosage", allowanceDosageCount + calculateAccumulationMap.get("allowance_dosage"));
+        calculateAccumulationMap.put("allowanceDosage", allowanceDosageCount + calculateAccumulationMap.get("allowanceDosage"));
         Integer piss = stringIntegerMap.get("pissCount");
         calculateAccumulationMap.put("piss", piss + calculateAccumulationMap.get("piss"));
         Integer faces = stringIntegerMap.get("facesCount");
@@ -321,6 +341,9 @@ public class InOUtAmountStatisticsService {
         countMap.put("facesCount", facesCount);
         countMap.put("drainageCount", drainageCount);
         countMap.put("balanceCount", balanceCount);
+        if (Objects.isNull(customContent)){
+            return countMap;
+        }
         if (!objectStrIsNull(customContent.getContentOne()) && isNumeric(customContent.getContentOne())) {
             countMap.put("contentOne", balanceCount);
         }
@@ -396,7 +419,7 @@ public class InOUtAmountStatisticsService {
         }
     }
 
-    public static void main(String[] args) throws ParseException {
+    /*public static void main(String[] args) throws ParseException {
         String s = "{\"code\":200,\n" +
                 "\"data\":\n" +
                 "[\n" +
@@ -440,7 +463,7 @@ public class InOUtAmountStatisticsService {
 
         i.test();
 
-    }
+    }*/
 
     public void test() {
 

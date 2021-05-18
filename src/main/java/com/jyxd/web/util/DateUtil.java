@@ -8,6 +8,12 @@ import java.util.Date;
 
 public class DateUtil {
 
+    /**
+     * 计算n小时以后的时间
+     * @param date 开始时间
+     * @param hours 时长
+     * @return
+     */
     public static Date getLaterHoursDate(Date date, Long hours) {
         Calendar c = Calendar.getInstance();
         c.setTime(date);
@@ -40,8 +46,8 @@ public class DateUtil {
         return sdf.format(date);
     }
 
-    public static Date hhmmssSdfToDate(String time) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+    public static Date hhmmSdfToDate(String time) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         return sdf.parse(time);
     }
 

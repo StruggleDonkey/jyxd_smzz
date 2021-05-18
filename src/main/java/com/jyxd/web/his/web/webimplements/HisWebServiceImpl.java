@@ -121,6 +121,7 @@ public class HisWebServiceImpl implements HisWebService {
             }
         } catch (Exception e) {
             logger.error("接收his信息保存错误，错误信息：" + e.getMessage());
+            e.printStackTrace();
         }
         if (isSaveData) {
             bodyData.setResultCode("0");
@@ -532,7 +533,7 @@ public class HisWebServiceImpl implements HisWebService {
                 return false;
             }
             Map<String, Object> ctBedMap = (Map) JSON.parse(String.valueOf(ctBed));
-            return saveWardDictionary(ctBedMap);
+            return saveBedDictionary(ctBedMap);
         }
         AtomicBoolean isSaveData = new AtomicBoolean(false);
         ctBedList.forEach(ctBed -> {
@@ -749,9 +750,14 @@ public class HisWebServiceImpl implements HisWebService {
             patient.setDeathTime(yyyyMMddHHmmssSdfToDate(deceasedDate + " " + deceasedTime));
         }
         Map<String, Object> pATIdentityMap = getPATIdentityMap(patientRegistryRtMap);
-        if (!objectStrIsNull(pATIdentityMap.get("PATIdentityNum"))) {
-            patient.setIdCard(String.valueOf(pATIdentityMap.get("PATIdentityNum")));//患者证件号码
-            patient.setAge(IdNOToAge(String.valueOf(pATIdentityMap.get("PATIdentityNum"))));//年龄
+        if (Objects.nonNull(pATIdentityMap)) {
+            if (!objectStrIsNull(pATIdentityMap.get("PATIdentityNum"))) {
+                patient.setIdCard(String.valueOf(pATIdentityMap.get("PATIdentityNum")));//患者证件号码
+                patient.setAge(IdNOToAge(String.valueOf(pATIdentityMap.get("PATIdentityNum"))));//年龄
+            }
+            if (!objectStrIsNull(pATIdentityMap.get("PATTelephone"))) {
+                patient.setPhone(String.valueOf(pATIdentityMap.get("PATTelephone")));//患者电话
+            }
         }
         Map<String, Object> patRelationMap = getPATRelationMap(patientRegistryRtMap);
         if (!objectStrIsNull(patRelationMap.get("PATRelationName"))) {
@@ -759,9 +765,6 @@ public class HisWebServiceImpl implements HisWebService {
         }
         if (!objectStrIsNull(patRelationMap.get("PATRelationPhone"))) {
             patient.setContactPhone(String.valueOf(patRelationMap.get("PATRelationPhone")));
-        }
-        if (!objectStrIsNull(pATIdentityMap.get("PATTelephone"))) {
-            patient.setPhone(String.valueOf(patRelationMap.get("PATTelephone")));//患者电话
         }
         return patientService.insert(patient);
     }
@@ -774,6 +777,10 @@ public class HisWebServiceImpl implements HisWebService {
      */
     private Map<String, Object> getPATIdentityMap(Map<String, Object> patientRegistryRtMap) {
         Map<String, Object> map = xmlToJsonMap(patientRegistryRtMap.get("PATIdentityList"));
+        if (Objects.isNull(map)) {
+            logger.info("患者身份信息不存在");
+            return null;
+        }
         return xmlToJsonMap(map.get("PATIdentity"));
     }
 
@@ -835,7 +842,6 @@ public class HisWebServiceImpl implements HisWebService {
         int leh = IdNO.length();
         String dates = "";
         if (leh == 18) {
-            int se = Integer.valueOf(IdNO.substring(leh - 1)) % 2;
             dates = IdNO.substring(6, 10);
             SimpleDateFormat df = new SimpleDateFormat("yyyy");
             String year = df.format(new Date());
