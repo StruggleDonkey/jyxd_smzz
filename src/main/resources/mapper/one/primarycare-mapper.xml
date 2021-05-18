@@ -1,74 +1,99 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jyxd.web.dao.basic.InOutAmountDao">
+<mapper namespace="com.jyxd.web.dao.basic.PrimaryCareDao">
 
-    <resultMap id="inOutAmountMap" type="com.jyxd.web.data.basic.InOutAmount">
+    <resultMap id="primaryCareMap" type="com.jyxd.web.data.basic.PrimaryCare">
         <result column="id" property="id" jdbcType="VARCHAR"/>
         <result column="visit_id" property="visitId" jdbcType="VARCHAR"/>
         <result column="visit_code" property="visitCode" jdbcType="VARCHAR"/>
         <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
         <result column="data_time" property="dataTime" jdbcType="DATE"/>
-        <result column="order_code" property="orderCode" jdbcType="VARCHAR"/>
-        <result column="order_no" property="orderNo" jdbcType="VARCHAR"/>
-        <result column="order_sub_no" property="orderSubNo" jdbcType="VARCHAR"/>
-        <result column="order_name" property="orderName" jdbcType="VARCHAR"/>
-        <result column="dosage" property="dosage" jdbcType="VARCHAR"/>
-        <result column="allowance_dosage" property="allowanceDosage" jdbcType="VARCHAR"/>
-        <result column="piss" property="piss" jdbcType="VARCHAR"/>
-        <result column="faces" property="faces" jdbcType="VARCHAR"/>
-        <result column="drainage" property="drainage" jdbcType="VARCHAR"/>
-        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="strength_left_top" property="strengthLeftTop" jdbcType="VARCHAR"/>
+        <result column="strength_left_down" property="strengthLeftDown" jdbcType="VARCHAR"/>
+        <result column="strength_right_top" property="strengthRightTop" jdbcType="VARCHAR"/>
+        <result column="strength_right_down" property="strengthRightDown" jdbcType="VARCHAR"/>
+        <result column="oral" property="oral" jdbcType="VARCHAR"/>
+        <result column="urethral" property="urethral" jdbcType="VARCHAR"/>
+        <result column="roll_over" property="rollOver" jdbcType="VARCHAR"/>
+        <result column="take_back" property="takeBack" jdbcType="VARCHAR"/>
+        <result column="massage" property="massage" jdbcType="VARCHAR"/>
+        <result column="nasal_feeding" property="nasalFeeding" jdbcType="VARCHAR"/>
+        <result column="wet_phlegm" property="wetPhlegm" jdbcType="VARCHAR"/>
+        <result column="phlegm_character" property="phlegmCharacter" jdbcType="VARCHAR"/>
+        <result column="row_character" property="rowCharacter" jdbcType="VARCHAR"/>
+        <result column="atomization_inhalation" property="atomizationInhalation" jdbcType="VARCHAR"/>
+        <result column="blanket_ice_cap" property="blanketIceCap" jdbcType="VARCHAR"/>
+        <result column="skin" property="skin" jdbcType="VARCHAR"/>
+        <result column="lower_limbs_cure" property="lowerLimbsCure" jdbcType="VARCHAR"/>
+        <result column="tube_length" property="tubeLength" jdbcType="VARCHAR"/>
+        <result column="tube_unobstructed" property="tubeUnobstructed" jdbcType="VARCHAR"/>
+        <result column="urine_tube" property="urineTube" jdbcType="VARCHAR"/>
+        <result column="drainage_tube_one" property="drainageTubeOne" jdbcType="VARCHAR"/>
+        <result column="drainage_tube_two" property="drainageTubeTwo" jdbcType="VARCHAR"/>
+        <result column="drainage_tube_three" property="drainageTubeThree" jdbcType="VARCHAR"/>
+        <result column="drainage_tube_four" property="drainageTubeFour" jdbcType="VARCHAR"/>
+        <result column="drainage_tube_five" property="drainageTubeFive" jdbcType="VARCHAR"/>
+        <result column="drainage_tube_six" property="drainageTubeSix" jdbcType="VARCHAR"/>
+        <result column="risk_assessment_one" property="riskAssessmentOne" jdbcType="VARCHAR"/>
+        <result column="risk_assessment_two" property="riskAssessmentTwo" jdbcType="VARCHAR"/>
+        <result column="risk_assessment_three" property="riskAssessmentThree" jdbcType="VARCHAR"/>
+        <result column="risk_assessment_four" property="riskAssessmentFour" jdbcType="VARCHAR"/>
+        <result column="risk_assessment_five" property="riskAssessmentFive" jdbcType="VARCHAR"/>
+        <result column="risk_assessment_six" property="riskAssessmentSix" jdbcType="VARCHAR"/>
+        <result column="risk_assessment_seven" property="riskAssessmentSeven" jdbcType="VARCHAR"/>
         <result column="signature" property="signature" jdbcType="VARCHAR"/>
-        <result column="check_signature" property="checkSignature" jdbcType="VARCHAR"/>
-        <result column="illness_records" property="illnessRecords" jdbcType="VARCHAR"/>
-        <result column="balance" property="balance" jdbcType="VARCHAR"/>
+        <result column="signature_again" property="signatureAgain" jdbcType="VARCHAR"/>
         <result column="operator_code" property="operatorCode" jdbcType="VARCHAR"/>
         <result column="status" property="status" jdbcType="INTEGER"/>
-        <result column="type" property="type" jdbcType="INTEGER"/>
         <result column="create_time" property="createTime" jdbcType="DATE"/>
     </resultMap>
 
-    <sql id="inOutAmount_colums">id,visit_id,visit_code,patient_id,data_time,order_code,order_no,order_sub_no,order_name,dosage,allowance_dosage,
-                                   piss,faces,drainage,remark,signature,check_signature,illness_records,balance,operator_code,status,type,create_time</sql>
+    <sql id="primaryCare_colums">id,visit_id,visit_code,patient_id,data_time,strength_left_top,strength_left_down,strength_right_top,
+                                   strength_right_down,oral,urethral,roll_over,take_back,massage,nasal_feeding,wet_phlegm,phlegm_character,
+                                   row_character,atomization_inhalation,blanket_ice_cap,skin,lower_limbs_cure,tube_length,tube_unobstructed,
+                                   urine_tube,drainage_tube_one,drainage_tube_two,drainage_tube_three,drainage_tube_four,drainage_tube_five,
+                                   drainage_tube_six,risk_assessment_one,risk_assessment_two,risk_assessment_three,risk_assessment_four,
+                                   risk_assessment_five,risk_assessment_six,risk_assessment_seven,signature,signature_again,operator_code,
+                                   status,create_time</sql>
 
-    <sql id="inOutAmount_propertys">#{id},#{visitId},#{visitCode},#{patientId},#{dataTime},#{orderCode},#{orderNo},
+    <sql id="primaryCare_propertys">#{id},#{visitId},#{visitCode},#{patientId},#{dataTime},#{orderCode},#{orderNo},
                                     #{orderSubNo},#{orderName},#{dosage},#{allowanceDosage},#{piss},#{faces},#{drainage},#{remark},
                                        #{signature},#{checkSignature},#{illnessRecords},#{balance},#{operatorCode},#{status},#{type},#{createTime}</sql>
 
-    <sql id="inOutAmount_update">visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},data_time=#{dataTime},order_code=#{orderCode},
+    <sql id="primaryCare_update">visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},data_time=#{dataTime},order_code=#{orderCode},
                               order_no=#{orderNo},order_sub_no=#{orderSubNo},order_name=#{orderName},dosage=#{dosage},allowance_dosage=#{allowanceDosage},
                               piss=#{piss},faces=#{faces},drainage=#{drainage},remark=#{remark},signature=#{signature},check_signature=#{checkSignature},
                               illness_records=#{illnessRecords},balance=#{balance},operator_code=#{operatorCode},status=#{status},type=#{type},create_time=#{createTime}</sql>
 
     <insert id="insert">
         insert into
-        table_in_out_amount(<include refid="inOutAmount_colums"></include>)
-        values (<include refid="inOutAmount_propertys"></include>)
+        table_primary_care(<include refid="primaryCare_colums"></include>)
+        values (<include refid="primaryCare_propertys"></include>)
     </insert>
 
-    <update id="update" parameterType="com.jyxd.web.data.basic.InOutAmount">
+    <update id="update" parameterType="com.jyxd.web.data.basic.PrimaryCare">
         update
-        table_in_out_amount
+        table_primary_care
         set
-        <include refid="inOutAmount_update"></include>
+        <include refid="primaryCare_update"></include>
         where
         id=#{id}
     </update>
 
-    <select id="queryData" resultMap="inOutAmountMap" parameterType="java.lang.String">
+    <select id="queryData" resultMap="primaryCareMap" parameterType="java.lang.String">
         select
-        <include refid="inOutAmount_colums"></include>
+        <include refid="primaryCare_colums"></include>
         from
-        table_in_out_amount
+        table_primary_care
         where
         id=#{id}
     </select>
 
-    <select id="queryList" resultMap="inOutAmountMap">
+    <select id="queryList" resultMap="primaryCareMap">
         select
-        <include refid="inOutAmount_colums"></include>
+        <include refid="primaryCare_colums"></include>
         from
-        table_in_out_amount
+        table_primary_care
         where
         1=1
         and status != -1
@@ -86,7 +111,7 @@
         select
         count(id)
         from
-        table_in_out_amount
+        table_primary_care
         where
         1=1
         and status != -1
@@ -98,72 +123,11 @@
         </if>
     </select>
 
-    <select id="getInOutAmountList" resultType="java.util.Map" parameterType="java.util.Map">
-        SELECT
-        IFNULL(tioa.id,"") as id,
-        IFNULL(tioa.visit_id,"") as visit_id,
-        IFNULL(tioa.visit_code,"") as visit_code,
-        IFNULL(tioa.patient_id,"") as patient_id,
-        IFNULL(tioa.order_code,"") as order_code,
-        IFNULL(tioa.order_no,"") as order_no,
-        IFNULL(tioa.order_sub_no,"") as order_sub_no,
-        IFNULL(tioa.order_name,"") as order_name,
-        IFNULL(tioa.dosage,"") as dosage,
-        IFNULL(tioa.allowance_dosage,"") as allowance_dosage,
-        IFNULL(tioa.piss,"") as piss,
-        IFNULL(tioa.faces,"") as faces,
-        IFNULL(tioa.drainage,"") as drainage,
-        IFNULL(tioa.remark,"") as remark,
-        IFNULL(tioa.illness_records,"") as illness_records,
-        IFNULL(tioa.balance,"") as balance,
-        IFNULL(date_format(tioa.data_time, '%Y-%m-%d'),"") as data_date,
-        IFNULL(date_format(tioa.data_time, '%H:%i'),"") as data_time,
-        IFNULL(date_format(tioa.create_time, '%Y-%m-%d %H:%i:%s'),"") as create_time,
-        IFNULL(tua.user_name,"") as operator_code,
-        IFNULL(tub.user_name,"") as signature,
-        IFNULL(tuc.user_name,"") as check_signature,
-        tioa.status as status,
-        tioa.type as type
-        <if test="list != null and list != ''">
-            <foreach collection="list" item="customField" index="index" open="," separator="," close="">
-                IFNULL(tco.${customField.filedCode},"") as #{customField.filedName}
-            </foreach>
-        </if>
-        FROM
-        table_in_out_amount tioa
-        LEFT JOIN table_user tua ON tua.login_name=tioa.operator_code
-        LEFT JOIN table_user tub ON tub.login_name=tioa.signature
-        LEFT JOIN table_user tuc ON tuc.login_name=tioa.check_signature
-        LEFT JOIN table_custom_content tco ON tco.patient_id=tioa.patient_id
-        AND date_format(tioa.data_time, '%Y-%m-%d %H:%i')=date_format(tco.data_time, '%Y-%m-%d %H:%i')
-        AND tco.associated_table='table_in_out_amount'
-        WHERE 1=1
-        AND tioa.status!=-1
-        <if test="status != null ">
-            AND tioa.status= #{status}
-        </if>
-        <if test="patientId != null and patientId != ''">
-            AND tioa.patient_id = #{patientId}
-        </if>
-        <if test="dataTime != null and dataTime != ''">
-            AND date_format(tioa.data_time, '%Y-%m-%d')=#{dataTime}
-        </if>
-        <if test="startTime != null and startTime != ''">
-            AND tioa.data_time <![CDATA[ >= ]]> #{startTime}
-        </if>
-        <if test="endTime != null and endTime != ''">
-            AND tioa.data_time <![CDATA[ < ]]> #{endTime}
-        </if>
-        order by tioa.data_time,tioa.type
-        <if test="start != null ">limit #{start},</if>
-        <if test="size != null ">#{size}</if>
-    </select>
-
     <select id="getInOutAmountNum" resultType="java.lang.Integer" parameterType="java.util.Map">
         SELECT
         count(tioa.id)
         FROM
-        table_in_out_amount tioa
+        table_primary_care tioa
         LEFT JOIN table_user tua ON tua.login_name=tioa.operator_code
         LEFT JOIN table_user tub ON tub.login_name=tioa.signature
         LEFT JOIN table_user tuc ON tuc.login_name=tioa.check_signature
@@ -226,7 +190,7 @@
         IFNULL(tco.content_nine,"") as content_nine,
         IFNULL(tco.content_ten,"") as content_ten
         FROM
-        table_in_out_amount tioa
+        table_primary_care tioa
         LEFT JOIN table_user tua ON tua.login_name=tioa.operator_code
         LEFT JOIN table_user tub ON tub.login_name=tioa.signature
         LEFT JOIN table_user tuc ON tuc.login_name=tioa.check_signature

@@ -1,11 +1,13 @@
 package com.jyxd.web.controller.basic;
 
-import com.jyxd.web.data.basic.CatheterMaintain;
 import com.jyxd.web.data.basic.CustomContent;
 import com.jyxd.web.data.basic.CustomField;
 import com.jyxd.web.data.basic.InOutAmount;
 import com.jyxd.web.data.user.User;
-import com.jyxd.web.service.basic.*;
+import com.jyxd.web.service.basic.CustomContentService;
+import com.jyxd.web.service.basic.CustomFieldService;
+import com.jyxd.web.service.basic.InOUtAmountStatisticsService;
+import com.jyxd.web.service.basic.InOutAmountService;
 import com.jyxd.web.util.HttpCode;
 import com.jyxd.web.util.UUIDUtil;
 import net.sf.json.JSONArray;
@@ -26,10 +28,10 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Controller
-@RequestMapping(value = "/inOutAmount")
-public class InOutAmountController {
+@RequestMapping(value = "/primaryCare")
+public class PrimaryCareController {
 
-    private static Logger logger = LoggerFactory.getLogger(InOutAmountController.class);
+    private static Logger logger = LoggerFactory.getLogger(PrimaryCareController.class);
 
     @Autowired
     private InOutAmountService inOutAmountService;
