@@ -65,10 +65,6 @@ public class InOUtAmountStatisticsService {
         Date oneStartTime = yyyyMMddHHmmssSdfToDate(oneData.get("data_date") + " " + oneData.get("data_time") + ":00");
         //计算出第一次统计结束的时间
         Date oneEndTime = calculateOneStatisticsEndTime(String.valueOf(oneData.get("data_date")), String.valueOf(oneData.get("data_time")), countingTime);
-        //最后一条数据
-        Map finallyData = inOutAmountMapList.get(inOutAmountMapList.size() - 1);
-        String finallyDateDate = (String) finallyData.get("data_date");
-        String finallyDateTime = (String) finallyData.get("data_time");
         int oneStatisticsCount = 0;
         List<Map> statisticsList = new ArrayList<>();
         for (int i = 0; i < inOutAmountMapList.size(); i++) {
@@ -90,7 +86,6 @@ public class InOUtAmountStatisticsService {
         //插入第一次节点总结
         newOutAmountMapList.add(oneStatisticsCount + 1, mapDataTransition(addStatisticsDate(statisticsList), inOutAmountMapList.get(oneStatisticsCount)));
 
-        System.out.println("计算后的数据：" + newOutAmountMapList);
         //计算小结总结数据
         Date startTime = oneEndTime;
         Date endCountingHoursTime = getLaterHoursDate(startTime, countingHours);
@@ -157,7 +152,6 @@ public class InOUtAmountStatisticsService {
     private Map<String, Object> mapDataTransition(Map<String, Integer> statisticsMap, Map<String, Object> mapDate) {
         Map<String, Object> map = new HashMap<>();
         for (Map.Entry<String, Object> entry : mapDate.entrySet()) {
-            System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
             if (StringUtils.equals("dosage", entry.getKey())) {
                 map.put(entry.getKey(), statisticsMap.get("dosage"));
                 continue;
@@ -253,7 +247,7 @@ public class InOUtAmountStatisticsService {
         Map<String, Object> map = new HashMap<>();
         map.put("patientId", statisticsMap.get("patient_id"));
         map.put("associatedTable", "table_in_out_amount");
-        map.put("dataTime", statisticsMap.get("data_data") + " " + statisticsMap.get("data_time"));
+        map.put("dataTime", statisticsMap.get("data_date") + " " + statisticsMap.get("data_time") + ":00");
         List<CustomContent> list = customContentDao.getCustomContentByTime(map);
         if (CollectionUtils.isEmpty(list)) {
             return null;
@@ -379,34 +373,34 @@ public class InOUtAmountStatisticsService {
             return countMap;
         }
         if (!objectStrIsNull(customContent.getContentOne()) && isNumeric(customContent.getContentOne())) {
-            countMap.put("contentOne", balanceCount);
+            countMap.put("contentOne", Integer.valueOf(customContent.getContentOne()));
         }
         if (!objectStrIsNull(customContent.getContentTwo()) && isNumeric(customContent.getContentTwo())) {
-            countMap.put("contentTwo", balanceCount);
+            countMap.put("contentTwo", Integer.valueOf(customContent.getContentTwo()));
         }
         if (!objectStrIsNull(customContent.getContentThree()) && isNumeric(customContent.getContentThree())) {
-            countMap.put("contentThree", balanceCount);
+            countMap.put("contentThree", Integer.valueOf(customContent.getContentThree()));
         }
         if (!objectStrIsNull(customContent.getContentFour()) && isNumeric(customContent.getContentFour())) {
-            countMap.put("contentFour", balanceCount);
+            countMap.put("contentFour", Integer.valueOf(customContent.getContentFour()));
         }
         if (!objectStrIsNull(customContent.getContentFive()) && isNumeric(customContent.getContentFive())) {
-            countMap.put("contentFive", balanceCount);
+            countMap.put("contentFive", Integer.valueOf(customContent.getContentFive()));
         }
         if (!objectStrIsNull(customContent.getContentSix()) && isNumeric(customContent.getContentSix())) {
-            countMap.put("contentSix", balanceCount);
+            countMap.put("contentSix", Integer.valueOf(customContent.getContentSix()));
         }
         if (!objectStrIsNull(customContent.getContentSeven()) && isNumeric(customContent.getContentSeven())) {
-            countMap.put("contentSeven", balanceCount);
+            countMap.put("contentSeven", Integer.valueOf(customContent.getContentSeven()));
         }
         if (!objectStrIsNull(customContent.getContentEight()) && isNumeric(customContent.getContentEight())) {
-            countMap.put("contentEight", balanceCount);
+            countMap.put("contentEight", Integer.valueOf(customContent.getContentEight()));
         }
         if (!objectStrIsNull(customContent.getContentNine()) && isNumeric(customContent.getContentNine())) {
-            countMap.put("contentNine", balanceCount);
+            countMap.put("contentNine", Integer.valueOf(customContent.getContentNine()));
         }
         if (!objectStrIsNull(customContent.getContentTen()) && isNumeric(customContent.getContentTen())) {
-            countMap.put("contentTen", balanceCount);
+            countMap.put("contentTen", Integer.valueOf(customContent.getContentTen()));
         }
         return countMap;
     }
@@ -498,28 +492,6 @@ public class InOUtAmountStatisticsService {
         i.test();
 
     }*/
-
-    public void test() {
-
-        Integer u = 1;
-        Map map = new HashMap();
-        map.put("456", 1);
-        for (int i = 0; i < 3; i++) {
-
-            i(map);
-            System.out.println(map.get("456"));
-
-        }
-
-    }
-
-
-    private void i(Map map) {
-        // map.put("456", 1);
-        Object o = map.get("456");
-        Integer integer = Integer.valueOf(String.valueOf(o));
-        map.put("456", 1 + integer);
-    }
 
     /**
      * 判断字符串是否是数字
