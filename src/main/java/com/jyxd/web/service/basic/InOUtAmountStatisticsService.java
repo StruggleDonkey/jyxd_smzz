@@ -100,7 +100,12 @@ public class InOUtAmountStatisticsService {
             Date date = yyyyMMddHHmmssSdfToDate(inOutAmountMap.get("data_date") + " " + inOutAmountMap.get("data_time") + ":00");
             if (date.getTime() > startTime.getTime() && date.getTime() <= endCountingHoursTime.getTime()) {
                 statisticsList.add(inOutAmountMap);
+                if (i == inOutAmountMapList.size() - 1) {
+                    Map mapDataTransition = mapDataTransition(addStatisticsDate(statisticsList), inOutAmountMapList.get(i));
+                    newOutAmountMapList.add(i + 1, mapDataTransition);
+                }
             } else {
+                //判断是否需要大结
                 if (Objects.nonNull(isSummaryHours) && isSummaryHours) {
                     Map mapDataTransition = mapDataTransition(addStatisticsDate(statisticsList), inOutAmountMapList.get(i));
                     newOutAmountMapList.add(i + 1, mapDataTransition);
