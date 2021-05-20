@@ -609,7 +609,8 @@ public class HisWebServiceImpl implements HisWebService {
             default:
                 break;
         }
-        return transferBed(patient) && patientService.update(patient);
+        //transferBed(patient);
+        return patientService.update(patient);
     }
 
     /**
@@ -661,14 +662,15 @@ public class HisWebServiceImpl implements HisWebService {
         String date = String.valueOf(inpatientEncounterCancelRtMap.get("UpdateDate"));
         String time = String.valueOf(inpatientEncounterCancelRtMap.get("UpdateTime"));
         patient.setExitTime(yyyyMMddHHmmssSdfToDate(date + " " + time));
-        BedArrange bedArrange = bedArrangeService.queryDataByPatientId(patient.getId());
+        /*BedArrange bedArrange = bedArrangeService.queryDataByPatientId(patient.getId());
         if (Objects.isNull(bedArrange)) {
             logger.error("未查询到床位安排，患者出院信息接收失败");
             return false;
         }
         bedArrange.setPatientId(null);
         //更新床位信息并且更新患者信息
-        return bedArrangeService.update(bedArrange) && patientService.update(patient);
+        bedArrangeService.update(bedArrange);*/
+        return patientService.update(patient);
     }
 
     /**
@@ -700,13 +702,36 @@ public class HisWebServiceImpl implements HisWebService {
         patient.setDiagnosisName(String.valueOf(pAASMDiagnoseMap.get("PADDiagDesc")));//诊断描述
         patient.setDoctorCode(String.valueOf(pAASMDiagnoseMap.get("PADDiagDocCode")));//诊断医生代码
         BedArrange bedArrange = bedArrangeService.queryDataByBedCode(patient.getBedCode());
-        if (Objects.isNull(bedArrange)) {
+        if (!isBed(patient.getBedCode())) {
             logger.error("床位不存在，病人入院接收失败");
             return false;
         }
+        if (Objects.isNull(bedArrange)) {
+            bedArrange = new BedArrange();
+            bedArrange.setId(UUIDUtil.getUUID());
+            bedArrange.setBedCode(patient.getBedCode());
+        }
         bedArrange.setPatientId(patient.getId());
         //更新床位信息并且更新患者信息
-        return bedArrangeService.update(bedArrange) && patientService.update(patient);
+        bedArrangeService.insert(bedArrange);
+        return patientService.update(patient);
+    }
+
+    /**
+     * 查询床位是否存在
+     *
+     * @param bedCode
+     * @return
+     */
+    private boolean isBed(String bedCode) {
+        Map<String, Object> bedRequestMap = new HashMap<>();
+        bedRequestMap.put("bedCode", bedCode);
+        BedDictionary bedDictionary = bedDictionaryService.queryDataByBedCode(bedRequestMap);
+        if (Objects.isNull(bedDictionary)) {
+            logger.error("床位不存在，病人入院接收失败");
+            return false;
+        }
+        return true;
     }
 
     /**
