@@ -56,14 +56,27 @@
                                    risk_assessment_five,risk_assessment_six,risk_assessment_seven,signature,signature_again,operator_code,
                                    status,create_time</sql>
 
-    <sql id="primaryCare_propertys">#{id},#{visitId},#{visitCode},#{patientId},#{dataTime},#{orderCode},#{orderNo},
-                                    #{orderSubNo},#{orderName},#{dosage},#{allowanceDosage},#{piss},#{faces},#{drainage},#{remark},
-                                       #{signature},#{checkSignature},#{illnessRecords},#{balance},#{operatorCode},#{status},#{type},#{createTime}</sql>
+    <sql id="primaryCare_propertys">#{id},#{visitId},#{visitCode},#{patientId},#{dataTime},#{strengthLeftTop},#{strengthLeftDown},
+                                    #{strengthRightTop},#{strengthRightDown},#{oral},#{urethral},#{rollOver},#{takeBack},#{massage},
+                                     #{nasalFeeding},#{wetPhlegm},#{phlegmCharacter},#{rowCharacter},#{atomizationInhalation},
+                                     #{blanketIceCap},#{skin},#{lowerLimbsCure},#{tubeLength},#{tubeUnobstructed},#{urineTube},
+                                     #{drainageTubeOne},#{drainageTubeTwo},#{drainageTubeThree},#{drainageTubeFour},#{drainageTubeFive},
+                                     #{drainageTubeSix},#{riskAssessmentOne},#{riskAssessmentTwo},#{riskAssessmentThree},#{riskAssessmentFour},
+                                     #{riskAssessmentFive},#{riskAssessmentSix},#{riskAssessmentSeven},#{signature},#{signatureAgain},
+                                     #{operatorCode},#{status},#{createTime}</sql>
 
-    <sql id="primaryCare_update">visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},data_time=#{dataTime},order_code=#{orderCode},
-                              order_no=#{orderNo},order_sub_no=#{orderSubNo},order_name=#{orderName},dosage=#{dosage},allowance_dosage=#{allowanceDosage},
-                              piss=#{piss},faces=#{faces},drainage=#{drainage},remark=#{remark},signature=#{signature},check_signature=#{checkSignature},
-                              illness_records=#{illnessRecords},balance=#{balance},operator_code=#{operatorCode},status=#{status},type=#{type},create_time=#{createTime}</sql>
+    <sql id="primaryCare_update">visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},data_time=#{dataTime},
+                              strength_left_top=#{strengthLeftTop},strength_left_down=#{strengthLeftDown},strength_right_top=#{strengthRightTop},
+                              strength_right_down=#{strengthRightDown},oral=#{oral},urethral=#{urethral},roll_over=#{rollOver},take_back=#{takeBack},
+                              massage=#{massage},nasal_feeding=#{nasalFeeding},wet_phlegm=#{wetPhlegm},phlegm_character=#{phlegmCharacter},
+                              row_character=#{rowCharacter},atomization_inhalation=#{atomizationInhalation},blanket_ice_cap=#{blanketIceCap},
+                              skin=#{skin},lower_limbs_cure=#{lowerLimbsCure},tube_length=#{tubeLength},tube_unobstructed=#{tubeUnobstructed},
+                              urine_tube=#{urineTube},drainage_tube_one=#{drainageTubeOne},drainage_tube_two=#{drainageTubeTwo},
+                              drainage_tube_three=#{drainageTubeThree},drainage_tube_four=#{drainageTubeFour},drainage_tube_five=#{drainageTubeFive},
+                              drainage_tube_six=#{drainageTubeSix},risk_assessment_one=#{riskAssessmentOne},risk_assessment_two=#{riskAssessmentTwo},
+                              risk_assessment_three=#{riskAssessmentThree},risk_assessment_four=#{riskAssessmentFour},risk_assessment_five=#{riskAssessmentFive},
+                              risk_assessment_six=#{riskAssessmentSix},risk_assessment_seven=#{riskAssessmentSeven},signature=#{signature},
+                              signature_again=#{signatureAgain},operator_code=#{operatorCode},status=#{status},create_time=#{createTime}</sql>
 
     <insert id="insert">
         insert into
@@ -97,8 +110,11 @@
         where
         1=1
         and status != -1
-        <if test="associatedTable != null and associatedTable != ''">
-            and associated_table= #{associatedTable}
+        <if test="patientId != null and patientId != ''">
+            AND patient_id = #{patientId}
+        </if>
+        <if test="dataTime != null and dataTime != ''">
+            AND date_format(tioa.data_time, '%Y-%m-%d')=#{dataTime}
         </if>
         <if test="status != null ">
             and status= #{status}
@@ -115,25 +131,28 @@
         where
         1=1
         and status != -1
-        <if test="associatedTable != null and associatedTable != ''">
-            and associated_table= #{associatedTable}
+        <if test="patientId != null and patientId != ''">
+            AND patient_id = #{patientId}
+        </if>
+        <if test="dataTime != null and dataTime != ''">
+            AND date_format(tioa.data_time, '%Y-%m-%d')=#{dataTime}
         </if>
         <if test="status != null ">
             and status= #{status}
         </if>
     </select>
 
-    <select id="getInOutAmountNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+    <select id="getPrimaryCareNum" resultType="java.lang.Integer" parameterType="java.util.Map">
         SELECT
         count(tioa.id)
         FROM
         table_primary_care tioa
         LEFT JOIN table_user tua ON tua.login_name=tioa.operator_code
         LEFT JOIN table_user tub ON tub.login_name=tioa.signature
-        LEFT JOIN table_user tuc ON tuc.login_name=tioa.check_signature
+        LEFT JOIN table_user tuc ON tuc.login_name=tioa.signature_again
         LEFT JOIN table_custom_content tco ON tco.patient_id=toa.patient_id
         AND date_format(tioa.data_time, '%Y-%m-%d %H:%i')=date_format(tco.data_time, '%Y-%m-%d %H:%i')
-        AND tco.associated_table='table_in_out_amount'
+        AND tco.associated_table='table_primary_care'
         WHERE 1=1
         AND tioa.status!=-1
         <if test="status != null ">
@@ -153,32 +172,52 @@
         </if>
     </select>
 
-    <select id="queryInOutAmountList" resultType="java.util.Map" parameterType="java.util.Map">
+    <select id="getPrimaryCareList" resultType="java.util.Map" parameterType="java.util.Map">
         SELECT
         IFNULL(tioa.id,"") as id,
         IFNULL(tioa.visit_id,"") as visit_id,
         IFNULL(tioa.visit_code,"") as visit_code,
         IFNULL(tioa.patient_id,"") as patient_id,
-        IFNULL(tioa.order_code,"") as order_code,
-        IFNULL(tioa.order_no,"") as order_no,
-        IFNULL(tioa.order_sub_no,"") as order_sub_no,
-        IFNULL(tioa.order_name,"") as order_name,
-        IFNULL(tioa.dosage,"") as dosage,
-        IFNULL(tioa.allowance_dosage,"") as allowance_dosage,
-        IFNULL(tioa.piss,"") as piss,
-        IFNULL(tioa.faces,"") as faces,
-        IFNULL(tioa.drainage,"") as drainage,
-        IFNULL(tioa.remark,"") as remark,
-        IFNULL(tioa.illness_records,"") as illness_records,
-        IFNULL(tioa.balance,"") as balance,
+        IFNULL(tioa.strength_left_top,"") as strength_left_top,
+        IFNULL(tioa.strength_left_down,"") as strength_left_down,
+        IFNULL(tioa.strength_right_top,"") as strength_right_top,
+        IFNULL(tioa.strength_right_down,"") as strength_right_down,
+        IFNULL(tioa.oral,"") as oral,
+        IFNULL(tioa.urethral,"") as urethral,
+        IFNULL(tioa.roll_over,"") as roll_over,
+        IFNULL(tioa.take_back,"") as take_back,
+        IFNULL(tioa.massage,"") as massage,
+        IFNULL(tioa.nasal_feeding,"") as nasal_feeding,
+        IFNULL(tioa.wet_phlegm,"") as wet_phlegm,
+        IFNULL(tioa.phlegm_character,"") as phlegm_character,
+        IFNULL(tioa.row_character,"") as row_character,
+        IFNULL(tioa.atomization_inhalation,"") as atomization_inhalation,
+        IFNULL(tioa.blanket_ice_cap,"") as blanket_ice_cap,
+        IFNULL(tioa.skin,"") as skin,
+        IFNULL(tioa.lower_limbs_cure,"") as lower_limbs_cure,
+        IFNULL(tioa.tube_length,"") as tube_length,
+        IFNULL(tioa.tube_unobstructed,"") as tube_unobstructed,
+        IFNULL(tioa.urine_tube,"") as urine_tube,
+        IFNULL(tioa.drainage_tube_one,"") as drainage_tube_one,
+        IFNULL(tioa.drainage_tube_two,"") as drainage_tube_two,
+        IFNULL(tioa.drainage_tube_three,"") as drainage_tube_three,
+        IFNULL(tioa.drainage_tube_four,"") as drainage_tube_four,
+        IFNULL(tioa.drainage_tube_five,"") as drainage_tube_five,
+        IFNULL(tioa.drainage_tube_six,"") as drainage_tube_six,
+        IFNULL(tioa.risk_assessment_one,"") as risk_assessment_one,
+        IFNULL(tioa.risk_assessment_two,"") as risk_assessment_two,
+        IFNULL(tioa.risk_assessment_three,"") as risk_assessment_three,
+        IFNULL(tioa.risk_assessment_four,"") as risk_assessment_four,
+        IFNULL(tioa.risk_assessment_five,"") as risk_assessment_five,
+        IFNULL(tioa.risk_assessment_six,"") as risk_assessment_six,
+        IFNULL(tioa.risk_assessment_seven,"") as risk_assessment_seven,
         IFNULL(date_format(tioa.data_time, '%Y-%m-%d'),"") as data_date,
         IFNULL(date_format(tioa.data_time, '%H:%i'),"") as data_time,
         IFNULL(date_format(tioa.create_time, '%Y-%m-%d %H:%i:%s'),"") as create_time,
         IFNULL(tua.user_name,"") as operator_code,
         IFNULL(tub.user_name,"") as signature,
-        IFNULL(tuc.user_name,"") as check_signature,
+        IFNULL(tuc.user_name,"") as signature_again,
         tioa.status as status,
-        tioa.type as type,
         IFNULL(tco.content_one,"") as content_one,
         IFNULL(tco.content_two,"") as content_two,
         IFNULL(tco.content_three,"") as content_three,
@@ -193,10 +232,10 @@
         table_primary_care tioa
         LEFT JOIN table_user tua ON tua.login_name=tioa.operator_code
         LEFT JOIN table_user tub ON tub.login_name=tioa.signature
-        LEFT JOIN table_user tuc ON tuc.login_name=tioa.check_signature
+        LEFT JOIN table_user tuc ON tuc.login_name=tioa.signature_again
         LEFT JOIN table_custom_content tco ON tco.patient_id=tioa.patient_id
         AND date_format(tioa.data_time, '%Y-%m-%d %H:%i')=date_format(tco.data_time, '%Y-%m-%d %H:%i')
-        AND tco.associated_table='table_in_out_amount'
+        AND tco.associated_table='table_primary_care'
         WHERE 1=1
         AND tioa.status!=-1
         <if test="status != null ">
@@ -214,7 +253,7 @@
         <if test="endTime != null and endTime != ''">
             AND tioa.data_time <![CDATA[ < ]]> #{endTime}
         </if>
-        order by tioa.data_time,tioa.type
+        order by tioa.data_time
         <if test="start != null ">limit #{start},</if>
         <if test="size != null ">#{size}</if>
     </select>
