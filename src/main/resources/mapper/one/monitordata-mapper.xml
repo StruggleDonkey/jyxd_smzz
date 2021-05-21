@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyxd.web.dao.basic.MonitorDataDao">
+
+    <resultMap id="monitorDataMap" type="com.jyxd.web.data.basic.MonitorData">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="visit_id" property="visitId" jdbcType="VARCHAR"/>
+        <result column="visit_code" property="visitCode" jdbcType="VARCHAR"/>
+        <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
+        <result column="monitorCode" property="monitorCode" jdbcType="VARCHAR"/>
+        <result column="bedCode" property="bedCode" jdbcType="VARCHAR"/>
+        <result column="data_time" property="dataTime" jdbcType="DATE"/>
+        <result column="hr" property="hr" jdbcType="VARCHAR"/>
+        <result column="temperature" property="temperature" jdbcType="VARCHAR"/>
+        <result column="pulse" property="pulse" jdbcType="VARCHAR"/>
+        <result column="heartRate" property="heartRate" jdbcType="VARCHAR"/>
+        <result column="br" property="br" jdbcType="VARCHAR"/>
+        <result column="spo2" property="spo2" jdbcType="VARCHAR"/>
+        <result column="bloodSugar" property="bloodSugar" jdbcType="VARCHAR"/>
+        <result column="cvp" property="cvp" jdbcType="VARCHAR"/>
+        <result column="cvpmmHg" property="cvpmmHg" jdbcType="VARCHAR"/>
+        <result column="bp" property="bp" jdbcType="VARCHAR"/>
+        <result column="ibp" property="ibp" jdbcType="VARCHAR"/>
+    </resultMap>
+    
+    <sql id="monitorData_colums">id,visit_id,visit_code,patient_id,monitorCode,bedCode,data_time,hr,temperature,pulse,
+                                        heartRate,br,spo2,bloodSugar,cvp,cvpmmHg,bp,ibp</sql>
+
+    <sql id="monitorData_propertys">#{id},#{visitId},#{visitCode},#{patientId},#{monitorCode},#{bedCode},#{dataTime},#{hr},#{temperature},
+                              #{pulse},#{heartRate},#{br},#{spo2},#{bloodSugar},#{cvp},#{cvpmmHg},#{bp},#{ibp}</sql>
+
+    <sql id="monitorData_update">visit_id=#{visitId},visit_code=#{visitCode},patient_id=#{patientId},monitorCode=#{monitorCode},
+                              bedCode=#{bedCode},data_time=#{dataTime},hr=#{hr},temperature=#{temperature},pulse=#{pulse},
+                              heartRate=#{heartRate},br=#{br},spo2=#{spo2},bloodSugar=#{bloodSugar},cvp=#{cvp},
+                              cvpmmHg=#{cvpmmHg},bp=#{bp},ibp=#{ibp}</sql>
+
+    <insert id="insert">
+        insert into
+        table_monitor_data(<include refid="monitorData_colums"></include>)
+        values (<include refid="monitorData_propertys"></include>)
+    </insert>
+
+    <update id="update" parameterType="com.jyxd.web.data.basic.MonitorData" >
+        update
+        table_monitor_data
+        set <include refid="monitorData_update"></include>
+        where
+          id=#{id}
+    </update>
+
+    <select id="queryData" resultMap="monitorDataMap" parameterType="java.lang.String">
+        select
+          <include refid="monitorData_colums"></include>
+        from
+        table_monitor_data
+        where
+          id=#{id}
+    </select>
+
+    <select id="queryList" resultType="java.util.Map">
+        select
+          <include refid="monitorData_colums"></include>
+        from
+        table_monitor_data
+        where
+          1=1
+        and  status != -1
+        <if test="patientId != null and patientId != ''">
+            and  patient_id =#{patientId}
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+        <if test="start != null ">limit #{start},</if>
+        <if test="size != null ">#{size}</if>
+    </select>
+
+    <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+          count(id)
+        from
+        table_monitor_data
+        where
+        1=1
+        and  status != -1
+        <if test="patientId != null and patientId != ''">
+            and  patient_id =#{patientId}
+        </if>
+        <if test="status != null ">
+            and  status= #{status}
+        </if>
+    </select>
+
+</mapper>
