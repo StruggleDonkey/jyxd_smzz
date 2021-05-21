@@ -171,7 +171,7 @@ public class MedOrderExec implements Serializable {
      * 执行状态，0：未执行；1：执行中；2：执行完毕；3：交班
      */
     @Column(name = "order_status")
-    private int orderStatus;
+    private String orderStatus;
 
     /**
      * 备注

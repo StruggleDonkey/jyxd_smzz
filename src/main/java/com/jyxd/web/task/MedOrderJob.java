@@ -126,7 +126,7 @@ public class MedOrderJob implements Job {
                                 if(StringUtils.isNotEmpty(hisList.get(i).get("remark ").toString())){
                                     medOrderExec.setRemark(hisList.get(i).get("remark ").toString());//医嘱嘱托
                                 }
-                                medOrderExec.setOrderStatus(0);//执行状态，0：未执行；1：执行中；2：执行完毕；3：交班
+                                medOrderExec.setOrderStatus("0");//执行状态，0：未执行；1：执行中；2：执行完毕；3：交班
                                 medOrderExec.setCreateTime(new Date());
                                 medOrderExec.setUpdateTime(new Date());
                                 medOrderExec.setIsSync(0);//是否已同步到护理单，0：未同步；1：已同步；
@@ -181,7 +181,7 @@ public class MedOrderJob implements Job {
                             if(StringUtils.isNotEmpty(hisList.get(i).get("remark ").toString())){
                                 medOrderExec.setRemark(hisList.get(i).get("remark ").toString());//医嘱嘱托
                             }
-                            medOrderExec.setOrderStatus(0);//执行状态，0：未执行；1：执行中；2：执行完毕；3：交班
+                            medOrderExec.setOrderStatus("0");//执行状态，0：未执行；1：执行中；2：执行完毕；3：交班
                             medOrderExec.setCreateTime(new Date());
                             medOrderExec.setUpdateTime(new Date());
                             medOrderExec.setIsSync(0);//是否已同步到护理单，0：未同步；1：已同步；

@@ -250,7 +250,7 @@ public class MedOrderExecController {
                     medOrderExec.setRecentSyncTime(new Date());//最新同步时间
                     medOrderExec.setSyncNum(medOrderExec.getSyncNum()-1);//剩余同步次数 默认1
                     medOrderExec.setUpdateTime(new Date());
-                    medOrderExec.setOrderStatus(2);//执行状态，0：未执行；1：执行中；2：执行完毕；3：交班
+                    medOrderExec.setOrderStatus("2");//执行状态，0：未执行；1：执行中；2：执行完毕；3：交班
                     medOrderExecService.update(medOrderExec);
 
 

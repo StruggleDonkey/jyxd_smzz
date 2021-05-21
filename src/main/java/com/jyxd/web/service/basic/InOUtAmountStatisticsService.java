@@ -42,7 +42,7 @@ public class InOUtAmountStatisticsService {
     public String statistics(Map<String, Object> map) throws ParseException {
         isMapNull(map);
         //统计时刻
-        String countingTime = (String) map.get("countingTime");
+        String countingTime = String.valueOf(map.get("countingTime"));
         //小结间隔
         Long countingHours = Long.valueOf(String.valueOf(map.get("countingHours")));
         Long summaryHours = 0L;
@@ -58,13 +58,15 @@ public class InOUtAmountStatisticsService {
         JSONObject inOutAmountJson = getInOutAmountList(map);
         Object data = inOutAmountJson.get("data");
         List<Map> inOutAmountMapList = castList(data, Map.class);
-        List<Map> newOutAmountMapList = inOutAmountMapList;
+        List<Map> newOutAmountMapList = new ArrayList<>();
         //第一条数据
         Map oneData = inOutAmountMapList.get(0);
         //第一条数据的时间
         Date oneStartTime = yyyyMMddHHmmssSdfToDate(oneData.get("data_date") + " " + oneData.get("data_time") + ":00");
         //计算出第一次统计结束的时间
         Date oneEndTime = calculateOneStatisticsEndTime(String.valueOf(oneData.get("data_date")), String.valueOf(oneData.get("data_time")), countingTime);
+        System.out.println("开始时间：" + yyyyMMddHHmmssSdfToString(oneStartTime));
+        System.out.println("结束时间：" + yyyyMMddHHmmssSdfToString(oneEndTime));
         int oneStatisticsCount = 0;
         List<Map> statisticsList = new ArrayList<>();
         for (int i = 0; i < inOutAmountMapList.size(); i++) {
@@ -75,53 +77,89 @@ public class InOUtAmountStatisticsService {
             if (objectStrIsNull(inOutAmountMap.get("data_time"))) {
                 continue;
             }
-            Date date = yyyyMMddHHmmssSdfToDate(oneData.get("data_date") + " " + oneData.get("data_time") + ":00");
+            Date date = yyyyMMddHHmmssSdfToDate(inOutAmountMap.get("data_date") + " " + inOutAmountMap.get("data_time") + ":00");
+            System.out.println("数据时间：" + yyyyMMddHHmmssSdfToString(date));
             if (oneStartTime.getTime() <= date.getTime() && date.getTime() <= oneEndTime.getTime()) {
+                System.out.println("第" + i + "次循环");
                 statisticsList.add(inOutAmountMap);
+                newOutAmountMapList.add(inOutAmountMap);
             } else {
                 oneStatisticsCount = i;
                 break;
             }
         }
         //插入第一次节点总结
-        newOutAmountMapList.add(oneStatisticsCount + 1, mapDataTransition(addStatisticsDate(statisticsList), inOutAmountMapList.get(oneStatisticsCount)));
-
-        //计算小结总结数据
+        newOutAmountMapList.add(oneStatisticsCount + 1, mapDataTransition(addStatisticsDate(statisticsList), inOutAmountMapList.get(oneStatisticsCount), null, null, countingTime));
         Date startTime = oneEndTime;
         Date endCountingHoursTime = getLaterHoursDate(startTime, countingHours);
-        statisticsList = new ArrayList<>();
+        Map<String, Integer> calculateAccumulationMap = new HashMap<>();
+        calculateAccumulationMap = accumulationInitialize(calculateAccumulationMap);
         for (int i = oneStatisticsCount; i < inOutAmountMapList.size() && oneStatisticsCount != 0; i++) {
             Map inOutAmountMap = inOutAmountMapList.get(i);
-            Date date = yyyyMMddHHmmssSdfToDate(inOutAmountMap.get("data_date") + " " + inOutAmountMap.get("data_time") + ":00");
+            Map<String, Integer> stringIntegerMap = extractNum(inOutAmountMap, findCustomContent(inOutAmountMap));
+            calculateAccumulation(calculateAccumulationMap, stringIntegerMap);
+            Date dataTime = hhmmSdfToDate(String.valueOf(inOutAmountMap.get("data_time")));
+            Date countingDateTime = hhmmSdfToDate(countingTime);
+            if (dataTime.getTime() > countingDateTime.getTime()) {
+
+            }
+
+            newOutAmountMapList.add(inOutAmountMap);
+        }
+
+
+        //计算小结总结数据
+        /*Date startTime = oneEndTime;
+        Date endCountingHoursTime = getLaterHoursDate(startTime, countingHours);*/
+        // Date startTime = hhmmSdfToDate(countingTime);
+        //Date endCountingHoursTime = getLaterHoursDate(startTime, countingHours);
+        statisticsList = new ArrayList<>();
+        /*for (int i = oneStatisticsCount; i < inOutAmountMapList.size() && oneStatisticsCount != 0; i++) {
+            Map inOutAmountMap = inOutAmountMapList.get(i);
+            //Date date = yyyyMMddHHmmssSdfToDate(inOutAmountMap.get("data_date") + " " + inOutAmountMap.get("data_time") + ":00");
+            Date date = hhmmSdfToDate(String.valueOf(inOutAmountMap.get("data_time")));
             if (date.getTime() > startTime.getTime() && date.getTime() <= endCountingHoursTime.getTime()) {
                 statisticsList.add(inOutAmountMap);
                 if (i == inOutAmountMapList.size() - 1) {
-                    Map mapDataTransition = mapDataTransition(addStatisticsDate(statisticsList), inOutAmountMapList.get(i));
+                    System.out.println("进行最后一次循环");
+                    Map mapDataTransition;
+                    if (Objects.nonNull(isSummaryHours) && isSummaryHours) {
+                        mapDataTransition = mapDataTransition(addStatisticsDate(statisticsList), inOutAmountMapList.get(i), null, summaryHours, null);
+                    } else {
+                        mapDataTransition = mapDataTransition(addStatisticsDate(statisticsList), inOutAmountMapList.get(i), countingHours, null, null);
+                    }
                     newOutAmountMapList.add(i + 1, mapDataTransition);
                 }
             } else {
-                //判断是否需要大结
-                if (Objects.nonNull(isSummaryHours) && isSummaryHours) {
-                    Map mapDataTransition = mapDataTransition(addStatisticsDate(statisticsList), inOutAmountMapList.get(i));
-                    newOutAmountMapList.add(i + 1, mapDataTransition);
-                    startTime = endCountingHoursTime;
-                    endCountingHoursTime = getLaterHoursDate(startTime, summaryHours);
-                    statisticsList = new ArrayList<>();
-                    isSummaryHours = false;
+                if (CollectionUtils.isEmpty(statisticsList)) {
+                    System.out.println("数据为空");
+                    continue;
                 } else {
-                    Map mapDataTransition = mapDataTransition(addStatisticsDate(statisticsList), inOutAmountMapList.get(i));
-                    newOutAmountMapList.add(i + 1, mapDataTransition);
-                    startTime = endCountingHoursTime;
-                    endCountingHoursTime = getLaterHoursDate(startTime, countingHours);
-                    if (Objects.nonNull(isSummaryHours)) {
-                        isSummaryHours = true;
-                    } else {
+                    System.out.println(statisticsList);
+                    //判断是否需要大结
+                    if (Objects.nonNull(isSummaryHours) && isSummaryHours) {
+                        Map mapDataTransition = mapDataTransition(addStatisticsDate(statisticsList), inOutAmountMapList.get(i), null, summaryHours, null);
+                        newOutAmountMapList.add(i + 1, mapDataTransition);
+                        startTime = endCountingHoursTime;
+                        endCountingHoursTime = getLaterHoursDate(startTime, countingHours);
                         statisticsList = new ArrayList<>();
+                        isSummaryHours = false;
+                    } else {
+                        Map mapDataTransition = mapDataTransition(addStatisticsDate(statisticsList), inOutAmountMapList.get(i), countingHours, null, null);
+                        newOutAmountMapList.add(i + 1, mapDataTransition);
+                        startTime = endCountingHoursTime;
+                        endCountingHoursTime = getLaterHoursDate(startTime, countingHours);
+                        if (Objects.nonNull(isSummaryHours)) {
+                            endCountingHoursTime = getLaterHoursDate(startTime, summaryHours - countingHours);
+                            isSummaryHours = true;
+                        } else {
+                            statisticsList = new ArrayList<>();
+                        }
                     }
                 }
             }
 
-        }
+        }*/
         inOutAmountJson.put("data", JSONArray.fromObject(newOutAmountMapList));
         return inOutAmountJson.toString();
     }
@@ -149,7 +187,9 @@ public class InOUtAmountStatisticsService {
      *
      * @return
      */
-    private Map<String, Object> mapDataTransition(Map<String, Integer> statisticsMap, Map<String, Object> mapDate) {
+    private Map<String, Object> mapDataTransition(Map<String, Integer> statisticsMap,
+                                                  Map<String, Object> mapDate, Long countingHours,
+                                                  Long summaryHours, String countingTime) {
         Map<String, Object> map = new HashMap<>();
         for (Map.Entry<String, Object> entry : mapDate.entrySet()) {
             if (StringUtils.equals("dosage", entry.getKey())) {
@@ -214,6 +254,16 @@ public class InOUtAmountStatisticsService {
             }
             if (StringUtils.equals("content_ten", entry.getKey())) {
                 map.put(entry.getKey(), statisticsMap.get("contentTen"));
+                continue;
+            }
+            if (StringUtils.equals("order_name", entry.getKey())) {
+                if (Objects.isNull(countingHours) && Objects.isNull(summaryHours)) {
+                    map.put("order_name", countingTime + "前总结");
+                } else if (Objects.nonNull(summaryHours)) {
+                    map.put("order_name", summaryHours + "小时总结");
+                } else {
+                    map.put("order_name", countingHours + "小时小结");
+                }
                 continue;
             }
             map.put(entry.getKey(), entry.getValue());
@@ -295,6 +345,7 @@ public class InOUtAmountStatisticsService {
         calculateAccumulationMap.put("piss", piss + calculateAccumulationMap.get("piss"));
         Integer faces = stringIntegerMap.get("facesCount");
         calculateAccumulationMap.put("faces", faces + calculateAccumulationMap.get("faces"));
+        System.out.println("大便数据和为：" + calculateAccumulationMap.get("faces"));
         Integer drainage = stringIntegerMap.get("drainageCount");
         calculateAccumulationMap.put("drainage", drainage + calculateAccumulationMap.get("drainage"));
         Integer balance = stringIntegerMap.get("balanceCount");
@@ -415,10 +466,13 @@ public class InOUtAmountStatisticsService {
         if (Objects.isNull(object)) {
             return 0;
         }
-        if (StringUtils.isEmpty((String) object) || StringUtils.isBlank((String) object)) {
+        if (StringUtils.isEmpty(String.valueOf(object)) || StringUtils.isBlank(String.valueOf(object))) {
             return 0;
         }
-        return Integer.valueOf((String) object);
+        if (!isNumeric(String.valueOf(object))) {
+            return 0;
+        }
+        return Integer.valueOf(String.valueOf(object));
     }
 
     /**
