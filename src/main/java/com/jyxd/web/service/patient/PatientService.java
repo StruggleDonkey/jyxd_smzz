@@ -33,39 +33,45 @@ public class PatientService {
     @Autowired
     private DepartmentDictionaryDao departmentDictionaryDao;
 
-    public boolean insert(Patient patient){
+    public boolean insert(Patient patient) {
         return patientDao.insert(patient);
     }
 
-    public boolean update(Patient patient){
+    public boolean update(Patient patient) {
         return patientDao.update(patient);
     }
 
-    public Patient queryData(String id){
+    public Patient queryData(String id) {
         return patientDao.queryData(id);
     }
 
-    public List<Patient> queryList(Map<String,Object> map){
+    public List<Patient> queryList(Map<String, Object> map) {
         return patientDao.queryList(map);
     }
 
-    public int queryNum(Map<String,Object> map){return patientDao.queryNum(map);}
+    public int queryNum(Map<String, Object> map) {
+        return patientDao.queryNum(map);
+    }
 
-    public List<Map<String,Object>> getList(Map<String,Object> map){
+    public List<Map<String, Object>> getList(Map<String, Object> map) {
         return patientDao.getList(map);
     }
 
-    public int getNum(Map<String,Object> map){return patientDao.getNum(map);}
+    public int getNum(Map<String, Object> map) {
+        return patientDao.getNum(map);
+    }
 
-    public int getAllNum(){return patientDao.getAllNum();}
+    public int getAllNum() {
+        return patientDao.getAllNum();
+    }
 
-    public List<LinkedHashMap<String,Object>> getDownloadList(Map<String,Object> map){
+    public List<LinkedHashMap<String, Object>> getDownloadList(Map<String, Object> map) {
         return patientDao.getDownloadList(map);
     }
 
     public void getExcel(HttpServletRequest request, HttpServletResponse response) {
-        Map<String,Object> map=new HashMap<>();
-        List<LinkedHashMap<String,Object>> withdrawVos = patientDao.getDownloadList(map);
+        Map<String, Object> map = new HashMap<>();
+        List<LinkedHashMap<String, Object>> withdrawVos = patientDao.getDownloadList(map);
 
         // 创建工作簿
         HSSFWorkbook workbook = new HSSFWorkbook();
@@ -76,7 +82,7 @@ public class PatientService {
         // 创建单元格样式
         HSSFCellStyle cellStyle = workbook.createCellStyle();
         // 表头
-        String[] head = {"住院号", "姓名", "性别", "入科时间", "出科时间", "当前状态", "出科方式", "来源科室","去向科室","入科床号","住院时间",
+        String[] head = {"住院号", "姓名", "性别", "入科时间", "出科时间", "当前状态", "出科方式", "来源科室", "去向科室", "入科床号", "住院时间",
                 "是否非计划", "病情", "责任医生", "责任护士", "最新手术时间", "最新手术名称", "诊断", "过敏史", "阳性"};
         HSSFCell cell;
         // 设置表头
@@ -88,7 +94,7 @@ public class PatientService {
         // 设置表格内容
         for (int iBody = 0; iBody < withdrawVos.size(); iBody++) {
             row = sheet.createRow(iBody + 1);
-            LinkedHashMap<String,Object> u = withdrawVos.get(iBody);
+            LinkedHashMap<String, Object> u = withdrawVos.get(iBody);
             String[] userArray = new String[20];
             userArray[0] = u.get("住院号").toString();
             userArray[1] = u.get("姓名").toString();
@@ -118,27 +124,28 @@ public class PatientService {
         FileUtil.createFile(response, workbook);
     }
 
-    public int getNowPatientNum(Map<String,Object> map){
+    public int getNowPatientNum(Map<String, Object> map) {
         return patientDao.getNowPatientNum(map);
     }
 
     /**
      * 首页查询在科病人来源
+     *
      * @return
      */
-    public JSONArray getPatientSource(){
-        JSONArray array=new JSONArray();
-        Map<String, Object> map=new HashMap<>();
-        List<DepartmentDictionary> list=departmentDictionaryDao.queryDataList(map);
-        int num=0;
-        if(list!=null && list.size()>0){
+    public JSONArray getPatientSource() {
+        JSONArray array = new JSONArray();
+        Map<String, Object> map = new HashMap<>();
+        List<DepartmentDictionary> list = departmentDictionaryDao.queryDataList(map);
+        int num = 0;
+        if (list != null && list.size() > 0) {
             for (int i = 0; i < list.size(); i++) {
-                JSONObject obj=new JSONObject();
-                map.put("departmentCode",list.get(i).getDepartmentCode());
-                num=patientDao.getNum(map);
-                if(num!=0){
-                    obj.put("value",num);
-                    obj.put("name",list.get(i).getDepartmentName());
+                JSONObject obj = new JSONObject();
+                map.put("departmentCode", list.get(i).getDepartmentCode());
+                num = patientDao.getNum(map);
+                if (num != 0) {
+                    obj.put("value", num);
+                    obj.put("name", list.get(i).getDepartmentName());
                     array.add(obj);
                 }
             }
@@ -148,136 +155,162 @@ public class PatientService {
 
     /**
      * 首页查询床位列表
+     *
      * @return
      */
-    public List<Map<String,Object>> getBedPatientList(){
+    public List<Map<String, Object>> getBedPatientList() {
         return patientDao.getBedPatientList();
     }
 
     /**
      * 查询待分配的病人列表（是否分配床位）
+     *
      * @param map
      * @return
      */
-    public List<Patient> getNoBedPatientList(Map<String,Object> map){
+    public List<Patient> getNoBedPatientList(Map<String, Object> map) {
         return patientDao.getNoBedPatientList(map);
     }
 
     /**
      * 查询已出科的病人列表
+     *
      * @param map
      * @return
      */
-    public List<Patient> getOutPatientList(Map<String,Object> map){
+    public List<Patient> getOutPatientList(Map<String, Object> map) {
         return patientDao.getOutPatientList(map);
     }
 
     /**
      * 统计分析--出入科--转入转出分析
+     *
      * @param map
      * @return
      */
-    public int getOutAndIn(Map<String,Object> map){
+    public int getOutAndIn(Map<String, Object> map) {
         return patientDao.getOutAndIn(map);
     }
 
     /**
      * 查询所有病人的入科科室分类名称
+     *
      * @return
      */
-    public List<Map<String,Object>> getAllEnterDepartment(Map<String,Object> map){
+    public List<Map<String, Object>> getAllEnterDepartment(Map<String, Object> map) {
         return patientDao.getAllEnterDepartment(map);
     }
 
     /**
      * 统计分析--出入科--转入或转出科室病人数量
+     *
      * @param map
      * @return
      */
-    public int getEnterAndExitDepartment(Map<String,Object> map){
+    public int getEnterAndExitDepartment(Map<String, Object> map) {
         return patientDao.getEnterAndExitDepartment(map);
     }
 
     /**
      * 查询所有病人的出科科室分类名称
+     *
      * @return
      */
-    public List<Map<String,Object>> getAllExitDepartment(Map<String,Object> map){
+    public List<Map<String, Object>> getAllExitDepartment(Map<String, Object> map) {
         return patientDao.getAllExitDepartment(map);
     }
 
     /**
      * 统计分析--出入科--趋势分析--转出方式
+     *
      * @return
      */
-    public List<Map<String,Object>> getNumByExitType(Map<String,Object> map){
+    public List<Map<String, Object>> getNumByExitType(Map<String, Object> map) {
         return patientDao.getNumByExitType(map);
     }
 
     /**
      * 统计分析--出入科--趋势分析--转出方式（按月）
+     *
      * @return
      */
-    public List<Map<String,Object>> getNumByExitTypeMonth(Map<String,Object> map){
+    public List<Map<String, Object>> getNumByExitTypeMonth(Map<String, Object> map) {
         return patientDao.getNumByExitTypeMonth(map);
     }
 
     /**
      * 模拟查询视图
+     *
      * @return
      */
-    public List<Map<String,Object>> queryListTest(Map<String,Object> map){
+    public List<Map<String, Object>> queryListTest(Map<String, Object> map) {
         return patientTestDao.queryListTest(map);
     }
 
     /**
      * 查询所有病人信息 stats!=-1
+     *
      * @return
      */
-    public List<Patient> queryPatientList(Map<String,Object> map){
+    public List<Patient> queryPatientList(Map<String, Object> map) {
         return patientDao.queryPatientList(map);
     }
 
     /**
      * 从his系统视图查询所有病人信息
+     *
      * @return
      */
-    public List<Map<String,Object>> getPatientByHis(Map<String,Object> map){
+    public List<Map<String, Object>> getPatientByHis(Map<String, Object> map) {
         return patientTestDao.getPatientByHis(map);
     }
 
     /**
      * 根据条件查询病人对象
+     *
      * @param map
      * @return
      */
-    public Patient getPatientByConditions(Map<String,Object> map){
+    public Patient getPatientByConditions(Map<String, Object> map) {
         return patientDao.getPatientByConditions(map);
     }
 
     /**
      * 从his系统视图查询所有病人转移信息
+     *
      * @return
      */
-    public List<Map<String, Object>> getTransferByHis(Map<String,Object> map){
+    public List<Map<String, Object>> getTransferByHis(Map<String, Object> map) {
         return patientTestDao.getTransferByHis(map);
     }
 
     /**
      * 病人管理--首页--查询病人监护仪及采集频率
+     *
      * @param map
      * @return
      */
-    public Map<String, Object> queryPatientMonitor(Map<String,Object> map){
+    public Map<String, Object> queryPatientMonitor(Map<String, Object> map) {
         return patientDao.queryPatientMonitor(map);
     }
 
     /**
      * 根据患者主索引号查询最近的一条病人记录
+     *
      * @param visitId
      * @return
      */
-    public Patient getPatientByVisitId(String visitId){
+    public Patient getPatientByVisitId(String visitId) {
         return patientDao.getPatientByVisitId(visitId);
+    }
+
+    /**
+     * 根据患者主索引号查询最近的一条病人记录
+     *
+     * @param visitId
+     * @return
+     */
+    public Patient getPatientByVisitIdAndFlagAndStatus(String visitId, String flag, String status) {
+        return patientDao.getPatientByVisitIdAndFlagAndStatus(visitId, flag, status);
     }
 }

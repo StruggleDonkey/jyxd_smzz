@@ -738,5 +738,26 @@
         create_time DESC
         LIMIT 1
     </select>
-
+    <!--根据患者主索引号查询最近的一条病人记录-->
+    <select id="getPatientByVisitIdAndFlagAndStatus" resultMap="patientMap" parameterType="java.lang.String">
+        select
+        <include refid="patient_colums"></include>
+        from
+        p_patient
+        where
+        1=1
+        and status != -1
+        <if test="visitId != null and visitId != ''">
+            and visit_id =#{visitId}
+        </if>
+        <if test="flag != null and flag != ''">
+            and  flag =#{flag}
+        </if>
+        <if test="status != null and status != ''">
+            and  status =#{status}
+        </if>
+        ORDER BY
+        create_time DESC
+        LIMIT 1
+    </select>
 </mapper>

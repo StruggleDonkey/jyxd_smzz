@@ -628,27 +628,58 @@ public class HisWebServiceImpl implements HisWebService {
         }
         patient.setToDepartmentCode(String.valueOf(admTransactionRtMap.get("PAADMTOrigDeptCode")));//转出科室代码
 
-        String enterDate = String.valueOf(admTransactionRtMap.get("PAADMTEndDate"));//转入日期
-        String enterTime = String.valueOf(admTransactionRtMap.get("PAADMTEndTime"));//转入时间
-        patient.setEnterTime(yyyyMMddHHmmssSdfToDate(enterDate + " " + enterTime));//入科时间
+        if (!objectStrIsNull(admTransactionRtMap.get("PAADMTEndDate")) && !objectStrIsNull(admTransactionRtMap.get("PAADMTEndTime"))) {
+            String enterDate = String.valueOf(admTransactionRtMap.get("PAADMTEndDate"));//转入日期
+            String enterTime = String.valueOf(admTransactionRtMap.get("PAADMTEndTime"));//转入时间
+            patient.setEnterTime(yyyyMMddHHmmssSdfToDate(enterDate + " " + enterTime));//入科时间
+        }
         patient.setDepartmentCode(String.valueOf(admTransactionRtMap.get("PAADMTTargDeptCode")));//转入科室代码
         patient.setWardCode(String.valueOf(admTransactionRtMap.get("PAADMTTargWardCode")));//转入病区代码
         patient.setBedCode(String.valueOf(admTransactionRtMap.get("PAADMTTargBedCode")));//转入床位代码
         patient.setDoctorCode(String.valueOf(admTransactionRtMap.get("PAADMTTargDocCode")));//转入医生代码
+        BedArrange bedArrange;
         switch (String.valueOf(admTransactionRtMap.get("PAADMTState"))) {
             //01转科、02转床、03首次分床、04换医生
             case "01":
-                patient.setFlag(0);//在院标志（0：出科；1：在科）
-                patient.setExitType("转科");//出科方式 (出院、转科、死亡、放弃、转院)
-                BedArrange bedArrange = bedArrangeService.queryDataByPatientId(patient.getId());
+                bedArrange = bedArrangeService.queryDataByPatientId(patient.getId());
+                if (StringUtils.equals(patient.getDepartmentCode(), "81") && StringUtils.equals(patient.getWardCode(), "23")) {
+                    patient.setFlag(1);//在院标志（0：出科；1：在科）
+                    patient.setExitType("转入科");//出科方式 (出院、转入科、转出科、死亡、放弃、转院)
+                    if (!isBed(patient.getBedCode())) {
+                        logger.error("床位不存在，病人转入科室接收失败");
+                        return false;
+                    }
+                    bedArrange = bedArrangeService.queryDataByBedCode(patient.getBedCode());
+                    if (Objects.isNull(bedArrange)) {
+                        bedArrange = new BedArrange();
+                        bedArrange.setId(UUIDUtil.getUUID());
+                        bedArrange.setPatientId(patient.getId());
+                        bedArrange.setBedCode(patient.getBedCode());
+                        bedArrangeService.insert(bedArrange);
+                        break;
+                    }
+                    bedArrange.setPatientId(patient.getId());
+                    bedArrangeService.update(bedArrange);
+                    break;
+                } else {
+                    patient.setFlag(0);//在院标志（0：出科；1：在科）
+                    patient.setExitType("转出科");//出科方式 (出院、转入科、转出科、死亡、放弃、转院)
+                    if (Objects.isNull(bedArrange)) {
+                        logger.error("患者不存在诊室，转出科室科失败");
+                        return false;
+                    }
+                    bedArrange.setPatientId(null);
+                    bedArrangeService.update(bedArrange);
+                    break;
+                }
+            case "02":
+                bedArrange = bedArrangeService.queryDataByPatientId(patient.getId());
                 if (Objects.isNull(bedArrange)) {
-                    logger.error("患者不存在诊室，转科失败");
+                    logger.error("床位原始床位不存在，病人转床失败");
                     return false;
                 }
                 bedArrange.setPatientId(null);
                 bedArrangeService.update(bedArrange);
-                break;
-            case "02":
             case "03":
                 patient.setFlag(1);
                 if (!isBed(patient.getBedCode())) {
@@ -670,9 +701,19 @@ public class HisWebServiceImpl implements HisWebService {
             case "04":
                 patient.setFlag(1);//在院标志（0：出科；1：在科）
                 break;
+            case "05":
+                bedArrange = bedArrangeService.queryDataByPatientId(patient.getId());
+                if (Objects.isNull(bedArrange)) {
+                    logger.error("床位原始床位不存在，病人移出床位失败");
+                    return false;
+                }
+                bedArrange.setPatientId(null);
+                bedArrangeService.update(bedArrange);
+                break;
             default:
                 break;
         }
+
         return patientService.update(patient);
     }
 
@@ -727,8 +768,8 @@ public class HisWebServiceImpl implements HisWebService {
         patient.setExitTime(yyyyMMddHHmmssSdfToDate(date + " " + time));
         BedArrange bedArrange = bedArrangeService.queryDataByPatientId(patient.getId());
         if (Objects.isNull(bedArrange)) {
-            logger.error("未查询到床位安排，患者出院信息接收失败");
-            return false;
+            logger.info("未查询到床位安排，患者已经移出床位出院成功");
+            return patientService.update(patient);
         }
         bedArrange.setPatientId(null);
         //更新床位信息并且更新患者信息
@@ -820,7 +861,11 @@ public class HisWebServiceImpl implements HisWebService {
      */
     private boolean patientRegistry(String hisRequestXml) throws ParseException {
         Map<String, Object> patientRegistryRtMap = gainXmlData(hisRequestXml, "PatientRegistryRt");
-        Patient patient = findPatient(patientRegistryRtMap);
+        if (objectStrIsNull(patientRegistryRtMap.get("PATPatientID"))) {
+            logger.error("患者PATPatientID为空，接收失败");
+            return false;
+        }
+        Patient patient = patientService.getPatientByVisitIdAndFlagAndStatus(String.valueOf(patientRegistryRtMap.get("PATPatientID")), "1", "1");
         if (Objects.isNull(patient)) {
             patient = new Patient();
             patient.setId(UUIDUtil.getUUID());
@@ -875,6 +920,7 @@ public class HisWebServiceImpl implements HisWebService {
         if (!objectStrIsNull(patRelationMap.get("PATRelationPhone"))) {
             patient.setContactPhone(String.valueOf(patRelationMap.get("PATRelationPhone")));
         }
+        logger.info(patient.getName() + "：病人基本信息记录成功");
         return patient;
     }
 
