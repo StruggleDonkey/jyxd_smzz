@@ -3,6 +3,7 @@ package com.jyxd.web.his.web.webimplements;
 import cn.hutool.json.XML;
 import com.alibaba.fastjson.JSON;
 import com.jyxd.web.data.basic.BedArrange;
+import com.jyxd.web.data.basic.BedUseStatistics;
 import com.jyxd.web.data.basic.MedOrderExec;
 import com.jyxd.web.data.dictionary.BedDictionary;
 import com.jyxd.web.data.dictionary.DepartmentDictionary;
@@ -15,6 +16,7 @@ import com.jyxd.web.his.data.medOrderExec.AddOrdersRtRequest;
 import com.jyxd.web.his.web.HisWebService;
 
 import com.jyxd.web.service.basic.BedArrangeService;
+import com.jyxd.web.service.basic.BedUseStatisticsService;
 import com.jyxd.web.service.basic.MedOrderExecService;
 import com.jyxd.web.service.dictionary.BedDictionaryService;
 import com.jyxd.web.service.dictionary.DepartmentDictionaryService;
@@ -76,6 +78,9 @@ public class HisWebServiceImpl implements HisWebService {
 
     @Autowired
     private RoleService roleService;
+
+    @Autowired
+    private BedUseStatisticsService bedUseStatisticsService;
 
     @SneakyThrows
     @Override
@@ -651,13 +656,10 @@ public class HisWebServiceImpl implements HisWebService {
                     }
                     bedArrange = bedArrangeService.queryDataByBedCode(patient.getBedCode());
                     if (Objects.isNull(bedArrange)) {
-                        bedArrange = new BedArrange();
-                        bedArrange.setId(UUIDUtil.getUUID());
-                        bedArrange.setPatientId(patient.getId());
-                        bedArrange.setBedCode(patient.getBedCode());
-                        bedArrangeService.insert(bedArrange);
+                        setBedArrange(patient);
                         break;
                     }
+                    saveBedUseStatistic(patient.getId(), bedArrange.getBedCode(), 1);
                     bedArrange.setPatientId(patient.getId());
                     bedArrangeService.update(bedArrange);
                     break;
@@ -668,6 +670,7 @@ public class HisWebServiceImpl implements HisWebService {
                         logger.error("患者不存在诊室，转出科室科失败");
                         return false;
                     }
+                    saveBedUseStatistic(patient.getId(), bedArrange.getBedCode(), 2);
                     bedArrange.setPatientId(null);
                     patient.setBedCode(null);
                     bedArrangeService.update(bedArrange);
@@ -679,6 +682,7 @@ public class HisWebServiceImpl implements HisWebService {
                     logger.error("床位原始床位不存在，病人转床失败");
                     return false;
                 }
+                saveBedUseStatistic(patient.getId(), bedArrange.getBedCode(), 2);
                 bedArrange.setPatientId(null);
                 bedArrangeService.update(bedArrange);
             case "03":
@@ -689,13 +693,10 @@ public class HisWebServiceImpl implements HisWebService {
                 }
                 bedArrange = bedArrangeService.queryDataByBedCode(patient.getBedCode());
                 if (Objects.isNull(bedArrange)) {
-                    bedArrange = new BedArrange();
-                    bedArrange.setId(UUIDUtil.getUUID());
-                    bedArrange.setPatientId(patient.getId());
-                    bedArrange.setBedCode(patient.getBedCode());
-                    bedArrangeService.insert(bedArrange);
+                    setBedArrange(patient);
                     break;
                 }
+                saveBedUseStatistic(patient.getId(), bedArrange.getBedCode(), 1);
                 bedArrange.setPatientId(patient.getId());
                 bedArrangeService.update(bedArrange);
                 break;
@@ -708,6 +709,7 @@ public class HisWebServiceImpl implements HisWebService {
                     logger.error("床位原始床位不存在，病人移出床位失败");
                     return false;
                 }
+                saveBedUseStatistic(patient.getId(), bedArrange.getBedCode(), 2);
                 bedArrange.setPatientId(null);
                 bedArrangeService.update(bedArrange);
                 patient.setBedCode(null);
@@ -719,36 +721,47 @@ public class HisWebServiceImpl implements HisWebService {
         return patientService.update(patient);
     }
 
-    /**
-     * 转移床位
-     */
-    private boolean transferBed(Patient patient) {
-        if (StringUtils.isEmpty(patient.getBedCode())) {
-            return true;
-        }
-        BedArrange bedArrange = bedArrangeService.queryDataByPatientId(patient.getId());
-        if (Objects.isNull(bedArrange)) {
-            logger.error("该患者为查到之前的床号，转科失败");
-            return false;
-        }
-        if (StringUtils.equals(bedArrange.getBedCode(), patient.getBedCode())) {
-            logger.info("转入床位与之前一致，床位号无需改变");
-            return true;
-        }
-        bedArrange.setPatientId(null);
-        bedArrangeService.update(bedArrange);
-        bedArrange = bedArrangeService.queryDataByBedCode(patient.getBedCode());
-        if (Objects.isNull(bedArrange)) {
-            logger.error("系统未查询到之前的床位，转科失败");
-            return false;
-        }
-        if (Objects.nonNull(bedArrange.getPatientId())) {
-            logger.error("该床位存在患者，转科失败");
-            return false;
-        }
+    private BedArrange setBedArrange(Patient patient) {
+        BedArrange bedArrange = new BedArrange();
+        bedArrange.setId(UUIDUtil.getUUID());
         bedArrange.setPatientId(patient.getId());
-        bedArrangeService.update(bedArrange);
-        return true;
+        bedArrange.setBedCode(patient.getBedCode());
+        bedArrangeService.insert(bedArrange);
+        saveBedUseStatistic(patient.getId(), bedArrange.getBedCode(), 1);
+        return bedArrange;
+    }
+
+    /**
+     * 保存入床出床记录信息
+     *
+     * @param patientId 患者id
+     * @param bedCode   床位号id
+     * @param exitCod   出入code 入床传1，出床传2
+     */
+    private void saveBedUseStatistic(String patientId, String bedCode, Integer exitCod) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("patientId", patientId);
+        map.put("state", 1);
+        map.put("bedCode", bedCode);
+        BedUseStatistics bedUseStatistics = bedUseStatisticsService.queryByPatientIdAndBedCodeAndState(map);
+        if (Objects.isNull(bedUseStatistics) && Objects.equals(exitCod, 1)) {
+            bedUseStatistics = new BedUseStatistics();
+            bedUseStatistics.setId(UUIDUtil.getUUID());
+            bedUseStatistics.setPatientId(patientId);
+            bedUseStatistics.setBedCode(bedCode);
+            bedUseStatistics.setState(1);
+            bedUseStatistics.setStartDate(new Date());
+            bedUseStatistics.setCreateTime(new Date());
+            bedUseStatisticsService.insert(bedUseStatistics);
+        }
+        if (Objects.nonNull(bedUseStatistics) && Objects.equals(exitCod, 2)) {
+            bedUseStatistics.setEndDate(new Date());
+            bedUseStatistics.setStatisticsDate(new Date());
+            Long duration = bedUseStatistics.getEndDate().getTime() - bedUseStatistics.getStartDate().getTime();
+            bedUseStatistics.setState(2);
+            bedUseStatistics.setTimeLong(duration.floatValue());
+            bedUseStatisticsService.update(bedUseStatistics);
+        }
     }
 
     /**

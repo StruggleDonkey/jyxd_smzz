@@ -13,7 +13,7 @@
         <result column="state" property="state" jdbcType="INTEGER"/>
         <result column="create_time" property="createTime" jdbcType="DATE"/>
     </resultMap>
-    
+
     <sql id="bedUseStatistics_colums">id,patient_id,statistics_date,start_date,end_date,bed_code,time_long,state,create_time</sql>
 
     <sql id="bedUseStatistics_propertys">#{id},#{patientId},#{statisticsDate},#{startDate},#{endDate},#{bedCode},#{timeLong},#{state},#{createTime}</sql>
@@ -28,35 +28,36 @@
         values (<include refid="bedUseStatistics_propertys"></include>)
     </insert>
 
-    <update id="update" parameterType="com.jyxd.web.data.basic.BedUseStatistics" >
+    <update id="update" parameterType="com.jyxd.web.data.basic.BedUseStatistics">
         update
         table_bed_use_statistics
-        set <include refid="bedUseStatistics_update"></include>
+        set
+        <include refid="bedUseStatistics_update"></include>
         where
-          id=#{id}
+        id=#{id}
     </update>
 
     <select id="queryData" resultMap="bedUseStatisticsMap" parameterType="java.lang.String">
         select
-          <include refid="bedUseStatistics_colums"></include>
+        <include refid="bedUseStatistics_colums"></include>
         from
         table_bed_use_statistics
         where
-          id=#{id}
+        id=#{id}
     </select>
 
     <select id="queryList" resultType="java.util.Map">
         select
-          <include refid="bedUseStatistics_colums"></include>
+        <include refid="bedUseStatistics_colums"></include>
         from
         table_bed_use_statistics
         where
-          1=1
+        1=1
         <if test="content != null and content != ''">
-            and  content like '%${content}%'
+            and content like '%${content}%'
         </if>
         <if test="status != null ">
-            and  status= #{status}
+            and status= #{status}
         </if>
         <if test="start != null ">limit #{start},</if>
         <if test="size != null ">#{size}</if>
@@ -64,16 +65,16 @@
 
     <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
         select
-          count(id)
+        count(id)
         from
         table_bed_use_statistics
         where
         1=1
         <if test="content != null and content != ''">
-            and  content like '%${content}%'
+            and content like '%${content}%'
         </if>
         <if test="status != null ">
-            and  status= #{status}
+            and status= #{status}
         </if>
     </select>
 
@@ -94,7 +95,7 @@
         AND date_format(statistics_date, '%Y-%m-%d') BETWEEN date_format(#{startTime}, '%Y-%m-%d')
         AND date_format(#{endTime}, '%Y-%m-%d')
         <if test="bedCode != null and bedCode != ''">
-            and  bed_code =#{bedCode}
+            and bed_code =#{bedCode}
         </if>
         GROUP BY statisticsDate
         <foreach collection="list" item="dateStr" separator="">
@@ -112,7 +113,7 @@
         newTable.timeLong,
         newTable.statisticsDate
         FROM
-        (  SELECT
+        ( SELECT
         sum(time_long) AS timeLong,
         MONTH (statistics_date) AS statisticsDate
         FROM
@@ -121,7 +122,7 @@
         1 = 1
         AND YEAR(statistics_date) = #{year}
         <if test="bedCode != null and bedCode != ''">
-            and  bed_code =#{bedCode}
+            and bed_code =#{bedCode}
         </if>
         GROUP BY
         statisticsDate
@@ -144,7 +145,7 @@
         AND date_format(statistics_date, '%Y-%m-%d') BETWEEN date_format(#{startTime}, '%Y-%m-%d')
         AND date_format(#{endTime}, '%Y-%m-%d')
         <if test="bedCode != null and bedCode != ''">
-            and  bed_code =#{bedCode}
+            and bed_code =#{bedCode}
         </if>
     </select>
 
@@ -158,8 +159,24 @@
         1 = 1
         AND YEAR(statistics_date) = #{year}
         <if test="bedCode != null and bedCode != ''">
-            and  bed_code =#{bedCode}
+            and bed_code =#{bedCode}
         </if>
     </select>
-
+    <select id="queryData" resultMap="bedUseStatisticsMap" parameterType="java.util.Map">
+        select
+        <include refid="bedUseStatistics_colums"></include>
+        from
+        table_bed_use_statistics
+        where
+        1 = 1
+        <if test="patientId != null and patientId != ''">
+            and patient_id =#{patientId}
+        </if>
+        <if test="state != null and state != ''">
+            and state =#{state}
+        </if>
+        <if test="bedCod != null and bedCod != ''">
+            and bed_code =#{bedCod}
+        </if>
+    </select>
 </mapper>
