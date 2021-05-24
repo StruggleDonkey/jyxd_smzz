@@ -669,6 +669,7 @@ public class HisWebServiceImpl implements HisWebService {
                         return false;
                     }
                     bedArrange.setPatientId(null);
+                    patient.setBedCode(null);
                     bedArrangeService.update(bedArrange);
                     break;
                 }
@@ -709,6 +710,7 @@ public class HisWebServiceImpl implements HisWebService {
                 }
                 bedArrange.setPatientId(null);
                 bedArrangeService.update(bedArrange);
+                patient.setBedCode(null);
                 break;
             default:
                 break;
@@ -763,6 +765,7 @@ public class HisWebServiceImpl implements HisWebService {
         }
         patient.setFlag(0);
         patient.setExitType("出院");
+        patient.setBedCode(null);
         String date = String.valueOf(inpatientEncounterCancelRtMap.get("UpdateDate"));
         String time = String.valueOf(inpatientEncounterCancelRtMap.get("UpdateTime"));
         patient.setExitTime(yyyyMMddHHmmssSdfToDate(date + " " + time));
