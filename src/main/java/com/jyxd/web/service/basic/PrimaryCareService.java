@@ -1,9 +1,7 @@
 package com.jyxd.web.service.basic;
 
 
-import com.jyxd.web.dao.basic.InOutAmountDao;
 import com.jyxd.web.dao.basic.PrimaryCareDao;
-import com.jyxd.web.data.basic.InOutAmount;
 import com.jyxd.web.data.basic.PrimaryCare;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

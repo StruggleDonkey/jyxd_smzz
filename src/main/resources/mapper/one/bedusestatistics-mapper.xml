@@ -4,17 +4,23 @@
 
     <resultMap id="bedUseStatisticsMap" type="com.jyxd.web.data.basic.BedUseStatistics">
         <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
         <result column="statistics_date" property="statisticsDate" jdbcType="DATE"/>
+        <result column="start_date" property="startDate" jdbcType="DATE"/>
+        <result column="end_date" property="endDate" jdbcType="DATE"/>
         <result column="bed_code" property="bedCode" jdbcType="VARCHAR"/>
         <result column="time_long" property="timeLong" jdbcType="FLOAT"/>
+        <result column="state" property="state" jdbcType="INTEGER"/>
         <result column="create_time" property="createTime" jdbcType="DATE"/>
     </resultMap>
     
-    <sql id="bedUseStatistics_colums">id,statistics_date,bed_code,time_long,create_time</sql>
+    <sql id="bedUseStatistics_colums">id,patient_id,statistics_date,start_date,end_date,bed_code,time_long,state,create_time</sql>
 
-    <sql id="bedUseStatistics_propertys">#{id},#{statisticsDate},#{bedCode},#{timeLong},#{createTime}</sql>
+    <sql id="bedUseStatistics_propertys">#{id},#{patientId},#{statisticsDate},#{startDate},#{endDate},#{bedCode},#{timeLong},#{state},#{createTime}</sql>
 
-    <sql id="bedUseStatistics_update">statistics_date=#{statisticsDate},bed_code=#{bedCode},time_long=#{timeLong},create_time=#{createTime}</sql>
+    <sql id="bedUseStatistics_update">patient_id=#{patientId},statistics_date=#{statisticsDate},start_date=#{startDate},
+                                                        end_date=#{endDate},bed_code=#{bedCode},
+                                                time_long=#{timeLong},state=#{state},create_time=#{createTime}</sql>
 
     <insert id="insert">
         insert into
