@@ -640,7 +640,9 @@ public class HisWebServiceImpl implements HisWebService {
         }
         patient.setDepartmentCode(String.valueOf(admTransactionRtMap.get("PAADMTTargDeptCode")));//转入科室代码
         patient.setWardCode(String.valueOf(admTransactionRtMap.get("PAADMTTargWardCode")));//转入病区代码
-        patient.setBedCode(String.valueOf(admTransactionRtMap.get("PAADMTTargBedCode")));//转入床位代码
+        if (StringUtils.equals(patient.getDepartmentCode(), "81") && StringUtils.equals(patient.getWardCode(), "23")) {
+            patient.setBedCode(String.valueOf(admTransactionRtMap.get("PAADMTTargBedCode")));//转入床位代码
+        }
         patient.setDoctorCode(String.valueOf(admTransactionRtMap.get("PAADMTTargDocCode")));//转入医生代码
         BedArrange bedArrange;
         switch (String.valueOf(admTransactionRtMap.get("PAADMTState"))) {
@@ -688,7 +690,8 @@ public class HisWebServiceImpl implements HisWebService {
                     bedArrangeService.update(bedArrange);
                 }
             case "03":
-                if (StringUtils.equals(patient.getDepartmentCode(), "81") && StringUtils.equals(patient.getWardCode(), "23")) {
+                if (StringUtils.equals(patient.getDepartmentCode(), "81")
+                        && StringUtils.equals(patient.getWardCode(), "23")) {
                     patient.setFlag(1);
                     if (!isBed(patient.getBedCode())) {
                         logger.error("床位不存在，病人入院接收失败");
