@@ -48,9 +48,7 @@ public class InOUtAmountStatisticsService {
         Long countingHours = Long.valueOf(String.valueOf(map.get("countingHours")));
         Long summaryHours = 0L;
         //是否需要大结，null不需要，false 为还未大结，true为已经大结
-        Boolean isSummaryHours = null;
         if (!objectStrIsNull(map.get("summaryHours"))) {
-            isSummaryHours = false;
             summaryHours = (Long) map.get("summaryHours");
         }
         //查询数据结束时间

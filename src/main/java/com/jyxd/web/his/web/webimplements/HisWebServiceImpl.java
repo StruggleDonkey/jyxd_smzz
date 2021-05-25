@@ -677,29 +677,33 @@ public class HisWebServiceImpl implements HisWebService {
                     break;
                 }
             case "02":
-                bedArrange = bedArrangeService.queryDataByPatientId(patient.getId());
-                if (Objects.isNull(bedArrange)) {
-                    logger.error("床位原始床位不存在，病人转床失败");
-                    return false;
+                if (StringUtils.equals(patient.getDepartmentCode(), "81") && StringUtils.equals(patient.getWardCode(), "23")) {
+                    bedArrange = bedArrangeService.queryDataByPatientId(patient.getId());
+                    if (Objects.isNull(bedArrange)) {
+                        logger.error("床位原始床位不存在，病人转床失败");
+                        return false;
+                    }
+                    saveBedUseStatistic(patient.getId(), bedArrange.getBedCode(), 2);
+                    bedArrange.setPatientId(null);
+                    bedArrangeService.update(bedArrange);
                 }
-                saveBedUseStatistic(patient.getId(), bedArrange.getBedCode(), 2);
-                bedArrange.setPatientId(null);
-                bedArrangeService.update(bedArrange);
             case "03":
-                patient.setFlag(1);
-                if (!isBed(patient.getBedCode())) {
-                    logger.error("床位不存在，病人入院接收失败");
-                    return false;
-                }
-                bedArrange = bedArrangeService.queryDataByBedCode(patient.getBedCode());
-                if (Objects.isNull(bedArrange)) {
-                    setBedArrange(patient);
+                if (StringUtils.equals(patient.getDepartmentCode(), "81") && StringUtils.equals(patient.getWardCode(), "23")) {
+                    patient.setFlag(1);
+                    if (!isBed(patient.getBedCode())) {
+                        logger.error("床位不存在，病人入院接收失败");
+                        return false;
+                    }
+                    bedArrange = bedArrangeService.queryDataByBedCode(patient.getBedCode());
+                    if (Objects.isNull(bedArrange)) {
+                        setBedArrange(patient);
+                        break;
+                    }
+                    saveBedUseStatistic(patient.getId(), bedArrange.getBedCode(), 1);
+                    bedArrange.setPatientId(patient.getId());
+                    bedArrangeService.update(bedArrange);
                     break;
                 }
-                saveBedUseStatistic(patient.getId(), bedArrange.getBedCode(), 1);
-                bedArrange.setPatientId(patient.getId());
-                bedArrangeService.update(bedArrange);
-                break;
             case "04":
                 patient.setFlag(1);//在院标志（0：出科；1：在科）
                 break;
@@ -802,7 +806,7 @@ public class HisWebServiceImpl implements HisWebService {
      */
     private boolean inpatientEncounterStarted(String hisRequestXml) throws ParseException {
         Map<String, Object> inpatientEncounterStartedRtMap = gainXmlData(hisRequestXml, "InpatientEncounterStartedRt");
-        Patient patient = findPatient(inpatientEncounterStartedRtMap);
+        Patient patient = patientService.getPatientByVisitIdAndFlagAndStatus(String.valueOf(inpatientEncounterStartedRtMap.get("PATPatientID")), "1", "1");
         if (Objects.isNull(patient)) {
             logger.info("inpatientEncounterStarted -> 患者在系统不存在，先执行入院登记");
             patient = new Patient();
@@ -825,6 +829,7 @@ public class HisWebServiceImpl implements HisWebService {
     private Patient setPatient(Patient patient, Map<String, Object> inpatientEncounterStartedRtMap) throws ParseException {
         patient.setVisitCode(String.valueOf(inpatientEncounterStartedRtMap.get("PAADMVisitNumber")));
         patient.setFlag(1);//在院标志（0：出科；1：在科）
+        patient.setStatus(1);
         patient.setWardCode(String.valueOf(inpatientEncounterStartedRtMap.get("PAADMAdmWardCode")));//入院病区代码
         patient.setBedCode(String.valueOf(inpatientEncounterStartedRtMap.get("PAADMCurBedNo")));//病床号
         patient.setDepartmentCode(String.valueOf(inpatientEncounterStartedRtMap.get("PAADMAdmDeptCode")));
@@ -936,6 +941,8 @@ public class HisWebServiceImpl implements HisWebService {
         if (!objectStrIsNull(patRelationMap.get("PATRelationPhone"))) {
             patient.setContactPhone(String.valueOf(patRelationMap.get("PATRelationPhone")));
         }
+        patient.setStatus(1);
+        patient.setFlag(1);
         logger.info(patient.getName() + "：病人基本信息记录成功");
         return patient;
     }

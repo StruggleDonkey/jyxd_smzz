@@ -162,7 +162,7 @@
             and bed_code =#{bedCode}
         </if>
     </select>
-    <select id="queryData" resultMap="bedUseStatisticsMap" parameterType="java.util.Map">
+    <select id="queryByPatientIdAndBedCodeAndState" resultMap="bedUseStatisticsMap" parameterType="java.util.Map">
         select
         <include refid="bedUseStatistics_colums"></include>
         from
