@@ -819,9 +819,19 @@ public class HisWebServiceImpl implements HisWebService {
             patient.setId(UUIDUtil.getUUID());
             patient.setCreateTime(new Date());
             patient.setVisitId(String.valueOf(inpatientEncounterStartedRtMap.get("PATPatientID")));
-            return patientService.insert(setPatient(patient, inpatientEncounterStartedRtMap));
+            patient = setPatient(patient, inpatientEncounterStartedRtMap);
+            if (StringUtils.equals(patient.getWardCode(), "重症医学科病区") || StringUtils.equals(patient.getWardCode(), "23")) {
+                return patientService.insert(patient);
+            }
+            logger.info("非重症病区入院，不执行保存操作");
+            return false;
         }
-        return patientService.update(setPatient(patient, inpatientEncounterStartedRtMap));
+        patient = setPatient(patient, inpatientEncounterStartedRtMap);
+        if (StringUtils.equals(patient.getWardCode(), "重症医学科病区") || StringUtils.equals(patient.getWardCode(), "23")) {
+            return patientService.update(patient);
+        }
+        logger.info("非重症病区入院，不执行修改操作");
+        return false;
     }
 
     /**
