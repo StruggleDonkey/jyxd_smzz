@@ -426,7 +426,7 @@
         IFNULL(p.name,"") as name,
         IFNULL(p.age,"") as age,
         CASE
-        WHEN(p.sex=0)
+        WHEN(p.sex=2)
         THEN "女"
         WHEN(p.sex=1)
         THEN "男"

@@ -640,7 +640,8 @@ public class HisWebServiceImpl implements HisWebService {
         }
         patient.setDepartmentCode(String.valueOf(admTransactionRtMap.get("PAADMTTargDeptCode")));//转入科室代码
         patient.setWardCode(String.valueOf(admTransactionRtMap.get("PAADMTTargWardCode")));//转入病区代码
-        if (StringUtils.equals(patient.getDepartmentCode(), "81") && StringUtils.equals(patient.getWardCode(), "23")) {
+        if (StringUtils.equals(patient.getDepartmentCode(), "81")
+                && StringUtils.equals(patient.getWardCode(), "23")) {
             patient.setBedCode(String.valueOf(admTransactionRtMap.get("PAADMTTargBedCode")));//转入床位代码
         }
         patient.setDoctorCode(String.valueOf(admTransactionRtMap.get("PAADMTTargDocCode")));//转入医生代码
@@ -649,7 +650,8 @@ public class HisWebServiceImpl implements HisWebService {
             //01转科、02转床、03首次分床、04换医生
             case "01":
                 bedArrange = bedArrangeService.queryDataByPatientId(patient.getId());
-                if (StringUtils.equals(patient.getDepartmentCode(), "81") && StringUtils.equals(patient.getWardCode(), "23")) {
+                if (StringUtils.equals(patient.getDepartmentCode(), "81")
+                        && StringUtils.equals(patient.getWardCode(), "23")) {
                     patient.setFlag(1);//在院标志（0：出科；1：在科）
                     patient.setExitType("转入科");//出科方式 (出院、转入科、转出科、死亡、放弃、转院)
                     if (!isBed(patient.getBedCode())) {
@@ -679,7 +681,8 @@ public class HisWebServiceImpl implements HisWebService {
                     break;
                 }
             case "02":
-                if (StringUtils.equals(patient.getDepartmentCode(), "81") && StringUtils.equals(patient.getWardCode(), "23")) {
+                if (StringUtils.equals(patient.getDepartmentCode(), "81")
+                        && StringUtils.equals(patient.getWardCode(), "23")) {
                     bedArrange = bedArrangeService.queryDataByPatientId(patient.getId());
                     if (Objects.isNull(bedArrange)) {
                         logger.error("床位原始床位不存在，病人转床失败");
@@ -891,10 +894,12 @@ public class HisWebServiceImpl implements HisWebService {
         }
         Patient patient = patientService.getPatientByVisitIdAndFlagAndStatus(String.valueOf(patientRegistryRtMap.get("PATPatientID")), "1", "1");
         if (Objects.isNull(patient)) {
-            patient = new Patient();
+            /*patient = new Patient();
             patient.setId(UUIDUtil.getUUID());
             patient.setCreateTime(new Date());
-            return patientService.insert(setPatientRegistry(patient, patientRegistryRtMap));
+            return patientService.insert(setPatientRegistry(patient, patientRegistryRtMap));*/
+            logger.info("患者未进行住院登记，不进行患者基本信息保存");
+            return false;
         }
         return patientService.update(setPatientRegistry(patient, patientRegistryRtMap));
     }
