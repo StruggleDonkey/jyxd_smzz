@@ -49,7 +49,7 @@ public class InOUtAmountStatisticsService {
         Long summaryHours = 0L;
         //是否需要大结，null不需要，false 为还未大结，true为已经大结
         if (!objectStrIsNull(map.get("summaryHours"))) {
-            summaryHours = (Long) map.get("summaryHours");
+            summaryHours = Long.valueOf(String.valueOf(map.get("summaryHours")));
         }
         //查询数据结束时间
         Date endDataTime = getLaterHoursDate(new Date(), Long.valueOf(String.valueOf(map.get("hours"))));
@@ -77,9 +77,7 @@ public class InOUtAmountStatisticsService {
                 continue;
             }
             Date date = yyyyMMddHHmmssSdfToDate(inOutAmountMap.get("data_date") + " " + inOutAmountMap.get("data_time") + ":00");
-            System.out.println("数据时间：" + yyyyMMddHHmmssSdfToString(date));
             if (oneStartTime.getTime() <= date.getTime() && date.getTime() <= oneEndTime.getTime()) {
-                System.out.println("第" + i + "次循环");
                 statisticsList.add(inOutAmountMap);
                 newOutAmountMapList.add(inOutAmountMap);
             } else {
@@ -90,142 +88,89 @@ public class InOUtAmountStatisticsService {
         System.out.println("第一次结束后的下标：" + oneStatisticsCount);
         //插入第一次节点总结
         newOutAmountMapList.add(mapDataTransition(addStatisticsDate(statisticsList), inOutAmountMapList.get(oneStatisticsCount), null, null, countingTime));
-        Date startTime = oneEndTime;
-        //小结计算集合
-        Map<String, Integer> calculateCountingHoursAccumulationMap = new HashMap<>();
-        //初始化小结数据
-        accumulationInitialize(calculateCountingHoursAccumulationMap);
-        //总结计算集合
-        Map<String, Integer> calculateSummaryHoursAccumulationMap = new HashMap<>();
-        //初始化总结数据
-        accumulationInitialize(calculateSummaryHoursAccumulationMap);
-        //获取前一条数据
-        Map oneEndInOutAmountMap = inOutAmountMapList.get(oneStatisticsCount - 1);
-        String oneEndDataDateStr = String.valueOf(oneEndInOutAmountMap.get("data_date"));
-        String oneEndDataTimeStr = String.valueOf(oneEndInOutAmountMap.get("data_time"));
-        //获取前一条数据时间
-        Date oneEndDateTime = yyyyMMddHHmmssSdfToDate(oneEndDataDateStr + " " + oneEndDataTimeStr + ":00");
-        //获取当前数据
-        Date inOutAmountMapDateTime = yyyyMMddHHmmssSdfToDate(inOutAmountMapList.get(oneStatisticsCount).get("data_date") + " " + inOutAmountMapList.get(oneStatisticsCount).get("data_time") + ":00");
-        //获取计算下一个小结时间节点
-        Date countingHoursEndTime = getLaterHoursDate(oneEndTime, calculateStartTime(oneEndDateTime, inOutAmountMapDateTime, countingHours));
-        //获取计算下一个总结时间节点
-        Date summaryHoursEndTime = null;
-        if (Objects.nonNull(summaryHours) && summaryHours != 0) {
-            summaryHoursEndTime = getLaterHoursDate(oneEndTime, calculateStartTime(oneEndDateTime, inOutAmountMapDateTime, summaryHours));
-        }
-        for (int i = oneStatisticsCount; i < inOutAmountMapList.size() && oneStatisticsCount != 0; i++) {
-            Map inOutAmountMap = inOutAmountMapList.get(i);
-            Map inOutAmountNextMap = inOutAmountMap;
-            if (i < inOutAmountMapList.size() - 1) {
-                inOutAmountNextMap = inOutAmountMapList.get(i + 1);
+        if (oneStatisticsCount > 0) {
+            //小结计算集合
+            Map<String, Integer> calculateCountingHoursAccumulationMap = new HashMap<>();
+            //初始化小结数据
+            accumulationInitialize(calculateCountingHoursAccumulationMap);
+            //总结计算集合
+            Map<String, Integer> calculateSummaryHoursAccumulationMap = new HashMap<>();
+            //初始化总结数据
+            accumulationInitialize(calculateSummaryHoursAccumulationMap);
+            //获取前一条数据
+            Map oneEndInOutAmountMap = inOutAmountMapList.get(oneStatisticsCount - 1);
+            String oneEndDataDateStr = String.valueOf(oneEndInOutAmountMap.get("data_date"));
+            String oneEndDataTimeStr = String.valueOf(oneEndInOutAmountMap.get("data_time"));
+            //获取前一条数据时间
+            Date oneEndDateTime = yyyyMMddHHmmssSdfToDate(oneEndDataDateStr + " " + oneEndDataTimeStr + ":00");
+            //获取当前数据
+            Date inOutAmountMapDateTime = yyyyMMddHHmmssSdfToDate(inOutAmountMapList.get(oneStatisticsCount).get("data_date") + " " + inOutAmountMapList.get(oneStatisticsCount).get("data_time") + ":00");
+            //获取计算下一个小结时间节点
+            Date countingHoursEndTime = getLaterHoursDate(oneEndTime, calculateStartTime(oneEndDateTime, inOutAmountMapDateTime, countingHours));
+            //获取计算下一个总结时间节点
+            Date summaryHoursEndTime = null;
+            if (Objects.nonNull(summaryHours) && summaryHours != 0) {
+                summaryHoursEndTime = getLaterHoursDate(oneEndTime, calculateStartTime(oneEndDateTime, inOutAmountMapDateTime, summaryHours));
             }
-            //提取原数据中的数值
-            Map<String, Integer> stringIntegerMap = extractNum(inOutAmountMap, findCustomContent(inOutAmountMap));
-            //计算小结累加值
-            calculateAccumulation(calculateCountingHoursAccumulationMap, stringIntegerMap);
-            //如果存在总结时计算总结累加值
-            if (Objects.nonNull(summaryHoursEndTime)) {
-                calculateAccumulation(calculateSummaryHoursAccumulationMap, stringIntegerMap);
-            }
-            //获取下一条数据的时间
-            Date inOutAmountNextMapDateTime = yyyyMMddHHmmssSdfToDate(inOutAmountNextMap.get("data_date") + " " + inOutAmountNextMap.get("data_time") + ":00");
-            //获取当前数据的时间
-            inOutAmountMapDateTime = yyyyMMddHHmmssSdfToDate(inOutAmountMap.get("data_date") + " " + inOutAmountMap.get("data_time") + ":00");
-            //将原数据放入新集合
-            newOutAmountMapList.add(inOutAmountMap);
-            //判断如果下次时间大于节点结束时间则进入小结总结
-            if (inOutAmountNextMapDateTime.getTime() > countingHoursEndTime.getTime() && i != inOutAmountMapList.size() - 1) {
-                //转换统计数值为前端数据
-                Map mapDataTransition = mapDataTransition(calculateCountingHoursAccumulationMap, inOutAmountMap, countingHours, null, null);
-                //小结数据放入新集合中
-                newOutAmountMapList.add(mapDataTransition);
-                //小结结束，初始化计算数据
-                accumulationInitialize(calculateCountingHoursAccumulationMap);
-                //计算下一次时间
-                countingHoursEndTime = getLaterHoursDate(countingHoursEndTime, calculateStartTime(countingHoursEndTime, inOutAmountNextMapDateTime, countingHours));
-            } else if (i == inOutAmountMapList.size() - 1) {
-                //最后一条数据直接进行小结结束，不在判断是否是小于下一条数据
-                //转换统计数值为前端数据
-                Map mapDataTransition = mapDataTransition(calculateCountingHoursAccumulationMap, inOutAmountMap, countingHours, null, null);
-                //小结数据放入新集合中
-                newOutAmountMapList.add(mapDataTransition);
+            for (int i = oneStatisticsCount; i < inOutAmountMapList.size() && oneStatisticsCount != 0; i++) {
+                Map inOutAmountMap = inOutAmountMapList.get(i);
+                Map inOutAmountNextMap = inOutAmountMap;
+                if (i < inOutAmountMapList.size() - 1) {
+                    inOutAmountNextMap = inOutAmountMapList.get(i + 1);
+                }
+                //提取原数据中的数值
+                Map<String, Integer> stringIntegerMap = extractNum(inOutAmountMap, findCustomContent(inOutAmountMap));
+                //计算小结累加值
+                calculateAccumulation(calculateCountingHoursAccumulationMap, stringIntegerMap);
+                //如果存在总结时计算总结累加值
                 if (Objects.nonNull(summaryHoursEndTime)) {
-                    //如果需要总结时，转换总结数据为前端所需数据，将总结数据放入集合
-                    mapDataTransition = mapDataTransition(calculateSummaryHoursAccumulationMap, inOutAmountMap, null, summaryHours, null);
-                    newOutAmountMapList.add(mapDataTransition);
+                    calculateAccumulation(calculateSummaryHoursAccumulationMap, stringIntegerMap);
                 }
-                break;
-            }
-            //如果总结时间不存在，则直接返回
-            if (Objects.isNull(summaryHoursEndTime)) {
-                continue;
-            }
-            if (inOutAmountNextMapDateTime.getTime() > summaryHoursEndTime.getTime()) {
-                //转换统计数值为前端数据
-                Map mapDataTransition = mapDataTransition(calculateSummaryHoursAccumulationMap, inOutAmountMap, null, summaryHours, null);
-                //总结数据放入新集合中
-                newOutAmountMapList.add(mapDataTransition);
-                //总结结束，初始化计算数据
-                accumulationInitialize(calculateSummaryHoursAccumulationMap);
-                //计算下一次总结时间
-                summaryHoursEndTime = getLaterHoursDate(summaryHoursEndTime, calculateStartTime(summaryHoursEndTime, inOutAmountNextMapDateTime, summaryHours));
+                //获取下一条数据的时间
+                Date inOutAmountNextMapDateTime = yyyyMMddHHmmssSdfToDate(inOutAmountNextMap.get("data_date") + " " + inOutAmountNextMap.get("data_time") + ":00");
+                //将原数据放入新集合
+                newOutAmountMapList.add(inOutAmountMap);
+                //判断如果下次时间大于节点结束时间则进入小结总结
+                if (inOutAmountNextMapDateTime.getTime() > countingHoursEndTime.getTime() && i != inOutAmountMapList.size() - 1) {
+                    //转换统计数值为前端数据
+                    Map mapDataTransition = mapDataTransition(calculateCountingHoursAccumulationMap, inOutAmountMap, countingHours, null, countingTime);
+                    //小结数据放入新集合中
+                    newOutAmountMapList.add(mapDataTransition);
+                    //小结结束，初始化计算数据
+                    accumulationInitialize(calculateCountingHoursAccumulationMap);
+                    //计算下一次时间
+                    countingHoursEndTime = getLaterHoursDate(countingHoursEndTime, calculateStartTime(countingHoursEndTime, inOutAmountNextMapDateTime, countingHours));
+                } else if (i == inOutAmountMapList.size() - 1) {
+                    //最后一条数据直接进行小结结束，不在判断是否是小于下一条数据
+                    //转换统计数值为前端数据
+                    Map mapDataTransition;
+                    if (Objects.nonNull(summaryHoursEndTime)) {
+                        //如果需要总结时，转换总结数据为前端所需数据，将总结数据放入集合
+                        mapDataTransition = mapDataTransition(calculateSummaryHoursAccumulationMap, inOutAmountMap, null, summaryHours, countingTime);
+                        newOutAmountMapList.add(mapDataTransition);
+                    } else {
+                        mapDataTransition = mapDataTransition(calculateCountingHoursAccumulationMap, inOutAmountMap, countingHours, null, countingTime);
+                        //小结数据放入新集合中
+                        newOutAmountMapList.add(mapDataTransition);
+                    }
+                    break;
+                }
+                //如果总结时间不存在，则直接返回
+                if (Objects.isNull(summaryHoursEndTime)) {
+                    continue;
+                }
+                if (inOutAmountNextMapDateTime.getTime() > summaryHoursEndTime.getTime()) {
+                    //转换统计数值为前端数据
+                    Map mapDataTransition = mapDataTransition(calculateSummaryHoursAccumulationMap, inOutAmountMap, null, summaryHours, countingTime);
+                    //总结数据放入新集合中
+                    newOutAmountMapList.add(mapDataTransition);
+                    //总结结束，初始化计算数据
+                    accumulationInitialize(calculateSummaryHoursAccumulationMap);
+                    //计算下一次总结时间
+                    summaryHoursEndTime = getLaterHoursDate(summaryHoursEndTime, calculateStartTime(summaryHoursEndTime, inOutAmountNextMapDateTime, summaryHours));
+                }
             }
         }
-
-
-        //计算小结总结数据
-        /*Date startTime = oneEndTime;
-        Date endCountingHoursTime = getLaterHoursDate(startTime, countingHours);*/
-        // Date startTime = hhmmSdfToDate(countingTime);
-        //Date endCountingHoursTime = getLaterHoursDate(startTime, countingHours);
-        //statisticsList = new ArrayList<>();
-        /*for (int i = oneStatisticsCount; i < inOutAmountMapList.size() && oneStatisticsCount != 0; i++) {
-            Map inOutAmountMap = inOutAmountMapList.get(i);
-            //Date date = yyyyMMddHHmmssSdfToDate(inOutAmountMap.get("data_date") + " " + inOutAmountMap.get("data_time") + ":00");
-            Date date = hhmmSdfToDate(String.valueOf(inOutAmountMap.get("data_time")));
-            if (date.getTime() > startTime.getTime() && date.getTime() <= endCountingHoursTime.getTime()) {
-                statisticsList.add(inOutAmountMap);
-                if (i == inOutAmountMapList.size() - 1) {
-                    System.out.println("进行最后一次循环");
-                    Map mapDataTransition;
-                    if (Objects.nonNull(isSummaryHours) && isSummaryHours) {
-                        mapDataTransition = mapDataTransition(addStatisticsDate(statisticsList), inOutAmountMapList.get(i), null, summaryHours, null);
-                    } else {
-                        mapDataTransition = mapDataTransition(addStatisticsDate(statisticsList), inOutAmountMapList.get(i), countingHours, null, null);
-                    }
-                    newOutAmountMapList.add(i + 1, mapDataTransition);
-                }
-            } else {
-                if (CollectionUtils.isEmpty(statisticsList)) {
-                    System.out.println("数据为空");
-                    continue;
-                } else {
-                    System.out.println(statisticsList);
-                    //判断是否需要大结
-                    if (Objects.nonNull(isSummaryHours) && isSummaryHours) {
-                        Map mapDataTransition = mapDataTransition(addStatisticsDate(statisticsList), inOutAmountMapList.get(i), null, summaryHours, null);
-                        newOutAmountMapList.add(i + 1, mapDataTransition);
-                        startTime = endCountingHoursTime;
-                        endCountingHoursTime = getLaterHoursDate(startTime, countingHours);
-                        statisticsList = new ArrayList<>();
-                        isSummaryHours = false;
-                    } else {
-                        Map mapDataTransition = mapDataTransition(addStatisticsDate(statisticsList), inOutAmountMapList.get(i), countingHours, null, null);
-                        newOutAmountMapList.add(i + 1, mapDataTransition);
-                        startTime = endCountingHoursTime;
-                        endCountingHoursTime = getLaterHoursDate(startTime, countingHours);
-                        if (Objects.nonNull(isSummaryHours)) {
-                            endCountingHoursTime = getLaterHoursDate(startTime, summaryHours - countingHours);
-                            isSummaryHours = true;
-                        } else {
-                            statisticsList = new ArrayList<>();
-                        }
-                    }
-                }
-            }
-
-        }*/
         inOutAmountJson.put("data", JSONArray.fromObject(newOutAmountMapList));
         return inOutAmountJson.toString();
     }
@@ -261,11 +206,18 @@ public class InOUtAmountStatisticsService {
      */
     private long calculateStartTime(Date startTime, Date nextTime, long countingHoursOrSummaryHours) {
         Long difference = nextTime.getTime() - startTime.getTime();
+        System.out.println("前一条数据时间：" + startTime);
+        System.out.println("后一条数据时间：" + startTime);
+        System.out.println("相差时间为：" + difference);
+        System.out.println("转为小时计时：" + difference / 1000 / (60 * 60));
+        difference = difference / 1000 / (60 * 60);
         if (difference % countingHoursOrSummaryHours > 0) {
             Long divisor = (difference / countingHoursOrSummaryHours) + 1;
+            System.out.println("有余数计算隔断时间为：" + divisor + "-- countingHoursOrSummaryHours = :" + countingHoursOrSummaryHours);
             return divisor * countingHoursOrSummaryHours;
         }
         Long divisor = difference / countingHoursOrSummaryHours;
+        System.out.println("无余数计算隔断时间为：" + divisor + "-- countingHoursOrSummaryHours = :" + countingHoursOrSummaryHours);
         return divisor * countingHoursOrSummaryHours;
     }
 
@@ -292,7 +244,7 @@ public class InOUtAmountStatisticsService {
      */
     private Map<String, Object> mapDataTransition(Map<String, Integer> statisticsMap,
                                                   Map<String, Object> mapDate, Long countingHours,
-                                                  Long summaryHours, String countingTime) {
+                                                  Long summaryHours, String countingTime) throws ParseException {
         Map<String, Object> map = new HashMap<>();
         for (Map.Entry<String, Object> entry : mapDate.entrySet()) {
             if (StringUtils.equals("dosage", entry.getKey())) {
@@ -359,15 +311,42 @@ public class InOUtAmountStatisticsService {
                 map.put(entry.getKey(), statisticsMap.get("contentTen"));
                 continue;
             }
-            if (StringUtils.equals("order_name", entry.getKey())) {
-                if (Objects.isNull(countingHours) && Objects.isNull(summaryHours)) {
-                    map.put("order_name", countingTime + "前总结");
-                } else if (Objects.nonNull(summaryHours)) {
-                    map.put("order_name", summaryHours + "小时总结");
-                } else {
-                    map.put("order_name", countingHours + "小时小结");
-                }
+            if (StringUtils.equals("signature", entry.getKey())) {
+                map.put(entry.getKey(), "");
                 continue;
+            }
+            if (StringUtils.equals("data_date", entry.getKey())) {
+                map.put(entry.getKey(), "-:-");
+                continue;
+            }
+
+            if (Objects.isNull(countingHours) && Objects.isNull(summaryHours)) {
+                if (StringUtils.equals("data_time", entry.getKey())) {
+                    map.put(entry.getKey(), countingTime);
+                    continue;
+                }
+                if (StringUtils.equals("order_name", entry.getKey())) {
+                    map.put("order_name", countingTime + "前总结");
+                    continue;
+                }
+            } else if (Objects.nonNull(summaryHours)) {
+                if (StringUtils.equals("data_time", entry.getKey())) {
+                    map.put(entry.getKey(), hhmmssSdfToString(getLaterHoursDate(hhmmSdfToDate(countingTime), summaryHours)));
+                    continue;
+                }
+                if (StringUtils.equals("order_name", entry.getKey())) {
+                    map.put("order_name", summaryHours + "小时总结");
+                    continue;
+                }
+            } else if (Objects.nonNull(countingHours)) {
+                if (StringUtils.equals("data_time", entry.getKey())) {
+                    map.put(entry.getKey(), hhmmssSdfToString(getLaterHoursDate(hhmmSdfToDate(countingTime), countingHours)));
+                    continue;
+                }
+                if (StringUtils.equals("order_name", entry.getKey())) {
+                    map.put("order_name", countingHours + "小时小结");
+                    continue;
+                }
             }
             map.put(entry.getKey(), entry.getValue());
         }
@@ -439,7 +418,8 @@ public class InOUtAmountStatisticsService {
      *
      * @return
      */
-    private Map<String, Integer> calculateAccumulation(Map<String, Integer> calculateAccumulationMap, Map<String, Integer> stringIntegerMap) {
+    private Map<String, Integer> calculateAccumulation
+    (Map<String, Integer> calculateAccumulationMap, Map<String, Integer> stringIntegerMap) {
         Integer dosage = stringIntegerMap.get("dosageCount");
         calculateAccumulationMap.put("dosage", dosage + calculateAccumulationMap.get("dosage"));
         Integer allowanceDosageCount = stringIntegerMap.get("allowanceDosageCount");

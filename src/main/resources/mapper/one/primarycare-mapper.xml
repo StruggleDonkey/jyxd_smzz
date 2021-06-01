@@ -204,6 +204,7 @@
         IFNULL(tioa.drainage_tube_four,"") as drainage_tube_four,
         IFNULL(tioa.drainage_tube_five,"") as drainage_tube_five,
         IFNULL(tioa.drainage_tube_six,"") as drainage_tube_six,
+        IFNULL(tioa.signature,"") as signature,
         IFNULL(tioa.risk_assessment_one,"") as risk_assessment_one,
         IFNULL(tioa.risk_assessment_two,"") as risk_assessment_two,
         IFNULL(tioa.risk_assessment_three,"") as risk_assessment_three,

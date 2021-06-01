@@ -81,6 +81,9 @@
         <if test="status != null ">
             and status= #{status}
         </if>
+        <if test="startTime != null and endTime != null">
+            AND date_format(data_time, '%Y-%m-%d %H:%i') BETWEEN #{startTime} AND #{endTime}
+        </if>
     </select>
 
     <!-- 根据时间和code和病人主键id查询对象-->
@@ -175,6 +178,7 @@
             IFNULL(max(CASE WHEN tvs.code='bpm' THEN tvs.content END),"") AS bpm,
             IFNULL(max(CASE WHEN tvs.code='ie' THEN tvs.content END),"") AS ie,
             IFNULL(max(CASE WHEN tvs.code='glasgow' THEN tvs.content END),"") AS glasgow,
+            IFNULL(max(CASE WHEN tvs.code='signature' THEN tvs.content END),"") AS signature,
             IFNULL(max(CASE WHEN tvs.code='breathSoundLeft' THEN dcii.common_item_name END),"") AS breathSoundLeft,
             IFNULL(max(CASE WHEN tvs.code='breathSoundRight' THEN dcij.common_item_name END),"") AS breathSoundRight,
             IFNULL(max(CASE WHEN tvs.code='inhaleOxygenStyle' THEN dcik.common_item_name END),"") AS inhaleOxygenStyle,
@@ -276,6 +280,74 @@
         AND status = #{status}
         AND patient_id = #{patientId}
         AND date_format(data_time, '%Y-%m-%d %H:%i') BETWEEN #{startTime} AND #{endTime}
+    </select>
+
+
+    <!-- 根据病人主键id查询生命体征列表 -->
+    <select id="getListByStartTime" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            IFNULL(tvs.patient_id,"") AS patient_id,
+            date_format(tvs.data_time, '%Y-%m-%d') AS date,
+            date_format(tvs.data_time, '%H:%i') AS time,
+            IFNULL(max(CASE WHEN tvs.code='consciousness' THEN dcia.common_item_name END),"")  AS consciousness,
+            IFNULL(max(CASE WHEN tvs.code='pupilLeft' THEN dcib.common_item_name END),"") AS pupilLeft,
+            IFNULL(max(CASE WHEN tvs.code='pupilRight' THEN dcic.common_item_name END),"") AS pupilRight,
+            IFNULL(max(CASE WHEN tvs.code='lightReflectionLeft' THEN dcid.common_item_name END),"") AS lightReflectionLeft,
+            IFNULL(max(CASE WHEN tvs.code='lightReflectionRight' THEN dcie.common_item_name END),"") AS lightReflectionRight,
+            IFNULL(max(CASE WHEN tvs.code='temperature' THEN tvs.content END),"") AS temperature,
+            IFNULL(max(CASE WHEN tvs.code='hr' THEN tvs.content END),"") AS hr,
+            IFNULL(max(CASE WHEN tvs.code='pulse' THEN tvs.content END),"") AS pulse,
+            IFNULL(max(CASE WHEN tvs.code='heartRate' THEN dcif.common_item_name END),"") AS heartRate,
+            IFNULL(max(CASE WHEN tvs.code='br' THEN tvs.content END),"") AS br,
+            IFNULL(max(CASE WHEN tvs.code='ibp' THEN tvs.content END),"") AS ibp,
+            IFNULL(max(CASE WHEN tvs.code='bp' THEN tvs.content END),"") AS bp,
+            IFNULL(max(CASE WHEN tvs.code='spo2' THEN tvs.content END),"") AS spo2,
+            IFNULL(max(CASE WHEN tvs.code='cvp' THEN tvs.content END),"") AS cvp,
+            IFNULL(max(CASE WHEN tvs.code='cvpmmHg' THEN tvs.content END),"") AS cvpmmHg,
+            IFNULL(max(CASE WHEN tvs.code='bloodSugar' THEN tvs.content END),"") AS bloodSugar,
+            IFNULL(max(CASE WHEN tvs.code='airWayStyle' THEN dcig.common_item_name END),"") AS airWayStyle,
+            IFNULL(max(CASE WHEN tvs.code='airbagPressure' THEN tvs.content END),"") AS airbagPressure,
+            IFNULL(max(CASE WHEN tvs.code='rsDepth' THEN tvs.content END),"") AS rsDepth,
+            IFNULL(max(CASE WHEN tvs.code='rsModel' THEN dcih.common_item_name END),"") AS rsModel,
+            IFNULL(max(CASE WHEN tvs.code='rsOxygen' THEN tvs.content END),"") AS rsOxygen,
+            IFNULL(max(CASE WHEN tvs.code='rsMoisture' THEN tvs.content END),"") AS rsMoisture,
+            IFNULL(max(CASE WHEN tvs.code='pc' THEN tvs.content END),"") AS pc,
+            IFNULL(max(CASE WHEN tvs.code='rsFrequency' THEN tvs.content END),"") AS rsFrequency,
+            IFNULL(max(CASE WHEN tvs.code='ps' THEN tvs.content END),"") AS ps,
+            IFNULL(max(CASE WHEN tvs.code='peep' THEN tvs.content END),"") AS peep,
+            IFNULL(max(CASE WHEN tvs.code='ipap' THEN tvs.content END),"") AS ipap,
+            IFNULL(max(CASE WHEN tvs.code='epap' THEN tvs.content END),"") AS epap,
+            IFNULL(max(CASE WHEN tvs.code='bpm' THEN tvs.content END),"") AS bpm,
+            IFNULL(max(CASE WHEN tvs.code='ie' THEN tvs.content END),"") AS ie,
+            IFNULL(max(CASE WHEN tvs.code='glasgow' THEN tvs.content END),"") AS glasgow,
+            IFNULL(max(CASE WHEN tvs.code='signature' THEN tvs.content END),"") AS signature,
+            IFNULL(max(CASE WHEN tvs.code='breathSoundLeft' THEN dcii.common_item_name END),"") AS breathSoundLeft,
+            IFNULL(max(CASE WHEN tvs.code='breathSoundRight' THEN dcij.common_item_name END),"") AS breathSoundRight,
+            IFNULL(max(CASE WHEN tvs.code='inhaleOxygenStyle' THEN dcik.common_item_name END),"") AS inhaleOxygenStyle,
+            IFNULL(max(CASE WHEN tvs.code='inhaleOxygenConcentration' THEN tvs.content END),"") AS inhaleOxygenConcentration,
+            IFNULL(max(CASE WHEN tvs.code='inhaleOxygenConcentration2' THEN tvs.content END),"") AS inhaleOxygenConcentration2,
+            IFNULL(max(CASE WHEN tvs.code='signature' THEN tu.user_name END),"") AS signature,
+            IFNULL(max(CASE WHEN tvs.code='handoverSignature' THEN tu.user_name END),"") AS handoverSignature
+        FROM
+            table_vital_sign tvs LEFT JOIN dict_common_item dcia ON dcia.common_item_code=tvs.content AND dcia.type='consciousness'
+        LEFT JOIN dict_common_item dcib ON dcib.common_item_code=tvs.content AND dcib.type='pupil'
+        LEFT JOIN dict_common_item dcic ON dcic.common_item_code=tvs.content AND dcic.type='pupil'
+        LEFT JOIN dict_common_item dcid ON dcid.common_item_code=tvs.content AND dcid.type='light_reflection'
+        LEFT JOIN dict_common_item dcie ON dcie.common_item_code=tvs.content AND dcie.type='light_reflection'
+        LEFT JOIN dict_common_item dcif ON dcif.common_item_code=tvs.content AND dcif.type='heart_rate'
+        LEFT JOIN dict_common_item dcig ON dcig.common_item_code=tvs.content AND dcig.type='air_way'
+        LEFT JOIN dict_common_item dcih ON dcih.common_item_code=tvs.content AND dcih.type='rs_model'
+        LEFT JOIN dict_common_item dcii ON dcii.common_item_code=tvs.content AND dcii.type='breath_sound'
+        LEFT JOIN dict_common_item dcij ON dcij.common_item_code=tvs.content AND dcij.type='breath_sound'
+        LEFT JOIN dict_common_item dcik ON dcik.common_item_code=tvs.content AND dcik.type='inhale_oxygen_style'
+        LEFT JOIN table_user tu ON tu.login_name=tvs.content
+        WHERE
+            1 = 1
+        AND tvs.status !=- 1
+        AND tvs.patient_id=#{patientId}
+        AND date_format(tvs.data_time, '%Y-%m-%d %H:%i') BETWEEN #{startTime} AND #{endTime}
+        GROUP BY tvs.data_time
+        ORDER BY tvs.data_time ASC
     </select>
 
 </mapper>

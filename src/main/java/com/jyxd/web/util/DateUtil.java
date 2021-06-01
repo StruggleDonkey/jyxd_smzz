@@ -5,12 +5,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 public class DateUtil {
 
     /**
      * 计算n小时以后的时间
-     * @param date 开始时间
+     *
+     * @param date  开始时间
      * @param hours 时长
      * @return
      */

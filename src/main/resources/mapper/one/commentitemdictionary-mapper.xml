@@ -145,6 +145,7 @@
             AND dci.status = #{status}
             AND dc.status = #{status}
         </if>
+        ORDER BY dci.common_item_name
     </select>
 
     <select id="getNamesByCodes" resultType="java.lang.String" parameterType="java.util.Map">

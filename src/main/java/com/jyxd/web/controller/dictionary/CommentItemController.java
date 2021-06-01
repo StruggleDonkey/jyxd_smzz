@@ -246,7 +246,6 @@ public class CommentItemController {
                 for (int i = 0; i <list.size(); i++) {
                     arrayList.add(list.get(i).getCommonItemCode());
                 }
-
                 ArrayList arrayHisList= new ArrayList();
                 for (int i = 0; i < hisList.size(); i++) {
                     arrayHisList.add(hisList.get(i).get("drug_type_code").toString());

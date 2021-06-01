@@ -19,8 +19,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static com.jyxd.web.util.DateUtil.*;
 
 @Controller
 @RequestMapping(value = "/primaryCare")
@@ -163,6 +166,7 @@ public class PrimaryCareController {
 
     /**
      * 病人管理-护理文书-护理单文书-基础护理-根据条件查询基础护理表(新版-吕梁医院使用)列表
+     *
      * @param map
      * @return
      */
@@ -193,7 +197,51 @@ public class PrimaryCareController {
     }
 
     /**
+     * 病人管理-护理文书-护理单文书-基础护理-根据条件查询基础护理表(新版-吕梁医院使用)列表
+     *
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/getPrimaryCareListByStartTime", method = RequestMethod.POST)
+    @ResponseBody
+    public String getPrimaryCareListByStartTime(@RequestBody(required = false) Map<String, Object> map) throws ParseException {
+        JSONObject json = new JSONObject();
+        json.put("code", HttpCode.FAILURE_CODE.getCode());
+        json.put("data", new ArrayList<>());
+        json.put("msg", "暂无数据");
+        if (map == null || !map.containsKey("patientId") || StringUtils.isEmpty(map.get("patientId").toString())) {
+            json.put("code", HttpCode.NO_PATIENT_CODE.getCode());
+            json.put("msg", "请选择病人");
+            return json.toString();
+        }
+        if (!map.containsKey("hour")) {
+            json.put("msg", "查询时间跨度小时为空，查询失败");
+            return json.toString();
+        }
+        if (!map.containsKey("startTime")) {
+            json.put("msg", "查询开始时间为空，查询失败");
+            return json.toString();
+        }
+        Date endTime = getLaterHoursDate(yyyyMMddHHmmssSdfToDate(String.valueOf(map.get("startTime"))), Long.valueOf(String.valueOf(map.get("hour"))));
+        map.put("endTime", yyyyMMddSdfToString(endTime));
+        if (map.containsKey("start")) {
+            int totalCount = primaryCareService.getPrimaryCareNum(map);
+            map.put("start", ((int) map.get("start") - 1) * (int) map.get("size"));
+            json.put("totalCount", totalCount);
+        }
+        List<Map<String, Object>> primaryCareList = primaryCareService.getPrimaryCareList(map);
+        if (primaryCareList != null && primaryCareList.size() > 0) {
+            json.put("msg", "查询成功");
+            json.put("data", JSONArray.fromObject(primaryCareList));
+        }
+        json.put("code", HttpCode.OK_CODE.getCode());
+        return json.toString();
+    }
+
+
+    /**
      * 病人管理-护理文书-护理单文书-基础护理-保存基础护理表(新版-吕梁医院使用)
+     *
      * @param map
      * @return
      */

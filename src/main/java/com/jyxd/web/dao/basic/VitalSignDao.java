@@ -38,6 +38,13 @@ public interface VitalSignDao {
     List<VitalSign> queryList(Map<String, Object> map);
 
     /**
+     * 根据条件分页查询生命体征表记录列表
+     * @param map
+     * @return list
+     */
+    List<VitalSign> getListByStartTime(Map<String, Object> map);
+
+    /**
      * 根据条件查询列表总记录数
      * @param map
      * @return

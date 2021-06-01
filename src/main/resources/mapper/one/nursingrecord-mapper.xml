@@ -14,7 +14,7 @@
         <result column="operator_code" property="operatorCode" jdbcType="VARCHAR"/>
         <result column="status" property="status" jdbcType="INTEGER"/>
     </resultMap>
-    
+
     <sql id="nursingRecord_colums">id,visit_id,visit_code,patient_id,data_time,code,content,create_time,operator_code,status</sql>
 
     <sql id="nursingRecord_propertys">#{id},#{visitId},#{visitCode},#{patientId},#{dataTime},#{code},
@@ -30,36 +30,37 @@
         values (<include refid="nursingRecord_propertys"></include>)
     </insert>
 
-    <update id="update" parameterType="com.jyxd.web.data.basic.NursingRecord" >
+    <update id="update" parameterType="com.jyxd.web.data.basic.NursingRecord">
         update
         table_nursing_record
-        set <include refid="nursingRecord_update"></include>
+        set
+        <include refid="nursingRecord_update"></include>
         where
-          id=#{id}
+        id=#{id}
     </update>
 
     <select id="queryData" resultMap="nursingRecordMap" parameterType="java.lang.String">
         select
-          <include refid="nursingRecord_colums"></include>
+        <include refid="nursingRecord_colums"></include>
         from
         table_nursing_record
         where
-          id=#{id}
+        id=#{id}
     </select>
 
     <select id="queryList" resultType="java.util.Map">
         select
-          <include refid="nursingRecord_colums"></include>
+        <include refid="nursingRecord_colums"></include>
         from
         table_nursing_record
         where
-          1=1
-        and  status != -1
+        1=1
+        and status != -1
         <if test="content != null and content != ''">
-            and  content like '%${content}%'
+            and content like '%${content}%'
         </if>
         <if test="status != null ">
-            and  status= #{status}
+            and status= #{status}
         </if>
         <if test="start != null ">limit #{start},</if>
         <if test="size != null ">#{size}</if>
@@ -67,91 +68,91 @@
 
     <select id="queryNum" resultType="java.lang.Integer" parameterType="java.util.Map">
         select
-          count(id)
+        count(id)
         from
         table_nursing_record
         where
         1=1
-        and  status != -1
+        and status != -1
         <if test="content != null and content != ''">
-            and  content like '%${content}%'
+            and content like '%${content}%'
         </if>
         <if test="status != null ">
-            and  status= #{status}
+            and status= #{status}
         </if>
     </select>
 
     <select id="getListByTime" resultType="java.util.Map" parameterType="java.util.Map">
         SELECT
-	        IFNULL(pp.visit_id, "") AS visit_id,
-            IFNULL(pp.name, "") AS name,
-            IFNULL(pp.visit_code, "") AS visit_code,
-            IFNULL(pp.int_id, "") AS int_id,
-            IFNULL(pp.bed_code, "") AS bed_code,
-            SUM(IFNULL(CASE
-                        WHEN(tnr.code='体温')
-                        THEN tnr.content
-                        END,""))
-                        as tiwen,
-            SUM(IFNULL(CASE
-                        WHEN(tnr.code='心率')
-                        THEN tnr.content
-                        END,""))
-                        as xinlv,
-            SUM(IFNULL(CASE
-                        WHEN(tnr.code='脉搏')
-                        THEN tnr.content
-                        END,""))
-                        as maibo,
-            SUM(IFNULL(CASE
-                        WHEN(tnr.code='呼吸')
-                        THEN tnr.content
-                        END,""))
-                        as huxi,
-            SUM(IFNULL(CASE
-                        WHEN(tnr.code='心率')
-                        THEN tnr.content
-                        END,""))
-                        as xinlv,
-            SUM(IFNULL(CASE
-                        WHEN(tnr.code='有创血压')
-                        THEN tnr.content
-                        END,""))
-                        as youchuangxueya,
-						SUM(IFNULL(CASE
-                        WHEN(tnr.code='无创血压')
-                        THEN tnr.content
-                        END,""))
-                        as wuchuangxueya,
-            SUM(IFNULL(CASE
-                        WHEN(tnr.code='血氧饱和度')
-                        THEN tnr.content
-                        END,""))
-                        as xueyangbaohedu,
-            SUM(IFNULL(CASE
-                        WHEN(tnr.code='CVPcm')
-                        THEN tnr.content
-                        END,""))
-                        as CVPcm,
-            SUM(IFNULL(CASE
-                        WHEN(tnr.code='CVPmm')
-                        THEN tnr.content
-                        END,""))
-                        as CVPmm,
-            IFNULL(tnr.data_time, "") AS data_time
-            FROM
-                p_patient pp
-            LEFT JOIN table_nursing_record tnr ON pp.int_id = tnr.patient_id
-            <if test="time != null and time != ''">
-                AND date_format(
-                tnr.data_time,
-                '%Y%m%d %H%i'
-                ) = date_format(
-                #{time},
-                '%Y%m%d %H%i')
-            </if>
-            WHERE 1=1 AND pp.status!=-1 AND pp.flag=1
-            GROUP BY int_id
+        IFNULL(pp.visit_id, "") AS visit_id,
+        IFNULL(pp.name, "") AS name,
+        IFNULL(pp.visit_code, "") AS visit_code,
+        IFNULL(pp.int_id, "") AS int_id,
+        IFNULL(pp.bed_code, "") AS bed_code,
+        SUM(IFNULL(CASE
+        WHEN(tnr.code='体温')
+        THEN tnr.content
+        END,""))
+        as tiwen,
+        SUM(IFNULL(CASE
+        WHEN(tnr.code='心率')
+        THEN tnr.content
+        END,""))
+        as xinlv,
+        SUM(IFNULL(CASE
+        WHEN(tnr.code='脉搏')
+        THEN tnr.content
+        END,""))
+        as maibo,
+        SUM(IFNULL(CASE
+        WHEN(tnr.code='呼吸')
+        THEN tnr.content
+        END,""))
+        as huxi,
+        SUM(IFNULL(CASE
+        WHEN(tnr.code='心率')
+        THEN tnr.content
+        END,""))
+        as xinlv,
+        SUM(IFNULL(CASE
+        WHEN(tnr.code='有创血压')
+        THEN tnr.content
+        END,""))
+        as youchuangxueya,
+        SUM(IFNULL(CASE
+        WHEN(tnr.code='无创血压')
+        THEN tnr.content
+        END,""))
+        as wuchuangxueya,
+        SUM(IFNULL(CASE
+        WHEN(tnr.code='血氧饱和度')
+        THEN tnr.content
+        END,""))
+        as xueyangbaohedu,
+        SUM(IFNULL(CASE
+        WHEN(tnr.code='CVPcm')
+        THEN tnr.content
+        END,""))
+        as CVPcm,
+        SUM(IFNULL(CASE
+        WHEN(tnr.code='CVPmm')
+        THEN tnr.content
+        END,""))
+        as CVPmm,
+        IFNULL(tnr.data_time, "") AS data_time
+        FROM
+        p_patient pp
+        LEFT JOIN table_nursing_record tnr ON pp.int_id = tnr.patient_id
+        <if test="time != null and time != ''">
+            AND date_format(
+            tnr.data_time,
+            '%Y%m%d %H%i'
+            ) = date_format(
+            #{time},
+            '%Y%m%d %H%i')
+        </if>
+        WHERE 1=1 AND pp.status!=-1 AND pp.flag=1
+        GROUP BY int_id
     </select>
 
     <select id="queryDataByTimeAndCode" resultMap="nursingRecordMap" parameterType="java.lang.String">
@@ -179,18 +180,19 @@
 
     <select id="getListByCode" resultType="java.util.Map" parameterType="java.util.Map">
         SELECT
-            IFNULL(tnr.id, "") AS id,
-            IFNULL(date_format(tnr.data_time, '%Y-%m-%d'), "") AS date,
-            IFNULL(date_format(tnr.data_time, '%H:%i'), "") AS time,
-            IFNULL(tnr.content, "") AS content,
-            IFNULL(ts.user_name, "") AS name
+        IFNULL(tnr.id, "") AS id,
+        IFNULL(date_format(tnr.data_time, '%Y-%m-%d'), "") AS date,
+        IFNULL(date_format(tnr.data_time, '%H:%i'), "") AS time,
+        IFNULL(tnr.content, "") AS content,
+        IFNULL(ts.user_name, "") AS name,
+        IFNULL(tnr.operator_code, "") AS operatorCode
         FROM
-          table_nursing_record tnr
+        table_nursing_record tnr
         LEFT JOIN table_user ts ON tnr.operator_code = ts.login_name
         WHERE
-          tnr.status !=-1
+        tnr.status !=-1
         <if test="status != null ">
-            and  tnr.status= #{status}
+            and tnr.status= #{status}
         </if>
         <if test="code != null and code != ''">
             AND tnr.code=#{code}
@@ -201,6 +203,29 @@
         <if test="dataTime != null and dataTime != ''">
             AND date_format(tnr.data_time, '%Y-%m-%d')=#{dataTime}
         </if>
+    </select>
+
+    <select id="getListByStartTime" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        IFNULL(tnr.id, "") AS id,
+        IFNULL(date_format(tnr.data_time, '%Y-%m-%d'), "") AS date,
+        IFNULL(date_format(tnr.data_time, '%H:%i'), "") AS time,
+        IFNULL(tnr.content, "") AS content,
+        IFNULL(ts.user_name, "") AS name,
+        IFNULL(tnr.operator_code, "") AS operatorCode
+        FROM
+        table_nursing_record tnr
+        LEFT JOIN table_user ts ON tnr.operator_code = ts.login_name
+        WHERE
+        tnr.status !=-1
+        AND date_format(tnr.data_time, '%Y-%m-%d %H:%i') BETWEEN #{startTime} AND #{endTime}
+        <if test="status != null ">
+            and tnr.status= #{status}
+        </if>
+        <if test="patientId != null and patientId != ''">
+            AND tnr.patient_id=#{patientId}
+        </if>
+        ORDER BY tnr.data_time ASC
     </select>
 
 </mapper>

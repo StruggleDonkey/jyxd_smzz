@@ -7,7 +7,7 @@
         <result column="visit_id" property="visitId" jdbcType="VARCHAR"/>
         <result column="visit_code" property="visitCode" jdbcType="VARCHAR"/>
         <result column="patient_id" property="patientId" jdbcType="VARCHAR"/>
-        <result column="data_time" property="dataTime" jdbcType="DATE"/>
+        <result column="data_time" property="dataTime" jdbcType="TIMESTAMP"/>
         <result column="order_code" property="orderCode" jdbcType="VARCHAR"/>
         <result column="order_no" property="orderNo" jdbcType="VARCHAR"/>
         <result column="order_sub_no" property="orderSubNo" jdbcType="VARCHAR"/>
@@ -207,6 +207,7 @@
         IFNULL(tioa.remark,"") as remark,
         IFNULL(tioa.illness_records,"") as illness_records,
         IFNULL(tioa.balance,"") as balance,
+        IFNULL(tioa.signature,"") as signature,
         IFNULL(date_format(tioa.data_time, '%Y-%m-%d'),"") as data_date,
         IFNULL(date_format(tioa.data_time, '%H:%i'),"") as data_time,
         IFNULL(date_format(tioa.create_time, '%Y-%m-%d %H:%i:%s'),"") as create_time,
@@ -254,5 +255,66 @@
         <if test="start != null ">limit #{start},</if>
         <if test="size != null ">#{size}</if>
     </select>
+    <select id="getAllowanceDosageByOrderNo" resultType="java.lang.String" parameterType="java.util.Map">
+        SELECT
+            allowance_dosage
+        FROM
+            table_in_out_amount
+        WHERE
+            order_no = #{orderNo}
+        ORDER BY
+            allowance_dosage DESC
+    </select>
 
+    <select id="queryInOutAmountById" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        IFNULL(tioa.id,"") as id,
+        IFNULL(tioa.visit_id,"") as visit_id,
+        IFNULL(tioa.visit_code,"") as visit_code,
+        IFNULL(tioa.patient_id,"") as patient_id,
+        IFNULL(tioa.order_code,"") as order_code,
+        IFNULL(tioa.order_no,"") as order_no,
+        IFNULL(tioa.order_sub_no,"") as order_sub_no,
+        IFNULL(tioa.order_name,"") as order_name,
+        IFNULL(tioa.dosage,"") as dosage,
+        IFNULL(tioa.allowance_dosage,"") as allowance_dosage,
+        IFNULL(tioa.piss,"") as piss,
+        IFNULL(tioa.faces,"") as faces,
+        IFNULL(tioa.drainage,"") as drainage,
+        IFNULL(tioa.remark,"") as remark,
+        IFNULL(tioa.illness_records,"") as illness_records,
+        IFNULL(tioa.balance,"") as balance,
+        IFNULL(date_format(tioa.data_time, '%Y-%m-%d'),"") as data_date,
+        IFNULL(date_format(tioa.data_time, '%H:%i'),"") as data_time,
+        IFNULL(date_format(tioa.create_time, '%Y-%m-%d %H:%i:%s'),"") as create_time,
+        IFNULL(tua.user_name,"") as operator_code,
+        IFNULL(tub.user_name,"") as signature,
+        IFNULL(tuc.user_name,"") as check_signature,
+        tioa.status as status,
+        tioa.type as type,
+        IFNULL(tco.content_one,"") as content_one,
+        IFNULL(tco.content_two,"") as content_two,
+        IFNULL(tco.content_three,"") as content_three,
+        IFNULL(tco.content_four,"") as content_four,
+        IFNULL(tco.content_five,"") as content_five,
+        IFNULL(tco.content_six,"") as content_six,
+        IFNULL(tco.content_seven,"") as content_seven,
+        IFNULL(tco.content_eight,"") as content_eight,
+        IFNULL(tco.content_nine,"") as content_nine,
+        IFNULL(tco.content_ten,"") as content_ten
+        FROM
+        table_in_out_amount tioa
+        LEFT JOIN table_user tua ON tua.login_name=tioa.operator_code
+        LEFT JOIN table_user tub ON tub.login_name=tioa.signature
+        LEFT JOIN table_user tuc ON tuc.login_name=tioa.check_signature
+        LEFT JOIN table_custom_content tco ON tco.patient_id=tioa.patient_id
+        AND date_format(tioa.data_time, '%Y-%m-%d %H:%i')=date_format(tco.data_time, '%Y-%m-%d %H:%i')
+        AND tco.associated_table='table_in_out_amount'
+        WHERE 1=1
+        AND tioa.status!=-1
+        <if test="id != null and id != ''">
+            AND tioa.id=#{id}
+        </if>
+        order by tioa.data_time
+    </select>
 </mapper>
